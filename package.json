@@ -1,0 +1,40 @@
+{
+    "name": "openclaw-docs-zh",
+    "version": "1.0.0",
+    "description": "Automated Chinese translation for OpenClaw documentation",
+    "type": "module",
+    "main": "dist/index.js",
+    "bin": {
+        "translate-docs": "./dist/index.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "translate": "node dist/index.js translate",
+        "sync": "node dist/index.js sync",
+        "dev": "tsx src/index.ts",
+        "dev:docs": "cd docs && mint dev"
+    },
+    "keywords": [
+        "openclaw",
+        "translation",
+        "documentation",
+        "chinese"
+    ],
+    "author": "",
+    "license": "MIT",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "dependencies": {
+        "commander": "^12.1.0",
+        "glob": "^11.0.0",
+        "gray-matter": "^4.0.3",
+        "openai": "^4.77.0"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.0",
+        "tsx": "^4.21.0",
+        "typescript": "^5.7.0",
+        "mint": "^4.2.0"
+    }
+}

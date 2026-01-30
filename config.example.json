@@ -1,0 +1,17 @@
+{
+    "upstream": {
+        "owner": "openclaw",
+        "repo": "openclaw",
+        "branch": "main",
+        "docsPath": "docs"
+    },
+    "translation": {
+        "model": "qwen-mt-plus",
+        "targetLanguage": "Chinese",
+        "outputDir": "docs"
+    },
+    "rateLimit": {
+        "rpm": 60,
+        "tpm": 25000
+    }
+}

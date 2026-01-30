@@ -1,0 +1,92 @@
+name: Daily Documentation Translation
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC (10:00 Beijing Time)
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      full_rebuild:
+        description: 'Force full rebuild (ignore cache)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build translator
+        run: npm run build
+
+      - name: Sync upstream documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Syncing documentation from upstream..."
+          node dist/index.js sync \
+            --upstream openclaw/openclaw \
+            --branch main \
+            --path docs \
+            --output ./docs
+
+      - name: Translate documentation
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+        run: |
+          echo "🌐 Translating documentation..."
+          INCREMENTAL_FLAG=""
+          if [ "${{ github.event.inputs.full_rebuild }}" != "true" ]; then
+            INCREMENTAL_FLAG="--incremental"
+          fi
+          node dist/index.js translate \
+            --source ./docs \
+            --output ./docs-zh \
+            --config ./config.json \
+            $INCREMENTAL_FLAG
+
+      - name: Generate translation status
+        run: node dist/index.js status --source ./docs --output ./docs-zh > TRANSLATION_STATUS.md
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "docs: update Chinese translations [$(date '+%Y-%m-%d')]"
+          git push
+
+      - name: Summary
+        run: |
+          echo "## 📊 Translation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat TRANSLATION_STATUS.md >> $GITHUB_STEP_SUMMARY || echo "No status file generated" >> $GITHUB_STEP_SUMMARY
