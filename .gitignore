@@ -6,14 +6,10 @@ dist/
 
 # Cache files
 .translation-cache.json
-
 # Environment files
 .env
 .env.local
 .env.*.local
-
-# Config with secrets
-config.json
 
 # IDE
 .vscode/
