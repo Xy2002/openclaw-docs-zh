@@ -310,4 +310,32 @@ program
         }
     });
 
+program
+    .command('validate')
+    .description('Validate markdown/MDX files for Mintlify compatibility')
+    .option('-s, --source <dir>', 'Directory containing markdown files to validate', './docs')
+    .option('-v, --verbose', 'Show progress for each file', false)
+    .action(async (options) => {
+        try {
+            const sourceDir = resolve(process.cwd(), options.source);
+
+            const { validateDirectory } = await import('./validator.js');
+            const result = await validateDirectory(sourceDir, {
+                verbose: options.verbose,
+            });
+
+            if (result.invalidFiles > 0) {
+                console.log('\n⚠️  Some files have syntax errors that will break Mintlify!');
+                console.log('   Run "fix" command first, then re-validate.\n');
+                process.exit(1);
+            } else {
+                console.log('\n✅ All files are valid and Mintlify-compatible!\n');
+            }
+
+        } catch (error) {
+            console.error('❌ Error:', error instanceof Error ? error.message : error);
+            process.exit(1);
+        }
+    });
+
 program.parse();

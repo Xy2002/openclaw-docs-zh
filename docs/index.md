@@ -19,7 +19,8 @@ read_when:
 <p align="center">
   <strong>适用于任何操作系统的 AI 代理（Pi）的 WhatsApp/Telegram/Discord/iMessage 网关。</strong><br />
   插件支持 Mattermost 等更多功能。
-  发送一条消息，即可在口袋里获得代理的响应。</p>
+  发送一条消息，即可在口袋里获得代理的响应。
+</p>
 
 <p align="center">
   <a href="__URL_75__">GitHub</a> ·

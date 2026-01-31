@@ -77,6 +77,11 @@ jobs:
           echo "🔧 Fixing syntax errors..."
           node dist/index.js fix --source ./docs
 
+      - name: Validate syntax
+        run: |
+          echo "🔍 Validating MDX syntax..."
+          node dist/index.js validate --source ./docs
+
       # 保存翻译缓存
       - name: Save translation cache
         uses: actions/cache/save@v4
