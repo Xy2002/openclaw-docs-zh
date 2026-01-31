@@ -1,20 +1,16 @@
 ---
-summary: "Write agent tools in a plugin (schemas, optional tools, allowlists)"
+summary: 'Write agent tools in a plugin (schemas, optional tools, allowlists)'
 read_when:
   - You want to add a new agent tool in a plugin
   - You need to make a tool opt-in via allowlists
 ---
-# Plugin agent tools
+# 插件代理工具
 
-OpenClaw plugins can register **agent tools** (JSON‑schema functions) that are exposed
-to the LLM during agent runs. Tools can be **required** (always available) or
-**optional** (opt‑in).
+OpenClaw 插件可以注册**代理工具**（JSON 模式的函数），这些工具在代理运行期间向大语言模型公开。工具可以是**必需的**（始终可用）或**可选的**（需主动启用）。
 
-Agent tools are configured under `tools` in the main config, or per‑agent under
-`agents.list[].tools`. The allowlist/denylist policy controls which tools the agent
-can call.
+代理工具在主配置中的`tools`下进行配置，也可以在`agents.list[].tools`下为每个代理单独配置。允许列表/拒绝列表策略控制代理可以调用哪些工具。
 
-## Basic tool
+## 基本工具
 
 ```ts
 import { Type } from "@sinclair/typebox";
@@ -33,10 +29,9 @@ export default function (api) {
 }
 ```
 
-## Optional tool (opt‑in)
+## 可选工具（需主动启用）
 
-Optional tools are **never** auto‑enabled. Users must add them to an agent
-allowlist.
+可选工具**绝不会**自动启用。用户必须将其添加到代理的允许列表中。
 
 ```ts
 export default function (api) {
@@ -60,7 +55,7 @@ export default function (api) {
 }
 ```
 
-Enable optional tools in `agents.list[].tools.allow` (or global `tools.allow`):
+在`agents.list[].tools.allow`（或全局`tools.allow`）中启用可选工具：
 
 ```json5
 {
@@ -81,16 +76,14 @@ Enable optional tools in `agents.list[].tools.allow` (or global `tools.allow`):
 }
 ```
 
-Other config knobs that affect tool availability:
-- Allowlists that only name plugin tools are treated as plugin opt-ins; core tools remain
-  enabled unless you also include core tools or groups in the allowlist.
-- `tools.profile` / `agents.list[].tools.profile` (base allowlist)
-- `tools.byProvider` / `agents.list[].tools.byProvider` (provider‑specific allow/deny)
-- `tools.sandbox.tools.*` (sandbox tool policy when sandboxed)
+影响工具可用性的其他配置选项：
+- 仅列出插件工具的允许列表被视为插件的启用请求；除非您同时将核心工具或工具组列入允许列表，否则核心工具将保持启用状态。
+- `tools.profile` / `agents.list[].tools.profile`（基础允许列表）
+- `tools.byProvider` / `agents.list[].tools.byProvider`（特定提供商的允许/拒绝列表）
+- `tools.sandbox.tools.*`（沙箱模式下的沙箱工具策略）
 
-## Rules + tips
+## 规则与提示
 
-- Tool names must **not** clash with core tool names; conflicting tools are skipped.
-- Plugin ids used in allowlists must not clash with core tool names.
-- Prefer `optional: true` for tools that trigger side effects or require extra
-  binaries/credentials.
+- 工具名称**不得**与核心工具名称冲突；冲突的工具将被跳过。
+- 允许列表中使用的插件 ID 不得与核心工具名称冲突。
+- 对于会触发副作用或需要额外二进制文件/凭据的工具，建议使用`optional: true`。

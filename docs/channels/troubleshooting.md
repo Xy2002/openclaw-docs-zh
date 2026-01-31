@@ -1,25 +1,25 @@
 ---
-summary: "Channel-specific troubleshooting shortcuts (Discord/Telegram/WhatsApp)"
+summary: Channel-specific troubleshooting shortcuts (Discord/Telegram/WhatsApp)
 read_when:
   - A channel connects but messages don’t flow
-  - Investigating channel misconfiguration (intents, permissions, privacy mode)
+  - 'Investigating channel misconfiguration (intents, permissions, privacy mode)'
 ---
-# Channel troubleshooting
+# 频道故障排除
 
-Start with:
+从以下内容开始：
 
 ```bash
 openclaw doctor
 openclaw channels status --probe
 ```
 
-`channels status --probe` prints warnings when it can detect common channel misconfigurations, and includes small live checks (credentials, some permissions/membership).
+`channels status --probe` 在检测到常见频道配置错误时会打印警告，并包含一些小型实时检查（凭据、部分权限/成员资格）。
 
-## Channels
-- Discord: [/channels/discord#troubleshooting](/channels/discord#troubleshooting)
-- Telegram: [/channels/telegram#troubleshooting](/channels/telegram#troubleshooting)
-- WhatsApp: [/channels/whatsapp#troubleshooting-quick](/channels/whatsapp#troubleshooting-quick)
+## 频道
+- Discord：[/channels/discord#troubleshooting](/channels/discord#troubleshooting)
+- Telegram：[/channels/telegram#troubleshooting](/channels/telegram#troubleshooting)
+- WhatsApp：[/channels/whatsapp#troubleshooting-quick](/channels/whatsapp#troubleshooting-quick)
 
-## Telegram quick fixes
-- Logs show `HttpError: Network request for 'sendMessage' failed` or `sendChatAction` → check IPv6 DNS. If `api.telegram.org` resolves to IPv6 first and the host lacks IPv6 egress, force IPv4 or enable IPv6. See [/channels/telegram#troubleshooting](/channels/telegram#troubleshooting).
-- Logs show `setMyCommands failed` → check outbound HTTPS and DNS reachability to `api.telegram.org` (common on locked-down VPS or proxies).
+## Telegram 快速修复
+- 日志显示 `HttpError: Network request for 'sendMessage' failed` 或 `sendChatAction` → 检查 IPv6 DNS。如果 `api.telegram.org` 首先解析为 IPv6，而主机缺少 IPv6 出站连接，则强制使用 IPv4 或启用 IPv6。请参阅 [/channels/telegram#troubleshooting](/channels/telegram#troubleshooting)。
+- 日志显示 `setMyCommands failed` → 检查出站 HTTPS 和 DNS 是否可访问 `api.telegram.org`（在受限 VPS 或代理中很常见）。

@@ -1,13 +1,12 @@
 ---
-summary: "SSH tunnel setup for OpenClaw.app connecting to a remote gateway"
-read_when: "Connecting the macOS app to a remote gateway over SSH"
+summary: SSH tunnel setup for OpenClaw.app connecting to a remote gateway
+read_when: Connecting the macOS app to a remote gateway over SSH
 ---
+# 使用远程网关运行 OpenClaw.app
 
-# Running OpenClaw.app with a Remote Gateway
+OpenClaw.app 使用 SSH 隧道连接到远程网关。本指南将向您展示如何进行设置。
 
-OpenClaw.app uses SSH tunneling to connect to a remote gateway. This guide shows you how to set it up.
-
-## Overview
+## 概览
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -29,11 +28,11 @@ OpenClaw.app uses SSH tunneling to connect to a remote gateway. This guide shows
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Quick Setup
+## 快速设置
 
-### Step 1: Add SSH Config
+### 第 1 步：添加 SSH 配置
 
-Edit `~/.ssh/config` and add:
+编辑 `~/.ssh/config` 并添加：
 
 ```ssh
 Host remote-gateway
@@ -43,46 +42,46 @@ Host remote-gateway
     IdentityFile ~/.ssh/id_rsa
 ```
 
-Replace `<REMOTE_IP>` and `<REMOTE_USER>` with your values.
+将 `<REMOTE_IP>` 和 `<REMOTE_USER>` 替换为您的值。
 
-### Step 2: Copy SSH Key
+### 第 2 步：复制 SSH 密钥
 
-Copy your public key to the remote machine (enter password once):
+将您的公钥复制到远程机器（只需输入一次密码）：
 
 ```bash
 ssh-copy-id -i ~/.ssh/id_rsa <REMOTE_USER>@<REMOTE_IP>
 ```
 
-### Step 3: Set Gateway Token
+### 第 3 步：设置网关令牌
 
 ```bash
 launchctl setenv OPENCLAW_GATEWAY_TOKEN "<your-token>"
 ```
 
-### Step 4: Start SSH Tunnel
+### 第 4 步：启动 SSH 隧道
 
 ```bash
 ssh -N remote-gateway &
 ```
 
-### Step 5: Restart OpenClaw.app
+### 第 5 步：重启 OpenClaw.app
 
 ```bash
 # Quit OpenClaw.app (⌘Q), then reopen:
 open /path/to/OpenClaw.app
 ```
 
-The app will now connect to the remote gateway through the SSH tunnel.
+现在，应用程序将通过 SSH 隧道连接到远程网关。
 
 ---
 
-## Auto-Start Tunnel on Login
+## 登录时自动启动隧道
 
-To have the SSH tunnel start automatically when you log in, create a Launch Agent.
+要使 SSH 隧道在您登录时自动启动，请创建一个启动代理。
 
-### Create the PLIST file
+### 创建 PLIST 文件
 
-Save this as `~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist`:
+将其保存为 `~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist`：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -105,37 +104,37 @@ Save this as `~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist`:
 </plist>
 ```
 
-### Load the Launch Agent
+### 加载启动代理
 
 ```bash
 launchctl bootstrap gui/$UID ~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist
 ```
 
-The tunnel will now:
-- Start automatically when you log in
-- Restart if it crashes
-- Keep running in the background
+现在，该隧道将：
+- 在您登录时自动启动
+- 在崩溃时自动重启
+- 在后台持续运行
 
-Legacy note: remove any leftover `com.openclaw.ssh-tunnel` LaunchAgent if present.
+旧版说明：如果存在任何遗留的 `com.openclaw.ssh-tunnel` LaunchAgent，请将其移除。
 
 ---
 
-## Troubleshooting
+## 故障排除
 
-**Check if tunnel is running:**
+**检查隧道是否正在运行：**
 
 ```bash
 ps aux | grep "ssh -N remote-gateway" | grep -v grep
 lsof -i :18789
 ```
 
-**Restart the tunnel:**
+**重启隧道：**
 
 ```bash
 launchctl kickstart -k gui/$UID/bot.molt.ssh-tunnel
 ```
 
-**Stop the tunnel:**
+**停止隧道：**
 
 ```bash
 launchctl bootout gui/$UID/bot.molt.ssh-tunnel
@@ -143,13 +142,13 @@ launchctl bootout gui/$UID/bot.molt.ssh-tunnel
 
 ---
 
-## How It Works
+## 工作原理
 
-| Component | What It Does |
+| 组件 | 功能 |
 |-----------|--------------|
-| `LocalForward 18789 127.0.0.1:18789` | Forwards local port 18789 to remote port 18789 |
-| `ssh -N` | SSH without executing remote commands (just port forwarding) |
-| `KeepAlive` | Automatically restarts tunnel if it crashes |
-| `RunAtLoad` | Starts tunnel when the agent loads |
+| `LocalForward 18789 127.0.0.1:18789` | 将本地端口 18789 转发到远程端口 18789 |
+| `ssh -N` | 仅执行端口转发而不执行远程命令的 SSH |
+| `KeepAlive` | 在隧道崩溃时自动重启 |
+| `RunAtLoad` | 在代理加载时启动隧道 |
 
-OpenClaw.app connects to `ws://127.0.0.1:18789` on your client machine. The SSH tunnel forwards that connection to port 18789 on the remote machine where the Gateway is running.
+OpenClaw.app 连接到您客户端机器上的 `ws://127.0.0.1:18789`。SSH 隧道会将该连接转发到运行网关的远程机器上的端口 18789。

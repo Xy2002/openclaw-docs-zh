@@ -1,72 +1,73 @@
 ---
-summary: "Automated, hardened OpenClaw installation with Ansible, Tailscale VPN, and firewall isolation"
+summary: >-
+  Automated, hardened OpenClaw installation with Ansible, Tailscale VPN, and
+  firewall isolation
 read_when:
   - You want automated server deployment with security hardening
   - You need firewall-isolated setup with VPN access
   - You're deploying to remote Debian/Ubuntu servers
 ---
+# Ansible 安装
 
-# Ansible Installation
+将 OpenClaw 部署到生产服务器的推荐方式是通过 **[openclaw-ansible](https://github.com/openclaw/openclaw-ansible)** — 一个以安全为先的自动化安装程序。
 
-The recommended way to deploy OpenClaw to production servers is via **[openclaw-ansible](https://github.com/openclaw/openclaw-ansible)** — an automated installer with security-first architecture.
+## 快速入门
 
-## Quick Start
-
-One-command install:
+一键安装命令：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/openclaw/openclaw-ansible/main/install.sh | bash
 ```
 
-> **📦 Full guide: [github.com/openclaw/openclaw-ansible](https://github.com/openclaw/openclaw-ansible)**
+> **📦 完整指南：[github.com/openclaw/openclaw-ansible](https://github.com/openclaw/openclaw-ansible)**
 >
-> The openclaw-ansible repo is the source of truth for Ansible deployment. This page is a quick overview.
+> openclaw-ansible 仓库是 Ansible 部署的事实来源。本页面仅提供快速概览。
 
-## What You Get
+## 您将获得的内容
 
-- 🔒 **Firewall-first security**: UFW + Docker isolation (only SSH + Tailscale accessible)
-- 🔐 **Tailscale VPN**: Secure remote access without exposing services publicly
-- 🐳 **Docker**: Isolated sandbox containers, localhost-only bindings
-- 🛡️ **Defense in depth**: 4-layer security architecture
-- 🚀 **One-command setup**: Complete deployment in minutes
-- 🔧 **Systemd integration**: Auto-start on boot with hardening
+- 🔒 **防火墙优先的安全性**：UFW + Docker 隔离（仅 SSH 和 Tailscale 可访问）
+- 🔐 **Tailscale VPN**：无需公开暴露服务即可实现安全的远程访问
+- 🐳 **Docker**：隔离的沙盒容器，仅绑定到本地主机
+- 🛡️ **纵深防御**：4 层安全架构
+- 🚀 **一键部署**：几分钟内完成完整部署
+- 🔧 **Systemd 集成**：启动时自动运行并进行加固
 
-## Requirements
+## 系统要求
 
-- **OS**: Debian 11+ or Ubuntu 20.04+
-- **Access**: Root or sudo privileges
-- **Network**: Internet connection for package installation
-- **Ansible**: 2.14+ (installed automatically by quick-start script)
+- **操作系统**：Debian 11+ 或 Ubuntu 20.04+
+- **权限**：root 或 sudo 权限
+- **网络**：用于软件包安装的互联网连接
+- **Ansible**：2.14+（由快速入门脚本自动安装）
 
-## What Gets Installed
+## 安装内容
 
-The Ansible playbook installs and configures:
+Ansible playbook 将安装并配置以下内容：
 
-1. **Tailscale** (mesh VPN for secure remote access)
-2. **UFW firewall** (SSH + Tailscale ports only)
-3. **Docker CE + Compose V2** (for agent sandboxes)
-4. **Node.js 22.x + pnpm** (runtime dependencies)
-5. **OpenClaw** (host-based, not containerized)
-6. **Systemd service** (auto-start with security hardening)
+1. **Tailscale**（用于安全远程访问的网状 VPN）
+2. **UFW 防火墙**（仅开放 SSH 和 Tailscale 端口）
+3. **Docker CE + Compose V2**（用于代理沙盒）
+4. **Node.js 22.x + pnpm**（运行时依赖）
+5. **OpenClaw**（基于主机而非容器化）
+6. **Systemd 服务**（带安全加固的自动启动）
 
-Note: The gateway runs **directly on the host** (not in Docker), but agent sandboxes use Docker for isolation. See [Sandboxing](/gateway/sandboxing) for details.
+注意：网关直接在宿主机上运行（不在 Docker 中），但代理沙盒使用 Docker 进行隔离。有关详细信息，请参阅 [沙盒化](/gateway/sandboxing)。
 
-## Post-Install Setup
+## 安装后设置
 
-After installation completes, switch to the openclaw user:
+安装完成后，切换到 openclaw 用户：
 
 ```bash
 sudo -i -u openclaw
 ```
 
-The post-install script will guide you through:
+安装后脚本将引导您完成以下步骤：
 
-1. **Onboarding wizard**: Configure OpenClaw settings
-2. **Provider login**: Connect WhatsApp/Telegram/Discord/Signal
-3. **Gateway testing**: Verify the installation
-4. **Tailscale setup**: Connect to your VPN mesh
+1. **入职向导**：配置 OpenClaw 设置
+2. **提供商登录**：连接 WhatsApp/Telegram/Discord/Signal
+3. **网关测试**：验证安装是否成功
+4. **Tailscale 设置**：连接到您的 VPN 网状网络
 
-### Quick commands
+### 快速命令
 
 ```bash
 # Check service status
@@ -83,34 +84,34 @@ sudo -i -u openclaw
 openclaw channels login
 ```
 
-## Security Architecture
+## 安全架构
 
-### 4-Layer Defense
+### 四层防御
 
-1. **Firewall (UFW)**: Only SSH (22) + Tailscale (41641/udp) exposed publicly
-2. **VPN (Tailscale)**: Gateway accessible only via VPN mesh
-3. **Docker Isolation**: DOCKER-USER iptables chain prevents external port exposure
-4. **Systemd Hardening**: NoNewPrivileges, PrivateTmp, unprivileged user
+1. **防火墙 (UFW)**：仅公开暴露 SSH (22) 和 Tailscale (41641/udp)
+2. **VPN (Tailscale)**：网关仅可通过 VPN 网状网络访问
+3. **Docker 隔离**：DOCKER-USER iptables 链可防止外部端口暴露
+4. **Systemd 加固**：NoNewPrivileges、PrivateTmp、非特权用户
 
-### Verification
+### 验证
 
-Test external attack surface:
+测试外部攻击面：
 
 ```bash
 nmap -p- YOUR_SERVER_IP
 ```
 
-Should show **only port 22** (SSH) open. All other services (gateway, Docker) are locked down.
+应显示**仅端口 22**（SSH）开放。所有其他服务（网关、Docker）均已锁定。
 
-### Docker Availability
+### Docker 的可用性
 
-Docker is installed for **agent sandboxes** (isolated tool execution), not for running the gateway itself. The gateway binds to localhost only and is accessible via Tailscale VPN.
+Docker 是为**代理沙盒**（隔离工具执行）而安装的，而不是用于运行网关本身。网关仅绑定到本地主机，并可通过 Tailscale VPN 访问。
 
-See [Multi-Agent Sandbox & Tools](/multi-agent-sandbox-tools) for sandbox configuration.
+有关沙盒配置的详细信息，请参阅 [多代理沙盒与工具](/multi-agent-sandbox-tools)。
 
-## Manual Installation
+## 手动安装
 
-If you prefer manual control over the automation:
+如果您更倾向于手动控制而非自动化：
 
 ```bash
 # 1. Install prerequisites
@@ -130,29 +131,29 @@ ansible-galaxy collection install -r requirements.yml
 # ansible-playbook playbook.yml --ask-become-pass
 ```
 
-## Updating OpenClaw
+## 更新 OpenClaw
 
-The Ansible installer sets up OpenClaw for manual updates. See [Updating](/install/updating) for the standard update flow.
+Ansible 安装程序会为 OpenClaw 的手动更新做好准备。有关标准更新流程，请参阅 [更新](/install/updating)。
 
-To re-run the Ansible playbook (e.g., for configuration changes):
+要重新运行 Ansible playbook（例如进行配置更改）：
 
 ```bash
 cd openclaw-ansible
 ./run-playbook.sh
 ```
 
-Note: This is idempotent and safe to run multiple times.
+注意：此操作是幂等的，可多次安全运行。
 
-## Troubleshooting
+## 故障排除
 
-### Firewall blocks my connection
+### 防火墙阻止了我的连接
 
-If you're locked out:
-- Ensure you can access via Tailscale VPN first
-- SSH access (port 22) is always allowed
-- The gateway is **only** accessible via Tailscale by design
+如果您被锁定：
+- 请确保您首先可以通过 Tailscale VPN 访问
+- SSH 访问（端口 22）始终允许
+- 根据设计，网关**仅**可通过 Tailscale 访问
 
-### Service won't start
+### 服务无法启动
 
 ```bash
 # Check logs
@@ -167,7 +168,7 @@ cd ~/openclaw
 pnpm start
 ```
 
-### Docker sandbox issues
+### Docker 沙盒问题
 
 ```bash
 # Verify Docker is running
@@ -181,25 +182,25 @@ cd /opt/openclaw/openclaw
 sudo -u openclaw ./scripts/sandbox-setup.sh
 ```
 
-### Provider login fails
+### 提供商登录失败
 
-Make sure you're running as the `openclaw` user:
+请确保您是以 `openclaw` 用户身份运行：
 
 ```bash
 sudo -i -u openclaw
 openclaw channels login
 ```
 
-## Advanced Configuration
+## 高级配置
 
-For detailed security architecture and troubleshooting:
-- [Security Architecture](https://github.com/openclaw/openclaw-ansible/blob/main/docs/security.md)
-- [Technical Details](https://github.com/openclaw/openclaw-ansible/blob/main/docs/architecture.md)
-- [Troubleshooting Guide](https://github.com/openclaw/openclaw-ansible/blob/main/docs/troubleshooting.md)
+有关详细的安全架构和故障排除信息：
+- [安全架构](https://github.com/openclaw/openclaw-ansible/blob/main/docs/security.md)
+- [技术细节](https://github.com/openclaw/openclaw-ansible/blob/main/docs/architecture.md)
+- [故障排除指南](https://github.com/openclaw/openclaw-ansible/blob/main/docs/troubleshooting.md)
 
-## Related
+## 相关内容
 
-- [openclaw-ansible](https://github.com/openclaw/openclaw-ansible) — full deployment guide
-- [Docker](/install/docker) — containerized gateway setup
-- [Sandboxing](/gateway/sandboxing) — agent sandbox configuration
-- [Multi-Agent Sandbox & Tools](/multi-agent-sandbox-tools) — per-agent isolation
+- [openclaw-ansible](https://github.com/openclaw/openclaw-ansible) — 完整部署指南
+- [Docker](/install/docker) — 容器化网关设置
+- [沙盒化](/gateway/sandboxing) — 代理沙盒配置
+- [多代理沙盒与工具](/multi-agent-sandbox-tools) — 每个代理的隔离

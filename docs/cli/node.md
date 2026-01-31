@@ -1,35 +1,30 @@
 ---
-summary: "CLI reference for `openclaw node` (headless node host)"
+summary: CLI reference for `openclaw node` (headless node host)
 read_when:
   - Running the headless node host
   - Pairing a non-macOS node for system.run
 ---
-
 # `openclaw node`
 
-Run a **headless node host** that connects to the Gateway WebSocket and exposes
-`system.run` / `system.which` on this machine.
+运行一个**无头节点主机**，该主机连接到网关 WebSocket，并在此机器上公开
+`system.run` / `system.which`。
 
-## Why use a node host?
+## 为什么要使用节点主机？
 
-Use a node host when you want agents to **run commands on other machines** in your
-network without installing a full macOS companion app there.
+当您希望代理在您的网络中**在其他机器上运行命令**，而无需在这些机器上安装完整的 macOS 伴侣应用时，就使用节点主机。
 
-Common use cases:
-- Run commands on remote Linux/Windows boxes (build servers, lab machines, NAS).
-- Keep exec **sandboxed** on the gateway, but delegate approved runs to other hosts.
-- Provide a lightweight, headless execution target for automation or CI nodes.
+常见用例：
+- 在远程 Linux/Windows 设备（构建服务器、实验室机器、NAS）上运行命令。
+- 将 exec 保持在网关的**沙盒环境中**，但将获批准的执行委托给其他主机。
+- 为自动化或 CI 节点提供轻量级、无头的执行目标。
 
-Execution is still guarded by **exec approvals** and per‑agent allowlists on the
-node host, so you can keep command access scoped and explicit.
+执行仍然受节点主机上的**exec 批准**和每个代理的白名单保护，因此您可以保持命令访问范围明确且受控。
 
-## Browser proxy (zero-config)
+## 浏览器代理（零配置）
 
-Node hosts automatically advertise a browser proxy if `browser.enabled` is not
-disabled on the node. This lets the agent use browser automation on that node
-without extra configuration.
+如果未在节点上禁用 `browser.enabled`，节点主机会自动发布浏览器代理。这使代理无需额外配置即可在该节点上使用浏览器自动化功能。
 
-Disable it on the node if needed:
+如有需要，可在节点上禁用它：
 
 ```json5
 {
@@ -41,39 +36,39 @@ Disable it on the node if needed:
 }
 ```
 
-## Run (foreground)
+## 前台运行
 
 ```bash
 openclaw node run --host <gateway-host> --port 18789
 ```
 
-Options:
-- `--host <host>`: Gateway WebSocket host (default: `127.0.0.1`)
-- `--port <port>`: Gateway WebSocket port (default: `18789`)
-- `--tls`: Use TLS for the gateway connection
-- `--tls-fingerprint <sha256>`: Expected TLS certificate fingerprint (sha256)
-- `--node-id <id>`: Override node id (clears pairing token)
-- `--display-name <name>`: Override the node display name
+选项：
+- `--host <host>`: 网关 WebSocket 主机（默认：`127.0.0.1`）
+- `--port <port>`: 网关 WebSocket 端口（默认：`18789`）
+- `--tls`: 对网关连接使用 TLS
+- `--tls-fingerprint <sha256>`: 预期的 TLS 证书指纹（sha256）
+- `--node-id <id>`: 覆盖节点 ID（清除配对令牌）
+- `--display-name <name>`: 覆盖节点显示名称
 
-## Service (background)
+## 后台服务
 
-Install a headless node host as a user service.
+将无头节点主机作为用户服务安装。
 
 ```bash
 openclaw node install --host <gateway-host> --port 18789
 ```
 
-Options:
-- `--host <host>`: Gateway WebSocket host (default: `127.0.0.1`)
-- `--port <port>`: Gateway WebSocket port (default: `18789`)
-- `--tls`: Use TLS for the gateway connection
-- `--tls-fingerprint <sha256>`: Expected TLS certificate fingerprint (sha256)
-- `--node-id <id>`: Override node id (clears pairing token)
-- `--display-name <name>`: Override the node display name
-- `--runtime <runtime>`: Service runtime (`node` or `bun`)
-- `--force`: Reinstall/overwrite if already installed
+选项：
+- `--host <host>`: 网关 WebSocket 主机（默认：`127.0.0.1`）
+- `--port <port>`: 网关 WebSocket 端口（默认：`18789`）
+- `--tls`: 对网关连接使用 TLS
+- `--tls-fingerprint <sha256>`: 预期的 TLS 证书指纹（sha256）
+- `--node-id <id>`: 覆盖节点 ID（清除配对令牌）
+- `--display-name <name>`: 覆盖节点显示名称
+- `--runtime <runtime>`: 服务运行时（`node` 或 `bun`）
+- `--force`: 如果已安装则重新安装/覆盖
 
-Manage the service:
+管理服务：
 
 ```bash
 openclaw node status
@@ -82,27 +77,25 @@ openclaw node restart
 openclaw node uninstall
 ```
 
-Use `openclaw node run` for a foreground node host (no service).
+使用 `openclaw node run` 可以运行前台节点主机（无需服务）。
 
-Service commands accept `--json` for machine-readable output.
+服务命令接受 `--json`，以获得机器可读的输出。
 
-## Pairing
+## 配对
 
-The first connection creates a pending node pair request on the Gateway.
-Approve it via:
+首次连接会在网关上创建一个待处理的节点配对请求。可通过以下方式批准：
 
 ```bash
 openclaw nodes pending
 openclaw nodes approve <requestId>
 ```
 
-The node host stores its node id, token, display name, and gateway connection info in
-`~/.openclaw/node.json`.
+节点主机将其节点 ID、令牌、显示名称以及网关连接信息存储在 `~/.openclaw/node.json` 中。
 
-## Exec approvals
+## Exec 批准
 
-`system.run` is gated by local exec approvals:
+`system.run` 受本地 exec 批准的限制：
 
 - `~/.openclaw/exec-approvals.json`
-- [Exec approvals](/tools/exec-approvals)
-- `openclaw approvals --node <id|name|ip>` (edit from the Gateway)
+- [Exec 批准](/tools/exec-approvals)
+- `openclaw approvals --node <id|name|ip>`（从网关编辑）

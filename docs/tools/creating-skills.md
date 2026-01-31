@@ -1,20 +1,20 @@
-# Creating Custom Skills 🛠
+# 创建自定义技能 🛠
 
-OpenClaw is designed to be easily extensible. "Skills" are the primary way to add new capabilities to your assistant.
+OpenClaw 旨在易于扩展。“技能”是为你的助手添加新功能的主要方式。
 
-## What is a Skill?
-A skill is a directory containing a `SKILL.md` file (which provides instructions and tool definitions to the LLM) and optionally some scripts or resources.
+## 什么是技能？
+技能是一个目录，其中包含一个 `SKILL.md` 文件（为大语言模型提供指令和工具定义），还可选择包含一些脚本或资源。
 
-## Step-by-Step: Your First Skill
+## 分步指南：创建你的第一个技能
 
-### 1. Create the Directory
-Skills live in your workspace, usually `~/.openclaw/workspace/skills/`. Create a new folder for your skill:
+### 1. 创建目录
+技能位于你的工作区中，通常在 `~/.openclaw/workspace/skills/`。为你的技能创建一个新文件夹：
 ```bash
 mkdir -p ~/.openclaw/workspace/skills/hello-world
 ```
 
-### 2. Define the `SKILL.md`
-Create a `SKILL.md` file in that directory. This file uses YAML frontmatter for metadata and Markdown for instructions.
+### 2. 定义 `SKILL.md`
+在该目录中创建一个 `SKILL.md` 文件。此文件使用 YAML 前置元数据来存储元信息，并使用 Markdown 来编写指令。
 
 ```markdown
 ---
@@ -26,16 +26,16 @@ description: A simple skill that says hello.
 When the user asks for a greeting, use the `echo` tool to say "Hello from your custom skill!".
 ```
 
-### 3. Add Tools (Optional)
-You can define custom tools in the frontmatter or instruct the agent to use existing system tools (like `bash` or `browser`).
+### 3. 添加工具（可选）
+你可以在前置元数据中定义自定义工具，或者指示代理使用现有的系统工具，例如 `bash` 或 `browser`。
 
-### 4. Refresh OpenClaw
-Ask your agent to "refresh skills" or restart the gateway. OpenClaw will discover the new directory and index the `SKILL.md`.
+### 4. 刷新 OpenClaw
+让你的代理执行“刷新技能”命令，或重启网关。OpenClaw 将发现新目录并索引 `SKILL.md`。
 
-## Best Practices
-- **Be Concise**: Instruct the model on *what* to do, not how to be an AI.
-- **Safety First**: If your skill uses `bash`, ensure the prompts don't allow arbitrary command injection from untrusted user input.
-- **Test Locally**: Use `openclaw agent --message "use my new skill"` to test.
+## 最佳实践
+- **简洁明了**：只需告诉模型 *做什么*，而无需教它如何扮演 AI。
+- **安全第一**：如果你的技能使用 `bash`，请确保提示不会允许来自不受信任用户输入的任意命令注入。
+- **本地测试**：使用 `openclaw agent --message "use my new skill"` 进行测试。
 
-## Shared Skills
-You can also browse and contribute skills to [ClawHub](https://clawhub.com).
+## 共享技能
+你还可以浏览并贡献技能到 [ClawHub](https://clawhub.com)。

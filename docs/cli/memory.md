@@ -1,20 +1,19 @@
 ---
-summary: "CLI reference for `openclaw memory` (status/index/search)"
+summary: CLI reference for `openclaw memory` (status/index/search)
 read_when:
   - You want to index or search semantic memory
   - You’re debugging memory availability or indexing
 ---
-
 # `openclaw memory`
 
-Manage semantic memory indexing and search.
-Provided by the active memory plugin (default: `memory-core`; set `plugins.slots.memory = "none"` to disable).
+管理语义记忆的索引和搜索。
+由活动记忆插件提供（默认：`memory-core`；设置 `plugins.slots.memory = "none"` 以禁用）。
 
-Related:
-- Memory concept: [Memory](/concepts/memory)
- - Plugins: [Plugins](/plugins)
+相关：
+- 记忆概念：[记忆](/concepts/memory)
+- 插件：[插件](/plugins)
 
-## Examples
+## 示例
 
 ```bash
 openclaw memory status
@@ -28,15 +27,14 @@ openclaw memory status --agent main
 openclaw memory index --agent main --verbose
 ```
 
-## Options
+## 选项
 
-Common:
+通用：
+- `--agent <id>`：将作用域限定为单个智能体（默认：所有已配置智能体）。
+- `--verbose`：在探测和索引期间输出详细日志。
 
-- `--agent <id>`: scope to a single agent (default: all configured agents).
-- `--verbose`: emit detailed logs during probes and indexing.
-
-Notes:
-- `memory status --deep` probes vector + embedding availability.
-- `memory status --deep --index` runs a reindex if the store is dirty.
-- `memory index --verbose` prints per-phase details (provider, model, sources, batch activity).
-- `memory status` includes any extra paths configured via `memorySearch.extraPaths`.
+备注：
+- `memory status --deep` 探测向量和嵌入的可用性。
+- `memory status --deep --index` 如果存储脏数据，则执行重新索引。
+- `memory index --verbose` 输出各阶段的详细信息（提供者、模型、来源、批次活动）。
+- `memory status` 包含通过 `memorySearch.extraPaths` 配置的任何额外路径。

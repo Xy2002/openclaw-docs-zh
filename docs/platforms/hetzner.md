@@ -1,82 +1,79 @@
 ---
-summary: "Run OpenClaw Gateway 24/7 on a cheap Hetzner VPS (Docker) with durable state and baked-in binaries"
+summary: >-
+  Run OpenClaw Gateway 24/7 on a cheap Hetzner VPS (Docker) with durable state
+  and baked-in binaries
 read_when:
   - You want OpenClaw running 24/7 on a cloud VPS (not your laptop)
-  - You want a production-grade, always-on Gateway on your own VPS
-  - You want full control over persistence, binaries, and restart behavior
+  - 'You want a production-grade, always-on Gateway on your own VPS'
+  - 'You want full control over persistence, binaries, and restart behavior'
   - You are running OpenClaw in Docker on Hetzner or a similar provider
 ---
+# 在 Hetzner 上使用 Docker 部署 OpenClaw（生产级 VPS 指南）
 
-# OpenClaw on Hetzner (Docker, Production VPS Guide)
+## 目标
+在 Hetzner VPS 上通过 Docker 运行一个持久化的 OpenClaw 网关，确保状态持久、内置二进制文件，并具备安全的重启行为。
 
-## Goal
-Run a persistent OpenClaw Gateway on a Hetzner VPS using Docker, with durable state, baked-in binaries, and safe restart behavior.
+如果你希望以大约 5 美元的成本实现“OpenClaw 全天候运行”，这是最简单且可靠的部署方案。Hetzner 的定价可能会变化，请选择最小的 Debian 或 Ubuntu VPS，如果遇到内存不足问题再考虑升级配置。
 
-If you want “OpenClaw 24/7 for ~$5”, this is the simplest reliable setup.
-Hetzner pricing changes; pick the smallest Debian/Ubuntu VPS and scale up if you hit OOMs.
+## 我们要做什么？（简单说明）
 
-## What are we doing (simple terms)?
+- 租用一台小型 Linux 服务器（Hetzner VPS）
+- 安装 Docker（用于隔离的应用运行时）
+- 在 Docker 中启动 OpenClaw 网关
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 持久化到宿主机上（重启或重建后仍能保留）
+- 通过 SSH 隧道从笔记本电脑访问控制 UI
 
-- Rent a small Linux server (Hetzner VPS)
-- Install Docker (isolated app runtime)
-- Start the OpenClaw Gateway in Docker
-- Persist `~/.openclaw` + `~/.openclaw/workspace` on the host (survives restarts/rebuilds)
-- Access the Control UI from your laptop via an SSH tunnel
+网关可通过以下方式访问：
+- 从笔记本电脑通过 SSH 端口转发访问
+- 如果你自行管理防火墙和令牌，则可直接暴露端口访问
 
-The Gateway can be accessed via:
-- SSH port forwarding from your laptop
-- Direct port exposure if you manage firewalling and tokens yourself
-
-This guide assumes Ubuntu or Debian on Hetzner.  
-If you are on another Linux VPS, map packages accordingly.
-For the generic Docker flow, see [Docker](/install/docker).
+本指南假设你在 Hetzner 上使用 Ubuntu 或 Debian。如果你使用的是其他 Linux VPS，请相应调整软件包安装步骤。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
 
 ---
 
-## Quick path (experienced operators)
+## 快速路径（适用于有经验的运维人员）
 
-1) Provision Hetzner VPS  
-2) Install Docker  
-3) Clone OpenClaw repository  
-4) Create persistent host directories  
-5) Configure `.env` and `docker-compose.yml`  
-6) Bake required binaries into the image  
+1) 预配 Hetzner VPS  
+2) 安装 Docker  
+3) 克隆 OpenClaw 仓库  
+4) 创建持久化的宿主机目录  
+5) 配置 `.env` 和 `docker-compose.yml`  
+6) 将所需二进制文件烘焙到镜像中  
 7) `docker compose up -d`  
-8) Verify persistence and Gateway access
+8) 验证持久性和网关访问
 
 ---
 
-## What you need
+## 所需条件
 
-- Hetzner VPS with root access  
-- SSH access from your laptop  
-- Basic comfort with SSH + copy/paste  
-- ~20 minutes  
-- Docker and Docker Compose  
-- Model auth credentials  
-- Optional provider credentials  
-  - WhatsApp QR  
-  - Telegram bot token  
-  - Gmail OAuth  
+- 具有 root 访问权限的 Hetzner VPS  
+- 能从笔记本电脑通过 SSH 连接  
+- 熟悉 SSH 操作及复制粘贴  
+- 大约 20 分钟时间  
+- Docker 和 Docker Compose  
+- 模型身份验证凭据  
+- 可选的提供商凭据  
+  - WhatsApp QR 码  
+  - Telegram 机器人令牌  
+  - Gmail OAuth 凭据  
 
 ---
 
-## 1) Provision the VPS
+## 1) 预配 VPS
 
-Create an Ubuntu or Debian VPS in Hetzner.
+在 Hetzner 中创建一台运行 Ubuntu 或 Debian 的 VPS。
 
-Connect as root:
+以 root 用户身份连接：
 
 ```bash
 ssh root@YOUR_VPS_IP
 ```
 
-This guide assumes the VPS is stateful.
-Do not treat it as disposable infrastructure.
+本指南假定 VPS 是有状态的，不应将其视为一次性基础设施。
 
 ---
 
-## 2) Install Docker (on the VPS)
+## 2) 在 VPS 上安装 Docker
 
 ```bash
 apt-get update
@@ -84,7 +81,7 @@ apt-get install -y git curl ca-certificates
 curl -fsSL https://get.docker.com | sh
 ```
 
-Verify:
+验证安装：
 
 ```bash
 docker --version
@@ -93,21 +90,20 @@ docker compose version
 
 ---
 
-## 3) Clone the OpenClaw repository
+## 3) 克隆 OpenClaw 仓库
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 ```
 
-This guide assumes you will build a custom image to guarantee binary persistence.
+本指南假定你将构建自定义镜像，以确保二进制文件的持久性。
 
 ---
 
-## 4) Create persistent host directories
+## 4) 创建持久化的宿主机目录
 
-Docker containers are ephemeral.
-All long-lived state must live on the host.
+Docker 容器是临时的，所有需要长期保存的状态都必须存储在宿主机上。
 
 ```bash
 mkdir -p /root/.openclaw
@@ -120,9 +116,9 @@ chown -R 1000:1000 /root/.openclaw/workspace
 
 ---
 
-## 5) Configure environment variables
+## 5) 配置环境变量
 
-Create `.env` in the repository root.
+在仓库根目录下创建 `.env`。
 
 ```bash
 OPENCLAW_IMAGE=openclaw:latest
@@ -137,19 +133,19 @@ GOG_KEYRING_PASSWORD=change-me-now
 XDG_CONFIG_HOME=/home/node/.openclaw
 ```
 
-Generate strong secrets:
+生成强密钥：
 
 ```bash
 openssl rand -hex 32
 ```
 
-**Do not commit this file.**
+**请勿提交此文件。**
 
 ---
 
-## 6) Docker Compose configuration
+## 6) 配置 Docker Compose
 
-Create or update `docker-compose.yml`.
+创建或更新 `docker-compose.yml`。
 
 ```yaml
 services:
@@ -194,27 +190,25 @@ services:
 
 ---
 
-## 7) Bake required binaries into the image (critical)
+## 7) 将所需二进制文件烘焙到镜像中（关键步骤）
 
-Installing binaries inside a running container is a trap.
-Anything installed at runtime will be lost on restart.
+在运行中的容器内安装二进制文件是一个陷阱：任何在运行时安装的内容在重启后都会丢失。
 
-All external binaries required by skills must be installed at image build time.
+技能所需的所有外部二进制文件都必须在构建镜像时预先安装。
 
-The examples below show three common binaries only:
-- `gog` for Gmail access
-- `goplaces` for Google Places
-- `wacli` for WhatsApp
+下面的示例仅展示了三种常见的二进制文件：
+- `gog` 用于 Gmail 访问
+- `goplaces` 用于 Google Places
+- `wacli` 用于 WhatsApp
 
-These are examples, not a complete list.
-You may install as many binaries as needed using the same pattern.
+这些只是示例，并非完整列表。你可以按照相同的模式安装任意数量的二进制文件。
 
-If you add new skills later that depend on additional binaries, you must:
-1. Update the Dockerfile
-2. Rebuild the image
-3. Restart the containers
+如果你后续添加了依赖于其他二进制文件的新技能，你需要执行以下操作：
+1. 更新 Dockerfile
+2. 重新构建镜像
+3. 重启容器
 
-**Example Dockerfile**
+**示例 Dockerfile**
 
 ```dockerfile
 FROM node:22-bookworm
@@ -255,14 +249,14 @@ CMD ["node","dist/index.mjs"]
 
 ---
 
-## 8) Build and launch
+## 8) 构建并启动
 
 ```bash
 docker compose build
 docker compose up -d openclaw-gateway
 ```
 
-Verify binaries:
+验证二进制文件：
 
 ```bash
 docker compose exec openclaw-gateway which gog
@@ -270,7 +264,7 @@ docker compose exec openclaw-gateway which goplaces
 docker compose exec openclaw-gateway which wacli
 ```
 
-Expected output:
+预期输出：
 
 ```
 /usr/local/bin/gog
@@ -280,46 +274,45 @@ Expected output:
 
 ---
 
-## 9) Verify Gateway
+## 9) 验证网关
 
 ```bash
 docker compose logs -f openclaw-gateway
 ```
 
-Success:
+成功：
 
 ```
 [gateway] listening on ws://0.0.0.0:18789
 ```
 
-From your laptop:
+从笔记本电脑访问：
 
 ```bash
 ssh -N -L 18789:127.0.0.1:18789 root@YOUR_VPS_IP
 ```
 
-Open:
+打开：
 
 `http://127.0.0.1:18789/`
 
-Paste your gateway token.
+粘贴你的网关令牌。
 
 ---
 
-## What persists where (source of truth)
+## 各组件的持久化位置（事实来源）
 
-OpenClaw runs in Docker, but Docker is not the source of truth.
-All long-lived state must survive restarts, rebuilds, and reboots.
+虽然 OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有需要长期保存的状态都必须能够在重启、重建和系统重启后依然存在。
 
-| Component | Location | Persistence mechanism | Notes |
+| 组件 | 位置 | 持久化机制 | 备注 |
 |---|---|---|---|
-| Gateway config | `/home/node/.openclaw/` | Host volume mount | Includes `openclaw.json`, tokens |
-| Model auth profiles | `/home/node/.openclaw/` | Host volume mount | OAuth tokens, API keys |
-| Skill configs | `/home/node/.openclaw/skills/` | Host volume mount | Skill-level state |
-| Agent workspace | `/home/node/.openclaw/workspace/` | Host volume mount | Code and agent artifacts |
-| WhatsApp session | `/home/node/.openclaw/` | Host volume mount | Preserves QR login |
-| Gmail keyring | `/home/node/.openclaw/` | Host volume + password | Requires `GOG_KEYRING_PASSWORD` |
-| External binaries | `/usr/local/bin/` | Docker image | Must be baked at build time |
-| Node runtime | Container filesystem | Docker image | Rebuilt every image build |
-| OS packages | Container filesystem | Docker image | Do not install at runtime |
-| Docker container | Ephemeral | Restartable | Safe to destroy |
+| 网关配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包含 `openclaw.json` 和令牌 |
+| 模型身份验证配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包括 OAuth 令牌和 API 密钥 |
+| 技能配置 | `/home/node/.openclaw/skills/` | 宿主机卷挂载 | 技能级别的状态 |
+| 代理工作区 | `/home/node/.openclaw/workspace/` | 宿主机卷挂载 | 存储代码和代理工件 |
+| WhatsApp 会话 | `/home/node/.openclaw/` | 宿主机卷挂载 | 保留 QR 登录状态 |
+| Gmail 密钥环 | `/home/node/.openclaw/` | 宿主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
+| 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时烘焙 |
+| Node 运行时 | 容器文件系统 | Docker 镜像 | 每次构建镜像时都会重建 |
+| OS 软件包 | 容器文件系统 | Docker 镜像 | 不应在运行时安装 |
+| Docker 容器 | 临时 | 可重启 | 可安全销毁 |

@@ -1,123 +1,121 @@
 ---
-summary: "Run OpenClaw Gateway 24/7 on a GCP Compute Engine VM (Docker) with durable state"
+summary: >-
+  Run OpenClaw Gateway 24/7 on a GCP Compute Engine VM (Docker) with durable
+  state
 read_when:
   - You want OpenClaw running 24/7 on GCP
-  - You want a production-grade, always-on Gateway on your own VM
-  - You want full control over persistence, binaries, and restart behavior
+  - 'You want a production-grade, always-on Gateway on your own VM'
+  - 'You want full control over persistence, binaries, and restart behavior'
 ---
+# 在 GCP Compute Engine 上运行 OpenClaw（Docker 生产 VPS 指南）
 
-# OpenClaw on GCP Compute Engine (Docker, Production VPS Guide)
+## 目标
 
-## Goal
+在 GCP Compute Engine 虚拟机上使用 Docker 运行一个持久化的 OpenClaw 网关，确保状态持久、内置二进制文件，并具备安全的重启行为。
 
-Run a persistent OpenClaw Gateway on a GCP Compute Engine VM using Docker, with durable state, baked-in binaries, and safe restart behavior.
+如果你希望以每月约 5–12 美元的成本实现“OpenClaw 全天候运行”，那么这是在 Google Cloud 上的一个可靠部署方案。价格因机器类型和区域而异；请选择最适合你工作负载的最小虚拟机实例，如果遇到内存不足问题再进行升级。
 
-If you want "OpenClaw 24/7 for ~$5-12/mo", this is a reliable setup on Google Cloud.
-Pricing varies by machine type and region; pick the smallest VM that fits your workload and scale up if you hit OOMs.
+## 我们要做什么？（简单说明）
 
-## What are we doing (simple terms)?
+- 创建一个 GCP 项目并启用计费
+- 创建一个 Compute Engine 虚拟机
+- 安装 Docker（用于隔离的应用运行时）
+- 在 Docker 中启动 OpenClaw 网关
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 的状态持久化到主机上（重启或重建后仍能保留）
+- 通过 SSH 隧道从笔记本电脑访问控制 UI
 
-- Create a GCP project and enable billing
-- Create a Compute Engine VM
-- Install Docker (isolated app runtime)
-- Start the OpenClaw Gateway in Docker
-- Persist `~/.openclaw` + `~/.openclaw/workspace` on the host (survives restarts/rebuilds)
-- Access the Control UI from your laptop via an SSH tunnel
+网关可通过以下方式访问：
+- 从笔记本电脑通过 SSH 端口转发访问
+- 如果你自行管理防火墙和令牌，则可直接暴露端口访问
 
-The Gateway can be accessed via:
-- SSH port forwarding from your laptop
-- Direct port exposure if you manage firewalling and tokens yourself
-
-This guide uses Debian on GCP Compute Engine.
-Ubuntu also works; map packages accordingly.
-For the generic Docker flow, see [Docker](/install/docker).
+本指南使用 Debian 作为 GCP Compute Engine 的操作系统。Ubuntu 也可适用，只需相应调整软件包即可。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
 
 ---
 
-## Quick path (experienced operators)
+## 快速路径（适用于有经验的操作人员）
 
-1) Create GCP project + enable Compute Engine API
-2) Create Compute Engine VM (e2-small, Debian 12, 20GB)
-3) SSH into the VM
-4) Install Docker
-5) Clone OpenClaw repository
-6) Create persistent host directories
-7) Configure `.env` and `docker-compose.yml`
-8) Bake required binaries, build, and launch
-
----
-
-## What you need
-
-- GCP account (free tier eligible for e2-micro)
-- gcloud CLI installed (or use Cloud Console)
-- SSH access from your laptop
-- Basic comfort with SSH + copy/paste
-- ~20-30 minutes
-- Docker and Docker Compose
-- Model auth credentials
-- Optional provider credentials
-  - WhatsApp QR
-  - Telegram bot token
-  - Gmail OAuth
+1) 创建 GCP 项目并启用 Compute Engine API
+2) 创建 Compute Engine 虚拟机（e2-small，Debian 12，20GB）
+3) 通过 SSH 登录到虚拟机
+4) 安装 Docker
+5) 克隆 OpenClaw 仓库
+6) 创建持久化的主机目录
+7) 配置 `.env` 和 `docker-compose.yml`
+8) 构建所需的二进制文件，构建镜像并启动容器
 
 ---
 
-## 1) Install gcloud CLI (or use Console)
+## 所需条件
 
-**Option A: gcloud CLI** (recommended for automation)
+- GCP 帐户（e2-micro 可享受免费层级）
+- 已安装 gcloud CLI（或使用 Cloud Console）
+- 从笔记本电脑进行 SSH 访问
+- 对 SSH 和复制/粘贴操作有一定熟悉度
+- 大约 20–30 分钟时间
+- Docker 和 Docker Compose
+- 模型身份验证凭据
+- 可选的提供商凭据：
+  - WhatsApp QR 码
+  - Telegram 机器人令牌
+  - Gmail OAuth 凭据
 
-Install from https://cloud.google.com/sdk/docs/install
+---
 
-Initialize and authenticate:
+## 1) 安装 gcloud CLI（或使用 Console）
+
+**选项 A：gcloud CLI**（推荐用于自动化）
+
+从 https://cloud.google.com/sdk/docs/install 安装。
+
+初始化并认证：
 
 ```bash
 gcloud init
 gcloud auth login
 ```
 
-**Option B: Cloud Console**
+**选项 B：Cloud Console**
 
-All steps can be done via the web UI at https://console.cloud.google.com
+所有步骤均可通过 https://console.cloud.google.com 上的网页界面完成。
 
 ---
 
-## 2) Create a GCP project
+## 2) 创建 GCP 项目
 
-**CLI:**
+**CLI：**
 
 ```bash
 gcloud projects create my-openclaw-project --name="OpenClaw Gateway"
 gcloud config set project my-openclaw-project
 ```
 
-Enable billing at https://console.cloud.google.com/billing (required for Compute Engine).
+在 https://console.cloud.google.com/billing 启用计费（Compute Engine 所需）。
 
-Enable the Compute Engine API:
+启用 Compute Engine API：
 
 ```bash
 gcloud services enable compute.googleapis.com
 ```
 
-**Console:**
+**Console：**
 
-1. Go to IAM & Admin > Create Project
-2. Name it and create
-3. Enable billing for the project
-4. Navigate to APIs & Services > Enable APIs > search "Compute Engine API" > Enable
+1. 转到 IAM 和管理 > 创建项目
+2. 为项目命名并创建
+3. 为项目启用计费
+4. 导航到 API 和服务 > 启用 API > 搜索“Compute Engine API” > 启用
 
 ---
 
-## 3) Create the VM
+## 3) 创建虚拟机
 
-**Machine types:**
+**机器类型：**
 
-| Type | Specs | Cost | Notes |
+| 类型 | 规格 | 成本 | 备注 |
 |------|-------|------|-------|
-| e2-small | 2 vCPU, 2GB RAM | ~$12/mo | Recommended |
-| e2-micro | 2 vCPU (shared), 1GB RAM | Free tier eligible | May OOM under load |
+| e2-small | 2 vCPU，2GB 内存 | ~$12/月 | 推荐 |
+| e2-micro | 2 vCPU（共享），1GB 内存 | 符合免费层级 | 在高负载下可能触发 OOM |
 
-**CLI:**
+**CLI：**
 
 ```bash
 gcloud compute instances create openclaw-gateway \
@@ -128,34 +126,34 @@ gcloud compute instances create openclaw-gateway \
   --image-project=debian-cloud
 ```
 
-**Console:**
+**Console：**
 
-1. Go to Compute Engine > VM instances > Create instance
-2. Name: `openclaw-gateway`
-3. Region: `us-central1`, Zone: `us-central1-a`
-4. Machine type: `e2-small`
-5. Boot disk: Debian 12, 20GB
-6. Create
+1. 转到 Compute Engine > 虚拟机实例 > 创建实例
+2. 名称： `openclaw-gateway`
+3. 区域： `us-central1`，可用区： `us-central1-a`
+4. 机器类型： `e2-small`
+5. 引导磁盘：Debian 12，20GB
+6. 创建
 
 ---
 
-## 4) SSH into the VM
+## 4) 通过 SSH 登录到虚拟机
 
-**CLI:**
+**CLI：**
 
 ```bash
 gcloud compute ssh openclaw-gateway --zone=us-central1-a
 ```
 
-**Console:**
+**Console：**
 
-Click the "SSH" button next to your VM in the Compute Engine dashboard.
+在 Compute Engine 仪表板中，点击你的虚拟机旁边的“SSH”按钮。
 
-Note: SSH key propagation can take 1-2 minutes after VM creation. If connection is refused, wait and retry.
+注意：SSH 密钥传播可能需要 1–2 分钟才能生效。如果连接被拒绝，请稍后再试。
 
 ---
 
-## 5) Install Docker (on the VM)
+## 5) 在虚拟机上安装 Docker
 
 ```bash
 sudo apt-get update
@@ -164,19 +162,19 @@ curl -fsSL https://get.docker.com | sudo sh
 sudo usermod -aG docker $USER
 ```
 
-Log out and back in for the group change to take effect:
+注销并重新登录以使组更改生效：
 
 ```bash
 exit
 ```
 
-Then SSH back in:
+然后再次通过 SSH 登录：
 
 ```bash
 gcloud compute ssh openclaw-gateway --zone=us-central1-a
 ```
 
-Verify:
+验证：
 
 ```bash
 docker --version
@@ -185,21 +183,20 @@ docker compose version
 
 ---
 
-## 6) Clone the OpenClaw repository
+## 6) 克隆 OpenClaw 仓库
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 ```
 
-This guide assumes you will build a custom image to guarantee binary persistence.
+本指南假定你将构建自定义镜像，以确保二进制文件的持久性。
 
 ---
 
-## 7) Create persistent host directories
+## 7) 创建持久化的主机目录
 
-Docker containers are ephemeral.
-All long-lived state must live on the host.
+Docker 容器是临时的。所有长期状态必须存储在主机上。
 
 ```bash
 mkdir -p ~/.openclaw
@@ -208,9 +205,9 @@ mkdir -p ~/.openclaw/workspace
 
 ---
 
-## 8) Configure environment variables
+## 8) 配置环境变量
 
-Create `.env` in the repository root.
+在仓库根目录中创建 `.env`。
 
 ```bash
 OPENCLAW_IMAGE=openclaw:latest
@@ -225,19 +222,19 @@ GOG_KEYRING_PASSWORD=change-me-now
 XDG_CONFIG_HOME=/home/node/.openclaw
 ```
 
-Generate strong secrets:
+生成强密码：
 
 ```bash
 openssl rand -hex 32
 ```
 
-**Do not commit this file.**
+**请勿提交此文件。**
 
 ---
 
-## 9) Docker Compose configuration
+## 9) 配置 Docker Compose
 
-Create or update `docker-compose.yml`.
+创建或更新 `docker-compose.yml`。
 
 ```yaml
 services:
@@ -282,27 +279,25 @@ services:
 
 ---
 
-## 10) Bake required binaries into the image (critical)
+## 10) 在镜像中烘焙所需的二进制文件（关键步骤）
 
-Installing binaries inside a running container is a trap.
-Anything installed at runtime will be lost on restart.
+在运行中的容器内安装二进制文件是一个陷阱。任何在运行时安装的内容在重启时都会丢失。
 
-All external binaries required by skills must be installed at image build time.
+技能所需的所有外部二进制文件都必须在构建镜像时安装。
 
-The examples below show three common binaries only:
-- `gog` for Gmail access
-- `goplaces` for Google Places
-- `wacli` for WhatsApp
+下面的示例仅展示了三种常见的二进制文件：
+- `gog` 用于访问 Gmail
+- `goplaces` 用于 Google Places
+- `wacli` 用于 WhatsApp
 
-These are examples, not a complete list.
-You may install as many binaries as needed using the same pattern.
+这些只是示例，并非完整列表。你可以按照相同的模式安装任意数量的二进制文件。
 
-If you add new skills later that depend on additional binaries, you must:
-1. Update the Dockerfile
-2. Rebuild the image
-3. Restart the containers
+如果你以后添加了依赖于其他二进制文件的新技能，你需要：
+1. 更新 Dockerfile
+2. 重新构建镜像
+3. 重启容器
 
-**Example Dockerfile**
+**Dockerfile 示例**
 
 ```dockerfile
 FROM node:22-bookworm
@@ -343,14 +338,14 @@ CMD ["node","dist/index.mjs"]
 
 ---
 
-## 11) Build and launch
+## 11) 构建并启动
 
 ```bash
 docker compose build
 docker compose up -d openclaw-gateway
 ```
 
-Verify binaries:
+验证二进制文件：
 
 ```bash
 docker compose exec openclaw-gateway which gog
@@ -358,7 +353,7 @@ docker compose exec openclaw-gateway which goplaces
 docker compose exec openclaw-gateway which wacli
 ```
 
-Expected output:
+预期输出：
 
 ```
 /usr/local/bin/gog
@@ -368,13 +363,13 @@ Expected output:
 
 ---
 
-## 12) Verify Gateway
+## 12) 验证网关
 
 ```bash
 docker compose logs -f openclaw-gateway
 ```
 
-Success:
+成功：
 
 ```
 [gateway] listening on ws://0.0.0.0:18789
@@ -382,45 +377,44 @@ Success:
 
 ---
 
-## 13) Access from your laptop
+## 13) 从笔记本电脑访问
 
-Create an SSH tunnel to forward the Gateway port:
+创建一个 SSH 隧道以转发网关端口：
 
 ```bash
 gcloud compute ssh openclaw-gateway --zone=us-central1-a -- -L 18789:127.0.0.1:18789
 ```
 
-Open in your browser:
+在浏览器中打开：
 
 `http://127.0.0.1:18789/`
 
-Paste your gateway token.
+粘贴你的网关令牌。
 
 ---
 
-## What persists where (source of truth)
+## 数据持久化的具体位置（事实来源）
 
-OpenClaw runs in Docker, but Docker is not the source of truth.
-All long-lived state must survive restarts, rebuilds, and reboots.
+OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有长期状态必须在重启、重建和重新启动后仍然存在。
 
-| Component | Location | Persistence mechanism | Notes |
+| 组件 | 位置 | 持久化机制 | 备注 |
 |---|---|---|---|
-| Gateway config | `/home/node/.openclaw/` | Host volume mount | Includes `openclaw.json`, tokens |
-| Model auth profiles | `/home/node/.openclaw/` | Host volume mount | OAuth tokens, API keys |
-| Skill configs | `/home/node/.openclaw/skills/` | Host volume mount | Skill-level state |
-| Agent workspace | `/home/node/.openclaw/workspace/` | Host volume mount | Code and agent artifacts |
-| WhatsApp session | `/home/node/.openclaw/` | Host volume mount | Preserves QR login |
-| Gmail keyring | `/home/node/.openclaw/` | Host volume + password | Requires `GOG_KEYRING_PASSWORD` |
-| External binaries | `/usr/local/bin/` | Docker image | Must be baked at build time |
-| Node runtime | Container filesystem | Docker image | Rebuilt every image build |
-| OS packages | Container filesystem | Docker image | Do not install at runtime |
-| Docker container | Ephemeral | Restartable | Safe to destroy |
+| 网关配置 | `/home/node/.openclaw/` | 主机卷挂载 | 包含 `openclaw.json` 和令牌 |
+| 模型身份验证配置文件 | `/home/node/.openclaw/` | 主机卷挂载 | OAuth 令牌和 API 密钥 |
+| 技能配置 | `/home/node/.openclaw/skills/` | 主机卷挂载 | 技能级别的状态 |
+| 代理工作区 | `/home/node/.openclaw/workspace/` | 主机卷挂载 | 代码和代理工件 |
+| WhatsApp 会话 | `/home/node/.openclaw/` | 主机卷挂载 | 保留 QR 登录状态 |
+| Gmail 密钥环 | `/home/node/.openclaw/` | 主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
+| 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时烘焙 |
+| Node 运行时 | 容器文件系统 | Docker 镜像 | 每次构建镜像时都会重建 |
+| 操作系统软件包 | 容器文件系统 | Docker 镜像 | 不要在运行时安装 |
+| Docker 容器 | 临时 | 可重启 | 可安全销毁 |
 
 ---
 
-## Updates
+## 更新
 
-To update OpenClaw on the VM:
+要在虚拟机上更新 OpenClaw：
 
 ```bash
 cd ~/openclaw
@@ -431,25 +425,25 @@ docker compose up -d
 
 ---
 
-## Troubleshooting
+## 故障排除
 
-**SSH connection refused**
+**SSH 连接被拒绝**
 
-SSH key propagation can take 1-2 minutes after VM creation. Wait and retry.
+SSH 密钥传播可能需要 1–2 分钟才能生效。请稍后再试。
 
-**OS Login issues**
+**OS Login 问题**
 
-Check your OS Login profile:
+检查你的 OS Login 配置：
 
 ```bash
 gcloud compute os-login describe-profile
 ```
 
-Ensure your account has the required IAM permissions (Compute OS Login or Compute OS Admin Login).
+确保你的账户具有必要的 IAM 权限（Compute OS Login 或 Compute OS Admin Login）。
 
-**Out of memory (OOM)**
+**内存不足 (OOM)**
 
-If using e2-micro and hitting OOM, upgrade to e2-small or e2-medium:
+如果使用 e2-micro 并遇到内存不足问题，可升级到 e2-small 或 e2-medium：
 
 ```bash
 # Stop the VM first
@@ -466,33 +460,33 @@ gcloud compute instances start openclaw-gateway --zone=us-central1-a
 
 ---
 
-## Service accounts (security best practice)
+## 服务账户（安全最佳实践）
 
-For personal use, your default user account works fine.
+对于个人使用，你的默认用户账户就足够了。
 
-For automation or CI/CD pipelines, create a dedicated service account with minimal permissions:
+对于自动化或 CI/CD 流水线，创建一个权限最小化的专用服务账户：
 
-1. Create a service account:
+1. 创建服务账户：
    ```bash
    gcloud iam service-accounts create openclaw-deploy \
      --display-name="OpenClaw Deployment"
    ```
 
-2. Grant Compute Instance Admin role (or narrower custom role):
+2. 授予 Compute Instance Admin 角色（或更窄的自定义角色）：
    ```bash
    gcloud projects add-iam-policy-binding my-openclaw-project \
      --member="serviceAccount:openclaw-deploy@my-openclaw-project.iam.gserviceaccount.com" \
      --role="roles/compute.instanceAdmin.v1"
    ```
 
-Avoid using the Owner role for automation. Use the principle of least privilege.
+避免在自动化中使用 Owner 角色。遵循最小权限原则。
 
-See https://cloud.google.com/iam/docs/understanding-roles for IAM role details.
+有关 IAM 角色的详细信息，请参阅 https://cloud.google.com/iam/docs/understanding-roles。
 
 ---
 
-## Next steps
+## 后续步骤
 
-- Set up messaging channels: [Channels](/channels)
-- Pair local devices as nodes: [Nodes](/nodes)
-- Configure the Gateway: [Gateway configuration](/gateway/configuration)
+- 设置消息通道： [Channels](/channels)
+- 将本地设备配对为节点： [Nodes](/nodes)
+- 配置网关： [Gateway configuration](/gateway/configuration)

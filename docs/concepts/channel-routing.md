@@ -1,61 +1,61 @@
 ---
-summary: "Routing rules per channel (WhatsApp, Telegram, Discord, Slack) and shared context"
+summary: >-
+  Routing rules per channel (WhatsApp, Telegram, Discord, Slack) and shared
+  context
 read_when:
   - Changing channel routing or inbox behavior
 ---
-# Channels & routing
+# 频道与路由
 
 
-OpenClaw routes replies **back to the channel where a message came from**. The
-model does not choose a channel; routing is deterministic and controlled by the
-host configuration.
+OpenClaw会将回复**路由回消息最初来自的频道**。模型本身不负责选择频道；路由是确定性的，由主机配置控制。
 
-## Key terms
+## 关键术语
 
-- **Channel**: `whatsapp`, `telegram`, `discord`, `slack`, `signal`, `imessage`, `webchat`.
-- **AccountId**: per‑channel account instance (when supported).
-- **AgentId**: an isolated workspace + session store (“brain”).
-- **SessionKey**: the bucket key used to store context and control concurrency.
+- **频道**：`whatsapp`、`telegram`、`discord`、`slack`、`signal`、`imessage`、`webchat`。
+- **AccountId**：每个频道的账户实例（在支持的情况下）。
+- **AgentId**：一个隔离的工作区加上会话存储（“大脑”）。
+- **SessionKey**：用于存储上下文并控制并发的桶键。
 
-## Session key shapes (examples)
+## 会话密钥形状（示例）
 
-Direct messages collapse to the agent’s **main** session:
+直接消息会合并到代理的**主**会话中：
 
-- `agent:<agentId>:<mainKey>` (default: `agent:main:main`)
+- `agent:<agentId>:<mainKey>`（默认：`agent:main:main`）
 
-Groups and channels remain isolated per channel:
+群组和频道则按频道保持隔离：
 
-- Groups: `agent:<agentId>:<channel>:group:<id>`
-- Channels/rooms: `agent:<agentId>:<channel>:channel:<id>`
+- 群组：`agent:<agentId>:<channel>:group:<id>`
+- 频道/房间：`agent:<agentId>:<channel>:channel:<id>`
 
-Threads:
+线程：
 
-- Slack/Discord threads append `:thread:<threadId>` to the base key.
-- Telegram forum topics embed `:topic:<topicId>` in the group key.
+- Slack/Discord线程会在基础密钥上附加`:thread:<threadId>`。
+- Telegram论坛主题会将`:topic:<topicId>`嵌入群组密钥中。
 
-Examples:
+示例：
 
 - `agent:main:telegram:group:-1001234567890:topic:42`
 - `agent:main:discord:channel:123456:thread:987654`
 
-## Routing rules (how an agent is chosen)
+## 路由规则（如何选择代理）
 
-Routing picks **one agent** for each inbound message:
+对于每条入站消息，路由会选出**一个代理**：
 
-1. **Exact peer match** (`bindings` with `peer.kind` + `peer.id`).
-2. **Guild match** (Discord) via `guildId`.
-3. **Team match** (Slack) via `teamId`.
-4. **Account match** (`accountId` on the channel).
-5. **Channel match** (any account on that channel).
-6. **Default agent** (`agents.list[].default`, else first list entry, fallback to `main`).
+1. **精确对等匹配**（`bindings`与`peer.kind` + `peer.id`）。
+2. **公会匹配**（Discord），通过`guildId`。
+3. **团队匹配**（Slack），通过`teamId`。
+4. **账户匹配**（该频道上的`accountId`）。
+5. **频道匹配**（该频道上的任意账户）。
+6. **默认代理**（`agents.list[].default`，否则使用列表中的第一条，回退至`main`）。
 
-The matched agent determines which workspace and session store are used.
+匹配的代理决定了使用哪个工作区和会话存储。
 
-## Broadcast groups (run multiple agents)
+## 广播组（运行多个代理）
 
-Broadcast groups let you run **multiple agents** for the same peer **when OpenClaw would normally reply** (for example: in WhatsApp groups, after mention/activation gating).
+广播组允许你在OpenClaw通常会自动回复的情况下，为同一对等方运行**多个代理**（例如：在WhatsApp群组中，在提及/激活门控之后）。
 
-Config:
+配置：
 
 ```json5
 {
@@ -67,14 +67,14 @@ Config:
 }
 ```
 
-See: [Broadcast Groups](/broadcast-groups).
+详情请参阅：[广播组](/broadcast-groups)。
 
-## Config overview
+## 配置概览
 
-- `agents.list`: named agent definitions (workspace, model, etc.).
-- `bindings`: map inbound channels/accounts/peers to agents.
+- `agents.list`：命名代理定义（工作区、模型等）。
+- `bindings`：将入站频道/账户/对等方映射到代理。
 
-Example:
+示例：
 
 ```json5
 {
@@ -90,25 +90,23 @@ Example:
 }
 ```
 
-## Session storage
+## 会话存储
 
-Session stores live under the state directory (default `~/.openclaw`):
+会话存储位于状态目录下（默认`~/.openclaw`）：
 
 - `~/.openclaw/agents/<agentId>/sessions/sessions.json`
-- JSONL transcripts live alongside the store
+- JSONL转录文件与存储文件并存
 
-You can override the store path via `session.store` and `{agentId}` templating.
+你可以通过`session.store`和`{agentId}`模板覆盖存储路径。
 
-## WebChat behavior
+## WebChat行为
 
-WebChat attaches to the **selected agent** and defaults to the agent’s main
-session. Because of this, WebChat lets you see cross‑channel context for that
-agent in one place.
+WebChat会连接到**选定的代理**，并默认使用该代理的主会话。因此，WebChat使你能够在一处查看该代理的跨频道上下文。
 
-## Reply context
+## 回复上下文
 
-Inbound replies include:
-- `ReplyToId`, `ReplyToBody`, and `ReplyToSender` when available.
-- Quoted context is appended to `Body` as a `[Replying to ...]` block.
+入站回复包含：
+- 在可用时包括`ReplyToId`、`ReplyToBody`和`ReplyToSender`。
+- 引用的上下文会作为`[Replying to ...]`块附加到`Body`。
 
-This is consistent across channels.
+此行为在所有频道中保持一致。

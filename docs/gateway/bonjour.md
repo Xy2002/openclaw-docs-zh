@@ -1,33 +1,28 @@
 ---
-summary: "Bonjour/mDNS discovery + debugging (Gateway beacons, clients, and common failure modes)"
+summary: >-
+  Bonjour/mDNS discovery + debugging (Gateway beacons, clients, and common
+  failure modes)
 read_when:
   - Debugging Bonjour discovery issues on macOS/iOS
-  - Changing mDNS service types, TXT records, or discovery UX
+  - 'Changing mDNS service types, TXT records, or discovery UX'
 ---
-# Bonjour / mDNS discovery
+# Bonjour / mDNS 发现
 
-OpenClaw uses Bonjour (mDNS / DNS‑SD) as a **LAN‑only convenience** to discover
-an active Gateway (WebSocket endpoint). It is best‑effort and does **not** replace SSH or
-Tailnet-based connectivity.
+OpenClaw 使用 Bonjour（mDNS / DNS‑SD）作为一种仅限局域网的便捷方式来发现活跃的网关（WebSocket 端点）。这是一种尽力而为的机制，**不能**替代基于 SSH 或 Tailnet 的连接。
 
-## Wide‑area Bonjour (Unicast DNS‑SD) over Tailscale
+## 通过 Tailscale 实现广域 Bonjour（单播 DNS‑SD）
 
-If the node and gateway are on different networks, multicast mDNS won’t cross the
-boundary. You can keep the same discovery UX by switching to **unicast DNS‑SD**
-("Wide‑Area Bonjour") over Tailscale.
+如果节点和网关位于不同的网络中，多播 mDNS 将无法跨越边界。你可以通过切换到基于 Tailscale 的 **单播 DNS‑SD**（“广域 Bonjour”），在保持相同发现用户体验的同时实现这一目标。
 
-High‑level steps:
+高级步骤：
 
-1) Run a DNS server on the gateway host (reachable over Tailnet).
-2) Publish DNS‑SD records for `_openclaw-gw._tcp` under a dedicated zone
-   (example: `openclaw.internal.`).
-3) Configure Tailscale **split DNS** so your chosen domain resolves via that
-   DNS server for clients (including iOS).
+1) 在网关主机上运行一个可通过 Tailnet 访问的 DNS 服务器。
+2) 在专用区域下发布针对 `_openclaw-gw._tcp` 的 DNS‑SD 记录（示例：`openclaw.internal.`）。
+3) 配置 Tailscale 的 **分离 DNS**，以便你选择的域名通过该 DNS 服务器解析给客户端（包括 iOS）。
 
-OpenClaw supports any discovery domain; `openclaw.internal.` is just an example.
-iOS/Android nodes browse both `local.` and your configured wide‑area domain.
+OpenClaw 支持任何发现域名；`openclaw.internal.` 只是一个示例。iOS/Android 节点会同时浏览 `local.` 和你配置的广域域名。
 
-### Gateway config (recommended)
+### 推荐的网关配置
 
 ```json5
 {
@@ -36,127 +31,120 @@ iOS/Android nodes browse both `local.` and your configured wide‑area domain.
 }
 ```
 
-### One‑time DNS server setup (gateway host)
+### 网关主机的一次性 DNS 服务器设置
 
 ```bash
 openclaw dns setup --apply
 ```
 
-This installs CoreDNS and configures it to:
-- listen on port 53 only on the gateway’s Tailscale interfaces
-- serve your chosen domain (example: `openclaw.internal.`) from `~/.openclaw/dns/<domain>.db`
+此设置安装 CoreDNS 并将其配置为：
+- 仅在网关的 Tailscale 接口上监听端口 53
+- 从 `~/.openclaw/dns/<domain>.db` 提供你选择的域名（示例：`openclaw.internal.`）
 
-Validate from a tailnet‑connected machine:
+从一台已连接到 Tailnet 的机器进行验证：
 
 ```bash
 dns-sd -B _openclaw-gw._tcp openclaw.internal.
 dig @<TAILNET_IPV4> -p 53 _openclaw-gw._tcp.openclaw.internal PTR +short
 ```
 
-### Tailscale DNS settings
+### Tailscale DNS 设置
 
-In the Tailscale admin console:
+在 Tailscale 管理控制台中：
 
-- Add a nameserver pointing at the gateway’s tailnet IP (UDP/TCP 53).
-- Add split DNS so your discovery domain uses that nameserver.
+- 添加指向网关 Tailnet IP 的名称服务器（UDP/TCP 53）。
+- 添加分离 DNS，使你的发现域名使用该名称服务器。
 
-Once clients accept tailnet DNS, iOS nodes can browse
-`_openclaw-gw._tcp` in your discovery domain without multicast.
+一旦客户端接受 Tailnet DNS，iOS 节点无需多播即可浏览你发现域名中的 `_openclaw-gw._tcp`。
 
-### Gateway listener security (recommended)
+### 推荐的网关监听器安全设置
 
-The Gateway WS port (default `18789`) binds to loopback by default. For LAN/tailnet
-access, bind explicitly and keep auth enabled.
+网关的 WS 端口（默认 `18789`）默认绑定到环回地址。若需局域网或 Tailnet 访问，请显式绑定并保持身份验证启用。
 
-For tailnet‑only setups:
-- Set `gateway.bind: "tailnet"` in `~/.openclaw/openclaw.json`.
-- Restart the Gateway (or restart the macOS menubar app).
+对于仅限 Tailnet 的设置：
+- 在 `~/.openclaw/openclaw.json` 中设置 `gateway.bind: "tailnet"`。
+- 重启网关（或重启 macOS 菜单栏应用程序）。
 
-## What advertises
+## 哪些内容会被通告
 
-Only the Gateway advertises `_openclaw-gw._tcp`.
+只有网关会通告 `_openclaw-gw._tcp`。
 
-## Service types
+## 服务类型
 
-- `_openclaw-gw._tcp` — gateway transport beacon (used by macOS/iOS/Android nodes).
+- `_openclaw-gw._tcp` — 网关传输信标（由 macOS/iOS/Android 节点使用）。
 
-## TXT keys (non‑secret hints)
+## TXT 键（非秘密提示）
 
-The Gateway advertises small non‑secret hints to make UI flows convenient:
+网关会通告一些小型的非秘密提示，以方便 UI 流程：
 
 - `role=gateway`
 - `displayName=<friendly name>`
 - `lanHost=<hostname>.local`
-- `gatewayPort=<port>` (Gateway WS + HTTP)
-- `gatewayTls=1` (only when TLS is enabled)
-- `gatewayTlsSha256=<sha256>` (only when TLS is enabled and fingerprint is available)
-- `canvasPort=<port>` (only when the canvas host is enabled; default `18793`)
-- `sshPort=<port>` (defaults to 22 when not overridden)
+- `gatewayPort=<port>`（网关 WS + HTTP）
+- `gatewayTls=1`（仅当启用了 TLS 时）
+- `gatewayTlsSha256=<sha256>`（仅当启用了 TLS 且指纹可用时）
+- `canvasPort=<port>`（仅当画布主机启用时；默认 `18793`）
+- `sshPort=<port>`（未覆盖时默认为 22）
 - `transport=gateway`
-- `cliPath=<path>` (optional; absolute path to a runnable `openclaw` entrypoint)
-- `tailnetDns=<magicdns>` (optional hint when Tailnet is available)
+- `cliPath=<path>`（可选；指向可执行 `openclaw` 入口点的绝对路径）
+- `tailnetDns=<magicdns>`（Tailnet 可用时的可选提示）
 
-## Debugging on macOS
+## 在 macOS 上进行调试
 
-Useful built‑in tools:
+有用的内置工具：
 
-- Browse instances:
+- 浏览实例：
   ```bash
   dns-sd -B _openclaw-gw._tcp local.
   ```
-- Resolve one instance (replace `<instance>`):
+- 解析单个实例（替换 `<instance>`）：
   ```bash
   dns-sd -L "<instance>" _openclaw-gw._tcp local.
   ```
 
-If browsing works but resolving fails, you’re usually hitting a LAN policy or
-mDNS resolver issue.
+如果浏览正常但解析失败，通常是因为局域网策略或 mDNS 解析器问题。
 
-## Debugging in Gateway logs
+## 在网关日志中进行调试
 
-The Gateway writes a rolling log file (printed on startup as
-`gateway log file: ...`). Look for `bonjour:` lines, especially:
+网关会写入滚动日志文件（启动时打印为 `gateway log file: ...`）。请查找 `bonjour:` 行，尤其是：
 
 - `bonjour: advertise failed ...`
 - `bonjour: ... name conflict resolved` / `hostname conflict resolved`
 - `bonjour: watchdog detected non-announced service ...`
 
-## Debugging on iOS node
+## 在 iOS 节点上进行调试
 
-The iOS node uses `NWBrowser` to discover `_openclaw-gw._tcp`.
+iOS 节点使用 `NWBrowser` 来发现 `_openclaw-gw._tcp`。
 
-To capture logs:
-- Settings → Gateway → Advanced → **Discovery Debug Logs**
-- Settings → Gateway → Advanced → **Discovery Logs** → reproduce → **Copy**
+要捕获日志：
+- 设置 → 网关 → 高级 → **发现调试日志**
+- 设置 → 网关 → 高级 → **发现日志** → 复现 → **复制**
 
-The log includes browser state transitions and result‑set changes.
+日志包含浏览器状态转换和结果集变化。
 
-## Common failure modes
+## 常见故障模式
 
-- **Bonjour doesn’t cross networks**: use Tailnet or SSH.
-- **Multicast blocked**: some Wi‑Fi networks disable mDNS.
-- **Sleep / interface churn**: macOS may temporarily drop mDNS results; retry.
-- **Browse works but resolve fails**: keep machine names simple (avoid emojis or
-  punctuation), then restart the Gateway. The service instance name derives from
-  the host name, so overly complex names can confuse some resolvers.
+- **Bonjour 不跨网络**：使用 Tailnet 或 SSH。
+- **多播被阻止**：某些 Wi‑Fi 网络会禁用 mDNS。
+- **休眠或接口波动**：macOS 可能会暂时丢弃 mDNS 结果；请重试。
+- **浏览正常但解析失败**：保持机器名称简单（避免表情符号或标点符号），然后重启网关。服务实例名称源自主机名，因此过于复杂的名称可能会导致某些解析器混淆。
 
-## Escaped instance names (`\032`)
+## 转义的实例名称 (`\032`)
 
-Bonjour/DNS‑SD often escapes bytes in service instance names as decimal `\DDD`
-sequences (e.g. spaces become `\032`).
+Bonjour/DNS‑SD 经常将服务实例名称中的字节转义为十进制 `\DDD` 序列（例如，空格变为 `\032`）。
 
-- This is normal at the protocol level.
-- UIs should decode for display (iOS uses `BonjourEscapes.decode`).
+- 这在协议层面是正常的。
+- UI 应解码后显示（iOS 使用 `BonjourEscapes.decode`）。
 
-## Disabling / configuration
+## 禁用与配置
 
-- `OPENCLAW_DISABLE_BONJOUR=1` disables advertising (legacy: `OPENCLAW_DISABLE_BONJOUR`).
-- `gateway.bind` in `~/.openclaw/openclaw.json` controls the Gateway bind mode.
-- `OPENCLAW_SSH_PORT` overrides the SSH port advertised in TXT (legacy: `OPENCLAW_SSH_PORT`).
-- `OPENCLAW_TAILNET_DNS` publishes a MagicDNS hint in TXT (legacy: `OPENCLAW_TAILNET_DNS`).
-- `OPENCLAW_CLI_PATH` overrides the advertised CLI path (legacy: `OPENCLAW_CLI_PATH`).
+- `OPENCLAW_DISABLE_BONJOUR=1` 禁用通告（旧版：`OPENCLAW_DISABLE_BONJOUR`）。
+- `gateway.bind` 在 `~/.openclaw/openclaw.json` 中控制网关的绑定模式。
+- `OPENCLAW_SSH_PORT` 覆盖 TXT 中通告的 SSH 端口（旧版：`OPENCLAW_SSH_PORT`）。
+- `OPENCLAW_TAILNET_DNS` 在 TXT 中发布 MagicDNS 提示（旧版：`OPENCLAW_TAILNET_DNS`）。
+- `OPENCLAW_CLI_PATH` 覆盖通告的 CLI 路径（旧版：`OPENCLAW_CLI_PATH`）。
 
-## Related docs
+## 相关文档
 
-- Discovery policy and transport selection: [Discovery](/gateway/discovery)
-- Node pairing + approvals: [Gateway pairing](/gateway/pairing)
+- 发现策略与传输选择：[Discovery](/gateway/discovery)
+- 节点配对 + 批准：[Gateway pairing](/gateway/pairing)

@@ -1,18 +1,18 @@
 ---
-summary: "Run OpenClaw with Ollama (local LLM runtime)"
+summary: Run OpenClaw with Ollama (local LLM runtime)
 read_when:
   - You want to run OpenClaw with local models via Ollama
   - You need Ollama setup and configuration guidance
 ---
 # Ollama
 
-Ollama is a local LLM runtime that makes it easy to run open-source models on your machine. OpenClaw integrates with Ollama's OpenAI-compatible API and can **auto-discover tool-capable models** when you opt in with `OLLAMA_API_KEY` (or an auth profile) and do not define an explicit `models.providers.ollama` entry.
+Ollama是一个本地LLM运行时，可让你轻松在本地机器上运行开源模型。OpenClaw与Ollama的OpenAI兼容API集成，并且在你通过`OLLAMA_API_KEY`（或身份验证配置文件）选择启用并**未显式定义`models.providers.ollama`条目**时，能够**自动发现具备工具能力的模型**。
 
-## Quick start
+## 快速入门
 
-1) Install Ollama: https://ollama.ai
+1) 安装Ollama：https://ollama.ai
 
-2) Pull a model:
+2) 拉取一个模型：
 
 ```bash
 ollama pull llama3.3
@@ -22,7 +22,7 @@ ollama pull qwen2.5-coder:32b
 ollama pull deepseek-r1:32b
 ```
 
-3) Enable Ollama for OpenClaw (any value works; Ollama doesn't require a real key):
+3) 为OpenClaw启用Ollama（任何值均可；Ollama不需要真实密钥）：
 
 ```bash
 # Set environment variable
@@ -32,7 +32,7 @@ export OLLAMA_API_KEY="ollama-local"
 openclaw config set models.providers.ollama.apiKey "ollama-local"
 ```
 
-4) Use Ollama models:
+4) 使用Ollama模型：
 
 ```json5
 {
@@ -44,52 +44,52 @@ openclaw config set models.providers.ollama.apiKey "ollama-local"
 }
 ```
 
-## Model discovery (implicit provider)
+## 模型发现（隐式提供者）
 
-When you set `OLLAMA_API_KEY` (or an auth profile) and **do not** define `models.providers.ollama`, OpenClaw discovers models from the local Ollama instance at `http://127.0.0.1:11434`:
+当你设置`OLLAMA_API_KEY`（或身份验证配置文件）并且**未**定义`models.providers.ollama`时，OpenClaw会从本地Ollama实例中发现模型，该实例位于`http://127.0.0.1:11434`：
 
-- Queries `/api/tags` and `/api/show`
-- Keeps only models that report `tools` capability
-- Marks `reasoning` when the model reports `thinking`
-- Reads `contextWindow` from `model_info["<arch>.context_length"]` when available
-- Sets `maxTokens` to 10× the context window
-- Sets all costs to `0`
+- 查询`/api/tags`和`/api/show`
+- 仅保留报告具有`tools`能力的模型
+- 当模型报告`thinking`时，标记为`reasoning`
+- 在可用时从`model_info["<arch>.context_length"]`读取`contextWindow`
+- 将`maxTokens`设置为上下文窗口的10倍
+- 将所有成本设置为`0`
 
-This avoids manual model entries while keeping the catalog aligned with Ollama's capabilities.
+这避免了手动输入模型条目，同时使目录与Ollama的功能保持一致。
 
-To see what models are available:
+要查看有哪些可用模型：
 
 ```bash
 ollama list
 openclaw models list
 ```
 
-To add a new model, simply pull it with Ollama:
+要添加新模型，只需使用Ollama拉取它：
 
 ```bash
 ollama pull mistral
 ```
 
-The new model will be automatically discovered and available to use.
+新模型将被自动发现并可供使用。
 
-If you set `models.providers.ollama` explicitly, auto-discovery is skipped and you must define models manually (see below).
+如果你显式设置了`models.providers.ollama`，则会跳过自动发现，你需要手动定义模型（见下文）。
 
-## Configuration
+## 配置
 
-### Basic setup (implicit discovery)
+### 基本设置（隐式发现）
 
-The simplest way to enable Ollama is via environment variable:
+启用Ollama最简单的方式是通过环境变量：
 
 ```bash
 export OLLAMA_API_KEY="ollama-local"
 ```
 
-### Explicit setup (manual models)
+### 显式设置（手动模型）
 
-Use explicit config when:
-- Ollama runs on another host/port.
-- You want to force specific context windows or model lists.
-- You want to include models that do not report tool support.
+在以下情况下使用显式配置：
+- Ollama运行在其他主机或端口上。
+- 你想强制指定特定的上下文窗口或模型列表。
+- 你想包含不报告工具支持的模型。
 
 ```json5
 {
@@ -117,11 +117,11 @@ Use explicit config when:
 }
 ```
 
-If `OLLAMA_API_KEY` is set, you can omit `apiKey` in the provider entry and OpenClaw will fill it for availability checks.
+如果设置了`OLLAMA_API_KEY`，你可以省略提供者条目中的`apiKey`，OpenClaw会自动填充以进行可用性检查。
 
-### Custom base URL (explicit config)
+### 自定义基础URL（显式配置）
 
-If Ollama is running on a different host or port (explicit config disables auto-discovery, so define models manually):
+如果Ollama运行在不同的主机或端口上（显式配置会禁用自动发现，因此需要手动定义模型）：
 
 ```json5
 {
@@ -136,9 +136,9 @@ If Ollama is running on a different host or port (explicit config disables auto-
 }
 ```
 
-### Model selection
+### 模型选择
 
-Once configured, all your Ollama models are available:
+配置完成后，你的所有Ollama模型都可用：
 
 ```json5
 {
@@ -153,56 +153,56 @@ Once configured, all your Ollama models are available:
 }
 ```
 
-## Advanced
+## 高级功能
 
-### Reasoning models
+### 推理模型
 
-OpenClaw marks models as reasoning-capable when Ollama reports `thinking` in `/api/show`:
+当Ollama在`/api/show`中报告`thinking`时，OpenClaw会将模型标记为具备推理能力：
 
 ```bash
 ollama pull deepseek-r1:32b
 ```
 
-### Model Costs
+### 模型成本
 
-Ollama is free and runs locally, so all model costs are set to $0.
+Ollama是免费的，并且在本地运行，因此所有模型的成本都被设置为$0。
 
-### Context windows
+### 上下文窗口
 
-For auto-discovered models, OpenClaw uses the context window reported by Ollama when available, otherwise it defaults to `8192`. You can override `contextWindow` and `maxTokens` in explicit provider config.
+对于自动发现的模型，OpenClaw会在可用时使用Ollama报告的上下文窗口，否则默认使用`8192`。你可以在显式提供者配置中覆盖`contextWindow`和`maxTokens`。
 
-## Troubleshooting
+## 故障排除
 
-### Ollama not detected
+### 未检测到Ollama
 
-Make sure Ollama is running and that you set `OLLAMA_API_KEY` (or an auth profile), and that you did **not** define an explicit `models.providers.ollama` entry:
+确保Ollama正在运行，并且你已设置`OLLAMA_API_KEY`（或身份验证配置文件），并且**未**定义显式的`models.providers.ollama`条目：
 
 ```bash
 ollama serve
 ```
 
-And that the API is accessible:
+同时确保API可访问：
 
 ```bash
 curl http://localhost:11434/api/tags
 ```
 
-### No models available
+### 没有可用模型
 
-OpenClaw only auto-discovers models that report tool support. If your model isn't listed, either:
-- Pull a tool-capable model, or
-- Define the model explicitly in `models.providers.ollama`.
+OpenClaw只自动发现报告工具支持的模型。如果你的模型未列出，可以采取以下措施：
+- 拉取一个具备工具能力的模型，或
+- 在`models.providers.ollama`中显式定义该模型。
 
-To add models:
+要添加模型：
 
 ```bash
 ollama list  # See what's installed
 ollama pull llama3.3  # Pull a model
 ```
 
-### Connection refused
+### 连接被拒绝
 
-Check that Ollama is running on the correct port:
+检查Ollama是否在正确的端口上运行：
 
 ```bash
 # Check if Ollama is running
@@ -212,8 +212,8 @@ ps aux | grep ollama
 ollama serve
 ```
 
-## See Also
+## 参见
 
-- [Model Providers](/concepts/model-providers) - Overview of all providers
-- [Model Selection](/concepts/models) - How to choose models
-- [Configuration](/gateway/configuration) - Full config reference
+- [模型提供商](/concepts/model-providers) - 所有提供商的概述
+- [模型选择](/concepts/models) - 如何选择模型
+- [配置](/gateway/configuration) - 完整配置参考

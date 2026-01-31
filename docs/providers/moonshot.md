@@ -1,18 +1,15 @@
 ---
-summary: "Configure Moonshot K2 vs Kimi Coding (separate providers + keys)"
+summary: Configure Moonshot K2 vs Kimi Coding (separate providers + keys)
 read_when:
   - You want Moonshot K2 (Moonshot Open Platform) vs Kimi Coding setup
-  - You need to understand separate endpoints, keys, and model refs
+  - 'You need to understand separate endpoints, keys, and model refs'
   - You want copy/paste config for either provider
 ---
+# 月之暗面 AI（Kimi）
 
-# Moonshot AI (Kimi)
+月之暗面提供了与 OpenAI 兼容端点的 Kimi API。配置提供商并将默认模型设置为 `moonshot/kimi-k2.5`，或使用 `kimi-coding/k2p5` 进行 Kimi Coding。
 
-Moonshot provides the Kimi API with OpenAI-compatible endpoints. Configure the
-provider and set the default model to `moonshot/kimi-k2.5`, or use
-Kimi Coding with `kimi-coding/k2p5`.
-
-Current Kimi K2 model IDs:
+当前 Kimi K2 模型 ID：
 {/* moonshot-kimi-k2-ids:start */}
 - `kimi-k2.5`
 - `kimi-k2-0905-preview`
@@ -25,15 +22,15 @@ Current Kimi K2 model IDs:
 openclaw onboard --auth-choice moonshot-api-key
 ```
 
-Kimi Coding:
+Kimi Coding：
 
 ```bash
 openclaw onboard --auth-choice kimi-code-api-key
 ```
 
-Note: Moonshot and Kimi Coding are separate providers. Keys are not interchangeable, endpoints differ, and model refs differ (Moonshot uses `moonshot/...`, Kimi Coding uses `kimi-coding/...`).
+注意：月之暗面和 Kimi Coding 是独立的提供商。密钥不可互换，端点不同，模型引用也不同（月之暗面使用 `moonshot/...`，Kimi Coding 使用 `kimi-coding/...`）。
 
-## Config snippet (Moonshot API)
+## 配置片段（月之暗面 API）
 
 ```json5
 {
@@ -130,10 +127,9 @@ Note: Moonshot and Kimi Coding are separate providers. Keys are not interchangea
 }
 ```
 
-## Notes
+## 备注
 
-- Moonshot model refs use `moonshot/<modelId>`. Kimi Coding model refs use `kimi-coding/<modelId>`. 
-- Override pricing and context metadata in `models.providers` if needed.
-- If Moonshot publishes different context limits for a model, adjust
-  `contextWindow` accordingly.
-- Use `https://api.moonshot.cn/v1` if you need the China endpoint.
+- 月之暗面模型引用使用 `moonshot/<modelId>`。Kimi Coding 模型引用使用 `kimi-coding/<modelId>`。
+- 如有需要，在 `models.providers` 中覆盖定价和上下文元数据。
+- 如果月之暗面为某个模型发布了不同的上下文限制，请相应调整 `contextWindow`。
+- 如果你需要中国端点，请使用 `https://api.moonshot.cn/v1`。

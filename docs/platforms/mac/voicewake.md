@@ -1,56 +1,56 @@
 ---
-summary: "Voice wake and push-to-talk modes plus routing details in the mac app"
+summary: Voice wake and push-to-talk modes plus routing details in the mac app
 read_when:
   - Working on voice wake or PTT pathways
 ---
-# Voice Wake & Push-to-Talk
+# 语音唤醒与按住说话
 
 
-## Modes
-- **Wake-word mode** (default): always-on Speech recognizer waits for trigger tokens (`swabbleTriggerWords`). On match it starts capture, shows the overlay with partial text, and auto-sends after silence.
-- **Push-to-talk (Right Option hold)**: hold the right Option key to capture immediately—no trigger needed. The overlay appears while held; releasing finalizes and forwards after a short delay so you can tweak text.
+## 模式
+- **唤醒词模式**（默认）：始终开启的语音识别器等待触发标记（`swabbleTriggerWords`）。匹配后，它会立即开始录音，显示带有部分文本的叠加层，并在静音后自动发送。
+- **按住说话（长按右侧 Option 键）**：长按右侧 Option 键即可立即开始录音——无需触发词。叠加层在按键期间显示；松开后，经过短暂延迟完成并发送录音，以便您有时间调整文本。
 
-## Runtime behavior (wake-word)
-- Speech recognizer lives in `VoiceWakeRuntime`.
-- Trigger only fires when there’s a **meaningful pause** between the wake word and the next word (~0.55s gap). The overlay/chime can start on the pause even before the command begins.
-- Silence windows: 2.0s when speech is flowing, 5.0s if only the trigger was heard.
-- Hard stop: 120s to prevent runaway sessions.
-- Debounce between sessions: 350ms.
-- Overlay is driven via `VoiceWakeOverlayController` with committed/volatile coloring.
-- After send, recognizer restarts cleanly to listen for the next trigger.
+## 运行时行为（唤醒词）
+- 语音识别器运行于 `VoiceWakeRuntime` 中。
+- 触发仅在唤醒词与下一个词之间出现**有意义的停顿**时才会激活（约 0.55 秒的间隔）。即使在命令开始之前，叠加层或提示音也可以在停顿时启动。
+- 静默窗口：当语音持续输入时为 2.0 秒；如果仅检测到触发词，则为 5.0 秒。
+- 强制停止：120 秒，以防止会话失控。
+- 会话间去抖动：350 毫秒。
+- 叠加层通过 `VoiceWakeOverlayController` 驱动，并采用固定和可变颜色方案。
+- 发送完成后，识别器会干净地重启，以监听下一个触发事件。
 
-## Lifecycle invariants
-- If Voice Wake is enabled and permissions are granted, the wake-word recognizer should be listening (except during an explicit push-to-talk capture).
-- Overlay visibility (including manual dismiss via the X button) must never prevent the recognizer from resuming.
+## 生命周期不变量
+- 如果已启用语音唤醒且已授予相关权限，唤醒词识别器应处于监听状态（除非正在进行显式的按住说话录音）。
+- 叠加层的可见性（包括通过“X”按钮手动关闭）绝不能阻止识别器恢复监听。
 
-## Sticky overlay failure mode (previous)
-Previously, if the overlay got stuck visible and you manually closed it, Voice Wake could appear “dead” because the runtime’s restart attempt could be blocked by overlay visibility and no subsequent restart was scheduled.
+## 叠加层卡住的故障模式（旧版）
+以前，如果叠加层卡在可见状态且您手动关闭它，语音唤醒可能会看似“失效”，因为运行时的重启尝试可能被叠加层的可见性所阻塞，且后续不会安排重启。
 
-Hardening:
-- Wake runtime restart is no longer blocked by overlay visibility.
-- Overlay dismiss completion triggers a `VoiceWakeRuntime.refresh(...)` via `VoiceSessionCoordinator`, so manual X-dismiss always resumes listening.
+加固措施：
+- 唤醒运行时的重启不再受叠加层可见性的阻碍。
+- 叠加层关闭完成会通过 `VoiceSessionCoordinator` 触发 `VoiceWakeRuntime.refresh(...)`，因此手动点击“X”关闭叠加层始终会恢复监听。
 
-## Push-to-talk specifics
-- Hotkey detection uses a global `.flagsChanged` monitor for **right Option** (`keyCode 61` + `.option`). We only observe events (no swallowing).
-- Capture pipeline lives in `VoicePushToTalk`: starts Speech immediately, streams partials to the overlay, and calls `VoiceWakeForwarder` on release.
-- When push-to-talk starts we pause the wake-word runtime to avoid dueling audio taps; it restarts automatically after release.
-- Permissions: requires Microphone + Speech; seeing events needs Accessibility/Input Monitoring approval.
-- External keyboards: some may not expose right Option as expected—offer a fallback shortcut if users report misses.
+## 按住说话的具体实现
+- 热键检测使用全局 `.flagsChanged` 监控器来监听**右侧 Option 键**（`keyCode 61` + `.option`）。我们仅观察事件，不吞没事件。
+- 录音管道位于 `VoicePushToTalk` 中：立即启动语音识别，将部分音频流传输到叠加层，并在松开按键时调用 `VoiceWakeForwarder`。
+- 当按住说话开始时，我们会暂停唤醒词运行时，以避免音频冲突；松开后，唤醒词运行时会自动重启。
+- 权限要求：需要麦克风和语音权限；监听事件还需要辅助功能/输入监控批准。
+- 外接键盘：某些键盘可能无法按预期暴露右侧 Option 键——如果用户报告漏检，提供备用快捷键。
 
-## User-facing settings
-- **Voice Wake** toggle: enables wake-word runtime.
-- **Hold Cmd+Fn to talk**: enables the push-to-talk monitor. Disabled on macOS < 26.
-- Language & mic pickers, live level meter, trigger-word table, tester (local-only; does not forward).
-- Mic picker preserves the last selection if a device disconnects, shows a disconnected hint, and temporarily falls back to the system default until it returns.
-- **Sounds**: chimes on trigger detect and on send; defaults to the macOS “Glass” system sound. You can pick any `NSSound`-loadable file (e.g. MP3/WAV/AIFF) for each event or choose **No Sound**.
+## 用户界面设置
+- **语音唤醒**切换开关：启用唤醒词运行时。
+- **长按 Cmd+Fn 说话**：启用按住说话监控。在 macOS < 26 上禁用。
+- 语言和麦克风选择器、实时电平表、触发词表格、测试器（仅本地使用，不转发）。
+- 如果设备断开连接，麦克风选择器会保留上次选择的设备，并显示断开连接提示，同时暂时回退到系统默认麦克风，直到设备重新连接。
+- **声音**：在检测到触发词和发送时发出提示音；默认使用 macOS 的“Glass”系统声音。您可以为每个事件选择任何可加载的 `NSSound` 文件（如 MP3/WAV/AIFF），或选择**无声音**。
 
-## Forwarding behavior
-- When Voice Wake is enabled, transcripts are forwarded to the active gateway/agent (the same local vs remote mode used by the rest of the mac app).
-- Replies are delivered to the **last-used main provider** (WhatsApp/Telegram/Discord/WebChat). If delivery fails, the error is logged and the run is still visible via WebChat/session logs.
+## 转发行为
+- 当语音唤醒启用时，转录内容会转发到当前活动的网关或代理（与 Mac 应用程序其他部分使用的本地或远程模式相同）。
+- 回复会发送到**最近使用的主提供商**（WhatsApp/Telegram/Discord/WebChat）。如果发送失败，错误会被记录，且该会话仍可通过 WebChat 或会话日志查看。
 
-## Forwarding payload
-- `VoiceWakeForwarder.prefixedTranscript(_:)` prepends the machine hint before sending. Shared between wake-word and push-to-talk paths.
+## 转发负载
+- `VoiceWakeForwarder.prefixedTranscript(_:)` 在发送前添加机器提示信息。此信息在唤醒词和按住说话路径中共享。
 
-## Quick verification
-- Toggle push-to-talk on, hold Cmd+Fn, speak, release: overlay should show partials then send.
-- While holding, menu-bar ears should stay enlarged (uses `triggerVoiceEars(ttl:nil)`); they drop after release.
+## 快速验证
+- 打开按住说话功能，长按 Cmd+Fn，说话，然后松开：叠加层应显示部分录音并随后发送。
+- 在按住期间，菜单栏中的耳朵图标应保持放大状态（使用 `triggerVoiceEars(ttl:nil)`）；松开后，图标会缩小。

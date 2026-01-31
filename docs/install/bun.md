@@ -1,58 +1,54 @@
 ---
-summary: "Bun workflow (experimental): installs and gotchas vs pnpm"
+summary: 'Bun workflow (experimental): installs and gotchas vs pnpm'
 read_when:
   - You want the fastest local dev loop (bun + watch)
   - You hit Bun install/patch/lifecycle script issues
 ---
+# Bun（实验性）
 
-# Bun (experimental)
+目标：在不偏离 pnpm 工作流的前提下，使用 **Bun** 运行此仓库（可选，但不推荐用于 WhatsApp/Telegram）。
 
-Goal: run this repo with **Bun** (optional, not recommended for WhatsApp/Telegram)
-without diverging from pnpm workflows.
+⚠️ **不推荐用于网关运行时**（WhatsApp/Telegram 存在 bug）。生产环境请使用 Node。
 
-⚠️ **Not recommended for Gateway runtime** (WhatsApp/Telegram bugs). Use Node for production.
+## 状态
 
-## Status
+- Bun 是一个可选的本地运行时，可用于直接运行 TypeScript（`bun run …`、`bun --watch …`）。
+- `pnpm` 仍是构建的默认选项，并且完全受支持（部分文档工具仍在使用它）。
+- Bun 无法使用 `pnpm-lock.yaml`，并将忽略该配置。
 
-- Bun is an optional local runtime for running TypeScript directly (`bun run …`, `bun --watch …`).
-- `pnpm` is the default for builds and remains fully supported (and used by some docs tooling).
-- Bun cannot use `pnpm-lock.yaml` and will ignore it.
+## 安装
 
-## Install
-
-Default:
+默认安装：
 
 ```sh
 bun install
 ```
 
-Note: `bun.lock`/`bun.lockb` are gitignored, so there’s no repo churn either way. If you want *no lockfile writes*:
+注意：`bun.lock`/`bun.lockb` 已被 .gitignore 忽略，因此无论选择哪种方式都不会导致仓库文件变动。如果你希望 *完全不写入 lockfile*：
 
 ```sh
 bun install --no-save
 ```
 
-## Build / Test (Bun)
+## 构建/测试（Bun）
 
 ```sh
 bun run build
 bun run vitest run
 ```
 
-## Bun lifecycle scripts (blocked by default)
+## Bun 生命周期脚本（默认被阻止）
 
-Bun may block dependency lifecycle scripts unless explicitly trusted (`bun pm untrusted` / `bun pm trust`).
-For this repo, the commonly blocked scripts are not required:
+Bun 可能会阻止依赖项的生命周期脚本，除非显式信任它们（`bun pm untrusted` / `bun pm trust`）。对于本仓库，以下通常被阻止的脚本并非必需：
+- `@whiskeysockets/baileys` `preinstall`：检查 Node 主版本是否 ≥ 20（我们使用 Node 22+）。
+- `protobufjs` `postinstall`：发出关于不兼容版本方案的警告（无构建产物）。
 
-- `@whiskeysockets/baileys` `preinstall`: checks Node major >= 20 (we run Node 22+).
-- `protobufjs` `postinstall`: emits warnings about incompatible version schemes (no build artifacts).
-
-If you hit a real runtime issue that requires these scripts, trust them explicitly:
+如果你遇到需要这些脚本的真实运行时问题，请显式信任它们：
 
 ```sh
 bun pm trust @whiskeysockets/baileys protobufjs
 ```
 
-## Caveats
+## 注意事项
 
-- Some scripts still hardcode pnpm (e.g. `docs:build`, `ui:*`, `protocol:check`). Run those via pnpm for now.
+- 某些脚本仍硬编码了 pnpm（例如 `docs:build`、`ui:*`、`protocol:check`）。目前，请通过 pnpm 运行这些脚本。

@@ -1,18 +1,17 @@
 ---
-summary: "Install OpenClaw declaratively with Nix"
+summary: Install OpenClaw declaratively with Nix
 read_when:
-  - You want reproducible, rollback-able installs
+  - 'You want reproducible, rollback-able installs'
   - You're already using Nix/NixOS/Home Manager
   - You want everything pinned and managed declaratively
 ---
+# Nix 安装
 
-# Nix Installation
+使用 Nix 运行 OpenClaw 的推荐方式是通过 **[nix-openclaw](https://github.com/openclaw/nix-openclaw)** — 一个自带完整功能的 Home Manager 模块。
 
-The recommended way to run OpenClaw with Nix is via **[nix-openclaw](https://github.com/openclaw/nix-openclaw)** — a batteries-included Home Manager module.
+## 快速入门
 
-## Quick Start
-
-Paste this to your AI agent (Claude, Cursor, etc.):
+将以下内容粘贴到你的 AI 助手（Claude、Cursor 等）中：
 
 ```text
 I want to set up nix-openclaw on my Mac.
@@ -29,67 +28,63 @@ What I need you to do:
 Reference the nix-openclaw README for module options.
 ```
 
-> **📦 Full guide: [github.com/openclaw/nix-openclaw](https://github.com/openclaw/nix-openclaw)**
+> **📦 完整指南：[github.com/openclaw/nix-openclaw](https://github.com/openclaw/nix-openclaw)**
 >
-> The nix-openclaw repo is the source of truth for Nix installation. This page is just a quick overview.
+> nix-openclaw 仓库是 Nix 安装的事实来源。本页面仅提供快速概览。
 
-## What you get
+## 你将获得的内容
 
-- Gateway + macOS app + tools (whisper, spotify, cameras) — all pinned
-- Launchd service that survives reboots
-- Plugin system with declarative config
-- Instant rollback: `home-manager switch --rollback`
+- 网关 + macOS 应用 + 工具（whisper、Spotify、摄像头等）——全部固定版本
+- 可在重启后继续运行的 Launchd 服务
+- 带声明式配置的插件系统
+- 即时回滚：`home-manager switch --rollback`
 
 ---
 
-## Nix Mode Runtime Behavior
+## Nix 模式下的运行时行为
 
-When `OPENCLAW_NIX_MODE=1` is set (automatic with nix-openclaw):
+当 `OPENCLAW_NIX_MODE=1` 被设置时（nix-openclaw 会自动设置）：
 
-OpenClaw supports a **Nix mode** that makes configuration deterministic and disables auto-install flows.
-Enable it by exporting:
+OpenClaw 支持一种 **Nix 模式**，可使配置具有确定性，并禁用自动安装流程。
+通过导出以下内容启用该模式：
 
 ```bash
 OPENCLAW_NIX_MODE=1
 ```
 
-On macOS, the GUI app does not automatically inherit shell env vars. You can
-also enable Nix mode via defaults:
+在 macOS 上，GUI 应用不会自动继承 shell 环境变量。你也可以通过默认设置启用 Nix 模式：
 
 ```bash
 defaults write bot.molt.mac openclaw.nixMode -bool true
 ```
 
-### Config + state paths
+### 配置与状态路径
 
-OpenClaw reads JSON5 config from `OPENCLAW_CONFIG_PATH` and stores mutable data in `OPENCLAW_STATE_DIR`.
+OpenClaw 从 `OPENCLAW_CONFIG_PATH` 读取 JSON5 配置，并将可变数据存储在 `OPENCLAW_STATE_DIR` 中。
 
-- `OPENCLAW_STATE_DIR` (default: `~/.openclaw`)
-- `OPENCLAW_CONFIG_PATH` (default: `$OPENCLAW_STATE_DIR/openclaw.json`)
+- `OPENCLAW_STATE_DIR`（默认：`~/.openclaw`）
+- `OPENCLAW_CONFIG_PATH`（默认：`$OPENCLAW_STATE_DIR/openclaw.json`）
 
-When running under Nix, set these explicitly to Nix-managed locations so runtime state and config
-stay out of the immutable store.
+在 Nix 环境下运行时，应显式将这些路径设置为由 Nix 管理的位置，以确保运行时状态和配置不会进入不可变的存储区。
 
-### Runtime behavior in Nix mode
+### Nix 模式下的运行时行为
 
-- Auto-install and self-mutation flows are disabled
-- Missing dependencies surface Nix-specific remediation messages
-- UI surfaces a read-only Nix mode banner when present
+- 自动安装和自我变异流程被禁用
+- 缺失依赖会显示特定于 Nix 的修复提示
+- 当处于 Nix 模式时，UI 会显示一个只读的 Nix 模式横幅
 
-## Packaging note (macOS)
+## 打包注意事项（macOS）
 
-The macOS packaging flow expects a stable Info.plist template at:
+macOS 打包流程要求在以下路径存在稳定的 Info.plist 模板：
 
 ```
 apps/macos/Sources/OpenClaw/Resources/Info.plist
 ```
 
-[`scripts/package-mac-app.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-app.sh) copies this template into the app bundle and patches dynamic fields
-(bundle ID, version/build, Git SHA, Sparkle keys). This keeps the plist deterministic for SwiftPM
-packaging and Nix builds (which do not rely on a full Xcode toolchain).
+[`scripts/package-mac-app.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-app.sh) 会将此模板复制到应用包中，并修补其中的动态字段（Bundle ID、版本/构建号、Git SHA、Sparkle 密钥）。这使得 plist 对于 SwiftPM 打包和 Nix 构建保持确定性，而后者并不依赖完整的 Xcode 工具链。
 
-## Related
+## 相关内容
 
-- [nix-openclaw](https://github.com/openclaw/nix-openclaw) — full setup guide
-- [Wizard](/start/wizard) — non-Nix CLI setup
-- [Docker](/install/docker) — containerized setup
+- [nix-openclaw](https://github.com/openclaw/nix-openclaw) — 完整设置指南
+- [Wizard](/start/wizard) — 非 Nix CLI 设置
+- [Docker](/install/docker) — 容器化设置

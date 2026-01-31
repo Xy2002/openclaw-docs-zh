@@ -1,59 +1,49 @@
 ---
-summary: "Sign in to GitHub Copilot from OpenClaw using the device flow"
+summary: Sign in to GitHub Copilot from OpenClaw using the device flow
 read_when:
   - You want to use GitHub Copilot as a model provider
   - You need the `openclaw models auth login-github-copilot` flow
 ---
 # GitHub Copilot
 
-## What is GitHub Copilot?
+## 什么是GitHub Copilot？
 
-GitHub Copilot is GitHub's AI coding assistant. It provides access to Copilot
-models for your GitHub account and plan. OpenClaw can use Copilot as a model
-provider in two different ways.
+GitHub Copilot是GitHub推出的AI编码助手。它为您的GitHub账户和订阅计划提供Copilot模型的访问权限。OpenClaw可以通过两种不同的方式将Copilot用作模型提供商。
 
-## Two ways to use Copilot in OpenClaw
+## 在OpenClaw中使用Copilot的两种方式
 
-### 1) Built-in GitHub Copilot provider (`github-copilot`)
+### 1) 内置GitHub Copilot提供商 (`github-copilot`)
 
-Use the native device-login flow to obtain a GitHub token, then exchange it for
-Copilot API tokens when OpenClaw runs. This is the **default** and simplest path
-because it does not require VS Code.
+使用原生的设备登录流程获取GitHub令牌，然后在OpenClaw运行时将其兑换为Copilot API令牌。这是**默认**且最简单的方式，因为它不需要Visual Studio Code。
 
-### 2) Copilot Proxy plugin (`copilot-proxy`)
+### 2) Copilot代理插件 (`copilot-proxy`)
 
-Use the **Copilot Proxy** VS Code extension as a local bridge. OpenClaw talks to
-the proxy’s `/v1` endpoint and uses the model list you configure there. Choose
-this when you already run Copilot Proxy in VS Code or need to route through it.
-You must enable the plugin and keep the VS Code extension running.
+使用VS Code扩展**Copilot Proxy**作为本地桥接。OpenClaw与代理的`/v1`端点通信，并使用您在那里配置的模型列表。如果您已经在VS Code中运行Copilot Proxy，或者需要通过它进行路由，则选择此方法。您必须启用该插件并保持VS Code扩展处于运行状态。
 
-Use GitHub Copilot as a model provider (`github-copilot`). The login command runs
-the GitHub device flow, saves an auth profile, and updates your config to use that
-profile.
+将GitHub Copilot用作模型提供商 (`github-copilot`)。登录命令会运行GitHub设备流，保存身份验证配置文件，并更新您的配置以使用该配置文件。
 
-## CLI setup
+## CLI设置
 
 ```bash
 openclaw models auth login-github-copilot
 ```
 
-You'll be prompted to visit a URL and enter a one-time code. Keep the terminal
-open until it completes.
+系统会提示您访问一个URL并输入一次性代码。请保持终端打开，直到操作完成。
 
-### Optional flags
+### 可选标志
 
 ```bash
 openclaw models auth login-github-copilot --profile-id github-copilot:work
 openclaw models auth login-github-copilot --yes
 ```
 
-## Set a default model
+## 设置默认模型
 
 ```bash
 openclaw models set github-copilot/gpt-4o
 ```
 
-### Config snippet
+### 配置片段
 
 ```json5
 {
@@ -61,10 +51,8 @@ openclaw models set github-copilot/gpt-4o
 }
 ```
 
-## Notes
+## 注意事项
 
-- Requires an interactive TTY; run it directly in a terminal.
-- Copilot model availability depends on your plan; if a model is rejected, try
-  another ID (for example `github-copilot/gpt-4.1`).
-- The login stores a GitHub token in the auth profile store and exchanges it for a
-  Copilot API token when OpenClaw runs.
+- 需要交互式TTY；请直接在终端中运行。
+- Copilot模型的可用性取决于您的订阅计划；如果某个模型被拒绝，请尝试使用其他ID（例如 `github-copilot/gpt-4.1`）。
+- 登录过程会将GitHub令牌存储在身份验证配置文件存储中，并在OpenClaw运行时将其兑换为Copilot API令牌。
