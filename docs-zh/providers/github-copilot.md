@@ -18,9 +18,9 @@ GitHub Copilot是GitHub推出的AI编码助手。它为您的GitHub账户和订�
 
 ### 2) Copilot代理插件 (`copilot-proxy`)
 
-使用**Copilot代理**VS Code扩展作为本地桥接。OpenClaw与代理的`/v1`端点通信，并使用您在那里配置的模型列表。如果您已经在VS Code中运行Copilot代理，或者需要通过它进行路由，则选择此方法。您必须启用该插件并保持VS Code扩展处于运行状态。
+使用**Copilot代理**VS Code扩展作为本地桥接。OpenClaw与代理的`/v1`端点通信，并使用您在那里配置的模型列表。如果您已经在VS Code中运行Copilot代理，或者需要通过它进行路由，请选择此方法。您必须启用该插件并保持VS Code扩展处于运行状态。
 
-将GitHub Copilot用作模型提供商 (`github-copilot`)。登录命令会运行GitHub设备流，保存身份验证配置文件，并更新您的配置以使用该配置文件。
+将GitHub Copilot用作模型提供商 (`github-copilot`)。登录命令会运行GitHub设备流程，保存身份验证配置文件，并更新您的配置以使用该配置文件。
 
 ## CLI设置
 

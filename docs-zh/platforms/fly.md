@@ -4,14 +4,14 @@ description: Deploy OpenClaw on Fly.io
 ---
 # Fly.io 部署
 
-**目标：** 在 [Fly.io](https://fly.io) 机器上运行 OpenClaw 网关，提供持久化存储、自动 HTTPS 支持，并可访问 Discord 或其他渠道。
+**目标：** 在 [Fly.io](https://fly.io) 机器上运行 OpenClaw 网关，提供持久化存储、自动 HTTPS 支持，并可访问 Discord 或其他频道。
 
 ## 您需要准备的内容
 
 - 已安装 [flyctl CLI](https://fly.io/docs/hands-on/install-flyctl/)
 - Fly.io 账户（免费层级即可）
 - 模型认证：Anthropic API 密钥（或其他提供商密钥）
-- 渠道凭据：Discord 机器人令牌、Telegram 令牌等
+- 频道凭据：Discord 机器人令牌、Telegram 令牌等
 
 ## 初学者快速路径
 
@@ -105,7 +105,7 @@ fly secrets set DISCORD_BOT_TOKEN=MTQ...
 **注意事项：**
 - 非环回绑定（`--bind lan`）需要 `OPENCLAW_GATEWAY_TOKEN` 以确保安全。
 - 请将这些令牌视为密码。
-- 对于所有 API 密钥和令牌，**优先使用环境变量而非配置文件**。这样可以避免将密钥暴露在 `openclaw.json` 中，从而防止意外泄露或记录。
+- 对于所有 API 密钥和令牌，**优先使用环境变量而非配置文件**。这样可以将密钥保存在 `openclaw.json` 之外，避免意外暴露或记录。
 
 ## 4) 部署
 
@@ -192,13 +192,13 @@ EOF
 
 **注意：** 使用 `OPENCLAW_STATE_DIR=/data` 时，配置路径为 `/data/openclaw.json`。
 
-**注意：** Discord 令牌可以来自以下任一来源：
+**注意：** Discord 令牌可以通过以下方式提供：
 - 环境变量：`DISCORD_BOT_TOKEN`（推荐用于密钥）
 - 配置文件：`channels.discord.token`
 
 如果使用环境变量，则无需在配置中添加令牌。网关会自动读取 `DISCORD_BOT_TOKEN`。
 
-重启以生效：
+重启以应用更改：
 ```bash
 exit
 fly machine restart <machine-id>
@@ -232,7 +232,7 @@ fly ssh console
 
 ## 故障排除
 
-### “应用未在预期地址上监听”
+### “应用未监听预期地址”
 
 网关绑定到 `127.0.0.1`，而不是 `0.0.0.0`。
 
@@ -259,7 +259,7 @@ Fly 无法通过配置的端口访问网关。
 fly machine update <machine-id> --vm-memory 2048 -y
 ```
 
-**注意：** 512MB 太小。1GB 可能适用，但在高负载或启用详细日志记录时仍可能触发 OOM。**建议使用 2GB。**
+**注意：** 512MB 太小。1GB 可能适用，但在高负载或启用详细日志记录时仍可能出现 OOM。**建议使用 2GB。**
 
 ### 网关锁定问题
 
@@ -297,7 +297,7 @@ fly sftp shell
 > put /local/path/config.json /data/openclaw.json
 ```
 
-**注意：** 如果文件已存在，`fly sftp` 可能会失败。请先删除：
+**注意：** 如果文件已存在，`fly sftp` 可能失败。请先删除：
 ```bash
 fly ssh console --command "rm /data/openclaw.json"
 ```
@@ -341,16 +341,16 @@ fly machine update <machine-id> --vm-memory 2048 --command "node dist/index.js g
 
 ## 私有部署（加固）
 
-默认情况下，Fly 会分配公共 IP，使您的网关可通过 `https://your-app.fly.dev` 访问。这很方便，但意味着您的部署会被互联网扫描器（Shodan、Censys 等）发现。
+默认情况下，Fly 会分配公共 IP，使您的网关可通过 `https://your-app.fly.dev` 访问。这很方便，但意味着您的部署可能被互联网扫描工具（Shodan、Censys 等）发现。
 
 对于**无公开暴露**的加固部署，请使用私有模板。
 
 ### 何时使用私有部署
 
 - 您仅发起**出站**调用/消息（无入站 webhook）
-- 您使用 **ngrok 或 Tailscale** 隧道来处理任何 webhook 回调
+- 您使用 **ngrok 或 Tailscale** 隧道处理任何 webhook 回调
 - 您通过 **SSH、代理或 WireGuard** 而不是浏览器访问网关
-- 您希望部署**对互联网扫描器隐藏**
+- 您希望部署**对互联网扫描工具隐藏**
 
 ### 设置
 
@@ -413,9 +413,9 @@ fly ssh console -a my-openclaw
 
 ### 私有部署中的 Webhook
 
-如果您需要在无公开暴露的情况下使用 webhook 回调（Twilio、Telnyx 等）：
+如果您需要在无公开暴露的情况下处理 webhook 回调（Twilio、Telnyx 等）：
 
-1. **ngrok 隧道** - 在容器内或作为边车运行 ngrok
+1. **ngrok 隧道** - 在容器内或作为旁路容器运行 ngrok
 2. **Tailscale Funnel** - 通过 Tailscale 暴露特定路径
 3. **仅出站** - 某些提供商（如 Twilio）在没有 webhook 的情况下也能很好地处理出站调用
 
@@ -440,24 +440,24 @@ ngrok 隧道在容器内运行，提供一个公共 webhook URL，而不会暴�
 
 ### 安全优势
 
-| 方面 | 公开 | 私有 |
+| 方面 | 公共 | 私有 |
 |--------|--------|---------|
-| 互联网扫描器 | 可被发现 | 隐藏 |
-| 直接攻击 | 可能 | 被阻止 |
+| 互联网扫描工具 | 可发现 | 隐藏 |
+| 直接攻击 | 可能 | 已阻止 |
 | 控制 UI 访问 | 浏览器 | 代理/VPN |
 | Webhook 交付 | 直接 | 通过隧道 |
 
 ## 注意事项
 
-- Fly.io 使用 **x86 架构**（非 ARM）
-- Dockerfile 兼容这两种架构
+- Fly.io 使用 **x86 架构**（而非 ARM）
+- Dockerfile 兼容两种架构
 - 对于 WhatsApp/Telegram 注册，请使用 `fly ssh console`
 - 持久化数据存储在卷上的 `/data`
 - Signal 需要 Java + signal-cli；请使用自定义镜像，并将内存保持在 2GB 以上。
 
 ## 成本
 
-使用推荐配置（`shared-cpu-2x`, 2GB RAM）：
+使用推荐配置（`shared-cpu-2x`，2GB RAM）：
 - 根据使用情况，每月约 $10–15
 - 免费层级包含一定额度
 

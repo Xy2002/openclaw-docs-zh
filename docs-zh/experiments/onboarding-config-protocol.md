@@ -2,9 +2,9 @@
 summary: RPC protocol notes for onboarding wizard and config schema
 read_when: Changing onboarding wizard steps or config schema endpoints
 ---
-# 入门 + 配置协议
+# 入门与配置协议
 
-目的：在 CLI、macOS 应用和 Web UI 之间共享入门和配置界面。
+目的：在 CLI、macOS 应用和 Web UI 之间共享入门与配置界面。
 
 ## 组件
 - 向导引擎（共享会话 + 提示 + 入门状态）。
@@ -30,4 +30,4 @@ read_when: Changing onboarding wizard steps or config schema endpoints
 - 不支持的模式节点回退到原始 JSON 编辑器。
 
 ## 备注
-- 本文档是跟踪入门/配置协议重构的唯一位置。
+- 本文档是跟踪入门与配置协议重构的唯一位置。

@@ -19,7 +19,7 @@ OpenClaw会将回复**路由回消息最初来自的频道**。模型本身不�
 
 ## 会话密钥形状（示例）
 
-直接消息会合并到代理的**主**会话中：
+直接消息会归并到代理的**主**会话：
 
 - `agent:<agentId>:<mainKey>`（默认：`agent:main:main`）
 
@@ -40,20 +40,20 @@ OpenClaw会将回复**路由回消息最初来自的频道**。模型本身不�
 
 ## 路由规则（如何选择代理）
 
-对于每条入站消息，路由会选择**一个代理**：
+对于每条入站消息，路由会选出**一个代理**：
 
-1. **精确对等匹配**（`bindings`与`peer.kind` + `peer.id`）。
-2. **公会匹配**（Discord），通过`guildId`。
-3. **团队匹配**（Slack），通过`teamId`。
-4. **账户匹配**（该频道上的`accountId`）。
+1. **精确对等匹配**（`bindings` 与 `peer.kind` + `peer.id` 匹配）。
+2. **公会匹配**（Discord），通过 `guildId` 实现。
+3. **团队匹配**（Slack），通过 `teamId` 实现。
+4. **账户匹配**（该频道上的 `accountId`）。
 5. **频道匹配**（该频道上的任意账户）。
-6. **默认代理**（`agents.list[].default`，否则使用列表中的第一条，回退至`main`）。
+6. **默认代理**（`agents.list[].default`，否则使用列表中的第一条，回退至 `main`）。
 
 匹配的代理决定了使用哪个工作空间和会话存储。
 
 ## 广播组（运行多个代理）
 
-广播组允许你在OpenClaw通常会回复的情况下，为同一对等方运行**多个代理**（例如：在WhatsApp群组中，在提及/激活门控之后）。
+广播组允许你在OpenClaw通常会自动回复的情况下，为同一对等方运行**多个代理**（例如：在WhatsApp群组中，在提及或激活门控之后）。
 
 配置：
 
@@ -92,21 +92,21 @@ OpenClaw会将回复**路由回消息最初来自的频道**。模型本身不�
 
 ## 会话存储
 
-会话存储位于状态目录下（默认为`~/.openclaw`）：
+会话存储位于状态目录下（默认 `~/.openclaw`）：
 
 - `~/.openclaw/agents/<agentId>/sessions/sessions.json`
-- JSONL转录文件与存储文件并存
+- JSONL转录文件与会话存储并存
 
-你可以通过`session.store`和`{agentId}`模板覆盖存储路径。
+你可以通过 `session.store` 和 `{agentId}` 模板化来覆盖存储路径。
 
 ## WebChat行为
 
-WebChat会连接到**选定的代理**，并默认使用该代理的主会话。因此，WebChat使你能够在一处查看该代理的跨频道上下文。
+WebChat会附加到**选定的代理**，并默认使用该代理的主会话。因此，WebChat使你能够在一处查看该代理的跨频道上下文。
 
 ## 回复上下文
 
 入站回复包含：
-- 在可用时包括`ReplyToId`、`ReplyToBody`和`ReplyToSender`。
-- 引用的上下文会作为`[Replying to ...]`块附加到`Body`上。
+- 在可用时提供 `ReplyToId`、`ReplyToBody` 和 `ReplyToSender`。
+- 引用的上下文会作为 `[Replying to ...]` 块附加到 `Body` 上。
 
-这一行为在不同频道间保持一致。
+此行为在各个频道中保持一致。

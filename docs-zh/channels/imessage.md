@@ -58,9 +58,9 @@ read_when:
 ### 专用机器人 macOS 用户（用于隔离身份）
 如果您希望机器人使用 **单独的 iMessage 身份** 发送消息（并保持您的个人“信息”干净），请使用专用的 Apple ID + 专用的 macOS 用户。
 
-1) 创建专用 Apple ID（示例：`my-cool-bot@icloud.com`）。
+1) 创建一个专用的 Apple ID（示例：`my-cool-bot@icloud.com`）。
    - Apple 可能需要电话号码进行验证 / 双重认证。
-2) 创建 macOS 用户（示例：`openclawhome`），并登录该用户。
+2) 创建一个 macOS 用户（示例：`openclawhome`）并登录。
 3) 在该 macOS 用户中打开“信息”，并使用机器人 Apple ID 登录 iMessage。
 4) 启用远程登录（系统设置 → 通用 → 共享 → 远程登录）。
 5) 安装 `imsg`：
@@ -68,7 +68,7 @@ read_when:
 6) 设置 SSH，使 `ssh <bot-macos-user>@localhost true` 无需密码即可工作。
 7) 将 `channels.imessage.accounts.bot.cliPath` 指向一个运行 `imsg` 的 SSH 包装脚本，以机器人用户身份运行。
 
-首次运行注意事项：发送/接收可能需要在 *机器人 macOS 用户* 中进行 GUI 批准（自动化 + 全盘访问权限）。如果 `imsg rpc` 似乎卡住或退出，请登录该用户（屏幕共享有助于操作），运行一次性的 `imsg chats --limit 1` / `imsg send ...`，批准提示，然后重试。
+首次运行注意事项：发送/接收可能需要在 *机器人 macOS 用户* 中进行 GUI 批准（自动化 + 全盘访问权限）。如果 `imsg rpc` 似乎卡住或退出，请登录该用户（屏幕共享很有帮助），运行一次性的 `imsg chats --limit 1` / `imsg send ...`，批准提示，然后重试。
 
 示例包装脚本（`chmod +x`）。将 `<bot-macos-user>` 替换为您的实际 macOS 用户名：
 ```bash
@@ -125,10 +125,10 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-如果未设置 `remoteHost`，OpenClaw 会尝试通过解析包装脚本中的 SSH 命令来自动检测它。为确保可靠性，建议显式配置。
+如果未设置 `remoteHost`，OpenClaw 会尝试通过解析包装脚本中的 SSH 命令来自动检测它。为确保可靠性，建议明确配置。
 
 #### 通过 Tailscale 的远程 Mac（示例）
-如果网关运行在 Linux 主机/虚拟机上，但 iMessage 必须运行在 Mac 上，则 Tailscale 是最简单的桥梁：网关通过尾网与 Mac 通信，通过 SSH 运行 `imsg`，并通过 SCP 将附件传回。
+如果网关运行在 Linux 主机/虚拟机上，但 iMessage 必须运行在 Mac 上，则 Tailscale 是最简单的桥梁：网关通过尾网与 Mac 通信，通过 SSH 运行 `imsg`，并将附件通过 SCP 传回。
 
 架构：
 ```
@@ -165,16 +165,16 @@ exec ssh -T bot@mac-mini.tailnet-1234.ts.net imsg "$@"
 ```
 
 注意事项：
-- 确保 Mac 已登录“信息”，并且已启用远程登录。
+- 确保 Mac 已登录“信息”，并已启用远程登录。
 - 使用 SSH 密钥，使 `ssh bot@mac-mini.tailnet-1234.ts.net` 无需提示即可工作。
 - `remoteHost` 应与 SSH 目标匹配，以便 SCP 可以获取附件。
 
-多账户支持：使用 `channels.imessage.accounts` 结合每账户配置和可选的 `name`。共享模式请参见 [`gateway/configuration`](/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts)。不要提交 `~/.openclaw/openclaw.json`（它通常包含令牌）。
+多账户支持：使用 `channels.imessage.accounts` 结合每账户配置和可选的 `name`。共享模式请参见 [`gateway/configuration`](/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts)。不要提交 `~/.openclaw/openclaw.json`（其中通常包含令牌）。
 
 ## 访问控制（私信 + 群组）
 私信：
 - 默认：`channels.imessage.dmPolicy = "pairing"`。
-- 未知发件人会收到配对码；消息会被忽略，直到被批准（代码在 1 小时后失效）。
+- 未知发件人会收到配对码；消息会被忽略，直到获得批准（代码在 1 小时后失效）。
 - 批准方式：
   - `openclaw pairing list imessage`
   - `openclaw pairing approve imessage <CODE>`
@@ -191,7 +191,7 @@ exec ssh -T bot@mac-mini.tailnet-1234.ts.net imsg "$@"
 - 回复始终路由回相同的聊天 ID 或句柄。
 
 ## 类似群组的线程（`is_group=false`）
-某些 iMessage 线程可能有多名参与者，但仍以 `is_group=false` 形式到达，这取决于“信息”如何存储聊天标识符。
+某些 iMessage 线程可能有多个参与者，但仍以 `is_group=false` 形式到达，这取决于“信息”如何存储聊天标识符。
 
 如果您在 `channels.imessage.groups` 下显式配置了 `chat_id`，OpenClaw 会将该线程视为“群组”，用于：
 - 会话隔离（独立的 `agent:<agentId>:imessage:group:<chat_id>` 会话密钥）
@@ -218,12 +218,12 @@ exec ssh -T bot@mac-mini.tailnet-1234.ts.net imsg "$@"
 - 媒体上限通过 `channels.imessage.mediaMaxMb`。
 
 ## 限制
-- 出站文本分块为 `channels.imessage.textChunkLimit`（默认 4000）。
+- 出站文本被分块为 `channels.imessage.textChunkLimit`（默认 4000）。
 - 可选的换行符分块：设置 `channels.imessage.chunkMode="newline"` 以在长度分块之前按空行（段落边界）分割。
 - 媒体上传受 `channels.imessage.mediaMaxMb` 限制（默认 16）。
 
 ## 地址 / 投递目标
-优先使用 `chat_id` 以实现稳定的路由：
+首选 `chat_id` 以实现稳定的路由：
 - `chat_id:123`（首选）
 - `chat_guid:...`
 - `chat_identifier:...`
@@ -240,7 +240,7 @@ imsg chats --limit 20
 提供商选项：
 - `channels.imessage.enabled`：启用/禁用渠道启动。
 - `channels.imessage.cliPath`：指向 `imsg` 的路径。
-- `channels.imessage.dbPath`： “信息”数据库路径。
+- `channels.imessage.dbPath`：“信息”数据库路径。
 - `channels.imessage.remoteHost`：当 `cliPath` 指向远程 Mac 时，用于 SCP 附件传输的 SSH 主机（例如，`user@gateway-host`）。如果未设置，则从 SSH 包装脚本中自动检测。
 - `channels.imessage.service`：`imessage | sms | auto`。
 - `channels.imessage.region`：短信区域。

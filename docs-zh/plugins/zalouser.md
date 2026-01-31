@@ -13,12 +13,12 @@ read_when:
 > **警告：** 非官方自动化可能导致账户被暂停或封禁。请自行承担风险使用。
 
 ## 命名
-频道 ID 为 `zalouser`，以明确表示此插件用于自动化 **个人 Zalo 用户账户**（非官方）。我们保留 `zalo` 以备未来可能的官方 Zalo API 集成之用。
+频道 ID 为 `zalouser`，以明确表示此插件用于自动化 **个人 Zalo 用户账户**（非官方）。我们保留 `zalo`，以备未来可能的官方 Zalo API 集成。
 
 ## 运行位置
 此插件在 **网关进程内部** 运行。
 
-如果您使用远程网关，请在 **运行网关的机器上** 安装并配置该插件，然后重启网关。
+如果您使用远程网关，请在 **运行网关的机器** 上安装并配置此插件，然后重启网关。
 
 ## 安装
 
@@ -28,7 +28,7 @@ read_when:
 openclaw plugins install @openclaw/zalouser
 ```
 
-安装完成后重启网关。
+之后重启网关。
 
 ### 选项 B：从本地文件夹安装（开发环境）
 
@@ -37,7 +37,7 @@ openclaw plugins install ./extensions/zalouser
 cd ./extensions/zalouser && pnpm install
 ```
 
-安装完成后重启网关。
+之后重启网关。
 
 ## 先决条件：zca-cli
 网关所在机器必须在 `PATH` 上安装 `zca`：

@@ -7,11 +7,11 @@ read_when:
 ---
 # 调试
 
-本页面介绍用于流式输出的调试辅助工具，尤其适用于提供者在常规文本中混入推理内容的情况。
+本页面介绍用于调试流式输出的辅助工具，尤其是在提供者将推理混入普通文本时。
 
 ## 运行时调试覆盖
 
-在聊天中使用 `/debug` 可设置仅限运行时的配置覆盖（存储在内存中，而非磁盘上）。默认情况下，`/debug` 处于禁用状态；可通过 `commands.debug: true` 启用。当您需要在不编辑 `openclaw.json` 的情况下切换某些晦涩设置时，此功能非常实用。
+在聊天中使用 `/debug` 可设置**仅运行时生效**的配置覆盖（存储在内存中，而非磁盘上）。默认情况下，`/debug` 处于禁用状态；可通过 `commands.debug: true` 启用。当您需要在不编辑 `openclaw.json` 的情况下切换某些晦涩设置时，此功能非常有用。
 
 示例：
 
@@ -22,11 +22,11 @@ read_when:
 /debug reset
 ```
 
-执行 `/debug reset` 将清除所有覆盖，并恢复到磁盘上的配置。
+`/debug reset` 会清除所有覆盖，并恢复到磁盘上的配置。
 
 ## 网关监视模式
 
-为了快速迭代，请在文件监视器下运行网关：
+为了快速迭代，可在文件监视器下运行网关：
 
 ```bash
 pnpm gateway:watch --force
@@ -42,10 +42,10 @@ tsx watch src/entry.ts gateway --force
 
 ## 开发配置文件 + 开发网关 (--dev)
 
-使用开发配置文件可以隔离状态，并为调试启动一个安全且可丢弃的环境。这里有 **两个** `--dev` 标志：
+使用开发配置文件可以隔离状态，并为调试启动一个安全且可丢弃的环境。这里有**两个** `--dev` 标志：
 
-- **全局 `--dev`（配置文件）：** 在 `~/.openclaw-dev` 下隔离状态，并将网关端口默认设置为 `19001`（派生端口随之调整）。
-- **`gateway --dev`：** 指示网关在缺少配置时自动创建默认配置和工作区，并跳过 BOOTSTRAP.md。
+- **全局 `--dev`（配置文件）：** 将状态隔离在 `~/.openclaw-dev` 下，并将网关端口默认设置为 `19001`（派生端口随之调整）。
+- **`gateway --dev`：** 指示网关在缺失时自动创建默认配置和工作区**，并跳过 BOOTSTRAP.md。**
 
 推荐流程（开发配置文件 + 开发引导）：
 
@@ -56,13 +56,13 @@ OPENCLAW_PROFILE=dev openclaw tui
 
 如果您尚未进行全局安装，请通过 `pnpm openclaw ...` 运行 CLI。
 
-此流程的作用如下：
+此操作的作用如下：
 
 1) **配置文件隔离**（全局 `--dev`）
    - `OPENCLAW_PROFILE=dev`
    - `OPENCLAW_STATE_DIR=~/.openclaw-dev`
    - `OPENCLAW_CONFIG_PATH=~/.openclaw-dev/openclaw.json`
-   - `OPENCLAW_GATEWAY_PORT=19001`（浏览器/画布相应调整）
+   - `OPENCLAW_GATEWAY_PORT=19001`（浏览器/画布随之相应调整）
 
 2) **开发引导**（`gateway --dev`）
    - 如果缺少最小配置，则写入最小配置（`gateway.mode=local`，绑定回环）。
@@ -79,7 +79,7 @@ OPENCLAW_PROFILE=dev openclaw tui
 pnpm gateway:dev:reset
 ```
 
-注意：`--dev` 是一个 **全局** 配置文件标志，可能会被某些运行程序吃掉。如果需要明确指定，可使用环境变量形式：
+注意：`--dev` 是一个**全局**配置文件标志，可能会被某些运行程序吃掉。如果需要明确指定，可使用环境变量形式：
 
 ```bash
 OPENCLAW_PROFILE=dev openclaw gateway --dev --reset
@@ -95,9 +95,9 @@ openclaw gateway stop
 
 ## 原始流日志记录（OpenClaw）
 
-OpenClaw 可以在任何过滤或格式化之前记录 **原始助手流**。这是查看推理是否以纯文本增量形式到达（或作为单独的思考块到达）的最佳方式。
+OpenClaw 可以在任何过滤或格式化之前记录**原始助手流**。这是查看推理是否以纯文本增量形式到达（或作为单独的思考块到达）的最佳方式。
 
-通过 CLI 启用：
+可通过 CLI 启用：
 
 ```bash
 pnpm gateway:watch --force --raw-stream
@@ -120,9 +120,9 @@ OPENCLAW_RAW_STREAM_PATH=~/.openclaw/logs/raw-stream.jsonl
 
 `~/.openclaw/logs/raw-stream.jsonl`
 
-## 原始数据块日志记录（pi-mono）
+## 原始分块日志记录（pi-mono）
 
-为了捕获在被解析为块之前的 **原始 OpenAI 兼容数据块**，pi-mono 提供了一个单独的日志记录器：
+要捕获在被解析为块之前的**原始 OpenAI 兼容分块**，pi-mono 提供了一个单独的日志记录器：
 
 ```bash
 PI_RAW_STREAM=1

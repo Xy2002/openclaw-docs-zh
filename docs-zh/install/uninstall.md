@@ -45,7 +45,7 @@ openclaw gateway uninstall
 rm -rf "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
 ```
 
-如果你将 `OPENCLAW_CONFIG_PATH` 设置为状态目录之外的自定义位置，请一并删除该文件。
+如果你将 `OPENCLAW_CONFIG_PATH` 设置为状态目录之外的自定义位置，也请删除该文件。
 
 4) 删除工作区（可选，会移除代理文件）：
 
@@ -68,12 +68,12 @@ rm -rf /Applications/OpenClaw.app
 ```
 
 注意事项：
-- 如果你使用了配置文件（`--profile` / `OPENCLAW_PROFILE`），请对每个状态目录重复执行步骤 3（默认状态目录为 `~/.openclaw-<profile>`）。
+- 如果你使用了配置文件（`--profile` / `OPENCLAW_PROFILE`），请对每个状态目录重复执行第 3 步（默认状态目录为 `~/.openclaw-<profile>`）。
 - 在远程模式下，状态目录位于**网关主机**上，因此也需在该主机上执行步骤 1–4。
 
 ## 手动移除服务（CLI 未安装）
 
-如果网关服务仍在运行，但 `openclaw` 丢失，则使用此方法。
+如果网关服务仍在运行，但 `openclaw` 丢失，请使用此方法。
 
 ### macOS（launchd）
 
@@ -84,7 +84,7 @@ launchctl bootout gui/$UID/bot.molt.gateway
 rm -f ~/Library/LaunchAgents/bot.molt.gateway.plist
 ```
 
-如果你使用了配置文件，请将标签和 plist 名称替换为 `bot.molt.<profile>`。如果存在任何旧版 `com.openclaw.*` plist，请一并移除。
+如果你使用了配置文件，将标签和 plist 名称替换为 `bot.molt.<profile>`。如果存在任何旧版 `com.openclaw.*` plist，请将其移除。
 
 ### Linux（systemd 用户单元）
 
@@ -105,13 +105,13 @@ schtasks /Delete /F /TN "OpenClaw Gateway"
 Remove-Item -Force "$env:USERPROFILE\.openclaw\gateway.cmd"
 ```
 
-如果你使用了配置文件，请删除匹配的任务名称以及 `~\.openclaw-<profile>\gateway.cmd`。
+如果你使用了配置文件，请删除匹配的任务名称和 `~\.openclaw-<profile>\gateway.cmd`。
 
 ## 普通安装与源码检出的区别
 
 ### 普通安装（install.sh / npm / pnpm / bun）
 
-如果你使用了 `https://openclaw.bot/install.sh` 或 `install.ps1`，则 CLI 是通过 `npm install -g openclaw@latest` 安装的。请使用 `npm rm -g openclaw` 来移除它（或者如果你是以其他方式安装的，则使用 `pnpm remove -g` / `bun remove -g`）。
+如果你使用了 `https://openclaw.bot/install.sh` 或 `install.ps1`，则 CLI 是通过 `npm install -g openclaw@latest` 安装的。请使用 `npm rm -g openclaw` 将其移除（如果你是以其他方式安装的，则使用 `pnpm remove -g` 或 `bun remove -g`）。
 
 ### 源码检出（git clone）
 

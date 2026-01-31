@@ -33,7 +33,7 @@ openclaw message <subcommand> [flags]
 
 名称查找：
 - 对于支持的提供商（Discord/Slack 等），像 `Help` 或 `#help` 这样的频道名称会通过目录缓存解析。
-- 如果缓存未命中，OpenClaw 将在提供商支持的情况下尝试实时目录查找。
+- 如果缓存未命中，并且提供商支持，OpenClaw 将尝试进行实时目录查找。
 
 ## 常用标志
 
@@ -50,7 +50,7 @@ openclaw message <subcommand> [flags]
 ### 核心
 
 - `send`
-  - 频道：WhatsApp/Telegram/Discord/Google Chat/Slack/Mattermost（插件）/Signal/iMessage/MS Teams
+  - 支持的频道：WhatsApp/Telegram/Discord/Google Chat/Slack/Mattermost（插件）/Signal/iMessage/MS Teams
   - 必需：`--target`，以及 `--message` 或 `--media`
   - 可选：`--media`、`--reply-to`、`--thread-id`、`--gif-playback`
   - 仅限 Telegram：`--buttons`（需要 `channels.telegram.capabilities.inlineButtons` 才能启用）
@@ -59,13 +59,13 @@ openclaw message <subcommand> [flags]
   - 仅限 WhatsApp：`--gif-playback`
 
 - `poll`
-  - 频道：WhatsApp/Discord/MS Teams
+  - 支持的频道：WhatsApp/Discord/MS Teams
   - 必需：`--target`、`--poll-question`、`--poll-option`（重复）
   - 可选：`--poll-multi`
   - 仅限 Discord：`--poll-duration-hours`、`--message`
 
 - `react`
-  - 频道：Discord/Google Chat/Slack/Telegram/WhatsApp/Signal
+  - 支持的频道：Discord/Google Chat/Slack/Telegram/WhatsApp/Signal
   - 必需：`--message-id`、`--target`
   - 可选：`--emoji`、`--remove`、`--participant`、`--from-me`、`--target-author`、`--target-author-uuid`
   - 注意：`--remove` 需要 `--emoji`（在支持的情况下，省略 `--emoji` 可清除自己的反应；参见 /tools/reactions）
@@ -73,55 +73,55 @@ openclaw message <subcommand> [flags]
   - Signal 群组反应：需要 `--target-author` 或 `--target-author-uuid`
 
 - `reactions`
-  - 频道：Discord/Google Chat/Slack
+  - 支持的频道：Discord/Google Chat/Slack
   - 必需：`--message-id`、`--target`
   - 可选：`--limit`
 
 - `read`
-  - 频道：Discord/Slack
+  - 支持的频道：Discord/Slack
   - 必需：`--target`
   - 可选：`--limit`、`--before`、`--after`
   - 仅限 Discord：`--around`
 
 - `edit`
-  - 频道：Discord/Slack
+  - 支持的频道：Discord/Slack
   - 必需：`--message-id`、`--message`、`--target`
 
 - `delete`
-  - 频道：Discord/Slack/Telegram
+  - 支持的频道：Discord/Slack/Telegram
   - 必需：`--message-id`、`--target`
 
 - `pin` / `unpin`
-  - 频道：Discord/Slack
+  - 支持的频道：Discord/Slack
   - 必需：`--message-id`、`--target`
 
 - `pins`（列表）
-  - 频道：Discord/Slack
+  - 支持的频道：Discord/Slack
   - 必需：`--target`
 
 - `permissions`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--target`
 
 - `search`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--guild-id`、`--query`
   - 可选：`--channel-id`、`--channel-ids`（重复）、`--author-id`、`--author-ids`（重复）、`--limit`
 
 ### 线程
 
 - `thread create`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--thread-name`、`--target`（频道 ID）
   - 可选：`--message-id`、`--auto-archive-min`
 
 - `thread list`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--guild-id`
   - 可选：`--channel-id`、`--include-archived`、`--before`、`--limit`
 
 - `thread reply`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--target`（线程 ID）、`--message`
   - 可选：`--media`、`--reply-to`
 
@@ -132,19 +132,19 @@ openclaw message <subcommand> [flags]
   - Slack：无额外标志
 
 - `emoji upload`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--guild-id`、`--emoji-name`、`--media`
   - 可选：`--role-ids`（重复）
 
 ### 贴纸
 
 - `sticker send`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--target`、`--sticker-id`（重复）
   - 可选：`--message`
 
 - `sticker upload`
-  - 频道：Discord
+  - 支持的频道：Discord
   - 必需：`--guild-id`、`--sticker-name`、`--sticker-desc`、`--sticker-tags`、`--media`
 
 ### 角色/频道/成员/语音
@@ -167,12 +167,12 @@ openclaw message <subcommand> [flags]
 - `timeout`：`--guild-id`、`--user-id`（可选 `--duration-min` 或 `--until`；两者都省略可清除超时）
 - `kick`：`--guild-id`、`--user-id`（+ `--reason`）
 - `ban`：`--guild-id`、`--user-id`（+ `--delete-days`、`--reason`）
-  - `timeout` 也支持 `--reason`
+  - `timeout` 同时也支持 `--reason`
 
 ### 广播
 
 - `broadcast`
-  - 频道：任何已配置的频道；使用 `--channel all` 可针对所有提供商
+  - 支持的频道：任何已配置的频道；使用 `--channel all` 可以针对所有提供商
   - 必需：`--targets`（重复）
   - 可选：`--message`、`--media`、`--dry-run`
 

@@ -13,19 +13,19 @@ OpenClaw会将聊天频道中的共享位置归一化为：
 当前支持的渠道包括：
 - **Telegram**（位置贴纸 + 场所 + 实时位置）
 - **WhatsApp**（locationMessage + liveLocationMessage）
-- **Matrix**（`m.location`，配合 `geo_uri`）
+- **Matrix**（`m.location` 结合 `geo_uri`）
 
 ## 文本格式化
 位置以友好的行形式呈现，不带括号：
 
-- 贴纸位置：
+- 位置贴纸：
   - `📍 48.858844, 2.294351 ±12m`
 - 命名地点：
   - `📍 Eiffel Tower — Champ de Mars, Paris (48.858844, 2.294351 ±12m)`
-- 实时共享位置：
+- 实时共享：
   - `🛰 Live location: 48.858844, 2.294351 ±12m`
 
-如果频道包含标题/评论，它将被附加在下一行：
+如果频道包含标题/评论，则将其附加在下一行：
 ```
 📍 48.858844, 2.294351 ±12m
 Meet here
@@ -41,7 +41,7 @@ Meet here
 - `LocationSource`（`pin | place | live`）
 - `LocationIsLive`（布尔值）
 
-## 渠道说明
+## 渠道备注
 - **Telegram**：场所映射到 `LocationName/LocationAddress`；实时位置使用 `live_period`。
 - **WhatsApp**：`locationMessage.comment` 和 `liveLocationMessage.caption` 作为标题行附加。
-- **Matrix**：`geo_uri` 被解析为贴纸位置；高度被忽略，且 `LocationIsLive` 始终为假。
+- **Matrix**：`geo_uri` 被解析为位置贴纸；高度被忽略，且 `LocationIsLive` 始终为假。

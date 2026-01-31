@@ -96,7 +96,7 @@ OpenClaw 随附 pi‑ai 目录。这些提供商**无需**任何 `models.provide
 - 身份验证：`ZAI_API_KEY`
 - 示例模型：`zai/glm-4.7`
 - CLI：`openclaw onboard --auth-choice zai-api-key`
-  - 别名：`z.ai/*` 和 `z-ai/*` 会被规范化为 `zai/*`
+  - 别名：`z.ai/*` 和 `z-ai/*` 会被归一化为 `zai/*`
 
 ### Vercel AI Gateway
 

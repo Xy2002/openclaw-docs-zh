@@ -65,8 +65,8 @@ OpenClaw 将自动提供本地安装路径。
 - 公开 DM：`channels.nextcloud-talk.dmPolicy="open"` 加上 `channels.nextcloud-talk.allowFrom=["*"]`。
 
 ## 聊天室（群组）
-- 默认：`channels.nextcloud-talk.groupPolicy = "allowlist"`（需提及才能加入）。
-- 使用 `channels.nextcloud-talk.rooms` 设置允许列表房间：
+- 默认：`channels.nextcloud-talk.groupPolicy = "allowlist"`（提及限制）。
+- 使用 `channels.nextcloud-talk.rooms` 将聊天室加入白名单：
 ```json5
 {
   channels: {
@@ -78,7 +78,7 @@ OpenClaw 将自动提供本地安装路径。
   }
 }
 ```
-- 若要禁止所有房间，保持允许列表为空或设置 `channels.nextcloud-talk.groupPolicy="disabled"`。
+- 若要不允许多个聊天室，保持白名单为空或设置 `channels.nextcloud-talk.groupPolicy="disabled"`。
 
 ## 功能支持情况
 | 功能 | 状态 |
@@ -106,15 +106,15 @@ OpenClaw 将自动提供本地安装路径。
 - `channels.nextcloud-talk.webhookPath`：Webhook 路径（默认：/nextcloud-talk-webhook）。
 - `channels.nextcloud-talk.webhookPublicUrl`：外部可访问的 Webhook URL。
 - `channels.nextcloud-talk.dmPolicy`：`pairing | allowlist | open | disabled`。
-- `channels.nextcloud-talk.allowFrom`：DM 允许列表（用户 ID）。`open` 需要 `"*"`。
+- `channels.nextcloud-talk.allowFrom`：DM 白名单（用户 ID）。`open` 需要 `"*"`。
 - `channels.nextcloud-talk.groupPolicy`：`allowlist | open | disabled`。
-- `channels.nextcloud-talk.groupAllowFrom`：群组允许列表（用户 ID）。
-- `channels.nextcloud-talk.rooms`：每房间设置和允许列表。
+- `channels.nextcloud-talk.groupAllowFrom`：群组白名单（用户 ID）。
+- `channels.nextcloud-talk.rooms`：每个聊天室的设置和白名单。
 - `channels.nextcloud-talk.historyLimit`：群组历史记录限制（0 表示禁用）。
 - `channels.nextcloud-talk.dmHistoryLimit`：DM 历史记录限制（0 表示禁用）。
-- `channels.nextcloud-talk.dms`：针对每个 DM 的覆盖设置（historyLimit）。
+- `channels.nextcloud-talk.dms`：针对单个 DM 的覆盖设置（historyLimit）。
 - `channels.nextcloud-talk.textChunkLimit`：出站文本分块大小（字符数）。
 - `channels.nextcloud-talk.chunkMode`：`length`（默认）或 `newline`，在按长度分块之前按空行（段落边界）进行拆分。
-- `channels.nextcloud-talk.blockStreaming`：为该频道禁用块流式传输。
+- `channels.nextcloud-talk.blockStreaming`：为此频道禁用块流式传输。
 - `channels.nextcloud-talk.blockStreamingCoalesce`：块流式传输合并调优。
 - `channels.nextcloud-talk.mediaMaxMb`：入站媒体上限（MB）。

@@ -15,7 +15,7 @@ OpenClaw 使用单个代理工作空间目录 (`agents.defaults.workspace`) 作�
 
 完整工作空间布局 + 备份指南：[代理工作空间](/concepts/agent-workspace)
 
-如果启用了 `agents.defaults.sandbox`，非主会话可以通过位于 `agents.defaults.sandbox.workspaceRoot` 下的会话级工作空间来覆盖此设置（参见 [网关配置](/gateway/configuration))。
+如果启用了 `agents.defaults.sandbox`，非主会话可以通过位于 `agents.defaults.sandbox.workspaceRoot` 下的会话专用工作空间来覆盖此设置（参见 [网关配置](/gateway/configuration))。
 
 ## 引入的引导文件
 
@@ -33,7 +33,7 @@ OpenClaw 使用单个代理工作空间目录 (`agents.defaults.workspace`) 作�
 
 如果某个文件缺失，OpenClaw 会注入一行“缺失文件”标记（并且 `openclaw setup` 将创建一个安全的默认模板）。
 
-`BOOTSTRAP.md` 仅针对 **全新工作空间** 创建（不存在其他引导文件）。如果您在完成仪式后将其删除，在后续重启时不应重新创建。
+`BOOTSTRAP.md` 仅在 **全新工作空间** 中创建（不存在其他引导文件）。如果您在完成仪式后将其删除，在后续重启时不应重新创建。
 
 要完全禁用引导文件的创建（适用于预先填充的工作空间），请设置：
 
@@ -43,14 +43,14 @@ OpenClaw 使用单个代理工作空间目录 (`agents.defaults.workspace`) 作�
 
 ## 内置工具
 
-核心工具（读取/执行/编辑/写入及相关系统工具）始终可用，但受工具策略约束。`apply_patch` 是可选的，并由 `tools.exec.applyPatch` 控制。`TOOLS.md` 并不控制哪些工具存在；它只是指导 *您* 希望如何使用这些工具。
+核心工具（读取/执行/编辑/写入及相关系统工具）始终可用，但受工具策略约束。`apply_patch` 是可选的，并由 `tools.exec.applyPatch` 控制。`TOOLS.md` 并不控制哪些工具存在；它只是为您如何使用这些工具提供指导。
 
 ## 技能
 
-OpenClaw 从三个位置加载技能（当名称冲突时，工作空间优先）：
-- 捆绑（随安装一起提供）
-- 受管/本地：`~/.openclaw/skills`
-- 工作空间：`<workspace>/skills`
+OpenClaw 从三个位置加载技能（当名称冲突时以工作空间优先）：
+- 捆绑技能（随安装一起提供）
+- 受管理/本地技能：`~/.openclaw/skills`
+- 工作空间技能：`<workspace>/skills`
 
 技能可通过配置或环境进行限制（参见 [网关配置](/gateway/configuration) 中的 `skills`）。
 
@@ -66,21 +66,19 @@ OpenClaw 重用了 pi-mono 代码库中的部分组件（模型/工具），但 
 会话记录以 JSONL 格式存储在：
 - `~/.openclaw/agents/<agentId>/sessions/<SessionId>.jsonl`
 
-会话 ID 是稳定的，由 OpenClaw 选择。
-旧版 Pi/Tau 会话文件夹 **不会** 被读取。
+会话 ID 是稳定的，由 OpenClaw 选择。旧版 Pi/Tau 会话文件夹 **不会** 被读取。
 
 ## 流式传输中的引导
 
-当队列模式为 `steer` 时，传入消息会被注入当前运行中。
-队列会在 **每次工具调用后** 检查；如果队列中有消息，则跳过当前助手消息中的剩余工具调用（工具结果会显示“因队列中的用户消息而跳过”），然后在下一次助手响应之前注入队列中的用户消息。
+当队列模式为 `steer` 时，传入消息会注入当前运行中。队列会在 **每次工具调用后** 检查；如果队列中有消息，则跳过当前助手消息中的剩余工具调用（工具结果会显示“因队列中的用户消息而跳过”），然后在下一次助手响应之前注入队列中的用户消息。
 
-当队列模式为 `followup` 或 `collect` 时，传入消息会一直保留，直到当前回合结束，然后在新的代理回合开始时处理队列中的负载。有关模式及去抖动/上限行为，请参见 [队列](/concepts/queue)。
+当队列模式为 `followup` 或 `collect` 时，传入消息会暂存，直到当前回合结束，然后在新的代理回合开始时处理队列中的消息负载。有关模式及去抖动/上限行为，请参见 [队列](/concepts/queue)。
 
 块流式传输会在助手块完成后立即发送；该功能 **默认关闭** (`agents.defaults.blockStreamingDefault: "off"`)。
 通过 `agents.defaults.blockStreamingBreak` 调整边界（`text_end` vs `message_end`；默认为 text_end）。
-通过 `agents.defaults.blockStreamingChunk` 控制软块分块（默认为 800–1200 字符；优先段落换行，其次是换行符；最后是句子）。
+通过 `agents.defaults.blockStreamingChunk` 控制软块分块（默认为 800–1200 字符；优先段落换行，其次为新行；最后是句子）。
 通过 `agents.defaults.blockStreamingCoalesce` 合并流式传输的块，以减少单行垃圾信息（在发送前基于空闲状态进行合并）。非 Telegram 频道需要显式启用 `*.blockStreaming: true` 才能支持块回复。
-详细的工具摘要会在工具启动时发出（无去抖动）；当可用时，UI 会通过代理事件流式传输工具输出。
+工具启动时会发出详细的工具摘要（无去抖动）；在可用时，UI 通过代理事件流式传输工具输出。
 更多详情：[流式传输 + 分块](/concepts/streaming)。
 
 ## 模型引用
@@ -93,7 +91,7 @@ OpenClaw 重用了 pi-mono 代码库中的部分组件（模型/工具），但 
 
 ## 最小化配置
 
-至少需要设置：
+至少应设置：
 - `agents.defaults.workspace`
 - `channels.whatsapp.allowFrom`（强烈推荐）
 

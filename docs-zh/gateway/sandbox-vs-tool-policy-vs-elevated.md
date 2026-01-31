@@ -14,7 +14,7 @@ OpenClaw 提供了三项相关但不同的控制机制：
 
 1. **沙盒**（`agents.defaults.sandbox.*` / `agents.list[].sandbox.*`）决定**工具在何处运行**（Docker 容器或主机）。
 2. **工具策略**（`tools.*`、`tools.sandbox.tools.*`、`agents.list[].tools.*`）决定**哪些工具可用或被允许**。
-3. **提升**（`tools.elevated.*`、`agents.list[].tools.elevated.*`）是一个仅用于执行的“逃生舱口”，在您处于沙盒环境中时，允许直接在主机上运行。
+3. **提升**（`tools.elevated.*`、`agents.list[].tools.elevated.*`）是一个仅用于执行的“逃生舱口”，在你处于沙盒环境中时，允许你在主机上运行。
 
 ## 快速调试
 
@@ -27,10 +27,10 @@ openclaw sandbox explain --agent work
 openclaw sandbox explain --json
 ```
 
-输出内容包括：
+它会输出：
 - 实际生效的沙盒模式、作用域和工作区访问权限
 - 会话当前是否处于沙盒中（主会话 vs 非主会话）
-- 实际生效的沙盒工具允许/禁止规则（以及规则来源：代理、全局或默认设置）
+- 实际生效的沙盒工具允许/禁止规则（以及该规则来自代理、全局还是默认设置）
 - 提升门控及其修复密钥路径
 
 ## 沙盒：工具运行的位置
@@ -40,12 +40,12 @@ openclaw sandbox explain --json
 - `"non-main"`：只有非主会话会被沙盒化（这通常是群组或频道中的常见“意外”）。
 - `"all"`：所有内容都被沙盒化。
 
-完整矩阵（作用域、工作区挂载、镜像等）请参见 [沙盒化](/gateway/sandboxing)。
+完整矩阵（作用域、工作区挂载、镜像）请参见 [沙盒化](/gateway/sandboxing)。
 
 ### 绑定挂载（安全快速检查）
 
-- `docker.binds` 会*穿透*沙盒文件系统：无论您挂载什么，在容器内都将以您设置的模式可见（`:ro` 或 `:rw`）。
-- 如果未指定模式，默认为读写；对于源代码或机密数据，建议使用 `:ro`。
+- `docker.binds` 会*穿透*沙盒文件系统：无论你挂载什么，在容器内都将以你设定的模式可见（`:ro` 或 `:rw`）。
+- 如果省略模式，默认为读写；对于源代码或机密数据，建议使用 `:ro`。
 - `scope: "shared"` 会忽略代理特定的绑定设置，仅应用全局绑定。
 - 绑定 `/var/run/docker.sock` 实际上将主机控制权交给了沙盒环境；请谨慎使用此选项。
 - 工作区访问权限（`workspaceAccess: "ro"`/`"rw"`）与绑定模式无关。
@@ -68,7 +68,7 @@ openclaw sandbox explain --json
 
 ### 工具组（快捷方式）
 
-全局、代理和沙盒工具策略支持 `group:*` 条目，这些条目会扩展为多个工具：
+全局、代理和沙盒工具策略支持 `group:*` 条目，这些条目会展开为多个工具：
 
 ```json5
 {
@@ -95,29 +95,29 @@ openclaw sandbox explain --json
 
 ## 提升：仅用于执行的“在主机上运行”
 
-提升**并不**授予额外的工具；它只影响 `exec`。
-- 如果您处于沙盒中，`/elevated on`（或配合 `exec` 使用 `elevated: true`）将在主机上运行（仍可能受批准流程约束）。
-- 使用 `/elevated full` 可跳过会话的执行批准流程。
-- 如果您已经直接运行，提升实际上不起作用（但仍受门控限制）。
-- 提升**不**按技能范围划分，且**不会**覆盖工具允许/禁止规则。
-- `/exec` 与提升是独立的，它仅调整授权发送者的每会话执行默认设置。
+提升**并不**赋予额外的工具；它只影响 `exec`。
+- 如果你处于沙盒中，`/elevated on`（或配合 `exec` 使用 `elevated: true`）将在主机上运行（仍可能受批准流程约束）。
+- 使用 `/elevated full` 可跳过会话的执行批准。
+- 如果你已经直接运行，提升实际上不起作用（但仍受门控限制）。
+- 提升**不**按技能范围划分，且**不会**覆盖工具的允许或禁止规则。
+- `/exec` 与提升是独立的。它仅调整授权发送者的每会话执行默认设置。
 
 门控：
-- 启用：`tools.elevated.enabled`（并可选地结合 `agents.list[].tools.elevated.enabled`）
-- 发送者白名单：`tools.elevated.allowFrom.<provider>`（并可选地结合 `agents.list[].tools.elevated.allowFrom.<provider>`）
+- 启用：`tools.elevated.enabled`（以及可选的 `agents.list[].tools.elevated.enabled`）
+- 发送者白名单：`tools.elevated.allowFrom.<provider>`（以及可选的 `agents.list[].tools.elevated.allowFrom.<provider>`）
 
 更多信息请参见 [提升模式](/tools/elevated)。
 
-## 常见“沙盒牢笼”修复方案
+## 常见“沙盒牢笼”修复方法
 
 ### “工具 X 被沙盒工具策略阻止”
 
 修复密钥（任选其一）：
-- 禁用沙盒：`agents.defaults.sandbox.mode=off`（或针对代理的 `agents.list[].sandbox.mode=off`）
+- 禁用沙盒：`agents.defaults.sandbox.mode=off`（或代理特定的 `agents.list[].sandbox.mode=off`）
 - 在沙盒中允许该工具：
-  - 从 `tools.sandbox.tools.deny` 中移除该工具（或针对代理的 `agents.list[].tools.sandbox.tools.deny`）
+  - 从 `tools.sandbox.tools.deny` 中移除该工具（或代理特定的 `agents.list[].tools.sandbox.tools.deny`）
   - 或将其添加到 `tools.sandbox.tools.allow`（或代理特定的允许列表）
 
-### “我以为这是主会话，为什么却被沙盒化？”
+### “我以为这是主会话，为什么它被沙盒化？”
 
 在 `"non-main"` 模式下，群组或频道密钥**并非**主会话密钥。请使用主会话密钥（由 `sandbox explain` 显示）或切换模式至 `"off"`。

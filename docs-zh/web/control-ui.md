@@ -31,25 +31,25 @@ read_when:
 - 通过网关 WS 与模型聊天（`chat.history`、`chat.send`、`chat.abort`、`chat.inject`）
 - 在聊天中流式传输工具调用和实时工具输出卡片（代理事件）
 - 频道：WhatsApp/Telegram/Discord/Slack + 插件频道（Mattermost 等）状态 + QR 登录 + 每个频道的配置（`channels.status`、`web.login.*`、`config.patch`）
-- 实例：在线实例列表 + 刷新（`system-presence`）
-- 会话：列表 + 每个会话的思考/详细模式覆盖（`sessions.list`、`sessions.patch`）
+- 实例：在线列表 + 刷新（`system-presence`）
+- 会话：列表 + 每会话的思考/详细模式覆盖（`sessions.list`、`sessions.patch`）
 - 定时任务：列出/添加/运行/启用/禁用 + 运行历史（`cron.*`）
 - 技能：状态、启用/禁用、安装、API 密钥更新（`skills.*`）
-- 节点：列表 + 功能集（`node.list`）
+- 节点：列表 + 功能（`node.list`）
 - 执行审批：编辑网关或节点白名单 + 请求 `exec host=gateway/node` 的策略（`exec.approvals.*`）
 - 配置：查看/编辑 `~/.openclaw/openclaw.json`（`config.get`、`config.set`）
-- 配置：应用并重启，同时进行验证（`config.apply`），并唤醒最近活跃的会话
+- 配置：应用并重启，同时进行验证（`config.apply`），并唤醒最近一次活跃会话
 - 配置写入包含基础哈希保护，以防止并发编辑相互覆盖
-- 配置模式 + 表单渲染（`config.schema`，包括插件和频道模式）；原始 JSON 编辑器仍可用
+- 配置模式 + 表单渲染（`config.schema`，包括插件和频道模式）；原始 JSON 编辑器仍然可用
 - 调试：状态/健康/模型快照 + 事件日志 + 手动 RPC 调用（`status`、`health`、`models.list`）
-- 日志：带有筛选和导出功能的网关文件日志实时尾部跟踪（`logs.tail`）
+- 日志：带有过滤和导出功能的网关文件日志实时尾部跟踪（`logs.tail`）
 - 更新：运行包/Git 更新并重启（`update.run`），附带重启报告
 
 ## 聊天行为
 
-- `chat.send` 是**非阻塞的**：它会立即以 `{ runId, status: "started" }` 确认，并通过 `chat` 事件流式返回响应。
+- `chat.send` 是**非阻塞的**：它立即通过 `{ runId, status: "started" }` 确认，并通过 `chat` 事件流式传输响应。
 - 使用相同的 `idempotencyKey` 重新发送，在运行时返回 `{ status: "in_flight" }`，完成后返回 `{ status: "ok" }`。
-- `chat.inject` 会将助手备注附加到会话记录中，并广播一个仅用于 UI 更新的 `chat` 事件（不运行代理，不传递到频道）。
+- `chat.inject` 将助手备注附加到会话记录中，并广播一个仅用于 UI 更新的 `chat` 事件（不运行代理，不传递到频道）。
 - 停止：
   - 点击**停止**（调用 `chat.abort`）
   - 输入 `/stop`（或 `stop|esc|abort|wait|exit|interrupt`）以在带外终止
@@ -69,7 +69,7 @@ openclaw gateway --tailscale serve
 - `https://<magicdns>/`（或您配置的 `gateway.controlUi.basePath`）
 
 默认情况下，Serve 请求可以通过 Tailscale 身份标头进行身份验证
-（`tailscale-user-login`），当 `gateway.auth.allowTailscale` 设置为 `true` 时。OpenClaw 通过解析 `x-forwarded-for` 地址并与标头匹配来验证身份，并且仅在接受请求来自环回地址且带有 Tailscale 的 `x-forwarded-*` 标头时才接受此类请求。如果您希望即使对于 Serve 流量也要求使用令牌/密码，请设置 `gateway.auth.allowTailscale: false`（或强制 `gateway.auth.mode: "password"`）。
+（`tailscale-user-login`），当 `gateway.auth.allowTailscale` 设置为 `true` 时。OpenClaw 通过解析 `x-forwarded-for` 地址并与标头匹配来验证身份，并且仅在请求通过 Tailscale 的 `x-forwarded-*` 标头访问环回地址时才接受这些请求。如果您希望即使对于 Serve 流量也要求使用令牌/密码，请设置 `gateway.auth.allowTailscale: false`（或强制 `gateway.auth.mode: "password"`）。
 
 ### 绑定到 tailnet + 令牌
 
@@ -84,13 +84,13 @@ openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
 
 ## 不安全的 HTTP
 
-如果您通过普通 HTTP 打开仪表板（`http://<lan-ip>` 或 `http://<tailscale-ip>`），浏览器将在**非安全上下文中运行**，并阻止 WebCrypto。默认情况下，OpenClaw **会阻止**没有设备身份的控制 UI 连接。
+如果您通过普通 HTTP 打开仪表板（`http://<lan-ip>` 或 `http://<tailscale-ip>`），浏览器将在**非安全上下文**中运行，并阻止 WebCrypto。默认情况下，OpenClaw **会阻止**没有设备身份的控制 UI 连接。
 
 **推荐修复方法**：使用 HTTPS（Tailscale Serve）或在本地打开 UI：
 - `https://<magicdns>/`（Serve）
 - `http://127.0.0.1:18789/`（在网关主机上）
 
-**降级示例（仅限令牌的 HTTP）**：
+**降级示例（仅令牌通过 HTTP）**：
 
 ```json5
 {
@@ -102,7 +102,7 @@ openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
 }
 ```
 
-这会禁用控制 UI 的设备身份和配对功能（即使在 HTTPS 下）。仅在您信任网络时使用。
+这会禁用控制 UI 的设备身份和配对（即使在 HTTPS 下）。仅在您信任网络时使用。
 
 有关 HTTPS 设置指南，请参阅 [Tailscale](/gateway/tailscale)。
 
@@ -114,7 +114,7 @@ openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
 pnpm ui:build # auto-installs UI deps on first run
 ```
 
-可选的绝对基址（当您需要固定的资产 URL 时）：
+可选绝对基址（当您需要固定的资产 URL 时）：
 
 ```bash
 OPENCLAW_CONTROL_UI_BASE_PATH=/openclaw/ pnpm ui:build
@@ -139,7 +139,7 @@ pnpm ui:dev # auto-installs UI deps on first run
 http://localhost:5173/?gatewayUrl=ws://<gateway-host>:18789
 ```
 
-可选的一次性身份验证（如有需要）：
+可选一次性身份验证（如有需要）：
 
 ```text
 http://localhost:5173/?gatewayUrl=wss://<gateway-host>:18789&token=<gateway-token>
@@ -147,7 +147,7 @@ http://localhost:5173/?gatewayUrl=wss://<gateway-host>:18789&token=<gateway-toke
 
 注意事项：
 - `gatewayUrl` 在加载后存储在 localStorage 中，并从 URL 中移除。
-- `token` 存储在 localStorage 中；`password` 仅保留在内存中。
+- `token` 存储在 localStorage 中；`password` 仅保存在内存中。
 - 如果网关位于 TLS 之后（Tailscale Serve、HTTPS 代理等），请使用 `wss://`。
 
 远程访问设置详情：[远程访问](/gateway/remote)。

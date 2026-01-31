@@ -15,7 +15,7 @@ OpenClaw 有两个独立的“流式传输”层：
 
 ## 区块流式传输（频道消息）
 
-区块流式传输会在助手输出可用时，以粗粒度的块形式发送。
+区块流式传输在助手输出可用时，以粗粒度的块形式发送。
 
 ```
 Model output
@@ -29,17 +29,17 @@ Model output
 图例：
 - `text_delta/events`：模型流事件（对于非流式模型，可能较为稀疏）。
 - `chunker`：应用最小/最大限制及拆分偏好的`EmbeddedBlockChunker`。
-- `channel send`：实际的出站消息（区块回复）。
+- `channel send`：实际发出的消息（区块回复）。
 
 **控制项：**
 - `agents.defaults.blockStreamingDefault`：`"on"`/`"off"`（默认关闭）。
-- 频道覆盖：`*.blockStreaming`（以及按账户变体），用于强制为每个频道启用`"on"`/`"off"`。
+- 频道覆盖：`*.blockStreaming`（以及按账户变体），用于强制按频道设置`"on"`/`"off"`。
 - `agents.defaults.blockStreamingBreak`：`"text_end"` 或 `"message_end"`。
 - `agents.defaults.blockStreamingChunk`：`{ minChars, maxChars, breakPreference? }`。
 - `agents.defaults.blockStreamingCoalesce`：`{ minChars?, maxChars?, idleMs? }`（在发送前合并流式区块）。
 - 频道硬性上限：`*.textChunkLimit`（例如，`channels.whatsapp.textChunkLimit`）。
-- 频道分块模式：`*.chunkMode`（默认为`length`；`newline`在长度分块之前按空行（段落边界）进行拆分）。
-- Discord 软性上限：`channels.discord.maxLinesPerMessage`（默认为 17），用于拆分高大回复以避免 UI 截断。
+- 频道分块模式：`*.chunkMode`（默认为`length`，`newline`在长度分块之前按空行（段落边界）拆分）。
+- Discord 软上限：`channels.discord.maxLinesPerMessage`（默认 17），用于拆分高大回复以避免 UI 截断。
 
 **边界语义：**
 - `text_end`：一旦分块器发出区块，立即开始流式传输；每次遇到`text_end`时清空缓冲区。
@@ -52,34 +52,34 @@ Model output
 区块分块由`EmbeddedBlockChunker` 实现：
 - **低限：** 在缓冲区小于等于`minChars` 时不会发出；除非被强制。
 - **高限：** 优先在达到`maxChars` 之前进行拆分；若被强制，则在`maxChars` 处拆分。
-- **拆分偏好顺序：** `paragraph` → `newline` → `sentence` → `whitespace` → 硬性拆分。
-- **代码围栏：** 永远不在围栏内拆分；若在`maxChars` 处被迫拆分，则先关闭再重新打开围栏，以保持 Markdown 的有效性。
+- **拆分偏好：** `paragraph` → `newline` → `sentence` → `whitespace` → 硬性拆分。
+- **代码围栏：** 永远不在围栏内拆分；若在`maxChars` 处被迫拆分，则先关闭再重新打开围栏，以保持 Markdown 有效。
 
-`maxChars` 受频道`textChunkLimit` 的限制，因此您无法超过每个频道的上限。
+`maxChars` 受频道`textChunkLimit` 的限制，因此您无法超出每个频道的上限。
 
 ## 合并（合并流式区块）
 
 当区块流式传输启用时，OpenClaw 可以在发送之前**合并连续的区块块**。这减少了“单行垃圾信息”，同时仍能提供渐进式输出。
 
-- 合并会在出现**空闲间隙**（`idleMs`）后才进行刷新。
-- 缓冲区受`maxChars` 的限制，超出时会自动刷新。
-- `minChars` 防止微小片段在文本积累不足时发送（最终刷新始终会发送剩余文本）。
+- 合并会在出现**空闲间隔**（`idleMs`）后才清空缓冲区。
+- 缓冲区受`maxChars` 限制，超出时会自动清空。
+- `minChars` 防止微小片段在文本积累不足时发送（最终清空始终会发送剩余文本）。
 - 连接符源自`blockStreamingChunk.breakPreference`（`paragraph` → `\n\n`，`newline` → `\n`，`sentence` → 空格）。
 - 频道覆盖可通过`*.blockStreamingCoalesce` 设置（包括按账户配置）。
 - 默认合并阈值`minChars` 在 Signal、Slack 和 Discord 上提高到 1500，除非另有设置。
 
 ## 区块之间的类人节奏
-当区块流式传输启用时，您可以在**第一个区块之后**的区块回复之间添加一个**随机暂停**。这使多气泡回复显得更加自然。
+当区块流式传输启用时，您可以在**第一个区块之后**的区块回复之间添加一个**随机暂停**。这使得多气泡回复显得更加自然。
 
-- 配置：`agents.defaults.humanDelay`（可通过`agents.list[].humanDelay` 为每个代理覆盖）。
+- 配置：`agents.defaults.humanDelay`（可通过`agents.list[].humanDelay` 对每个代理进行覆盖）。
 - 模式：`off`（默认）、`natural`（800–2500 毫秒）、`custom`（`minMs`/`maxMs`）。
 - 仅适用于**区块回复**，不适用于最终回复或工具摘要。
 
-## “分块流式传输还是全部流式传输”
-这对应于：
+## “分块流式传输或一次性全部传输”
+对应如下：
 - **分块流式传输：** `blockStreamingDefault: "on"` + `blockStreamingBreak: "text_end"`（边生成边发送）。非 Telegram 频道还需要 `*.blockStreaming: true`。
-- **在结尾一次性流式传输所有内容：** `blockStreamingBreak: "message_end"`（一次性刷新，如果内容非常长，可能会发送多个块）。
-- **不进行区块流式传输：** `blockStreamingDefault: "off"`（仅发送最终回复）。
+- **一次性全部流式传输：** `blockStreamingBreak: "message_end"`（一次性清空缓冲区，若内容过长则可能分多次发送）。
+- **无区块流式传输：** `blockStreamingDefault: "off"`（仅发送最终回复）。
 
 **频道提示：** 对于非 Telegram 频道，除非显式将`*.blockStreaming` 设置为`true`，否则区块流式传输将**关闭**。Telegram 可以在没有区块回复的情况下进行草稿流式传输（`channels.telegram.streamMode`）。
 
@@ -87,17 +87,17 @@ Model output
 
 ## Telegram 草稿流式传输（类似标记）
 Telegram 是唯一支持草稿流式传输的渠道：
-- 在带有话题的**私人聊天**中使用 Bot API `sendMessageDraft`。
+- 在带有主题的**私人聊天**中使用 Bot API `sendMessageDraft`。
 - `channels.telegram.streamMode: "partial" | "block" | "off"`。
-  - `partial`：草稿根据最新的流式文本进行更新。
-  - `block`：草稿以分块的形式更新（采用相同的分块规则）。
+  - `partial`：用最新的流式文本更新草稿。
+  - `block`：以分块的形式更新草稿（遵循相同的分块规则）。
   - `off`：无草稿流式传输。
 - 草稿分块配置（仅适用于 `streamMode: "block"`）：`channels.telegram.draftChunk`（默认：`minChars: 200`，`maxChars: 800`）。
 - 草稿流式传输与区块流式传输是独立的；区块回复默认关闭，仅在非 Telegram 频道上通过 `*.blockStreaming: true` 才会启用。
 - 最终回复仍然是普通消息。
 - `/reasoning stream` 将推理写入草稿气泡（仅限 Telegram）。
 
-当草稿流式传输处于活动状态时，OpenClaw 会禁用该回复的区块流式传输，以避免双重流式传输。
+当草稿流式传输激活时，OpenClaw 会禁用该回复的区块流式传输，以避免双重流式传输。
 
 ```
 Telegram (private + topics)

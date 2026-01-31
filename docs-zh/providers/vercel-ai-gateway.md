@@ -8,11 +8,11 @@ read_when:
 # Vercel AI 网关
 
 
-[Vercel AI 网关](https://vercel.com/ai-gateway) 提供一个统一的 API，可通过单个端点访问数百种模型。
+[Vercel AI 网关](https://vercel.com/ai-gateway) 提供统一的 API，可通过单个端点访问数百种模型。
 
 - 提供商: `vercel-ai-gateway`
 - 认证: `AI_GATEWAY_API_KEY`
-- 兼容的 API：Anthropic Messages
+- 兼容 API: Anthropic Messages
 
 ## 快速入门
 
@@ -45,4 +45,5 @@ openclaw onboard --non-interactive \
 
 ## 环境说明
 
-如果网关以守护进程（launchd/systemd）形式运行，请确保 `AI_GATEWAY_API_KEY` 对该进程可用（例如，在 `~/.openclaw/.env` 中或通过 `env.shellEnv`）。
+如果网关以守护进程（launchd/systemd）形式运行，请确保 `AI_GATEWAY_API_KEY`
+对该进程可用（例如，在 `~/.openclaw/.env` 中或通过 `env.shellEnv`）。

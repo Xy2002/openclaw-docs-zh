@@ -6,7 +6,7 @@ read_when:
 ---
 # 小米米么
 
-小米米么是面向**MiMo**模型的API平台。它提供与OpenAI和Anthropic格式兼容的REST API，并使用API密钥进行身份验证。您可在[小米米么控制台](https://platform.xiaomimimo.com/#/console/api-keys)中创建您的API密钥。OpenClaw使用带有小米米么API密钥的`xiaomi`提供商。
+小米米么是面向**MiMo**模型的API平台。它提供与OpenAI和Anthropic格式兼容的REST API，并使用API密钥进行身份验证。您可以在[小米米么控制台](https://platform.xiaomimimo.com/#/console/api-keys)中创建您的API密钥。OpenClaw使用带有小米米么API密钥的`xiaomi`提供商。
 
 ## 模型概览
 
@@ -55,5 +55,5 @@ openclaw onboard --auth-choice xiaomi-api-key --xiaomi-api-key "$XIAOMI_API_KEY"
 ## 注意事项
 
 - 模型引用：`xiaomi/mimo-v2-flash`。
-- 当设置`XIAOMI_API_KEY`时（或存在身份验证配置文件时），提供商将自动注入。
+- 当设置`XIAOMI_API_KEY`时（或存在身份验证配置文件），提供商将自动注入。
 - 有关提供商规则，请参阅[/concepts/model-providers](/concepts/model-providers)。

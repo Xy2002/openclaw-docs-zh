@@ -10,9 +10,9 @@ read_when:
 
 OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 
-- **iOS 节点**（通过网关配对）：可通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
-- **Android 节点**（通过网关配对）：可通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
-- **macOS 应用程序**（通过网关连接的节点）：可通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
+- **iOS 节点**（通过网关配对）：通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
+- **Android 节点**（通过网关配对）：通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
+- **macOS 应用程序**（通过网关的节点）：通过 `node.invoke` 捕获**照片**（`jpg`）或**短视频片段**（`mp4`，可选音频）。
 
 所有摄像头访问均受**用户可控设置**的限制。
 
@@ -21,8 +21,8 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 ### 用户设置（默认开启）
 
 - iOS 设置标签 → **相机** → **允许相机**（`camera.enabled`）
-  - 默认：**开启**（缺失键被视为已启用）。
-  - 关闭时：`camera.*` 命令会返回 `CAMERA_DISABLED`。
+  - 默认：**开启**（缺少该键被视为已启用）。
+  - 关闭时：`camera.*` 命令返回 `CAMERA_DISABLED`。
 
 ### 命令（通过网关 `node.invoke`）
 
@@ -47,8 +47,8 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 - `camera.clip`
   - 参数：
     - `facing`：`front|back`（默认：`front`）
-    - `durationMs`：数字（默认 `3000`，上限为 `60000`）
-    - `includeAudio`：布尔值（默认 `true`）
+    - `durationMs`：数字（默认值为 `3000`，上限为 `60000`）
+    - `includeAudio`：布尔值（默认为 `true`）
     - `format`：当前为 `mp4`
     - `deviceId`：字符串（可选；来自 `camera.list`）
   - 响应负载：
@@ -59,7 +59,7 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 
 ### 前台要求
 
-与 `canvas.*` 类似，iOS 节点仅允许在**前台**执行 `camera.*` 命令。后台调用会返回 `NODE_BACKGROUND_UNAVAILABLE`。
+与 `canvas.*` 类似，iOS 节点仅允许在**前台**执行 `camera.*` 命令。后台调用将返回 `NODE_BACKGROUND_UNAVAILABLE`。
 
 ### CLI 辅助工具（临时文件 + 媒体）
 
@@ -83,8 +83,8 @@ openclaw nodes camera clip --node <id> --no-audio
 ### 用户设置（默认开启）
 
 - 安卓设置表 → **相机** → **允许相机**（`camera.enabled`）
-  - 默认：**开启**（缺失键被视为已启用）。
-  - 关闭时：`camera.*` 命令会返回 `CAMERA_DISABLED`。
+  - 默认：**开启**（缺少该键被视为已启用）。
+  - 关闭时：`camera.*` 命令返回 `CAMERA_DISABLED`。
 
 ### 权限
 
@@ -92,11 +92,11 @@ openclaw nodes camera clip --node <id> --no-audio
   - `CAMERA` 用于 `camera.snap` 和 `camera.clip`。
   - `RECORD_AUDIO` 用于 `camera.clip` 当 `includeAudio=true` 时。
 
-如果缺少权限，应用会在可能的情况下提示用户；如果被拒绝，`camera.*` 请求会因 `*_PERMISSION_REQUIRED` 错误而失败。
+如果缺少权限，应用会在可能的情况下提示用户；如果被拒绝，`camera.*` 请求将失败并返回 `*_PERMISSION_REQUIRED` 错误。
 
 ### 前台要求
 
-与 `canvas.*` 类似，Android 节点仅允许在**前台**执行 `camera.*` 命令。后台调用会返回 `NODE_BACKGROUND_UNAVAILABLE`。
+与 `canvas.*` 类似，Android 节点仅允许在**前台**执行 `camera.*` 命令。后台调用将返回 `NODE_BACKGROUND_UNAVAILABLE`。
 
 ### 负载保护
 
@@ -110,7 +110,7 @@ macOS 配套应用程序提供一个复选框：
 
 - **设置 → 通用 → 允许相机**（`openclaw.cameraEnabled`）
   - 默认：**关闭**
-  - 关闭时：相机请求会返回“相机已被用户禁用”。
+  - 关闭时：相机请求将返回“相机已被用户禁用”。
 
 ### CLI 辅助工具（节点调用）
 
@@ -137,8 +137,8 @@ openclaw nodes camera clip --node <id> --no-audio
 
 ## 安全性 + 实际限制
 
-- 访问摄像头和麦克风会触发常规的操作系统权限提示（并在 Info.plist 中需要使用说明字符串）。
-- 视频片段有上限（目前为 `<= 60s`），以避免节点负载过大（base64 开销 + 消息限制）。
+- 摄像头和麦克风访问会触发常规的操作系统权限提示（并在 Info.plist 中需要使用说明字符串）。
+- 视频片段有上限（当前为 `<= 60s`），以避免节点负载过大（base64 开销 + 消息限制）。
 
 ## macOS 屏幕视频（操作系统级别）
 
@@ -149,4 +149,4 @@ openclaw nodes screen record --node <id> --duration 10s --fps 15   # prints MEDI
 ```
 
 注意：
-- 需要 macOS 的**屏幕录制**权限（TCC）。
+- 需要 macOS **屏幕录制**权限（TCC）。

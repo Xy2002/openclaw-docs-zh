@@ -20,7 +20,7 @@ OpenClaw 可以作为本地、权限感知的 UI 自动化代理托管 **Peekabo
 在 macOS 应用中：
 - 设置 → **启用 Peekaboo Bridge**
 
-启用后，OpenClaw 会启动一个本地 UNIX 套接字服务器。如果禁用，主机将停止，`peekaboo` 将回退到其他可用主机。
+启用后，OpenClaw 会启动一个本地 UNIX 套接字服务器。如果禁用，主机将停止运行，`peekaboo` 将回退到其他可用主机。
 
 ## 客户端发现顺序
 

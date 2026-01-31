@@ -74,11 +74,11 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 ### 模型/认证失败（速率限制、计费、“所有模型均失败”）
 
 - [模型](/cli/models)
-- [OAuth / 认证概念](/concepts/oauth)
+- [OAuth/认证概念](/concepts/oauth)
 
-### `/model` 显示 `model not allowed`
+### `/model` 报错 `model not allowed`
 
-这通常意味着 `agents.defaults.models` 被配置为白名单。当白名单非空时，只能选择这些提供商/模型密钥。
+这通常意味着 `agents.defaults.models` 被配置为白名单。当白名单不为空时，只有这些提供商/模型密钥可以被选择。
 
 - 检查白名单： `openclaw config get agents.defaults.models`
 - 添加您想要的模型（或清空白名单），然后重试 `/model`

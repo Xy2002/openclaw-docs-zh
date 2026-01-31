@@ -38,7 +38,7 @@ openclaw plugins install ./extensions/line
 https://gateway-host/line/webhook
 ```
 
-网关会响应 LINE 的 webhook 验证（GET）和入站事件（POST）。如果您需要自定义路径，请设置 `channels.line.webhookPath` 或 `channels.line.accounts.<id>.webhookPath`，并相应地更新 URL。
+网关会响应 LINE 的 webhook 验证（GET）和入站事件（POST）。如果您需要自定义路径，请设置 `channels.line.webhookPath` 或 `channels.line.accounts.<id>.webhookPath`，并相应更新 URL。
 
 ## 配置
 
@@ -95,7 +95,7 @@ https://gateway-host/line/webhook
 
 ## 访问控制
 
-直接消息默认启用配对。未知发件人会收到一个配对代码，在获得批准之前，其消息将被忽略。
+默认情况下，直接消息需要配对。未知发件人会收到一个配对代码，在获得批准之前，其消息将被忽略。
 
 ```bash
 openclaw pairing list line
@@ -105,10 +105,10 @@ openclaw pairing approve line <CODE>
 白名单和策略：
 
 - `channels.line.dmPolicy`: `pairing | allowlist | open | disabled`
-- `channels.line.allowFrom`: 用于直接消息的已批准 LINE 用户 ID 列表
+- `channels.line.allowFrom`: 允许用于直接消息的 LINE 用户 ID 白名单
 - `channels.line.groupPolicy`: `allowlist | open | disabled`
-- `channels.line.groupAllowFrom`: 用于群组的已批准 LINE 用户 ID 列表
-- 每个群组的覆盖设置： `channels.line.groups.<groupId>.allowFrom`
+- `channels.line.groupAllowFrom`: 允许用于群组的 LINE 用户 ID 白名单
+- 每个群组的覆盖设置：`channels.line.groups.<groupId>.allowFrom`
 
 LINE ID 区分大小写。有效 ID 的格式如下：
 
@@ -118,7 +118,7 @@ LINE ID 区分大小写。有效 ID 的格式如下：
 
 ## 消息行为
 
-- 文本在 5000 字符处进行分块。
+- 文本在 5000 字符处分块。
 - Markdown 格式会被剥离；在可能的情况下，代码块和表格会被转换为 Flex 卡。
 - 流式响应会被缓冲；在代理处理期间，LINE 会以加载动画接收完整的数据块。
 - 媒体下载受 `channels.line.mediaMaxMb` 限制（默认为 10）。
@@ -164,6 +164,6 @@ LINE 插件还提供一个用于 Flex 消息预设的 `/card` 命令：
 
 ## 故障排除
 
-- **Webhook 验证失败：** 确保 webhook URL 使用 HTTPS，且 `channelSecret` 与 LINE 控制台一致。
-- **无入站事件：** 确认 webhook 路径与 `channels.line.webhookPath` 匹配，并确保 LINE 可以访问网关。
+- **Webhook 验证失败：** 确保 webhook URL 使用 HTTPS，并且 `channelSecret` 与 LINE 控制台一致。
+- **没有入站事件：** 确认 webhook 路径与 `channels.line.webhookPath` 匹配，并确保 LINE 可以访问网关。
 - **媒体下载错误：** 如果媒体超过默认限制，请提高 `channels.line.mediaMaxMb`。

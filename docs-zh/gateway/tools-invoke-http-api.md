@@ -48,7 +48,7 @@ OpenClaw的网关公开了一个简单的HTTP端点，用于直接调用单个�
 - `tools.profile` / `tools.byProvider.profile`
 - `tools.allow` / `tools.byProvider.allow`
 - `agents.<id>.tools.allow` / `agents.<id>.tools.byProvider.allow`
-- 组策略（如果会话密钥映射到某个组或频道）
+- 组策略（如果会话密钥映射到组或频道）
 - 子代理策略（使用子代理会话密钥调用时）
 
 如果工具不受策略允许，端点将返回**404**。

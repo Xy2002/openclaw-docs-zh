@@ -8,18 +8,17 @@ read_when:
 
 OpenClaw 支持众多大语言模型提供商。选择一个提供商，完成身份验证，然后将默认模型设置为 `provider/model`。
 
-## 亮点：Venius（Venice AI）
+## 重点推荐：Venius（Venice AI）
 
-Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设计，并可在处理最困难的任务时选择使用 Opus。
-
+Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设计，并提供在最困难的任务中使用 Opus 的选项。
 - 默认设置：`venice/llama-3.3-70b`
-- 综合表现最佳：`venice/claude-opus-45`（Opus 依然是最强的选择）
+- 综合表现最佳：`venice/claude-opus-45`（Opus 依然是最强的模型）
 
-详情请参阅 [Venice AI](/providers/venice)。
+更多信息请参见 [Venice AI](/providers/venice)。
 
-## 快速入门（两步走）
+## 快速入门（两步操作）
 
-1) 向提供商进行身份验证（通常通过 `openclaw onboard` 完成）。
+1) 使用提供商进行身份验证（通常通过 `openclaw onboard` 完成）。
 2) 设置默认模型：
 
 ```json5

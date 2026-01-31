@@ -44,11 +44,11 @@ macOS 应用支持 Anthropic OAuth（Claude Pro/Max）。流程如下：
 
 ## 3) 设置向导（由网关驱动）
 
-该应用可以运行与 CLI 相同的设置向导。这使得入门流程与网关端的行为保持同步，并避免在 SwiftUI 中重复逻辑。
+该应用可以运行与 CLI 相同的设置向导。这使得入门流程与网关侧的行为保持同步，并避免在 SwiftUI 中重复逻辑。
 
 ## 4) 权限
 
-入门过程中会请求以下 TCC 权限：
+入门过程会请求以下 TCC 权限：
 
 - 通知
 - 辅助功能
@@ -58,24 +58,24 @@ macOS 应用支持 Anthropic OAuth（Claude Pro/Max）。流程如下：
 
 ## 5) CLI（可选）
 
-该应用可以通过 npm/pnpm 安装全局 `openclaw` CLI，从而使终端工作流和 launchd 任务开箱即用。
+该应用可以通过 npm/pnpm 安装全局 `openclaw` CLI，以便终端工作流和 launchd 任务开箱即用。
 
 ## 6) 入门聊天（专用会话）
 
-设置完成后，应用会打开一个专用的入门聊天会话，以便代理能够自我介绍并指导后续步骤。这样可以将首次运行的引导信息与您的常规对话区分开来。
+设置完成后，应用会打开一个专用的入门聊天会话，以便代理能够自我介绍并指导后续步骤。这样可以将首次运行的引导信息与您的正常对话分开。
 
 ## 代理引导仪式
 
-在代理首次运行时，OpenClaw 会引导一个工作空间（默认 `~/.openclaw/workspace`）：
+在代理首次运行时，OpenClaw 会引导创建一个工作区（默认 `~/.openclaw/workspace`）：
 
-- 种子数据包括 `AGENTS.md`、`BOOTSTRAP.md`、`IDENTITY.md`、`USER.md`
-- 运行一个简短的问答仪式（一次一个问题）
+- 初始化 `AGENTS.md`、`BOOTSTRAP.md`、`IDENTITY.md`、`USER.md`
+- 运行简短的问答仪式（一次一个问题）
 - 将身份和偏好写入 `IDENTITY.md`、`USER.md`、`SOUL.md`
-- 完成后移除 `BOOTSTRAP.md`，确保该过程仅运行一次
+- 完成后移除 `BOOTSTRAP.md`，确保其仅运行一次
 
 ## 可选：Gmail 钩子（手动）
 
-Gmail Pub/Sub 的设置目前仍需手动完成。使用以下命令：
+Gmail Pub/Sub 的设置目前仍需手动完成。使用以下内容：
 
 ```bash
 openclaw webhooks gmail setup --account you@gmail.com
@@ -85,7 +85,7 @@ openclaw webhooks gmail setup --account you@gmail.com
 
 ## 远程模式注意事项
 
-当网关运行在另一台机器上时，凭据和工作空间文件将存储在**该主机上**。如果在远程模式下需要 OAuth，请在网关主机上创建：
+当网关运行在另一台机器上时，凭据和工作区文件将存储在**该主机上**。如果在远程模式下需要 OAuth，请在网关主机上创建：
 
 - `~/.openclaw/credentials/oauth.json`
 - `~/.openclaw/agents/<agentId>/agent/auth-profiles.json`

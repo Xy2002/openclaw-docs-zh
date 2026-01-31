@@ -7,7 +7,7 @@ read_when:
 ---
 # `openclaw system`
 
-网关的系统级辅助工具：排队系统事件、控制心跳以及查看存在状态。
+网关的系统级辅助工具：排队系统事件、控制心跳以及查看在线状态。
 
 ## 常用命令
 
@@ -20,7 +20,7 @@ openclaw system presence
 
 ## `system event`
 
-在**主**会话上排队一个系统事件。下一次心跳会将其作为提示中的`System:`行注入。使用`--mode now`可立即触发心跳；`next-heartbeat`则等待下一个预定时间点。
+在**主**会话上排队一个系统事件。下一次心跳时，它将作为提示中的`System:`行注入。使用`--mode now`可立即触发心跳；`next-heartbeat`则等待下一个预定时间点触发。
 
 标志：
 - `--text <text>`: 必需的系统事件文本。
@@ -30,7 +30,7 @@ openclaw system presence
 ## `system heartbeat last|enable|disable`
 
 心跳控制：
-- `last`: 显示上次心跳事件。
+- `last`: 显示上次的心跳事件。
 - `enable`: 重新启用心跳（如果之前被禁用，请使用此选项）。
 - `disable`: 暂停心跳。
 
@@ -39,7 +39,7 @@ openclaw system presence
 
 ## `system presence`
 
-列出网关当前已知的系统存在条目（节点、实例及类似状态行）。
+列出网关当前已知的系统在线状态条目（节点、实例及类似状态行）。
 
 标志：
 - `--json`: 机器可读输出。

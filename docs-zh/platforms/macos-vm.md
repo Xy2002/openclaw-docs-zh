@@ -14,7 +14,7 @@ read_when:
 
 - **小型 Linux VPS**：作为始终在线的网关，且成本低廉。请参阅 [VPS 托管](/vps)。
 - **专用硬件**（Mac mini 或 Linux 服务器）：如果您希望完全掌控，并为浏览器自动化获取一个“住宅 IP”。许多网站会屏蔽数据中心 IP，因此在本地浏览器中操作通常效果更好。
-- **混合模式**：将网关部署在廉价 VPS 上，当您需要浏览器或 UI 自动化时，再将您的 Mac 连接为一个 **节点**。请参阅 [节点](/nodes) 和 [远程网关](/gateway/remote)。
+- **混合方案**：将网关部署在廉价 VPS 上，当您需要浏览器或 UI 自动化时，再将您的 Mac 作为 **节点** 连接进来。请参阅 [节点](/nodes) 和 [远程网关](/gateway/remote)。
 
 当您特别需要仅限 macOS 的功能（如 iMessage/BlueBubbles），或者希望与日常使用的 Mac 实现严格隔离时，可以使用 macOS 虚拟机。
 
@@ -34,7 +34,7 @@ read_when:
 
 如果您希望在云端使用 macOS，也可以选择托管 Mac 服务提供商：
 - [MacStadium](https://www.macstadium.com/)（托管 Mac）
-- 其他托管 Mac 供应商同样适用；请按照其提供的 VM + SSH 文档进行操作。
+- 其他托管 Mac 供应商同样适用；请参考其提供的 VM + SSH 文档。
 
 一旦您获得对 macOS 虚拟机的 SSH 访问权限，请继续执行下面的第 6 步。
 
@@ -224,7 +224,7 @@ ssh youruser@192.168.64.X "openclaw status"
 
 ## 保存黄金镜像
 
-在进一步自定义之前，先快照当前的干净状态：
+在进一步自定义之前，先为干净状态创建快照：
 
 ```bash
 lume stop openclaw

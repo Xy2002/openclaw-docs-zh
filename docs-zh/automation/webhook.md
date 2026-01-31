@@ -71,7 +71,7 @@ read_when:
 - `wakeMode` 可选（`now` | `next-heartbeat`）：是否立即触发心跳（默认为 `now`），或等待下一次定期检查。
 - `deliver` 可选（布尔值）：如果启用 `true`，代理的响应将被发送到消息通道。默认为 `true`。仅作为心跳确认的响应会自动跳过。
 - `channel` 可选（字符串）：用于传递消息的通道。可选通道包括：`last`、`whatsapp`、`telegram`、`discord`、`slack`、`mattermost`（插件）、`signal`、`imessage`、`msteams`。默认为 `last`。
-- `to` 可选（字符串）：通道的接收方标识符（例如，WhatsApp/Signal 的电话号码，Telegram 的聊天 ID，Discord/Slack/Mattermost（插件）的频道 ID，MS Teams 的对话 ID）。默认为主会话中最后一位接收方。
+- `to` 可选（字符串）：通道的接收方标识符（例如，WhatsApp/Signal 的电话号码，Telegram 的聊天 ID，Discord/Slack/Mattermost（插件）的频道 ID，MS Teams 的对话 ID）。默认为主会话中最后使用的接收方。
 - `model` 可选（字符串）：模型覆盖（例如，`anthropic/claude-3-5-sonnet` 或别名）。如果有限制，则必须在允许的模型列表中。
 - `thinking` 可选（字符串）：思维层级覆盖（例如，`low`、`medium`、`high`）。
 - `timeoutSeconds` 可选（数字）：代理运行的最大持续时间（以秒为单位）。
@@ -95,16 +95,16 @@ read_when:
   （`channel` 默认为 `last`，并回退到 WhatsApp）。
 - `allowUnsafeExternalContent: true` 为该钩子禁用外部内容安全封装
   （危险；仅适用于受信任的内部来源）。
-- `openclaw webhooks gmail setup` 为 `openclaw webhooks gmail run` 写入 `hooks.gmail` 配置。
+- `openclaw webhooks gmail setup` 为 `openclaw webhooks gmail run` 编写 `hooks.gmail` 配置。
 有关完整的 Gmail 监视流程，请参阅 [Gmail Pub/Sub](/automation/gmail-pubsub)。
 
 ## 响应
 
-- `200` 表示成功处理 `/hooks/wake`
-- `202` 表示异步运行已启动 `/hooks/agent`
-- `401` 表示认证失败
-- `400` 表示无效有效载荷
-- `413` 表示有效载荷过大
+- `200` 用于 `/hooks/wake`
+- `202` 用于 `/hooks/agent`（异步运行已启动）
+- `401` 在认证失败时返回
+- `400` 在无效有效载荷时返回
+- `413` 在有效载荷过大时返回
 
 ## 示例
 
@@ -124,7 +124,7 @@ curl -X POST http://127.0.0.1:18789/hooks/agent \
 
 ### 使用不同的模型
 
-在代理有效载荷（或映射）中添加 `model`，以覆盖该次运行的模型：
+向代理有效载荷（或映射）中添加 `model`，以覆盖该次运行的模型：
 
 ```bash
 curl -X POST http://127.0.0.1:18789/hooks/agent \
@@ -144,7 +144,7 @@ curl -X POST http://127.0.0.1:18789/hooks/gmail \
 
 ## 安全性
 
-- 将钩子端点置于环回、尾网或受信任的反向代理之后。
+- 将钩子端点置于环回、尾网或受信反向代理之后。
 - 使用专用的钩子令牌；不要重复使用网关认证令牌。
 - 避免在 Webhook 日志中包含敏感的原始有效载荷。
 - 钩子有效载荷默认被视为不受信任，并被安全边界包裹。如果您必须为特定钩子禁用此功能，请在该钩子的映射中设置 `allowUnsafeExternalContent: true`（危险）。

@@ -6,7 +6,7 @@ read_when: Connecting the macOS app to a remote gateway over SSH
 
 OpenClaw.app 使用 SSH 隧道连接到远程网关。本指南将向您展示如何进行设置。
 
-## 概览
+## 概述
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -115,7 +115,7 @@ launchctl bootstrap gui/$UID ~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist
 - 在崩溃时自动重启
 - 在后台持续运行
 
-旧版说明：如果存在任何残留的 `com.openclaw.ssh-tunnel` LaunchAgent，请将其移除。
+旧版说明：如果存在任何遗留的 `com.openclaw.ssh-tunnel` LaunchAgent，请将其移除。
 
 ---
 
@@ -147,8 +147,8 @@ launchctl bootout gui/$UID/bot.molt.ssh-tunnel
 | 组件 | 功能 |
 |-----------|--------------|
 | `LocalForward 18789 127.0.0.1:18789` | 将本地端口 18789 转发到远程端口 18789 |
-| `ssh -N` | 通过 SSH 进行端口转发，不执行远程命令 |
+| `ssh -N` | 仅执行端口转发而不执行远程命令的 SSH |
 | `KeepAlive` | 在隧道崩溃时自动重启 |
 | `RunAtLoad` | 在代理加载时启动隧道 |
 
-OpenClaw.app 会连接到您客户端机器上的 `ws://127.0.0.1:18789`。SSH 隧道会将该连接转发到运行网关的远程机器上的端口 18789。
+OpenClaw.app 连接到您客户端机器上的 `ws://127.0.0.1:18789`。SSH 隧道会将该连接转发到运行网关的远程机器上的端口 18789。

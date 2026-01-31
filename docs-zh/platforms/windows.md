@@ -6,7 +6,7 @@ read_when:
 ---
 # Windows（WSL2）
 
-在 Windows 上运行 OpenClaw 时，我们强烈推荐通过 WSL2 来进行（建议使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这确保了运行时的一致性，并使工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）具有更高的兼容性。目前尚未对原生 Windows 安装进行充分测试，且存在更多问题。
+在 Windows 上运行 OpenClaw 时，我们强烈推荐通过 WSL2 来进行（建议使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅保持了运行时的一致性，还显著提升了工具链的兼容性（例如 Node、Bun、pnpm、Linux 二进制文件以及各种技能）。目前尚未对原生 Windows 安装进行充分测试，且存在更多问题。
 
 我们计划开发原生 Windows 搭配应用。
 
@@ -21,7 +21,7 @@ read_when:
 
 ## 在 CLI 中安装网关服务
 
-在 WSL2 中：
+在 WSL2 中执行以下命令：
 
 ```
 openclaw onboard --install-daemon
@@ -47,9 +47,9 @@ openclaw configure
 openclaw doctor
 ```
 
-## 高级用法：通过 LAN 暴露 WSL 服务（portproxy）
+## 高级用法：通过 LAN 暴露 WSL 服务（使用 portproxy）
 
-WSL 拥有自己的虚拟网络。如果另一台机器需要访问 **WSL 内部** 运行的服务（例如 SSH、本地 TTS 服务器或网关），则必须将 Windows 端口转发到当前 WSL 的 IP 地址。由于 WSL 的 IP 地址在重启后会发生变化，因此可能需要刷新转发规则。
+WSL 拥有自己的虚拟网络。如果另一台机器需要访问 **WSL 内部** 运行的服务（例如 SSH、本地 TTS 服务器或网关），则必须将 Windows 端口转发到当前 WSL 的 IP 地址。由于 WSL 的 IP 地址在重启后会发生变化，因此可能需要刷新端口转发规则。
 
 示例（以管理员身份运行 PowerShell）：
 
@@ -81,10 +81,10 @@ netsh interface portproxy add v4tov4 listenport=$ListenPort listenaddress=0.0.0.
 ```
 
 注意事项：
-- 从另一台机器通过 SSH 连接时，目标是 **Windows 主机的 IP**（例如：`ssh user@windows-host -p 2222`）。
+- 从另一台机器通过 SSH 连接到的是 **Windows 主机 IP**（示例：`ssh user@windows-host -p 2222`）。
 - 远程节点必须指向一个 **可访问** 的网关 URL（而非 `127.0.0.1`）；使用 `openclaw status --all` 可进行确认。
 - 使用 `listenaddress=0.0.0.0` 可实现局域网访问；而 `127.0.0.1` 则仅限于本地访问。
-- 如果希望自动执行此操作，可以注册一个计划任务，在登录时自动运行刷新步骤。
+- 如果希望自动完成此过程，可以注册一个计划任务，在登录时自动执行刷新步骤。
 
 ## WSL2 安装分步指南
 
@@ -103,7 +103,7 @@ wsl --install -d Ubuntu-24.04
 
 ### 2) 启用 systemd（网关安装所必需）
 
-在 WSL 终端中：
+在 WSL 终端中执行以下命令：
 
 ```bash
 sudo tee /etc/wsl.conf >/dev/null <<'EOF'
@@ -112,7 +112,7 @@ systemd=true
 EOF
 ```
 
-然后在 PowerShell 中：
+然后在 PowerShell 中执行：
 
 ```powershell
 wsl --shutdown
@@ -141,4 +141,4 @@ openclaw onboard
 
 ## Windows 搭配应用
 
-我们目前还没有 Windows 搭配应用。如果您有意参与开发并推动这一功能的实现，欢迎提交贡献。
+我们目前尚未提供 Windows 搭配应用。如果您有意参与开发并推动这一功能的实现，欢迎提交贡献。

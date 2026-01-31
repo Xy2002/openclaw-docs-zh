@@ -46,11 +46,11 @@ openclaw config set models.providers.ollama.apiKey "ollama-local"
 
 ## 模型发现（隐式提供者）
 
-当你设置`OLLAMA_API_KEY`（或身份验证配置文件）并且**未**定义`models.providers.ollama`时，OpenClaw会从本地Ollama实例中发现模型，该实例位于`http://127.0.0.1:11434`：
+当你设置`OLLAMA_API_KEY`（或身份验证配置文件）并且**未**定义`models.providers.ollama`时，OpenClaw会从本地Ollama实例中发现位于`http://127.0.0.1:11434`的模型：
 
 - 查询`/api/tags`和`/api/show`
 - 仅保留报告具有`tools`能力的模型
-- 当模型报告`thinking`时，标记`reasoning`
+- 当模型报告`thinking`时，标记为`reasoning`
 - 在可用时从`model_info["<arch>.context_length"]`读取`contextWindow`
 - 将`maxTokens`设置为上下文窗口的10倍
 - 将所有成本设置为`0`
@@ -64,7 +64,7 @@ ollama list
 openclaw models list
 ```
 
-要添加新模型，只需使用Ollama将其拉取：
+要添加新模型，只需使用Ollama拉取它：
 
 ```bash
 ollama pull mistral
@@ -117,7 +117,7 @@ export OLLAMA_API_KEY="ollama-local"
 }
 ```
 
-如果设置了`OLLAMA_API_KEY`，你可以省略提供者条目中的`apiKey`，OpenClaw会为其填写以进行可用性检查。
+如果设置了`OLLAMA_API_KEY`，你可以省略提供者条目中的`apiKey`，OpenClaw会自动填充以进行可用性检查。
 
 ### 自定义基础URL（显式配置）
 
@@ -189,7 +189,7 @@ curl http://localhost:11434/api/tags
 
 ### 没有可用模型
 
-OpenClaw仅自动发现报告工具支持的模型。如果你的模型未列出，可以采取以下措施：
+OpenClaw只会自动发现报告工具支持的模型。如果你的模型未列出，可以采取以下措施：
 - 拉取一个具备工具能力的模型，或
 - 在`models.providers.ollama`中显式定义该模型。
 
@@ -214,6 +214,6 @@ ollama serve
 
 ## 参考资料
 
-- [模型提供者](/concepts/model-providers) - 所有提供者的概述
+- [模型提供商](/concepts/model-providers) - 所有提供商概览
 - [模型选择](/concepts/models) - 如何选择模型
 - [配置](/gateway/configuration) - 完整配置参考

@@ -57,7 +57,7 @@ openclaw logs --follow
 - `notice`：截断/轮转提示
 - `raw`：未解析的日志行
 
-如果网关无法访问，CLI 会打印一条简短提示，要求运行：
+如果网关无法访问，CLI 会打印一条简短提示，建议运行：
 
 ```bash
 openclaw doctor
@@ -83,7 +83,7 @@ openclaw channels logs --channel whatsapp
 
 ### 控制台输出
 
-控制台日志是 **TTY 友好型**，并经过格式化以提高可读性：
+控制台日志具有 **TTY 感知** 功能，并经过格式化以提高可读性：
 
 - 子系统前缀（例如 `gateway/channels/whatsapp`）
 - 级别着色（信息/警告/错误）
@@ -113,7 +113,7 @@ openclaw channels logs --channel whatsapp
 ### 日志级别
 
 - `logging.level`：**文件日志**（JSONL）级别。
-- `logging.consoleLevel`：**控制台**详细程度级别。
+- `logging.consoleLevel`：**控制台** 详细程度级别。
 
 `--verbose` 仅影响控制台输出；它不会更改文件日志级别。
 
@@ -123,26 +123,26 @@ openclaw channels logs --channel whatsapp
 
 - `pretty`：人性化、带颜色、附带时间戳。
 - `compact`：更紧凑的输出（最适合长时间会话）。
-- `json`：每行一个 JSON（适用于日志处理器）。
+- `json`：每行 JSON（适用于日志处理器）。
 
 ### 敏感信息屏蔽
 
-工具摘要可以在敏感标记到达控制台之前对其进行屏蔽：
+工具摘要可以在敏感令牌到达控制台之前对其进行屏蔽：
 
 - `logging.redactSensitive`：`off` | `tools`（默认：`tools`）
 - `logging.redactPatterns`：用于覆盖默认集的正则表达式列表
 
-屏蔽仅影响 **控制台输出**，不会更改文件日志。
+屏蔽仅影响**控制台输出**，不会更改文件日志。
 
 ## 诊断 + OpenTelemetry
 
-诊断是结构化的、机器可读的事件，用于模型运行 **和** 消息流遥测（webhook、排队、会话状态）。它们 **不** 替代日志；它们的存在是为了为指标、跟踪和其他导出器提供数据。
+诊断是结构化的、机器可读的事件，用于模型运行**和**消息流遥测（webhook、排队、会话状态）。它们**不**取代日志；它们的存在是为了为指标、跟踪和其他导出器提供数据。
 
 诊断事件在进程中发出，但只有在启用诊断和导出器插件时，导出器才会附加。
 
-### OpenTelemetry vs OTLP
+### OpenTelemetry 与 OTLP
 
-- **OpenTelemetry (OTel)**：用于跟踪、指标和日志的数据模型 + SDK。
+- **OpenTelemetry（OTel）**：用于跟踪、指标和日志的数据模型和 SDK。
 - **OTLP**：用于将 OTel 数据导出到收集器/后端的传输协议。
 - OpenClaw 目前通过 **OTLP/HTTP（protobuf）** 导出数据。
 
@@ -150,7 +150,7 @@ openclaw channels logs --channel whatsapp
 
 - **指标**：计数器 + 直方图（令牌使用、消息流、排队）。
 - **跟踪**：模型使用 + webhook/消息处理的跨度。
-- **日志**：当 `diagnostics.otel.logs` 启用时，通过 OTLP 导出。日志量可能很大；请记住 `logging.level` 和导出器筛选器。
+- **日志**：当 `diagnostics.otel.logs` 启用时，通过 OTLP 导出。日志量可能很大；请记住 `logging.level` 和导出器过滤器。
 
 ### 诊断事件目录
 
@@ -162,7 +162,7 @@ openclaw channels logs --channel whatsapp
 - `webhook.processed`：已处理的 webhook 及其持续时间。
 - `webhook.error`：webhook 处理器错误。
 - `message.queued`：已加入队列等待处理的消息。
-- `message.processed`：结果 + 持续时间 + 可选错误。
+- `message.processed`：处理结果 + 持续时间 + 可选错误。
 
 队列 + 会话：
 - `queue.lane.enqueue`：命令队列车道入队 + 深度。
@@ -209,7 +209,7 @@ OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 
 ### 导出到 OpenTelemetry
 
-可通过 `diagnostics-otel` 插件（OTLP/HTTP）导出诊断数据。这适用于任何接受 OTLP/HTTP 的 OpenTelemetry 收集器/后端。
+可通过 `diagnostics-otel` 插件（OTLP/HTTP）导出诊断。这适用于任何接受 OTLP/HTTP 的 OpenTelemetry 收集器/后端。
 
 ```json
 {
@@ -239,7 +239,7 @@ OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 ```
 
 注意事项：
-- 您也可以通过 `openclaw plugins enable diagnostics-otel` 启用该插件。
+- 您也可以通过 `openclaw plugins enable diagnostics-otel` 启用插件。
 - `protocol` 目前仅支持 `http/protobuf`。`grpc` 被忽略。
 - 指标包括令牌使用、成本、上下文大小、运行时间以及消息流计数器/直方图（webhooks、排队、会话状态、队列深度/等待）。
 - 可通过 `traces` / `metrics` 切换跟踪/指标（默认为开启）。启用后，跟踪包括模型使用跨度以及 webhook/消息处理跨度。
@@ -312,18 +312,18 @@ OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 
 - OTLP/HTTP 端点可通过 `diagnostics.otel.endpoint` 或
   `OTEL_EXPORTER_OTLP_ENDPOINT` 设置。
-- 如果端点已经包含 `/v1/traces` 或 `/v1/metrics`，将按原样使用。
-- 如果端点已经包含 `/v1/logs`，将按原样用于日志。
+- 如果端点已经包含 `/v1/traces` 或 `/v1/metrics`，则按原样使用。
+- 如果端点已经包含 `/v1/logs`，则按原样用于日志。
 - `diagnostics.otel.logs` 启用 OTLP 日志导出，用于主日志记录器的输出。
 
 ### 日志导出行为
 
-- OTLP 日志使用与写入 `logging.file` 的相同结构化记录。
-- 请遵守 `logging.level`（文件日志级别）。控制台屏蔽 **不** 适用于 OTLP 日志。
-- 大规模安装应优先考虑 OTLP 收集器的抽样/筛选功能。
+- OTLP 日志使用与 `logging.file` 中写入的相同结构化记录。
+- 请遵守 `logging.level`（文件日志级别）。控制台屏蔽**不**适用于 OTLP 日志。
+- 大规模安装应优先考虑 OTLP 收集器的抽样/过滤。
 
 ## 故障排除提示
 
 - **网关无法访问？** 请先运行 `openclaw doctor`。
-- **日志为空？** 请检查网关是否正在运行，并且是否正在写入 `logging.file` 中指定的文件路径。
+- **日志为空？** 请检查网关是否正在运行，并且是否正在向 `logging.file` 中指定的文件路径写入日志。
 - **需要更多细节？** 将 `logging.level` 设置为 `debug` 或 `trace`，然后重试。

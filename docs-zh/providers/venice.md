@@ -8,7 +8,7 @@ read_when:
 
 **威尼斯**是我们主打的威尼斯设置，专注于隐私优先的推理，并可选择以匿名方式访问专有模型。
 
-威尼斯 AI 提供注重隐私的人工智能推理服务，支持无审查模型，并通过其匿名代理访问主要的专有模型。所有推理默认为私密——不会对您的数据进行训练，也不会记录日志。
+威尼斯 AI 提供注重隐私的人工智能推理服务，支持无审查模型，并通过其匿名代理访问主要专有模型。所有推理默认为私密——不会对您的数据进行训练，也不会记录日志。
 
 ## 为什么在 OpenClaw 中使用威尼斯
 
@@ -84,7 +84,7 @@ openclaw chat --model venice/llama-3.3-70b "Hello, are you working?"
 设置完成后，OpenClaw 会显示所有可用的威尼斯模型。根据您的需求进行选择：
 
 - **默认（我们的推荐）**： `venice/llama-3.3-70b` 用于私密、平衡性能。
-- **最佳整体质量**： `venice/claude-opus-45` 用于复杂任务（Opus 仍然是最强的）。
+- **最佳整体质量**： `venice/claude-opus-45` 用于高难度任务（Opus 仍然是最强的）。
 - **隐私**：选择“私密”模型以实现完全私密的推理。
 - **能力**：选择“匿名化”模型，通过威尼斯的代理访问 Claude、GPT、Gemini。
 
@@ -112,13 +112,13 @@ openclaw models list | grep venice
 | 使用场景 | 推荐模型 | 为什么 |
 |----------|-------------------|-----|
 | **通用聊天** | `llama-3.3-70b` | 性能全面，完全私密 |
-| **最佳整体质量** | `claude-opus-45` | Opus 仍然是处理复杂任务的最强模型 |
+| **最佳整体质量** | `claude-opus-45` | Opus 仍然是处理高难度任务的最强模型 |
 | **隐私 + Claude 质量** | `claude-opus-45` | 通过匿名代理获得最佳推理能力 |
-| **编码** | `qwen3-coder-480b-a35b-instruct` | 针对代码优化，上下文长度为 262k |
+| **编码** | `qwen3-coder-480b-a35b-instruct` | 优化代码，上下文长度 262k |
 | **视觉任务** | `qwen3-vl-235b-a22b` | 最佳的私密视觉模型 |
 | **无审查** | `venice-uncensored` | 无内容限制 |
-| **快速 + 经济** | `qwen3-4b` | 轻量级，依然功能强大 |
-| **复杂推理** | `deepseek-v3.2` | 强大的私密推理能力 |
+| **快速 + 便宜** | `qwen3-4b` | 轻量级，依然功能强大 |
+| **复杂推理** | `deepseek-v3.2` | 强大的推理能力，私密 |
 
 ## 可用模型（共 25 个）
 
@@ -134,13 +134,13 @@ openclaw models list | grep venice
 | `qwen3-coder-480b-a35b-instruct` | Qwen3 Coder 480B | 262k | 编码 |
 | `qwen3-next-80b` | Qwen3 Next 80B | 262k | 通用 |
 | `qwen3-vl-235b-a22b` | Qwen3 VL 235B | 262k | 视觉 |
-| `qwen3-4b` | 威尼斯 Small (Qwen3 4B) | 32k | 快速、推理 |
+| `qwen3-4b` | 威尼斯小型（Qwen3 4B） | 32k | 快速、推理 |
 | `deepseek-v3.2` | DeepSeek V3.2 | 163k | 推理 |
 | `venice-uncensored` | 威尼斯无审查 | 32k | 无审查 |
-| `mistral-31-24b` | 威尼斯 Medium (Mistral) | 131k | 视觉 |
+| `mistral-31-24b` | 威尼斯中型（Mistral） | 131k | 视觉 |
 | `google-gemma-3-27b-it` | Gemma 3 27B Instruct | 202k | 视觉 |
 | `openai-gpt-oss-120b` | OpenAI GPT OSS 120B | 131k | 通用 |
-| `zai-org-glm-4.7` | GLM 4.7 | 202k | 推理、多语言 |
+| `zai-org-glm-4.7` | GLM 4.7 | 202k | 推理，多语言 |
 
 ### 匿名化模型（10 个）— 通过威尼斯代理
 
@@ -153,13 +153,13 @@ openclaw models list | grep venice
 | `gemini-3-pro-preview` | Gemini 3 Pro | 202k | 推理、视觉 |
 | `gemini-3-flash-preview` | Gemini 3 Flash | 262k | 推理、视觉 |
 | `grok-41-fast` | Grok 4.1 Fast | 262k | 推理、视觉 |
-| `grok-code-fast-1` | Grok Code Fast 1 | 262k | 推理、代码 |
+| `grok-code-fast-1` | Grok Code Fast 1 | 262k | 推理、编码 |
 | `kimi-k2-thinking` | Kimi K2 Thinking | 262k | 推理 |
 | `minimax-m21` | MiniMax M2.1 | 202k | 推理 |
 
 ## 模型发现
 
-当 `VENICE_API_KEY` 设置时，OpenClaw 会自动从威尼斯 API 发现模型。如果 API 无法访问，则会回退到静态目录。
+当 `VENICE_API_KEY` 设置时，OpenClaw 会自动从威尼斯 API 发现模型。如果 API 无法访问，则回退到静态目录。
 
 `/models` 端点是公开的（无需认证即可列出），但推理需要有效的 API 密钥。
 
@@ -169,12 +169,12 @@ openclaw models list | grep venice
 |---------|---------|
 | **流式传输** | ✅ 所有模型 |
 | **函数调用** | ✅ 大多数模型（请查看 API 中的 `supportsFunctionCalling`） |
-| **视觉/图像** | ✅ 标有“视觉”功能的模型 |
+| **视觉/图像** | ✅ 标记为“视觉”功能的模型 |
 | **JSON 模式** | ✅ 通过 `response_format` 支持 |
 
 ## 定价
 
-威尼斯采用基于积分的系统。请访问 [venice.ai/pricing](https://venice.ai/pricing) 查看当前费率：
+威尼斯采用基于积分的系统。请查看 [venice.ai/pricing](https://venice.ai/pricing) 以了解当前费率：
 
 - **私密模型**：通常成本较低
 - **匿名化模型**：与直接 API 定价相似 + 小额威尼斯费用
@@ -185,7 +185,7 @@ openclaw models list | grep venice
 |--------|---------------------|------------|
 | **隐私** | 元数据被剥离，匿名 | 您的账户已关联 |
 | **延迟** | +10-50ms（代理） | 直接 |
-| **功能** | 大多数功能受支持 | 功能齐全 |
+| **功能** | 大多数功能受支持 | 全部功能 |
 | **计费** | 威尼斯积分 | 提供商计费 |
 
 ## 使用示例

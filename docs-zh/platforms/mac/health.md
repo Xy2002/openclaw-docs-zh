@@ -21,8 +21,8 @@ read_when:
 - **“频道”选项卡**显示 WhatsApp 和 Telegram 的频道状态及控制选项：登录二维码、注销、探测、上次断开连接或错误信息。
 
 ## 探测的工作原理
-- 应用每约 60 秒以及按需通过 `ShellExecutor` 运行 `openclaw health --json`。探测会加载凭据并报告状态，而不会发送任何消息。
-- 分别缓存最后一次良好的快照和最后一次错误，以避免闪烁；同时显示每次操作的时间戳。
+- 应用每约 60 秒并通过手动触发运行 `openclaw health --json`，借助 `ShellExecutor` 执行探测。探测会加载凭据并报告状态，但不会发送任何消息。
+- 分别缓存上一个良好快照和上一个错误快照，以避免界面闪烁；同时显示每个快照的时间戳。
 
 ## 如有疑问
-- 您仍然可以使用 CLI 流程，在 [网关健康](/gateway/health) 中执行（`openclaw status`、`openclaw status --deep`、`openclaw health --json`），并使用 `/tmp/openclaw/openclaw-*.log` 尾随日志来获取 `web-heartbeat` / `web-reconnect`。
+- 您仍然可以使用 CLI 流程，在 [网关健康](/gateway/health) 中执行操作（`openclaw status`、`openclaw status --deep`、`openclaw health --json`），并使用 `/tmp/openclaw/openclaw-*.log` 尾随日志，以获取 `web-heartbeat` 或 `web-reconnect` 的信息。

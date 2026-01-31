@@ -22,7 +22,7 @@ read_when:
 
 ## 浏览器代理（零配置）
 
-如果未在节点上禁用 `browser.enabled`，节点主机将自动发布浏览器代理。这使代理无需额外配置即可在该节点上使用浏览器自动化。
+如果节点上未禁用 `browser.enabled`，节点主机会自动发布浏览器代理。这使代理无需额外配置即可在该节点上使用浏览器自动化。
 
 如有需要，可在节点上禁用它：
 
@@ -77,13 +77,13 @@ openclaw node restart
 openclaw node uninstall
 ```
 
-使用 `openclaw node run` 进行前台节点主机运行（无需服务）。
+使用 `openclaw node run` 可以运行前台节点主机（无需服务）。
 
 服务命令接受 `--json` 以获取机器可读输出。
 
 ## 配对
 
-首次连接会在网关上创建一个待处理的节点配对请求。通过以下方式批准：
+首次连接会在网关上创建一个待处理的节点配对请求。可通过以下方式批准：
 
 ```bash
 openclaw nodes pending

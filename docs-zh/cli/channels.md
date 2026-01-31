@@ -25,7 +25,7 @@ openclaw channels resolve --channel slack "#general" "@jane"
 openclaw channels logs --channel all
 ```
 
-## 添加/移除账户
+## 添加/删除账户
 
 ```bash
 openclaw channels add --channel telegram --token <bot-token>
@@ -34,7 +34,7 @@ openclaw channels remove --channel telegram --delete
 
 提示：`openclaw channels add --help` 显示每个频道的标志（令牌、应用令牌、signal-cli 路径等）。
 
-## 登录/登出（交互式）
+## 登录/注销（交互式）
 
 ```bash
 openclaw channels login --channel whatsapp
@@ -73,4 +73,4 @@ openclaw channels resolve --channel matrix "Project Room"
 
 注意事项：
 - 使用 `--kind user|group|auto` 强制指定目标类型。
-- 在多个条目共享相同名称时，解析优先选择活跃匹配项。
+- 当多个条目共享相同名称时，解析优先选择活跃匹配项。

@@ -13,7 +13,7 @@ read_when:
 - 已安装并登录 `gcloud`（参见 [安装指南](https://docs.cloud.google.com/sdk/docs/install-sdk))。
 - 已安装并为 Gmail 帐户授权 `gog` (gogcli)（参见 [gogcli.sh](https://gogcli.sh/))。
 - 已启用 OpenClaw 挂钩（参见 [Webhooks](/automation/webhook))。
-- 已登录 `tailscale`（参见 [tailscale.com](https://tailscale.com/))。推荐的设置使用 Tailscale Funnel 作为公共 HTTPS 端点。
+- 已登录 `tailscale`（参见 [tailscale.com](https://tailscale.com/))。我们支持的设置使用 Tailscale Funnel 作为公共 HTTPS 端点。
   其他隧道服务也可以使用，但需要自行配置且不受支持，需手动连接。
   目前我们仅支持 Tailscale。
 
@@ -30,7 +30,7 @@ read_when:
 }
 ```
 
-要将 Gmail 摘要传递到聊天界面，可通过覆盖预设映射来设置 `deliver` 和可选的 `channel`/`to`：
+要将 Gmail 摘要传递到聊天界面，可通过覆盖预设映射来设置 `deliver` + 可选的 `channel`/`to`：
 
 ```json5
 {
@@ -59,9 +59,9 @@ read_when:
 
 如果您希望使用固定频道，请设置 `channel` + `to`。否则，`channel: "last"` 将使用上次的交付路由（回退到 WhatsApp）。
 
-若要为 Gmail 运行强制使用更便宜的模型，请在映射中设置 `model`（`provider/model` 或别名）。如果强制使用 `agents.defaults.models`，请将其包含在映射中。
+要为 Gmail 运行强制使用更便宜的模型，请在映射中设置 `model`（`provider/model` 或别名）。如果您强制启用 `agents.defaults.models`，请将其包含在映射中。
 
-要为 Gmail 挂钩专门设置默认模型和思维层级，请在配置中添加 `hooks.gmail.model` / `hooks.gmail.thinking`：
+要为 Gmail 挂钩专门设置默认模型和思维层级，请在您的配置中添加 `hooks.gmail.model` / `hooks.gmail.thinking`：
 
 ```json5
 {
@@ -78,7 +78,7 @@ read_when:
 - 映射中的每挂钩 `model`/`thinking` 仍会覆盖这些默认值。
 - 回退顺序：`hooks.gmail.model` → `agents.defaults.model.fallbacks` → 主模型（认证/速率限制/超时）。
 - 如果设置了 `agents.defaults.models`，Gmail 模型必须在白名单中。
-- 默认情况下，Gmail 挂钩内容会包裹在外部内容安全边界中。如需禁用（危险），请设置 `hooks.gmail.allowUnsafeExternalContent: true`。
+- 默认情况下，Gmail 挂钩内容会被外部内容安全边界包裹。要禁用（有风险），请设置 `hooks.gmail.allowUnsafeExternalContent: true`。
 
 要进一步自定义负载处理，可在 `hooks.transformsDir` 下添加 `hooks.mappings` 或 JS/TS 转换模块（参见 [Webhooks](/automation/webhook))。
 
@@ -96,8 +96,8 @@ openclaw webhooks gmail setup \
 - 为 `openclaw webhooks gmail run` 写入 `hooks.gmail` 配置。
 - 启用 Gmail 挂钩预设（`hooks.presets: ["gmail"]`）。
 
-路径说明：当 `tailscale.mode` 启用时，OpenClaw 会自动将 `hooks.gmail.serve.path` 设置为 `/`，并将公共路径保持在 `hooks.gmail.tailscale.path`（默认 `/gmail-pubsub`），因为 Tailscale 在代理之前会剥离设置的路径前缀。
-如果您需要后端接收带前缀的路径，请将 `hooks.gmail.tailscale.target`（或 `--tailscale-target`）设置为类似 `http://127.0.0.1:8788/gmail-pubsub` 的完整 URL，并匹配 `hooks.gmail.serve.path`。
+路径说明：当 `tailscale.mode` 启用时，OpenClaw 会自动将 `hooks.gmail.serve.path` 设置为 `/`，并将公共路径保持在 `hooks.gmail.tailscale.path`（默认 `/gmail-pubsub`），因为 Tailscale 在代理之前会剥离设置路径前缀。
+如果需要后端接收带前缀的路径，请将 `hooks.gmail.tailscale.target`（或 `--tailscale-target`）设置为类似 `http://127.0.0.1:8788/gmail-pubsub` 的完整 URL，并匹配 `hooks.gmail.serve.path`。
 
 想要自定义端点？使用 `--push-endpoint <url>` 或 `--tailscale off`。
 
@@ -145,7 +145,7 @@ gcloud pubsub topics add-iam-policy-binding gog-gmail-watch \
   --role=roles/pubsub.publisher
 ```
 
-## 启动监视
+## 开始监视
 
 ```bash
 gog gmail watch start \
@@ -175,14 +175,14 @@ gog gmail watch serve \
 
 注意事项：
 - `--token` 保护推送端点（`x-gog-token` 或 `?token=`）。
-- `--hook-url` 指向 OpenClaw 的 `/hooks/gmail`（映射；隔离运行 + 摘要发送至主系统）。
+- `--hook-url` 指向 OpenClaw 的 `/hooks/gmail`（映射；隔离运行 + 摘要发送至主流程）。
 - `--include-body` 和 `--max-bytes` 控制发送给 OpenClaw 的正文片段。
 
 推荐：`openclaw webhooks gmail run` 包装了相同的流程，并自动续订监视。
 
 ## 公开处理器（高级，不支持）
 
-如果您需要非 Tailscale 隧道，请手动连接并在推送订阅中使用公共 URL（不支持，无防护措施）：
+如果您需要非 Tailscale 隧道，请手动连接并使用推送订阅中的公共 URL（不支持，无防护措施）：
 
 ```bash
 cloudflared tunnel --url http://127.0.0.1:8788 --no-autoupdate
@@ -223,8 +223,8 @@ gog gmail history --account openclaw@gmail.com --since <historyId>
 
 ## 故障排除
 
-- `Invalid topicName`: 项目不匹配（主题不在 OAuth 客户端项目中）。
-- `User not authorized`: 主题缺少 `roles/pubsub.publisher`。
+- `Invalid topicName`：项目不匹配（主题不在 OAuth 客户端项目中）。
+- `User not authorized`：主题缺少 `roles/pubsub.publisher`。
 - 空消息：Gmail 推送仅提供 `historyId`；可通过 `gog gmail history` 获取。
 
 ## 清理

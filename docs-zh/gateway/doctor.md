@@ -39,7 +39,7 @@ openclaw doctor --non-interactive
 ```
 
 在不提示的情况下运行，并仅应用安全的迁移操作（配置规范化和磁盘状态移动）。跳过需要人工确认的重启、服务或沙盒操作。
-当检测到旧版状态时，会自动运行状态迁移。
+检测到旧版状态时会自动运行状态迁移。
 
 ```bash
 openclaw doctor --deep
@@ -47,7 +47,7 @@ openclaw doctor --deep
 
 扫描系统服务以查找额外的网关安装（launchd/systemd/schtasks）。
 
-如果您希望在写入更改之前先查看更改，请先打开配置文件：
+如果您想在写入更改之前先查看更改，请先打开配置文件：
 
 ```bash
 cat ~/.openclaw/openclaw.json
@@ -59,7 +59,7 @@ cat ~/.openclaw/openclaw.json
 - 健康检查 + 重启提示。
 - 技能状态摘要（符合条件/缺失/被阻止）。
 - 针对旧版值的配置规范化。
-- OpenCode Zen 提供商覆盖警告（`models.providers.opencode`）。
+- OpenCode Zen 提供者覆盖警告（`models.providers.opencode`）。
 - 旧版磁盘状态迁移（会话/代理目录/WhatsApp 认证）。
 - 状态完整性和权限检查（会话、记录、状态目录）。
 - 在本地运行时检查配置文件权限（chmod 600）。
@@ -81,20 +81,20 @@ cat ~/.openclaw/openclaw.json
 ## 详细行为与原理
 
 ### 0) 可选更新（Git 安装）
-如果这是 Git 检出且医生工具以交互方式运行，则会在运行医生之前提供更新选项（fetch/rebase/build）。
+如果这是 Git 检出且 doctor 以交互方式运行，则会在运行 doctor 之前提供更新选项（fetch/rebase/build）。
 
 ### 1) 配置规范化
-如果配置包含旧版值结构（例如 `messages.ackReaction` 且没有针对特定渠道的覆盖），医生会将其规范化为当前模式。
+如果配置包含旧版值结构（例如 `messages.ackReaction` 且没有针对特定渠道的覆盖），doctor 会将其规范化为当前模式。
 
 ### 2) 旧版配置键迁移
-当配置包含已弃用的键时，其他命令会拒绝运行，并要求您运行 `openclaw doctor`。
+当配置包含已弃用的键时，其他命令会拒绝运行并要求您运行 `openclaw doctor`。
 
-医生将：
+Doctor 将：
 - 解释发现的旧版键。
 - 显示所应用的迁移。
 - 使用更新后的模式重写 `~/.openclaw/openclaw.json`。
 
-Gateway 在启动时也会自动运行医生迁移，当它检测到旧版配置格式时，因此过时的配置会在无需手动干预的情况下得到修复。
+Gateway 在启动时也会自动运行 doctor 迁移，以检测到旧版配置格式，因此过时的配置无需手动干预即可修复。
 
 当前迁移：
 - `routing.allowFrom` → `channels.whatsapp.allowFrom`
@@ -112,11 +112,11 @@ Gateway 在启动时也会自动运行医生迁移，当它检测到旧版配置
 - `agent.model`/`allowedModels`/`modelAliases`/`modelFallbacks`/`imageModelFallbacks`
   → `agents.defaults.models` + `agents.defaults.model.primary/fallbacks` + `agents.defaults.imageModel.primary/fallbacks`
 
-### 2b) OpenCode Zen 提供商覆盖
-如果您手动添加了 `models.providers.opencode`（或 `opencode-zen`），它会覆盖来自 `@mariozechner/pi-ai` 的内置 OpenCode Zen 目录。这可能会强制所有模型使用单个 API 或将成本降至零。医生会发出警告，以便您可以移除覆盖并恢复按模型划分的 API 路由和成本。
+### 2b) OpenCode Zen 提供者覆盖
+如果您手动添加了 `models.providers.opencode`（或 `opencode-zen`），它会覆盖来自 `@mariozechner/pi-ai` 的内置 OpenCode Zen 目录。这可能会强制所有模型使用单个 API 或将成本降至零。Doctor 会发出警告，以便您可以删除覆盖并恢复按模型的 API 路由和成本。
 
 ### 3) 旧版状态迁移（磁盘布局）
-医生可以将较旧的磁盘布局迁移到当前结构：
+Doctor 可以将较旧的磁盘布局迁移到当前结构：
 - 会话存储 + 记录：
   - 从 `~/.openclaw/sessions/` 到 `~/.openclaw/agents/<agentId>/sessions/`
 - 代理目录：
@@ -125,57 +125,57 @@ Gateway 在启动时也会自动运行医生迁移，当它检测到旧版配置
   - 从旧版 `~/.openclaw/credentials/*.json`（除 `oauth.json` 外）
   - 到 `~/.openclaw/credentials/whatsapp/<accountId>/...`（默认账户 ID：`default`）
 
-这些迁移是尽力而为且幂等的；当医生留下任何旧版文件夹作为备份时，它会发出警告。Gateway/CLI 也会在启动时自动迁移旧版会话 + 代理目录，因此历史/认证/模型会自动进入按代理划分的路径，无需手动运行医生。WhatsApp 认证则有意只通过 `openclaw doctor` 进行迁移。
+这些迁移是尽力而为且幂等的；当 doctor 将任何旧版文件夹保留为备份时，它会发出警告。Gateway/CLI 也会在启动时自动迁移旧版会话 + 代理目录，因此历史/认证/模型会自动进入每代理路径，无需手动运行 doctor。WhatsApp 认证则有意仅通过 `openclaw doctor` 进行迁移。
 
 ### 4) 状态完整性检查（会话持久性、路由和安全性）
-状态目录是运行的核心大脑。如果它消失，您将丢失会话、凭据、日志和配置（除非您在其他地方有备份）。
+状态目录是运行的核心。如果它消失，您将丢失会话、凭据、日志和配置（除非您在其他地方有备份）。
 
-医生检查：
+Doctor 检查：
 - **状态目录缺失**：警告灾难性的状态丢失，提示重新创建目录，并提醒您无法恢复丢失的数据。
-- **状态目录权限**：验证是否可写；提供修复权限的选项（并在检测到所有者/组不匹配时发出 `chown` 提示）。
-- **会话目录缺失**：`sessions/` 和会话存储目录是保持历史记录所必需的，可避免 `ENOENT` 崩溃。
+- **状态目录权限**：验证可写性；提供修复权限的选项（并在检测到所有者/组不匹配时发出 `chown` 提示）。
+- **会话目录缺失**：`sessions/` 和会话存储目录是保持历史记录和避免 `ENOENT` 崩溃所必需的。
 - **记录不匹配**：当最近的会话条目缺少记录文件时发出警告。
-- **主会话“1 行 JSONL”**：当主记录只有一行时发出标记（历史未累积）。
+- **主会话“1 行 JSONL”**：当主记录只有一行时发出标志（历史未累积）。
 - **多个状态目录**：当多个 `~/.openclaw` 文件夹存在于不同的主目录中，或当 `OPENCLAW_STATE_DIR` 指向其他位置时发出警告（历史可能在不同安装之间分散）。
-- **远程模式提醒**：如果设置了 `gateway.mode=remote`，医生会提醒您在远程主机上运行它（状态位于那里）。
+- **远程模式提醒**：如果设置了 `gateway.mode=remote`，doctor 提醒您在远程主机上运行（状态位于那里）。
 - **配置文件权限**：如果 `~/.openclaw/openclaw.json` 对组/世界可读，则发出警告，并提供将其收紧至 `600` 的选项。
 
 ### 5) 模型认证健康（OAuth 过期）
-医生检查认证存储中的 OAuth 配置文件，当令牌即将到期或已到期时发出警告，并可在安全的情况下刷新它们。如果 Anthropic Claude Code 配置文件已过时，它会建议运行 `claude setup-token`（或粘贴一个设置令牌）。刷新提示仅在交互式运行时（TTY）出现；`--non-interactive` 会跳过刷新尝试。
+Doctor 检查认证存储中的 OAuth 配方，当令牌即将到期或已到期时发出警告，并在安全的情况下可以刷新它们。如果 Anthropic Claude Code 配方过时，它建议运行 `claude setup-token`（或粘贴一个设置令牌）。刷新提示仅在交互式运行时（TTY）出现；`--non-interactive` 会跳过刷新尝试。
 
-医生还会报告因以下原因暂时无法使用的认证配置文件：
+Doctor 还会报告因以下原因暂时无法使用的认证配方：
 - 短暂的冷却期（速率限制/超时/认证失败）
 - 更长时间的禁用（计费/信用失败）
 
 ### 6) 模型验证钩子
-如果设置了 `hooks.gmail.model`，医生会根据目录和白名单验证模型引用，并在无法解析或被禁止时发出警告。
+如果设置了 `hooks.gmail.model`，doctor 会根据目录和白名单验证模型引用，并在无法解析或被禁止时发出警告。
 
 ### 7) 沙盒镜像修复
-当启用沙盒时，医生会检查 Docker 镜像，并在当前镜像缺失时提供构建或切换到旧版名称的选项。
+当启用沙盒时，doctor 检查 Docker 镜像，如果当前镜像缺失，则提供构建或切换到旧版名称的选项。
 
 ### 8) 网关服务迁移和清理提示
-医生检测旧版网关服务（launchd/systemd/schtasks），并提供移除这些服务以及使用当前网关端口安装 OpenClaw 服务的选项。它还可以扫描是否存在额外的类似网关的服务，并给出清理提示。以个人命名的 OpenClaw 网关服务被视为一流服务，不会被标记为“额外”。
+Doctor 检测旧版网关服务（launchd/systemd/schtasks），并提供移除这些服务以及使用当前网关端口安装 OpenClaw 服务的选项。它还可以扫描额外的类似网关的服务，并打印清理提示。以个人命名的 OpenClaw 网关服务被视为一流服务，不会被标记为“额外”。
 
 ### 9) 安全警告
-当提供商对 DM 开放且未设置白名单，或当策略以危险的方式配置时，医生会发出警告。
+当提供商对 DM 开放且未设置白名单，或策略以危险方式配置时，doctor 会发出警告。
 
 ### 10) systemd linger（Linux）
-如果作为 systemd 用户服务运行，医生会确保启用 lingering，以便网关在注销后仍保持运行。
+如果作为 systemd 用户服务运行，doctor 确保启用了 lingering，以便网关在注销后仍保持运行。
 
 ### 11) 技能状态
-医生会打印当前工作区合格/缺失/被阻止技能的快速摘要。
+Doctor 打印当前工作区符合条件/缺失/被阻止技能的快速摘要。
 
 ### 12) 网关认证检查（本地令牌）
-当本地网关缺少 `gateway.auth` 时，医生会发出警告，并提供生成令牌的选项。在自动化中，使用 `openclaw doctor --generate-gateway-token` 强制创建令牌。
+当本地网关缺少 `gateway.auth` 时，doctor 发出警告，并提供生成令牌的选项。在自动化中使用 `openclaw doctor --generate-gateway-token` 来强制创建令牌。
 
 ### 13) 网关健康检查 + 重启
-医生会运行健康检查，并在网关看起来不健康时提供重启建议。
+Doctor 运行健康检查，并在网关看起来不健康时提供重启选项。
 
 ### 14) 渠道状态警告
-如果网关健康，医生会运行渠道状态探测，并报告带有建议修复措施的警告。
+如果网关健康，doctor 会运行渠道状态探测，并报告带有建议修复措施的警告。
 
 ### 15) Supervisor 配置审计 + 修复
-医生检查已安装的 supervisor 配置（launchd/systemd/schtasks），以查找缺失或过时的默认设置（例如 systemd network-online 依赖项和重启延迟）。当发现不匹配时，它会建议更新，并可根据当前默认值重写服务文件/任务。
+Doctor 检查已安装的 supervisor 配置（launchd/systemd/schtasks），以查找缺失或过时的默认设置（例如 systemd network-online 依赖项和重启延迟）。当发现不匹配时，它会建议更新，并可根据当前默认值重写服务文件/任务。
 
 注意：
 - `openclaw doctor` 在重写 supervisor 配置前会提示。
@@ -185,15 +185,15 @@ Gateway 在启动时也会自动运行医生迁移，当它检测到旧版配置
 - 您始终可以通过 `openclaw gateway install --force` 强制进行完全重写。
 
 ### 16) 网关运行时 + 端口诊断
-医生检查服务运行时（PID、上次退出状态），并警告服务已安装但未实际运行。它还检查网关端口（默认 `18789`）是否存在端口冲突，并报告可能的原因（网关已在运行、SSH 隧道）。
+Doctor 检查服务运行时（PID，上次退出状态），并警告服务已安装但未实际运行的情况。它还检查网关端口（默认 `18789`）是否存在端口冲突，并报告可能的原因（网关已在运行，SSH 隧道）。
 
 ### 17) 网关运行时最佳实践
-医生警告网关服务是否在 Bun 或版本管理的 Node 路径上运行（`nvm`、`fnm`、`volta`、`asdf` 等）。WhatsApp + Telegram 渠道需要 Node，而版本管理路径在升级后可能会失效，因为服务不会加载您的 shell 初始化。医生会建议在可用时迁移到系统 Node 安装（Homebrew/apt/choco）。
+Doctor 警告网关服务是否在 Bun 或版本管理的 Node 路径上运行（`nvm`, `fnm`, `volta`, `asdf` 等）。WhatsApp 和 Telegram 渠道需要 Node，而版本管理路径在升级后可能会中断，因为服务不会加载您的 shell 初始化。Doctor 提供在可用时迁移到系统 Node 安装的选项（Homebrew/apt/choco）。
 
 ### 18) 配置写入 + 向导元数据
-医生会保存任何配置更改，并加盖向导元数据戳，以记录医生运行。
+Doctor 保存任何配置更改，并加盖向导元数据以记录 doctor 运行。
 
 ### 19) 工作区提示（备份 + 内存系统）
-当缺少工作区内存系统时，医生会提出建议；如果工作区尚未纳入 git 管理，医生会给出备份提示。
+当缺少工作区内存系统时，doctor 会提出建议；如果工作区尚未纳入 git，还会给出备份提示。
 
 有关工作区结构和 git 备份的完整指南（推荐私有 GitHub 或 GitLab），请参阅 [/concepts/agent-workspace](/concepts/agent-workspace)。

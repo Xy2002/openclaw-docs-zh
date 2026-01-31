@@ -6,7 +6,7 @@ read_when:
 ---
 # Deepgram（音频转录）
 
-Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tools.media.audio` 对**传入音频/语音备忘录进行转录**。
+Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tools.media.audio` 对**入站音频/语音备忘录进行转录**。
 
 启用后，OpenClaw 会将音频文件上传至 Deepgram，并将转录结果注入回复管道（`{{Transcript}}` + `[Audio]` 块）。这**不是流式处理**；它使用预先录制的转录端点。
 

@@ -9,9 +9,9 @@ read_when:
 
 ClawHub是**OpenClaw的公共技能注册表**。这是一项免费服务：所有技能都是公开、开放的，任何人都可以查看、共享和重用。一个技能只是一个包含`SKILL.md`文件（以及相关文本文件）的文件夹。您可以通过网页应用浏览技能，也可以使用CLI来搜索、安装、更新和发布技能。
 
-站点：[clawhub.com](https://clawhub.com)
+网站：[clawhub.com](https://clawhub.com)
 
-## 适用人群（适合初学者）
+## 适合人群（初学者友好）
 
 如果您想为您的OpenClaw代理添加新功能，ClawHub是查找和安装技能最简单的方式。您无需了解后端的工作原理。您可以：
 
@@ -43,7 +43,7 @@ pnpm add -g clawhub
 
 ## 在OpenClaw中的位置
 
-默认情况下，CLI会将技能安装到您当前工作目录下的`./skills`中。如果已配置OpenClaw工作区，`clawhub`会回退到该工作区，除非您覆盖了`--workdir`（或`CLAWHUB_WORKDIR`）。OpenClaw会从`<workspace>/skills`加载工作区技能，并在**下一个**会话中加载这些技能。如果您已经在使用`~/.openclaw/skills`或捆绑技能，工作区技能具有优先权。
+默认情况下，CLI会将技能安装到您当前工作目录下的`./skills`中。如果已配置OpenClaw工作区，`clawhub`会回退到该工作区，除非您覆盖了`--workdir`（或`CLAWHUB_WORKDIR`）。OpenClaw会从`<workspace>/skills`加载工作区技能，并在**下一个**会话中加载这些技能。如果您已经在使用`~/.openclaw/skills`或捆绑技能，工作区技能将优先加载。
 
 有关技能如何加载、共享和受控的更多详细信息，请参阅
 [Skills](/tools/skills)。
@@ -51,12 +51,12 @@ pnpm add -g clawhub
 ## 服务提供的功能
 
 - 技能及其`SKILL.md`内容的**公开浏览**。
-- 基于嵌入（向量搜索）的**搜索**，而不仅仅是基于关键词。
+- 基于嵌入（向量搜索）而非仅基于关键词的**搜索**。
 - 使用语义版本控制、变更日志和标签进行**版本管理**（包括`latest`）。
 - 按版本提供zip格式的**下载**。
-- 社区反馈的**点赞和评论**。
-- 用于审批和审计的**审核钩子**。
-- 适用于自动化和脚本编写的**CLI友好型API**。
+- 社区反馈的**星标和评论**。
+- 用于审批和审计的**审核挂钩**。
+- 适用于自动化和脚本编写的**CLI友好的API**。
 
 ## CLI命令和参数
 
@@ -64,8 +64,8 @@ pnpm add -g clawhub
 
 - `--workdir <dir>`: 工作目录（默认：当前目录；回退到OpenClaw工作区）。
 - `--dir <dir>`: 技能目录，相对于工作目录（默认：`skills`）。
-- `--site <url>`: 站点基础URL（浏览器登录）。
-- `--registry <url>`: 注册表API的基础URL。
+- `--site <url>`: 网站基础URL（浏览器登录）。
+- `--registry <url>`: 注册表API基础URL。
 - `--no-input`: 禁用提示（非交互式）。
 - `-V, --cli-version`: 打印CLI版本。
 
@@ -97,7 +97,7 @@ pnpm add -g clawhub
 - `clawhub update <slug>`
 - `clawhub update --all`
 - `--version <version>`: 更新到特定版本（仅限单个slug）。
-- `--force`: 当本地文件与任何已发布的版本不匹配时覆盖。
+- `--force`: 当本地文件与任何已发布版本不匹配时覆盖。
 
 列出：
 
@@ -117,7 +117,7 @@ pnpm add -g clawhub
 - `clawhub delete <slug> --yes`
 - `clawhub undelete <slug> --yes`
 
-同步（扫描本地技能并发布新增或更新的技能）：
+同步（扫描本地技能并发布新增/更新的技能）：
 
 - `clawhub sync`
 - `--root <dir...>`: 额外的扫描根目录。
@@ -156,7 +156,7 @@ clawhub update --all
 clawhub publish ./my-skill --slug my-skill --name "My Skill" --version 1.0.0 --tags latest
 ```
 
-一次性扫描并备份多个技能：
+一次扫描并备份多个技能：
 
 ```bash
 clawhub sync --all
@@ -168,17 +168,17 @@ clawhub sync --all
 
 - 每次发布都会创建一个新的**语义版本**`SkillVersion`。
 - 标签（如`latest`）指向某个版本；移动标签可以让您回滚。
-- 变更日志随每个版本附带，同步或发布更新时可以为空。
+- 变更日志按版本附加，同步或发布更新时可以为空。
 
 ### 本地更改与注册表版本
 
-更新会使用内容哈希将本地技能内容与注册表版本进行比较。如果本地文件与任何已发布的版本都不匹配，CLI会在覆盖之前询问（或在非交互式运行中要求`--force`）。
+更新会使用内容哈希将本地技能内容与注册表版本进行比较。如果本地文件与任何已发布版本都不匹配，CLI会在覆盖之前询问（或在非交互式运行中要求`--force`）。
 
 ### 同步扫描和回退根目录
 
-`clawhub sync`首先扫描您当前的工作目录。如果没有找到技能，它会回退到已知的旧位置（例如`~/openclaw/skills`和`~/.openclaw/skills`）。这是为了在无需额外标志的情况下找到较旧的技能安装。
+`clawhub sync`首先扫描您当前的工作目录。如果没有找到技能，它会回退到已知的旧版位置（例如`~/openclaw/skills`和`~/.openclaw/skills`）。这是为了在无需额外标志的情况下找到较旧的技能安装。
 
-### 存储和锁定文件
+### 存储和锁文件
 
 - 已安装的技能记录在您工作目录下的`.clawhub/lock.json`中。
 - 认证令牌存储在ClawHub CLI配置文件中（可通过`CLAWHUB_CONFIG_PATH`覆盖）。
@@ -194,7 +194,7 @@ export CLAWHUB_DISABLE_TELEMETRY=1
 ## 环境变量
 
 - `CLAWHUB_SITE`: 覆盖站点URL。
-- `CLAWHUB_REGISTRY`: 覆盖注册表API的URL。
+- `CLAWHUB_REGISTRY`: 覆盖注册表API URL。
 - `CLAWHUB_CONFIG_PATH`: 覆盖CLI存储令牌/配置的位置。
 - `CLAWHUB_WORKDIR`: 覆盖默认工作目录。
 - `CLAWHUB_DISABLE_TELEMETRY=1`: 在`sync`上禁用遥测。

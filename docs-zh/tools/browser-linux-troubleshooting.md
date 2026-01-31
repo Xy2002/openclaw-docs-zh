@@ -48,7 +48,7 @@ sudo apt --fix-broken install -y  # if there are dependency errors
 }
 ```
 
-### 解决方案 2：在仅附加模式下使用 Snap Chromium
+### 解决方案 2：仅以附加模式使用 Snap Chromium
 
 如果你必须使用 snap Chromium，请将 OpenClaw 配置为附加到手动启动的浏览器：
 
@@ -88,7 +88,7 @@ RestartSec=5
 WantedBy=default.target
 ```
 
-启用命令： `systemctl --user enable --now openclaw-browser.service`
+启用命令：`systemctl --user enable --now openclaw-browser.service`
 
 ### 验证浏览器是否正常工作
 
@@ -109,7 +109,7 @@ curl -s http://127.0.0.1:18791/tabs
 |--------|-------------|---------|
 | `browser.enabled` | 启用浏览器控制 | `true` |
 | `browser.executablePath` | 基于 Chromium 的浏览器二进制文件路径（Chrome/Brave/Edge/Chromium）| 自动检测（优先使用基于 Chromium 的默认浏览器）|
-| `browser.headless` | 无界面运行 | `false` |
+| `browser.headless` | 无 GUI 运行 | `false` |
 | `browser.noSandbox` | 添加 `--no-sandbox` 标志（某些 Linux 设置需要）| `false` |
 | `browser.attachOnly` | 不启动浏览器，仅附加到现有浏览器 | `false` |
 | `browser.cdpPort` | Chrome DevTools 协议端口 | `18800` |
@@ -125,4 +125,4 @@ curl -s http://127.0.0.1:18791/tabs
 
 注意事项：
 - `chrome` 配置文件在可能的情况下使用你的 **系统默认 Chromium 浏览器**。
-- 本地 `openclaw` 配置文件会自动分配 `cdpPort`/`cdpUrl`；仅在远程 CDP 场景中才需要显式设置这些参数。
+- 本地 `openclaw` 配置文件会自动分配 `cdpPort`/`cdpUrl`；仅在远程 CDP 时才需要手动设置这些参数。

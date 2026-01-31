@@ -48,11 +48,11 @@ openclaw gateway run
 - `--allow-unconfigured`: 允许在配置中缺少 `gateway.mode=local` 的情况下启动网关。
 - `--dev`: 如果缺失，则创建开发配置 + 工作区（跳过 BOOTSTRAP.md）。
 - `--reset`: 重置开发配置 + 凭据 + 会话 + 工作区（需要 `--dev`）。
-- `--force`: 在启动前杀死选定端口上的任何现有监听器。
+- `--force`: 在启动之前杀死选定端口上的任何现有监听器。
 - `--verbose`: 详细日志。
 - `--claude-cli-logs`: 只在控制台中显示 claude-cli 日志（并启用其 stdout/stderr）。
 - `--ws-log <auto|full|compact>`: WebSocket 日志样式（默认为 `auto`）。
-- `--compact`: 是 `--ws-log compact` 的别名。
+- `--compact`: `--ws-log compact` 的别名。
 - `--raw-stream`: 将原始模型流事件记录到 jsonl。
 - `--raw-stream-path <path>`: 原始流 jsonl 路径。
 
@@ -61,9 +61,9 @@ openclaw gateway run
 所有查询命令都使用 WebSocket RPC。
 
 输出模式：
-- 默认：人类可读（在 TTY 中彩色显示）。
+- 默认：人类可读（TTY 中带颜色）。
 - `--json`: 机器可读 JSON（无样式/加载动画）。
-- `--no-color`（或 `NO_COLOR=1`）：禁用 ANSI，但仍保持人类友好的布局。
+- `--no-color`（或 `NO_COLOR=1`）：禁用 ANSI，但仍保持人类可读的布局。
 
 共享选项（在支持的情况下）：
 - `--url <url>`: 网关 WebSocket URL。
@@ -89,8 +89,8 @@ openclaw gateway status --json
 
 选项：
 - `--url <url>`: 覆盖探测 URL。
-- `--token <token>`: 探测的令牌认证。
-- `--password <password>`: 探测的密码认证。
+- `--token <token>`: 探测的令牌身份验证。
+- `--password <password>`: 探测的密码身份验证。
 - `--timeout <ms>`: 探测超时（默认为 `10000`）。
 - `--no-probe`: 跳过 RPC 探测（仅查看服务）。
 - `--deep`: 同时扫描系统级服务。
@@ -99,18 +99,18 @@ openclaw gateway status --json
 
 `gateway probe` 是“调试一切”命令。它始终探测：
 - 您配置的远程网关（如果已设置），以及
-- 本地主机（环回）**即使已配置远程网关**。
+- 本地（环回）**即使已配置远程网关**。
 
-如果可以访问多个网关，它会打印所有网关。当您使用隔离的配置文件或端口时（例如救援机器人），可以支持多个网关，但大多数安装仍然只运行一个网关。
+如果可以访问多个网关，它会打印所有网关。当您使用隔离的配置文件/端口时（例如救援机器人），可以支持多个网关，但大多数安装仍然只运行一个网关。
 
 ```bash
 openclaw gateway probe
 openclaw gateway probe --json
 ```
 
-#### 通过 SSH 远程连接（与 Mac 应用程序功能一致）
+#### 通过 SSH 远程（与 Mac 应用程序功能一致）
 
-macOS 应用程序的“通过 SSH 远程连接”模式使用本地端口转发，使可能仅绑定到环回的远程网关能够在 `ws://127.0.0.1:<port>` 上被访问。
+macOS 应用程序的“通过 SSH 远程”模式使用本地端口转发，使可能仅绑定到环回的远程网关可通过 `ws://127.0.0.1:<port>` 访问。
 
 CLI 等效：
 
@@ -164,7 +164,7 @@ openclaw gateway uninstall
 - `transport`（传输提示，例如 `gateway`）
 - `gatewayPort`（WebSocket 端口，通常为 `18789`）
 - `sshPort`（SSH 端口；如果未指定，默认为 `22`）
-- `tailnetDns`（MagicDNS 主机名，如果可用）
+- `tailnetDns`（MagicDNS 主机名，如有）
 - `gatewayTls`/`gatewayTlsSha256`（TLS 已启用 + 证书指纹）
 - `cliPath`（远程安装的可选提示）
 

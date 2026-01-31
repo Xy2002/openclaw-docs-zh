@@ -87,7 +87,7 @@ synthetic/hf:MiniMaxAI/MiniMax-M2.1
 | `hf:deepseek-ai/DeepSeek-V3` | 128000 | 8192 | false | 文本 |
 | `hf:Qwen/Qwen3-235B-A22B-Thinking-2507` | 256000 | 8192 | true | 文本 |
 
-## 注意事项
+## 备注
 
 - 模型引用使用 `synthetic/<modelId>`。
 - 如果你启用模型白名单 (`agents.defaults.models`)，请添加你计划使用的所有模型。

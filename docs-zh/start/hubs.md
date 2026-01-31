@@ -5,7 +5,7 @@ read_when:
 ---
 # 文档中心
 
-使用这些中心来探索所有页面，包括未显示在左侧导航中的深度解析和参考文档。
+使用这些中心来发现所有页面，包括未显示在左侧导航中的深度解析和参考文档。
 
 ## 从这里开始
 
@@ -20,7 +20,7 @@ read_when:
 - [配置示例](/gateway/configuration-examples)
 - [OpenClaw 助手](/start/openclaw)
 - [展示](/start/showcase)
-- [历史](/start/lore)
+- [背景故事](/start/lore)
 
 ## 安装与更新
 
@@ -75,13 +75,13 @@ read_when:
 - [Webhooks](/automation/webhook)
 - [Gmail Pub/Sub](/automation/gmail-pubsub)
 
-## 网关与运营
+## 网关与运维
 
 - [网关操作手册](/gateway)
 - [网关配对](/gateway/pairing)
 - [网关锁定](/gateway/gateway-lock)
 - [后台进程](/gateway/background-process)
-- [健康](/gateway/health)
+- [健康状况](/gateway/health)
 - [心跳](/gateway/heartbeat)
 - [医生](/gateway/doctor)
 - [日志记录](/gateway/logging)
@@ -101,8 +101,8 @@ read_when:
 - [CLI 参考](/cli)
 - [执行工具](/tools/exec)
 - [提升模式](/tools/elevated)
-- [计划任务](/automation/cron-jobs)
-- [计划任务 vs 心跳](/automation/cron-vs-heartbeat)
+- [Cron 作业](/automation/cron-jobs)
+- [Cron vs 心跳](/automation/cron-vs-heartbeat)
 - [思考模式 + 详细模式](/tools/thinking)
 - [模型](/concepts/models)
 - [子代理](/tools/subagents)
@@ -114,7 +114,7 @@ read_when:
 
 ## 节点、媒体、语音
 
-- [节点概述](/nodes)
+- [节点概览](/nodes)
 - [相机](/nodes/camera)
 - [图像](/nodes/images)
 - [音频](/nodes/audio)
@@ -124,7 +124,7 @@ read_when:
 
 ## 平台
 
-- [平台概述](/platforms)
+- [平台概览](/platforms)
 - [macOS](/platforms/macos)
 - [iOS](/platforms/ios)
 - [Android](/platforms/android)
@@ -132,16 +132,16 @@ read_when:
 - [Linux](/platforms/linux)
 - [Web 界面](/web)
 
-## macOS 配套应用（高级）
+## macOS 配套应用（进阶）
 
 - [macOS 开发环境设置](/platforms/mac/dev-setup)
 - [macOS 菜单栏](/platforms/mac/menu-bar)
 - [macOS 语音唤醒](/platforms/mac/voicewake)
 - [macOS 语音叠加](/platforms/mac/voice-overlay)
 - [macOS WebChat](/platforms/mac/webchat)
-- [macOS Canvas](/platforms/mac/canvas)
+- [macOS 画布](/platforms/mac/canvas)
 - [macOS 子进程](/platforms/mac/child-process)
-- [macOS 健康](/platforms/mac/health)
+- [macOS 健康状况](/platforms/mac/health)
 - [macOS 图标](/platforms/mac/icon)
 - [macOS 日志记录](/platforms/mac/logging)
 - [macOS 权限](/platforms/mac/permissions)

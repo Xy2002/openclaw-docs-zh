@@ -59,7 +59,7 @@ openclaw devices reject <requestId>
 ### 状态存储位置
 
 存储于 `~/.openclaw/devices/` 下：
-- `pending.json`（短期存储；待处理请求到期）
+- `pending.json`（短期存储；待处理请求会过期）
 - `paired.json`（已配对的设备 + 令牌）
 
 ### 注意事项

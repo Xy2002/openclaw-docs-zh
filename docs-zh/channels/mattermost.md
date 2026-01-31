@@ -7,7 +7,7 @@ read_when:
 # Mattermost（插件）
 
 状态：通过插件支持（机器人令牌 + WebSocket 事件）。支持频道、群组和私信。
-Mattermost 是一款可自托管的团队消息平台；有关产品详情和下载，请访问其官方网站：
+Mattermost 是一个可自托管的团队消息平台；有关产品详情和下载，请访问其官方网站：
 [mattermost.com](https://mattermost.com)。
 
 ## 需要插件
@@ -29,8 +29,8 @@ openclaw plugins install ./extensions/mattermost
 
 ## 快速设置
 1) 安装 Mattermost 插件。
-2) 创建一个 Mattermost 机器人账户并复制 **机器人令牌**。
-3) 复制 Mattermost 的 **基础 URL**（例如 `https://chat.example.com`）。
+2) 创建 Mattermost 机器人账户并复制 **机器人令牌**。
+3) 复制 Mattermost 的 **基础 URL**（例如，`https://chat.example.com`）。
 4) 配置 OpenClaw 并启动网关。
 
 最小配置：
@@ -76,7 +76,7 @@ Mattermost 会自动回复私信。频道行为由 `chatmode` 控制：
 
 注意事项：
 - `onchar` 仍会响应显式提及。
-- `channels.mattermost.requireMention` 对于旧版配置仍然有效，但建议使用 `chatmode`。
+- `channels.mattermost.requireMention` 仍适用于旧版配置，但建议优先使用 `chatmode`。
 
 ## 访问控制（私信）
 - 默认：`channels.mattermost.dmPolicy = "pairing"`（未知发件人会收到配对码）。
@@ -87,7 +87,7 @@ Mattermost 会自动回复私信。频道行为由 `chatmode` 控制：
 
 ## 频道（群组）
 - 默认：`channels.mattermost.groupPolicy = "allowlist"`（需提及才能进入）。
-- 使用 `channels.mattermost.groupAllowFrom` 将发件人加入白名单（用户 ID 或 `@username`）。
+- 使用 `channels.mattermost.groupAllowFrom`（用户 ID 或 `@username`）允许特定发件人加入。
 - 开放频道：`channels.mattermost.groupPolicy="open"`（需提及才能进入）。
 
 ## 出站交付目标

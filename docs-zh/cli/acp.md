@@ -46,9 +46,9 @@ openclaw acp client --server "node" --server-args openclaw.mjs acp --url ws://12
 
 当 IDE（或其他客户端）使用代理客户端协议并与 OpenClaw 网关会话对接时，即可使用 ACP。
 
-1. 确保网关正在运行（本地或远程）。
+1. 确保网关已运行（本地或远程）。
 2. 配置网关目标（通过配置文件或标志）。
-3. 将您的 IDE 配置为通过标准输入/输出运行 `openclaw acp`。
+3. 配置您的 IDE，使其通过标准输入/输出运行 `openclaw acp`。
 
 示例配置（持久化）：
 
@@ -65,7 +65,7 @@ openclaw acp --url wss://gateway-host:18789 --token <token>
 
 ## 选择代理
 
-ACP 不直接选择代理。它根据网关会话密钥进行路由。
+ACP 不直接选择代理；它根据网关会话密钥进行路由。
 
 使用代理作用域的会话密钥来指定特定代理：
 
@@ -122,9 +122,9 @@ openclaw acp --session agent:qa:bug-123
 
 - `--session <key>`：使用特定的网关会话密钥。
 - `--session-label <label>`：通过标签解析现有会话。
-- `--reset-session`：为此密钥生成一个新的会话 ID（相同密钥，新对话记录）。
+- `--reset-session`：为该密钥生成一个新的会话 ID（同一密钥，新对话记录）。
 
-如果您的 ACP 客户端支持元数据，您可以按会话覆盖：
+如果您的 ACP 客户端支持元数据，您可以按会话覆盖设置：
 
 ```json
 {
@@ -141,13 +141,13 @@ openclaw acp --session agent:qa:bug-123
 ## 选项
 
 - `--url <url>`：网关 WebSocket URL（若已配置，则默认为 gateway.remote.url）。
-- `--token <token>`：网关身份验证令牌。
-- `--password <password>`：网关身份验证密码。
+- `--token <token>`：网关认证令牌。
+- `--password <password>`：网关认证密码。
 - `--session <key>`：默认会话密钥。
 - `--session-label <label>`：用于解析的默认会话标签。
-- `--require-existing`：如果会话密钥/标签不存在则失败。
+- `--require-existing`：如果会话密钥/标签不存在，则报错。
 - `--reset-session`：在首次使用前重置会话密钥。
-- `--no-prefix-cwd`：不在提示前加上工作目录前缀。
+- `--no-prefix-cwd`：不在提示前添加工作目录前缀。
 - `--verbose, -v`：向标准错误输出输出详细日志。
 
 ### `acp client` 选项
@@ -156,4 +156,4 @@ openclaw acp --session agent:qa:bug-123
 - `--server <command>`：ACP 服务器命令（默认：`openclaw`）。
 - `--server-args <args...>`：传递给 ACP 服务器的额外参数。
 - `--server-verbose`：在 ACP 服务器上启用详细日志记录。
-- `--verbose, -v`：启用客户端的详细日志记录。
+- `--verbose, -v`：启用客户端详细日志记录。

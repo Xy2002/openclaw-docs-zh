@@ -6,10 +6,10 @@ read_when:
 ---
 # 平台
 
-OpenClaw 核心采用 TypeScript 编写。**推荐使用 Node 作为运行时**。
+OpenClaw 核心采用 TypeScript 编写。**推荐使用 Node.js 作为运行时**。
 不建议在网关中使用 Bun（存在 WhatsApp/Telegram 相关问题）。
 
-我们为 macOS（菜单栏应用）和移动节点（iOS/Android）提供了配套应用。Windows 和 Linux 的配套应用也在规划中，但目前网关已完全支持这些平台。此外，我们也计划推出适用于 Windows 的原生配套应用；对于 Windows 用户，推荐通过 WSL2 使用网关。
+我们为 macOS 提供了配套应用（菜单栏应用），也为移动节点提供了配套应用（iOS/Android）。Windows 和 Linux 的配套应用正在规划中，但目前网关已完全支持这些平台。此外，我们也计划推出 Windows 原生配套应用；对于 Windows 用户，推荐通过 WSL2 使用网关。
 
 ## 选择你的操作系统
 
@@ -40,7 +40,7 @@ OpenClaw 核心采用 TypeScript 编写。**推荐使用 Node 作为运行时**�
 
 - 向导模式（推荐）：`openclaw onboard --install-daemon`
 - 直接安装：`openclaw gateway install`
-- 配置流程：`openclaw configure` → 选择 **Gateway service**
+- 配置流程：`openclaw configure` → 选择 **网关服务**
 - 修复/迁移：`openclaw doctor`（提供安装或修复服务的选项）
 
 服务目标取决于操作系统：

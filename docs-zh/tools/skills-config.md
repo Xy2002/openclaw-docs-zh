@@ -51,7 +51,7 @@ read_when:
 - `entries.<skillKey>`: 每个技能的覆盖设置。
 
 每个技能的字段：
-- `enabled`: 设置 `false` 可禁用某个技能，即使它是捆绑或已安装的。
+- `enabled`: 将 `false` 设置为禁用某个技能，即使该技能是捆绑或已安装的。
 - `env`: 注入到代理运行中的环境变量（仅在尚未设置时生效）。
 - `apiKey`: 为声明主要环境变量的技能提供可选便利。
 
@@ -60,12 +60,12 @@ read_when:
 - 默认情况下，`entries` 下的键会映射到技能名称。如果某个技能定义了 `metadata.openclaw.skillKey`，则使用该键。
 - 启用监视器时，对技能所做的更改将在下一次代理轮次中生效。
 
-### 沙盒化技能 + 环境变量
+### 沙箱技能 + 环境变量
 
-当会话被**沙盒化**时，技能进程在 Docker 内运行。沙盒**不会**继承主机的 `process.env`。
+当会话被**沙箱化**时，技能进程在 Docker 内运行。沙箱**不会**继承主机的 `process.env`。
 
 请使用以下方法之一：
 - `agents.defaults.sandbox.docker.env`（或针对每个代理的 `agents.list[].sandbox.docker.env`）
-- 将环境变量烘焙到您的自定义沙盒镜像中
+- 将环境变量烘焙到您的自定义沙箱镜像中
 
 全局 `env` 和 `skills.entries.<skill>.env/apiKey` 仅适用于**主机**运行。

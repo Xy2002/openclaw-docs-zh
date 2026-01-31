@@ -9,28 +9,28 @@ read_when:
 
 ## 目标
 - 将 `exec.host` 和 `exec.security` 添加到路由中，以在**沙箱**、**网关**和**节点**之间分配执行任务。
-- 保持默认设置“安全”：除非显式启用，否则不进行跨主机执行。
-- 通过本地 IPC 将执行拆分为带有可选 UI（macOS 应用）的**无头运行器服务**。
+- 保持默认设置**安全**：除非显式启用，否则禁止跨主机执行。
+- 将执行拆分为一个带有可选 UI（macOS 应用）的**无头运行器服务**，并通过本地 IPC 进行通信。
 - 提供**按代理**的策略、白名单、询问模式和节点绑定。
-- 支持*有*或*无*白名单均可使用的**询问模式**。
+- 支持**询问模式**，无论是否使用白名单均可正常工作。
 - 跨平台：Unix 套接字 + 令牌认证（macOS/Linux/Windows 功能对等）。
 
 ## 非目标
-- 不迁移旧版白名单或支持旧版架构。
-- 不为节点执行提供 PTY/流式传输（仅支持聚合输出）。
-- 在现有 Bridge + 网关之外不引入新的网络层。
+- 不进行旧版白名单迁移或旧版架构支持。
+- 不为节点执行提供 PTY/流式传输功能（仅支持聚合输出）。
+- 在现有 Bridge + 网关的基础上不引入新的网络层。
 
-## 已锁定的决策
+## 已确定的决策
 - **配置键：** `exec.host` + `exec.security`（允许按代理覆盖）。
 - **提升权限：** 保留 `/elevated` 作为网关完全访问权限的别名。
 - **询问默认值：** `on-miss`。
-- **批准存储：** `~/.openclaw/exec-approvals.json`（JSON 格式，不迁移旧数据）。
-- **运行器：** 无头系统服务；UI 应用托管用于批准的 Unix 套接字。
+- **批准存储：** `~/.openclaw/exec-approvals.json`（JSON 格式，不进行旧版迁移）。
+- **运行器：** 无头系统服务；UI 应用托管 Unix 套接字以处理批准请求。
 - **节点身份：** 使用现有的 `nodeId`。
-- **套接字认证：** Unix 套接字 + 令牌（跨平台）；如有需要，后续再拆分。
+- **套接字认证：** Unix 套接字 + 令牌（跨平台）；如有需要，后续可进一步拆分。
 - **节点主机状态：** `~/.openclaw/node.json`（节点 ID + 配对令牌）。
 - **macOS 执行主机：** 在 macOS 应用内运行 `system.run`；节点主机服务通过本地 IPC 转发请求。
-- **不使用 XPC 辅助程序：** 坚持使用 Unix 套接字 + 令牌 + 对等检查。
+- **无需 XPC 辅助程序：** 继续采用 Unix 套接字 + 令牌 + 对等检查的方式。
 
 ## 关键概念
 ### 主机
@@ -48,7 +48,7 @@ read_when:
 - `on-miss`：仅在白名单不匹配时询问。
 - `always`：每次都询问。
 
-询问与白名单**独立**；白名单可与 `always` 或 `on-miss` 一起使用。
+询问与白名单**独立**；白名单可以与 `always` 或 `on-miss` 一起使用。
 
 ### 按执行的策略解析
 1) 解析 `exec.host`（工具参数 → 代理覆盖 → 全局默认）。
@@ -60,14 +60,14 @@ read_when:
 - 默认 `exec.host = sandbox`。
 - 默认 `exec.security = deny` 适用于 `gateway` 和 `node`。
 - 默认 `exec.ask = on-miss`（仅在安全策略允许时适用）。
-- 如果未设置节点绑定，**代理可以指向任意节点**，但前提是策略允许。
+- 如果未设置节点绑定，**代理可以针对任意节点**，但前提是策略允许。
 
 ## 配置界面
 ### 工具参数
 - `exec.host`（可选）：`sandbox | gateway | node`。
 - `exec.security`（可选）：`deny | allowlist | full`。
 - `exec.ask`（可选）：`off | on-miss | always`。
-- `exec.node`（可选）：当 `host=node` 时要使用的节点 ID/名称。
+- `exec.node`（可选）：当 `host=node` 时使用的节点 ID/名称。
 
 ### 全局配置键
 - `tools.exec.host`
@@ -75,7 +75,7 @@ read_when:
 - `tools.exec.ask`
 - `tools.exec.node`（默认节点绑定）
 
-### 代理特定配置键
+### 按代理配置键
 - `agents.list[].tools.exec.host`
 - `agents.list[].tools.exec.security`
 - `agents.list[].tools.exec.ask`
@@ -124,17 +124,17 @@ read_when:
 ```
 备注：
 - 不支持旧版白名单格式。
-- `askFallback` 仅在 `ask` 必需且无法访问 UI 时适用。
+- `askFallback` 仅在需要 `ask` 且无法访问 UI 时适用。
 - 文件权限： `0600`。
 
-## 运行器服务（无头）
+## 无头运行器服务
 ### 角色
 - 在本地强制执行 `exec.security` + `exec.ask`。
 - 执行系统命令并返回输出。
-- 发出 Bridge 事件以记录执行生命周期（可选但推荐）。
+- 发出 Bridge 事件以跟踪执行生命周期（可选但推荐）。
 
 ### 服务生命周期
-- macOS 上使用 Launchd/守护进程；Linux/Windows 上使用系统服务。
+- 在 macOS 上使用 Launchd/守护进程；在 Linux/Windows 上使用系统服务。
 - 批准 JSON 局限于执行主机。
 - UI 托管本地 Unix 套接字；运行器按需连接。
 
@@ -143,8 +143,8 @@ read_when:
 - Unix 套接字位于 `~/.openclaw/exec-approvals.sock`（0600 权限）。
 - 令牌存储在 `exec-approvals.json`（0600 权限）。
 - 对等检查：仅同一 UID 可连接。
-- 挑战/响应机制：nonce + HMAC(令牌, 请求哈希)，防止重放攻击。
-- 短 TTL（如 10 秒）+ 最大负载限制 + 速率限制。
+- 挑战/响应机制：nonce + HMAC（令牌，请求哈希），以防止重放攻击。
+- 短 TTL（例如 10 秒）+ 最大负载限制 + 速率限制。
 
 ### 询问流程（macOS 应用执行主机）
 1) 节点服务从网关接收 `system.run`。
@@ -156,7 +156,7 @@ read_when:
 如果缺少 UI：
 - 应用 `askFallback`（`deny|allowlist|full`）。
 
-### 图表（SCI）
+### 流程图（SCI）
 ```
 Agent -> Gateway -> Bridge -> Node Service (TS)
                          |  IPC (UDS + token + HMAC + TTL)
@@ -164,7 +164,7 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
                      Mac App (UI + TCC + system.run)
 ```
 
-## 节点身份 + 绑定
+## 节点身份与绑定
 - 使用来自 Bridge 配对的现有 `nodeId`。
 - 绑定模型：
   - `tools.exec.node` 将代理限制为特定节点。
@@ -175,7 +175,7 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
   - `remoteIp`
   - `nodeId` 前缀（≥ 6 个字符）
 
-## 事件
+## 事件传递
 ### 谁能看到事件
 - 系统事件是**按会话**的，并在下一个提示时显示给代理。
 - 存储在网关的内存队列中（`enqueueSystemEvent`）。
@@ -185,13 +185,13 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
 - `Exec finished (node=<id>, id=<runId>, code=<code>)` + 可选的输出尾部
 - `Exec denied (node=<id>, id=<runId>, <reason>)`
 
-### 传输
+### 传输方式
 选项 A（推荐）：
 - 运行器向 Bridge 发送 `event` 帧 `exec.started` / `exec.finished`。
 - 网关 `handleBridgeEvent` 将这些映射为 `enqueueSystemEvent`。
 
 选项 B：
-- 网关 `exec` 工具直接处理生命周期（仅同步）。
+- 网关 `exec` 工具直接处理生命周期（仅同步模式）。
 
 ## 执行流程
 ### 沙箱主机
@@ -206,11 +206,11 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
 - 网关使用 `node.invoke` 和 `system.run` 调用。
 - 运行器强制执行本地批准。
 - 运行器返回聚合的 stdout/stderr。
-- 可选的 Bridge 事件用于记录开始/结束/拒绝。
+- 可选的 Bridge 事件用于记录开始/完成/拒绝。
 
 ## 输出上限
-- 合并的 stdout+stderr 上限为**200k**；保留**尾部 20k**用于事件。
-- 截断时使用清晰的后缀（例如，`"… (truncated)"`）。
+- 将 stdout+stderr 的总大小限制为**200k**；保留**尾部 20k**用于事件。
+- 截断时添加明确的后缀（例如 `"… (truncated)"`）。
 
 ## 斜杠命令
 - `/exec host=<sandbox|gateway|node> security=<deny|allowlist|full> ask=<off|on-miss|always> node=<id>`
@@ -236,10 +236,10 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
 ### 第 3 阶段：节点运行器强制执行
 - 更新节点运行器以强制执行白名单 + 询问。
 - 在 macOS 应用 UI 中添加 Unix 套接字提示桥。
-- 接线 `askFallback`。
+- 连接 `askFallback`。
 
 ### 第 4 阶段：事件
-- 添加节点 → 网关 Bridge 事件，用于记录执行生命周期。
+- 为执行生命周期添加节点 → 网关 Bridge 事件。
 - 将其映射到 `enqueueSystemEvent`，用于代理提示。
 
 ### 第 5 阶段：UI 优化
@@ -254,8 +254,8 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
 
 ## 潜在风险
 - UI 不可用：确保 `askFallback` 得到遵守。
-- 长时间运行的命令：依赖超时 + 输出上限。
-- 多节点歧义：除非有节点绑定或明确的节点参数，否则报错。
+- 长时间运行的命令：依靠超时 + 输出上限。
+- 多节点歧义：除非有节点绑定或显式节点参数，否则报错。
 
 ## 相关文档
 - [执行工具](/tools/exec)

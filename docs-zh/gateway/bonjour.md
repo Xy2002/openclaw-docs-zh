@@ -14,11 +14,11 @@ OpenClaw 使用 Bonjour（mDNS / DNS‑SD）作为一种仅限局域网的便捷
 
 如果节点和网关位于不同的网络中，多播 mDNS 将无法跨越边界。你可以通过切换到基于 Tailscale 的 **单播 DNS‑SD**（“广域 Bonjour”），在保持相同发现用户体验的同时实现这一目标。
 
-高级步骤：
+高级步骤如下：
 
 1) 在网关主机上运行一个可通过 Tailnet 访问的 DNS 服务器。
 2) 在专用区域下发布针对 `_openclaw-gw._tcp` 的 DNS‑SD 记录（示例：`openclaw.internal.`）。
-3) 配置 Tailscale 的 **分离 DNS**，以便你的选定域名通过该 DNS 服务器解析，包括 iOS 客户端。
+3) 配置 Tailscale 的 **拆分 DNS**，以便你选择的域名通过该 DNS 服务器解析，包括 iOS 客户端。
 
 OpenClaw 支持任何发现域名；`openclaw.internal.` 只是一个示例。iOS/Android 节点会同时浏览 `local.` 和你配置的广域域名。
 
@@ -53,9 +53,9 @@ dig @<TAILNET_IPV4> -p 53 _openclaw-gw._tcp.openclaw.internal PTR +short
 在 Tailscale 管理控制台中：
 
 - 添加指向网关 Tailnet IP 的名称服务器（UDP/TCP 53）。
-- 添加分离 DNS，使你的发现域名使用该名称服务器。
+- 添加拆分 DNS，使你的发现域名使用该名称服务器。
 
-一旦客户端接受 Tailnet DNS，iOS 节点便可在不使用多播的情况下，在你的发现域名中浏览 `_openclaw-gw._tcp`。
+一旦客户端接受 Tailnet DNS，iOS 节点无需多播即可浏览你发现域名中的 `_openclaw-gw._tcp`。
 
 ### 推荐的网关监听器安全设置
 
@@ -81,13 +81,13 @@ dig @<TAILNET_IPV4> -p 53 _openclaw-gw._tcp.openclaw.internal PTR +short
 - `displayName=<friendly name>`
 - `lanHost=<hostname>.local`
 - `gatewayPort=<port>`（网关 WS + HTTP）
-- `gatewayTls=1`（仅当启用了 TLS 时）
-- `gatewayTlsSha256=<sha256>`（仅当启用了 TLS 且指纹可用时）
-- `canvasPort=<port>`（仅当画布主机启用时；默认 `18793`）
+- `gatewayTls=1`（仅在启用 TLS 时）
+- `gatewayTlsSha256=<sha256>`（仅在启用 TLS 且指纹可用时）
+- `canvasPort=<port>`（仅在启用了画布主机时；默认 `18793`）
 - `sshPort=<port>`（未覆盖时默认为 22）
 - `transport=gateway`
 - `cliPath=<path>`（可选；指向可执行 `openclaw` 入口点的绝对路径）
-- `tailnetDns=<magicdns>`（Tailnet 可用时的可选提示）
+- `tailnetDns=<magicdns>`（当 Tailnet 可用时的可选提示）
 
 ## 在 macOS 上进行调试
 
@@ -134,15 +134,15 @@ iOS 节点使用 `NWBrowser` 来发现 `_openclaw-gw._tcp`。
 Bonjour/DNS‑SD 经常将服务实例名称中的字节转义为十进制 `\DDD` 序列（例如，空格变为 `\032`）。
 
 - 这在协议层面是正常的。
-- 用户界面应解码后显示（iOS 使用 `BonjourEscapes.decode`）。
+- 用户界面应在显示前进行解码（iOS 使用 `BonjourEscapes.decode`）。
 
 ## 禁用与配置
 
-- `OPENCLAW_DISABLE_BONJOUR=1` 禁用通告（旧版：`OPENCLAW_DISABLE_BONJOUR`）。
+- `OPENCLAW_DISABLE_BONJOUR=1` 可禁用通告（旧版：`OPENCLAW_DISABLE_BONJOUR`）。
 - `gateway.bind` 在 `~/.openclaw/openclaw.json` 中控制网关的绑定模式。
-- `OPENCLAW_SSH_PORT` 覆盖 TXT 中通告的 SSH 端口（旧版：`OPENCLAW_SSH_PORT`）。
+- `OPENCLAW_SSH_PORT` 会覆盖 TXT 中通告的 SSH 端口（旧版：`OPENCLAW_SSH_PORT`）。
 - `OPENCLAW_TAILNET_DNS` 在 TXT 中发布 MagicDNS 提示（旧版：`OPENCLAW_TAILNET_DNS`）。
-- `OPENCLAW_CLI_PATH` 覆盖通告的 CLI 路径（旧版：`OPENCLAW_CLI_PATH`）。
+- `OPENCLAW_CLI_PATH` 会覆盖通告的 CLI 路径（旧版：`OPENCLAW_CLI_PATH`）。
 
 ## 相关文档
 

@@ -19,14 +19,14 @@ openclaw config unset tools.web.search.apiKey
 
 ## 路径
 
-路径使用点号或方括号表示法：
+路径使用点符号或方括号表示法：
 
 ```bash
 openclaw config get agents.defaults.workspace
 openclaw config get agents.list[0].id
 ```
 
-使用代理列表索引来定位特定代理：
+使用代理列表索引来指定特定代理：
 
 ```bash
 openclaw config get agents.list

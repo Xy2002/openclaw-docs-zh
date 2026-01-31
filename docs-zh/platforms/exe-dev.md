@@ -21,12 +21,12 @@ read_when:
 ## 您需要的条件
 
 - exe.dev 帐户
-- `ssh exe.dev` 访问 [exe.dev](https://exe.dev) 虚拟机（可选）
+- `ssh exe.dev` 对 [exe.dev](https://exe.dev) 虚拟机的访问权限（可选）
 
 
 ## 使用 Shelley 进行自动化安装
 
-Shelley 是 [exe.dev](https://exe.dev) 的代理，可以通过我们的提示界面立即安装 OpenClaw。使用的提示如下：
+Shelley 是 [exe.dev](https://exe.dev) 的代理，可以通过我们的提示立即安装 OpenClaw。使用的提示如下：
 
 ```
 Set up OpenClaw (https://docs.openclaw.ai/install) on this VM. Use the non-interactive and accept-risk flags for openclaw onboarding. Add the supplied auth or token as needed. Configure nginx to forward from the default port 18789 to the root location on the default enabled site config, making sure to enable Websocket support. Pairing is done by "openclaw devices list" and "openclaw device approve <request id>". Make sure the dashboard shows that OpenClaw's health is OK. exe.dev handles forwarding from port 8000 to port 80/443 and HTTPS for us, so the final "reachable" should be <vm-name>.exe.xyz, without port specification.
@@ -101,7 +101,7 @@ server {
 
 ## 5) 访问 OpenClaw 并授予权限
 
-访问 `https://<vm-name>.exe.xyz/?token=YOUR-TOKEN-FROM-TERMINAL`。使用 `openclaw devices list` 和 `openclaw device approve` 批准设备。如有疑问，请通过浏览器使用 Shelley！
+访问 `https://<vm-name>.exe.xyz/?token=YOUR-TOKEN-FROM-TERMINAL`。使用 `openclaw devices list` 和 `openclaw device approve` 授权设备。如有疑问，请通过浏览器使用 Shelley！
 
 ## 远程访问
 

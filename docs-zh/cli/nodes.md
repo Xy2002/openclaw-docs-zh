@@ -12,7 +12,7 @@ read_when:
 
 相关：
 - 节点概览：[节点](/nodes)
-- 摄像头：[摄像头节点](/nodes/camera)
+- 摄像头：[相机节点](/nodes/camera)
 - 图像：[图像节点](/nodes/images)
 
 常用选项：
@@ -31,9 +31,8 @@ openclaw nodes status --connected
 openclaw nodes status --last-connected 24h
 ```
 
-`nodes list` 用于打印待处理/已配对的表格。配对行包含最近一次连接的时间（Last Connect）。
-使用 `--connected` 可仅显示当前已连接的节点。使用 `--last-connected <duration>` 可
-按连接时长筛选节点（例如 `24h`, `7d`）。
+`nodes list` 用于打印待处理/已配对表。配对行包含最近一次连接时间（Last Connect）。
+使用 `--connected` 只显示当前已连接的节点。使用 `--last-connected <duration>` 可以筛选在特定时间段内连接的节点（例如 `24h`, `7d`）。
 
 ## 调用/运行
 

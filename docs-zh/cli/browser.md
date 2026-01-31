@@ -87,7 +87,7 @@ openclaw browser type <ref> "hello"
 
 此模式允许代理控制您手动附加的现有 Chrome 标签页（不会自动附加）。
 
-将解压后的扩展安装到一个稳定的路径：
+将解压后的扩展安装到稳定路径：
 
 ```bash
 openclaw browser extension install
@@ -100,8 +100,8 @@ openclaw browser extension path
 
 ## 远程浏览器控制（节点主机代理）
 
-如果网关运行在与浏览器不同的机器上，则应在安装了 Chrome/Brave/Edge/Chromium 的机器上运行一个 **节点主机**。网关会将浏览器操作代理到该节点（无需单独的浏览器控制服务器）。
+如果网关与浏览器运行在不同机器上，则应在装有 Chrome/Brave/Edge/Chromium 的机器上运行一个 **节点主机**。网关会将浏览器操作代理到该节点（无需单独的浏览器控制服务器）。
 
-使用 `gateway.nodes.browser.mode` 来控制自动路由，使用 `gateway.nodes.browser.node` 在连接多个节点时固定特定节点。
+使用 `gateway.nodes.browser.mode` 来控制自动路由，使用 `gateway.nodes.browser.node` 在连接了多个节点时固定指定节点。
 
 安全与远程设置：[浏览器工具](/tools/browser)、[远程访问](/gateway/remote)、[Tailscale](/gateway/tailscale)、[安全](/gateway/security)

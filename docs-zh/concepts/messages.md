@@ -32,7 +32,7 @@ Inbound message
 
 ## 入站防抖
 
-来自**同一发送者**的快速连续消息可以通过 `messages.inbound` 批量合并为一次代理回合。防抖作用于每个通道和对话，并使用最新消息进行回复线程化和ID管理。
+来自**同一发送者**的快速连续消息可以通过 `messages.inbound` 批量合并为一次代理回合。防抖作用于每个通道与对话，并使用最新消息进行回复线程化/编号。
 
 配置（全局默认值 + 通道覆盖）：
 ```json5
@@ -59,9 +59,9 @@ Inbound message
 会话由网关而非客户端拥有。
 - 直接聊天会合并到代理主会话密钥中。
 - 群组/频道拥有各自的会话密钥。
-- 会话存储和对话记录保存在网关主机上。
+- 会话存储和记录位于网关主机上。
 
-多个设备/通道可以映射到同一个会话，但历史记录不会完全同步回每个客户端。建议：对于长时间对话，使用一个主要设备以避免上下文分歧。控制UI和TUI始终显示由网关支持的会话记录，因此它们是事实来源。
+多个设备/通道可以映射到同一个会话，但历史不会完全同步回每个客户端。建议：对于长时间对话，使用一个主要设备以避免上下文分歧。控制UI和TUI始终显示由网关支持的会话记录，因此它们是事实真相来源。
 
 详情：[会话管理](/concepts/session)。
 
@@ -76,11 +76,11 @@ OpenClaw将**提示正文**与**命令正文**分开：
 - `[Chat messages since your last reply - for context]`
 - `[Current message - respond to this]`
 
-对于**非直接聊天**（群组/频道/房间），**当前消息正文**会加上发送者标签前缀（与历史条目使用的样式相同）。这确保了实时消息与队列/历史消息在代理提示中保持一致。
+对于**非直接聊天**（群组/频道/房间），**当前消息正文**会在前面加上发送者标签（与历史条目使用的样式相同）。这使得实时消息与排队/历史消息在代理提示中保持一致。
 
-历史缓冲区是**仅待处理**的：它们包含尚未触发运行的群组消息（例如，提及限制的消息），并**排除**已存在于会话记录中的消息。
+历史缓冲区是“仅待处理”：它们包含未触发运行的群组消息（例如，提及限制的消息），并**排除**已存在于会话记录中的消息。
 
-指令剥离仅应用于**当前消息**部分，因此历史保持完整。包装历史的通道应将 `CommandBody`（或 `RawBody`）设置为原始消息文本，并将 `Body` 保留为组合提示。历史缓冲区可通过 `messages.groupChat.historyLimit`（全局默认值）以及类似 `channels.slack.historyLimit` 或 `channels.telegram.accounts.<id>.historyLimit` 的通道覆盖进行配置（设置 `0` 可禁用）。
+指令剥离仅应用于**当前消息**部分，因此历史保持完整。包装历史的通道应将 `CommandBody`（或 `RawBody`）设置为原始消息文本，并将 `Body` 保留为组合提示。历史缓冲区可通过 `messages.groupChat.historyLimit`（全局默认值）以及类似 `channels.slack.historyLimit` 或 `channels.telegram.accounts.<id>.historyLimit` 的通道覆盖进行配置（将 `0` 设置为禁用）。
 
 ## 排队与后续处理
 
@@ -93,7 +93,7 @@ OpenClaw将**提示正文**与**命令正文**分开：
 
 ## 流式传输、分块与批处理
 
-块级流式传输会在模型生成文本块时发送部分回复。分块尊重通道的文本限制，并避免拆分 fenced code。
+块级流式传输在模型生成文本块时发送部分回复。分块尊重通道的文本限制，并避免拆分 fenced code。
 
 关键设置：
 - `agents.defaults.blockStreamingDefault`（`on|off`，默认关闭）
@@ -110,7 +110,7 @@ OpenClaw将**提示正文**与**命令正文**分开：
 OpenClaw可以显示或隐藏模型推理：
 - `/reasoning on|off|stream` 控制可见性。
 - 推理内容在由模型生成时仍计入令牌使用。
-- Telegram支持将推理流插入草稿气泡中。
+- Telegram 支持将推理流显示在草稿气泡中。
 
 详情：[思考 + 推理指令](/tools/thinking)和 [令牌使用](/token-use)。
 
@@ -118,6 +118,6 @@ OpenClaw可以显示或隐藏模型推理：
 
 出站消息格式化集中于 `messages`：
 - `messages.responsePrefix`（出站前缀）和 `channels.whatsapp.messagePrefix`（WhatsApp入站前缀）
-- 通过 `replyToMode` 进行回复线程化，并有每通道默认设置
+- 通过 `replyToMode` 进行回复线程化及通道默认设置
 
 详情：[配置](/gateway/configuration#messages)和通道文档。

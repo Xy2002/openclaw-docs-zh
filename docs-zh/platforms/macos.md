@@ -15,16 +15,16 @@ macOS 应用程序是 OpenClaw 的**菜单栏伴侣**。它负责权限管理，
 - 掌管 TCC 提示（通知、辅助功能、屏幕录制、麦克风、语音识别、自动化/AppleScript）。
 - 运行或连接到网关（本地或远程）。
 - 暴露仅限 macOS 的工具（画布、摄像头、屏幕录制、`system.run`）。
-- 在**远程**模式下启动本地节点主机服务（通过 launchd），并在**本地**模式下停止该服务。
+- 以**远程**模式启动本地节点主机服务（通过 launchd），并在**本地**模式下停止该服务。
 - 可选地托管用于 UI 自动化的 **PeekabooBridge**。
-- 根据请求通过 npm/pnpm 安装全局 CLI (`openclaw`)（不建议将 bun 用于网关运行时）。
+- 根据请求通过 npm/pnpm 安装全局 CLI (`openclaw`)（不建议在网关运行时使用 bun）。
 
 ## 本地模式与远程模式
 
 - **本地**（默认）：如果存在正在运行的本地网关，应用程序会附加到该网关；否则，它通过 `openclaw gateway install` 启用 launchd 服务。
 - **远程**：应用程序通过 SSH/Tailscale 连接到网关，并且从不启动本地进程。
   应用程序会启动本地的**节点主机服务**，以便远程网关可以访问这台 Mac。
-  应用程序不会以子进程的方式启动网关。
+  应用程序不会将网关作为子进程启动。
 
 ## Launchd 控制
 
@@ -49,13 +49,13 @@ macOS 应用程序本身表现为一个节点。常用命令：
 - 屏幕：`screen.record`
 - 系统：`system.run`、`system.notify`
 
-节点报告一个 `permissions` 映射，以便代理决定哪些操作被允许。
+节点报告一个 `permissions` 映射，以便代理决定允许哪些操作。
 
-节点服务与应用 IPC：
+节点服务 + 应用程序 IPC：
 - 当无头节点主机服务运行时（远程模式），它作为节点连接到网关 WS。
 - `system.run` 在 macOS 应用程序中执行（UI/TCC 上下文），通过本地 Unix 套接字进行通信；提示和输出保留在应用内。
 
-示意图（SCI）：
+图示（SCI）：
 ```
 Gateway -> Node Service (WS)
                  |  IPC (UDS + token + HMAC + TTL)
@@ -96,7 +96,7 @@ Gateway -> Node Service (WS)
 注意事项：
 - `allowlist` 条目是解析后二进制路径的 glob 模式。
 - 在提示中选择“始终允许”会将该命令添加到白名单。
-- `system.run` 环境变量覆盖会被过滤（删除 `PATH`、`DYLD_*`、`LD_*`、`NODE_OPTIONS`、`PYTHON*`、`PERL*`、`RUBYOPT`），然后与应用的环境合并。
+- `system.run` 环境变量覆盖会被过滤（删除 `PATH`、`DYLD_*`、`LD_*`、`NODE_OPTIONS`、`PYTHON*`、`PERL*`、`RUBYOPT`），然后与应用程序的环境合并。
 
 ## 深度链接
 
@@ -119,10 +119,10 @@ open 'openclaw://agent?message=Hello%20from%20deep%20link'
 - `key`（可选无人值守模式密钥）
 
 安全性：
-- 如果缺少 `key`，应用程序会提示确认。
-- 如果提供有效的 `key`，运行将无人值守（适用于个人自动化）。
+- 如果没有 `key`，应用程序会提示确认。
+- 如果提供有效的 `key`，则运行将无人值守（适用于个人自动化）。
 
-## 典型引导流程
+## 典型入门流程
 
 1) 安装并启动 **OpenClaw.app**。
 2) 完成权限检查清单（TCC 提示）。
@@ -133,11 +133,11 @@ open 'openclaw://agent?message=Hello%20from%20deep%20link'
 
 - `cd apps/macos && swift build`
 - `swift run OpenClaw`（或 Xcode）
-- 打包应用程序： `scripts/package-mac-app.sh`
+- 打包应用程序：`scripts/package-mac-app.sh`
 
 ## 调试网关连接性（macOS CLI）
 
-使用调试 CLI 来测试与 macOS 应用程序相同的网关 WebSocket 握手和发现逻辑，而无需启动应用程序。
+使用调试 CLI 可以模拟 macOS 应用程序所使用的网关 WebSocket 握手和发现逻辑，而无需启动应用程序。
 
 ```bash
 cd apps/macos
@@ -148,7 +148,7 @@ swift run openclaw-mac discover --timeout 3000 --json
 连接选项：
 - `--url <ws://host:port>`：覆盖配置
 - `--mode <local|remote>`：从配置中解析（默认：配置或本地）
-- `--probe`：强制进行新的健康探测
+- `--probe`：强制执行新的健康探测
 - `--timeout <ms>`：请求超时（默认： `15000`）
 - `--json`：结构化输出，便于差异比较
 
@@ -157,21 +157,21 @@ swift run openclaw-mac discover --timeout 3000 --json
 - `--timeout <ms>`：整体发现窗口（默认： `2000`）
 - `--json`：结构化输出，便于差异比较
 
-提示：与 `openclaw gateway discover --json` 对比，以了解 macOS 应用程序的发现管道（NWBrowser + tailnet DNS‑SD 回退）是否与 Node CLI 的基于 `dns-sd` 的发现不同。
+提示：与 `openclaw gateway discover --json` 对比，以了解 macOS 应用程序的发现管道（NWBrowser + tailnet DNS‑SD 回退）是否与 Node CLI 的 `dns-sd` 基于发现的机制有所不同。
 
 ## 远程连接管道（SSH 隧道）
 
-当 macOS 应用程序以**远程**模式运行时，它会打开一个 SSH 隧道，使本地 UI 组件能够像访问本地主机一样与远程网关通信。
+当 macOS 应用程序以**远程**模式运行时，它会打开一个 SSH 隧道，使本地 UI 组件能够像在 localhost 上一样与远程网关通信。
 
 ### 控制隧道（网关 WebSocket 端口）
 - **用途**：健康检查、状态、Web Chat、配置以及其他控制平面调用。
 - **本地端口**：网关端口（默认 `18789`），始终保持稳定。
 - **远程端口**：远程主机上的相同网关端口。
-- **行为**：没有随机本地端口；应用程序会重用现有的健康隧道，或在必要时重新启动它。
+- **行为**：没有随机本地端口；应用程序会重用现有健康隧道，或在需要时重新启动它。
 - **SSH 形状**：`ssh -N -L <local>:127.0.0.1:<remote>`，带有 BatchMode、ExitOnForwardFailure 和保持连接选项。
-- **IP 报告**：SSH 隧道使用环回地址，因此网关会将节点 IP 视为 `127.0.0.1`。如果希望显示真实的客户端 IP，请使用**直接（ws/wss）**传输方式（参见 [macOS 远程访问](/platforms/mac/remote)）。
+- **IP 报告**：SSH 隧道使用环回地址，因此网关会将节点 IP 视为 `127.0.0.1`。如果您希望显示真实的客户端 IP，请使用**直接（ws/wss）**传输方式（参见 [macOS 远程访问](/platforms/mac/remote)）。
 
-有关设置步骤，请参阅 [macOS 远程访问](/platforms/mac/remote)。有关协议详情，请参阅 [网关协议](/gateway/protocol)。
+有关设置步骤，请参阅 [macOS 远程访问](/platforms/mac/remote)。有关协议细节，请参阅 [网关协议](/gateway/protocol)。
 
 ## 相关文档
 

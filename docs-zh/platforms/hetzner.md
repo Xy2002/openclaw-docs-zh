@@ -47,8 +47,8 @@ read_when:
 ## 所需条件
 
 - 具有 root 访问权限的 Hetzner VPS  
-- 可从笔记本电脑通过 SSH 访问  
-- 熟悉 SSH 操作及复制粘贴  
+- 能从笔记本电脑通过 SSH 进行访问  
+- 对 SSH 和复制粘贴操作有一定熟悉度  
 - 大约 20 分钟时间  
 - Docker 和 Docker Compose  
 - 模型身份验证凭据  
@@ -81,7 +81,7 @@ apt-get install -y git curl ca-certificates
 curl -fsSL https://get.docker.com | sh
 ```
 
-验证安装：
+验证：
 
 ```bash
 docker --version
@@ -103,7 +103,7 @@ cd openclaw
 
 ## 4) 创建持久化的宿主机目录
 
-Docker 容器是临时的，所有需要长期保存的状态都必须存储在宿主机上。
+Docker 容器是临时性的，所有需要长期保存的状态都必须存储在宿主机上。
 
 ```bash
 mkdir -p /root/.openclaw
@@ -203,7 +203,7 @@ services:
 
 这些只是示例，并非完整列表。你可以按照相同的模式安装任意数量的二进制文件。
 
-如果你后续添加了依赖于其他二进制文件的新技能，你需要：
+如果你后续添加了依赖于其他二进制文件的新技能，你需要执行以下操作：
 1. 更新 Dockerfile
 2. 重新构建镜像
 3. 重启容器
@@ -302,16 +302,16 @@ ssh -N -L 18789:127.0.0.1:18789 root@YOUR_VPS_IP
 
 ## 各组件的持久化位置（事实来源）
 
-OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有需要长期保存的态都必须能够在重启、重建和重新启动后依然存在。
+OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有需要长期保存的状态都必须在重启、重建和重新启动后依然存在。
 
 | 组件 | 位置 | 持久化机制 | 备注 |
 |---|---|---|---|
 | 网关配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包含 `openclaw.json` 和令牌 |
-| 模型身份验证配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包括 OAuth 令牌和 API 密钥 |
+| 模型身份验证配置文件 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包括 OAuth 令牌和 API 密钥 |
 | 技能配置 | `/home/node/.openclaw/skills/` | 宿主机卷挂载 | 技能级别的状态 |
 | 代理工作区 | `/home/node/.openclaw/workspace/` | 宿主机卷挂载 | 存储代码和代理工件 |
 | WhatsApp 会话 | `/home/node/.openclaw/` | 宿主机卷挂载 | 保留 QR 登录状态 |
-| Gmail 密钥环 | `/home/node/.openclaw/` | 宿主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
+| Gmail keyring | `/home/node/.openclaw/` | 宿主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
 | 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时烘焙 |
 | Node 运行时 | 容器文件系统 | Docker 镜像 | 每次构建镜像时都会重建 |
 | OS 软件包 | 容器文件系统 | Docker 镜像 | 不应在运行时安装 |

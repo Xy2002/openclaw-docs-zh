@@ -74,7 +74,7 @@ ls -t /tmp/openclaw/openclaw-*.log | head -n 1
 rg "telegram http error" /tmp/openclaw/openclaw-*.log
 ```
 
-或者在重现问题时实时尾部查看日志：
+或者在重现问题时实时跟踪日志：
 
 ```bash
 tail -f /tmp/openclaw/openclaw-$(date +%F).log | rg "telegram http error"
@@ -84,6 +84,6 @@ tail -f /tmp/openclaw/openclaw-$(date +%F).log | rg "telegram http error"
 
 ## 注意事项
 
-- 如果 `logging.level` 设置得高于 `warn`，这些日志可能会被抑制。默认的 `info` 是合适的。
-- 标志可以一直保持启用状态；它们只会影响特定子系统的日志量。
+- 如果 `logging.level` 的值高于 `warn`，这些日志可能会被抑制。默认的 `info` 设置是合适的。
+- 标志保持启用是安全的；它们只会影响特定子系统的日志量。
 - 使用 [/logging](/logging) 可以更改日志目标、日志级别和敏感信息屏蔽设置。

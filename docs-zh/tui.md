@@ -36,13 +36,13 @@ openclaw tui --url ws://<host>:<port> --token <gateway-token>
 - 会话密钥存储为 `agent:<agentId>:<sessionKey>`。
   - 如果您输入 `/session main`，TUI 会将其扩展为 `agent:<currentAgent>:main`。
   - 如果您输入 `/session agent:other:main`，您将显式切换到该代理会话。
-- 会话范围：
+- 会话作用域：
   - `per-sender`（默认）：每个代理可以有多个会话。
   - `global`：TUI 始终使用 `global` 会话（选择器可能为空）。
 - 当前代理和会话始终显示在页脚中。
 
 ## 发送 + 投递
-- 消息被发送到网关；默认情况下，投递到提供商的功能处于关闭状态。
+- 消息被发送到网关；默认情况下不向提供商投递。
 - 打开投递功能：
   - `/deliver on`
   - 或通过设置面板
@@ -92,18 +92,18 @@ openclaw tui --url ws://<host>:<port> --token <gateway-token>
 
 ## 本地 shell 命令
 - 在一行前加上 `!`，即可在 TUI 主机上运行本地 shell 命令。
-- TUI 每个会话会提示一次以允许本地执行；拒绝则在该会话中保持 `!` 禁用状态。
+- TUI 每个会话会提示一次以允许本地执行；拒绝则在该会话中保持 `!` 禁用。
 - 命令在 TUI 工作目录中的一个全新、非交互式 shell 中运行（没有持久的 `cd`/环境）。
 - 单独的 `!` 会被当作普通消息发送；前导空格不会触发本地执行。
 
 ## 工具输出
 - 工具调用以卡片形式显示，包含参数和结果。
 - Ctrl+O 可在折叠和展开视图之间切换。
-- 在工具运行期间，部分更新会实时流式传输到同一张卡片中。
+- 在工具运行期间，部分更新会以流式传输的方式进入同一张卡片。
 
-## 历史记录 + 流式传输
+## 历史 + 流式传输
 - 连接时，TUI 会加载最新的历史记录（默认 200 条消息）。
-- 流式响应会在最终确定之前原地更新。
+- 流式响应会在最终确定之前就地更新。
 - TUI 还会监听代理工具事件，以生成更丰富的工具卡片。
 
 ## 连接详情
@@ -112,9 +112,9 @@ openclaw tui --url ws://<host>:<port> --token <gateway-token>
 
 ## 选项
 - `--url <url>`：网关 WebSocket URL（默认为配置或 `ws://127.0.0.1:<port>`）
-- `--token <token>`：网关令牌（如需要）
-- `--password <password>`：网关密码（如需要）
-- `--session <key>`：会话密钥（默认为 `main`，或在全局范围内为 `global`）
+- `--token <token>`：网关令牌（如需）
+- `--password <password>`：网关密码（如需）
+- `--session <key>`：会话密钥（默认： `main`，或当作用域为全局时为 `global`）
 - `--deliver`：是否将助手回复投递到提供商（默认关闭）
 - `--thinking <level>`：覆盖发送时的思考级别
 - `--timeout-ms <ms>`：代理超时时间（以毫秒为单位；默认为 `agents.defaults.timeoutSeconds`）
@@ -131,4 +131,4 @@ openclaw tui --url ws://<host>:<port> --token <gateway-token>
 ## 故障排除
 - `disconnected`：确保网关正在运行，并且您的 `--url/--token/--password` 正确。
 - 选择器中没有代理：检查 `openclaw agents list` 和您的路由配置。
-- 会话选择器为空：您可能处于全局范围，或者尚未创建任何会话。
+- 会话选择器为空：您可能处于全局作用域，或者尚未创建任何会话。

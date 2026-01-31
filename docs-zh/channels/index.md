@@ -19,8 +19,8 @@ OpenClaw 可以在你已使用的任何聊天应用中与你对话。每个频�
 - [Mattermost](/channels/mattermost) — 使用 Bot API 和 WebSocket；支持频道、群组和私信（插件需单独安装）。
 - [Signal](/channels/signal) — 使用 signal-cli；注重隐私。
 - [BlueBubbles](/channels/bluebubbles) — **推荐用于 iMessage**；使用 BlueBubbles macOS 服务器 REST API，提供完整功能支持（编辑、撤回消息、特效、表情反应、群组管理——目前在 macOS 26 Tahoe 上编辑功能存在问题）。
-- [iMessage](/channels/imessage) — 仅限 macOS；通过 imsg 进行原生集成（较旧方案；新部署建议使用 BlueBubbles）。
-- [Microsoft Teams](/channels/msteams) — 使用 Bot Framework；适用于企业场景（插件需单独安装）。
+- [iMessage](/channels/imessage) — 仅限 macOS；通过 imsg 进行原生集成（较旧方案，建议新部署使用 BlueBubbles）。
+- [Microsoft Teams](/channels/msteams) — 使用 Bot Framework；面向企业级支持（插件需单独安装）。
 - [LINE](/channels/line) — 使用 LINE Messaging API 机器人（插件需单独安装）。
 - [Nextcloud Talk](/channels/nextcloud-talk) — 通过 Nextcloud Talk 提供自托管聊天服务（插件需单独安装）。
 - [Matrix](/channels/matrix) — 使用 Matrix 协议（插件需单独安装）。
@@ -33,10 +33,10 @@ OpenClaw 可以在你已使用的任何聊天应用中与你对话。每个频�
 
 ## 注意事项
 
-- 各频道可同时运行；配置多个频道后，OpenClaw 将根据聊天自动路由。
-- 通常情况下，设置最快的渠道是 **Telegram**（只需简单的 bot 令牌）。WhatsApp 需要通过二维码配对，并且会在磁盘上存储更多状态。
-- 不同频道对群组行为的支持有所不同；详情请参阅 [群组](/concepts/groups)。
+- 频道可同时运行；配置多个频道后，OpenClaw 将根据聊天自动路由消息。
+- 通常情况下，设置最快的渠道是 **Telegram**（只需简单的 bot 令牌）。WhatsApp 需要二维码配对，并且会在磁盘上存储更多状态。
+- 各频道的群组行为有所不同；详情请参阅 [群组](/concepts/groups)。
 - 为确保安全，会强制执行私信配对和白名单机制；详情请参阅 [安全](/gateway/security)。
 - Telegram 内部实现：[grammY 备忘录](/channels/grammy)。
 - 故障排除：[频道故障排除](/channels/troubleshooting)。
-- 模型提供商信息另行说明；详情请参阅 [模型提供商](/providers/models)。
+- 模型提供商信息另行记录；详情请参阅 [模型提供商](/providers/models)。

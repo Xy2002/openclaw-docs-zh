@@ -8,12 +8,12 @@ summary: Community-built projects and integrations powered by OpenClaw
 来自社区的真实项目。看看人们正在使用 OpenClaw 构建什么。
 
 <Info>
-**想被展示吗？** 在 __LINK_128#[Discord 的 #showcase 频道] 分享你的项目，或在 __LINK_129#[X 上标记 @openclaw] 分享。
+**想被展示吗？** 在 __LINK_128#[Discord 的 #showcase 频道] 或 __LINK_129#[X 上标记 @openclaw] 分享你的项目。
 </Info>
 
 ## 🎥 OpenClaw 实战演示
 
-VelvetShark 提供的完整设置教程（28 分钟）。
+由 VelvetShark 提供的完整设置教程（28 分钟）。
 
 <div
   style={{
@@ -88,7 +88,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="PR Review → Telegram Feedback" icon="code-pull-request" href="__URL_141__>
   **@bangnokia** • `review` `github` `telegram`
 
-  OpenCode 完成变更后会打开一个 PR，OpenClaw 会审查差异，并在 Telegram 中回复“小建议”以及明确的合并意见（包括需要优先应用的重要修复）。
+  OpenCode 完成变更 → 打开 PR → OpenClaw 审查差异并以“小建议”以及明确的合并意见（包括需优先应用的关键修复）在 Telegram 中回复。
 
   <img src="/assets/showcase/pr-review-telegram.jpg" alt="OpenClaw PR review feedback delivered in Telegram" />
 </Card>
@@ -96,7 +96,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Wine Cellar Skill in Minutes" icon="wine-glass" href="__URL_142__>
   **@prades_maxime** • `skills` `local` `csv`
 
-  向“Robby”（@openclaw）请求了一个本地酒窖技能。该技能会请求一个 CSV 导出样本以及存储位置，然后快速构建并测试该技能（示例中包含 962 瓶酒）。
+  向“Robby”（@openclaw）请求了一个本地酒窖技能。该技能会请求一个 CSV 导出样本及存储位置，然后快速构建并测试该技能（示例中包含 962 瓶酒）。
 
   <img src="/assets/showcase/wine-cellar-skill.jpg" alt="OpenClaw building a local wine cellar skill from CSV" />
 </Card>
@@ -104,7 +104,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Tesco Shop Autopilot" icon="cart-shopping" href="__URL_143__>
   **@marchattonhere** • `automation` `browser` `shopping`
 
-  每周膳食计划 → 常客 → 预订配送时段 → 确认订单。无需 API，仅通过浏览器控制实现。
+  每周餐计划 → 常客管理 → 预订配送时段 → 确认订单。无需 API，仅通过浏览器控制实现。
 
   <img src="/assets/showcase/tesco-shop.jpg" alt="Tesco shop automation via chat" />
 </Card>
@@ -144,7 +144,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Bambu 3D Printer Control" icon="print" href="__URL_148__>
   **@tobiasbischoff** • `hardware` `3d-printing` `skill`
 
-  控制和排查 BambuLab 打印机：状态、作业、摄像头、AMS、校准等。
+  控制和排查 BambuLab 打印机：状态、作业、相机、AMS、校准等。
 
   <img src="/assets/showcase/bambu-cli.png" alt="Bambu CLI skill on ClawHub" />
 </Card>
@@ -160,21 +160,21 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="ParentPay School Meals" icon="utensils" href="#">
   **@George5562** • `automation` `browser` `parenting`
 
-  通过 ParentPay 自动预订英国学校的餐食。利用鼠标坐标可靠地点击表格单元格。
+  通过 ParentPay 自动预订英国学校午餐。利用鼠标坐标可靠地点击表格单元格。
 
   </Card>
 
 <Card title="R2 Upload (Send Me My Files)" icon="cloud-arrow-up" href="__URL_150__>
   **@julianengel** • `files` `r2` `presigned-urls`
 
-  上传至 Cloudflare R2/S3，并生成安全的预签名下载链接。非常适合远程 OpenClaw 实例。
+  上传至 Cloudflare R2/S3 并生成安全的预签名下载链接。非常适合远程 OpenClaw 实例。
 
   </Card>
 
 <Card title="iOS App via Telegram" icon="mobile" href="#">
   **@coard** • `ios` `xcode` `testflight`
 
-  完整的 iOS 应用程序，集成了地图和语音录制功能，完全通过 Telegram 聊天部署到 TestFlight。
+  完整的 iOS 应用程序，包含地图和语音录制功能，完全通过 Telegram 聊天部署到 TestFlight。
 
   <img src="/assets/showcase/ios-testflight.jpg" alt="iOS app on TestFlight" />
 </Card>
@@ -182,28 +182,28 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Oura Ring Health Assistant" icon="heart-pulse" href="#">
   **@AS** • `health` `oura` `calendar`
 
-  个人 AI 健康助手，将 Oura 戒指数据与日历、预约和健身计划相结合。
+  个人 AI 健康助手，整合 Oura 戒指数据与日历、预约和健身计划。
 
   <img src="/assets/showcase/oura-health.png" alt="Oura ring health assistant" />
 </Card>
 <Card title="Kev's Dream Team (14+ Agents)" icon="robot" href="__URL_151__>
   **@adam91holt** • `multi-agent` `orchestration` `architecture` `manifesto`
 
-  14 个以上的代理通过 Opus 4.5 协调器统一管理，并委托给 Codex 工作者。全面的技术说明涵盖了梦之队阵容、模型选择、沙箱、Webhook、心跳和委派流程。用于代理沙箱的 __LINK_133#[Clawdspace]__。__LINK_134#[博客文章]__。
+  14 个以上的代理在一个网关下运行，由 Opus 4.5 编排器委派给 Codex 工作者。全面的技术说明涵盖了梦之队阵容、模型选择、沙箱、Webhook、心跳和委派流程。用于代理沙箱的 Clawdspace。博客文章。
 
   </Card>
 
 <Card title="Linear CLI" icon="terminal" href="__URL_152__>
   **@NessZerra** • `devtools` `linear` `cli` `issues`
 
-  与 Claude Code 和 OpenClaw 集成的 Linear CLI。从终端管理问题、项目和工作流。首个外部 PR 已合并！
+  与 Claude Code 和 OpenClaw 集成的 Linear CLI 工作流。从终端管理问题、项目和工作流。首个外部 PR 已合并！
 
   </Card>
 
 <Card title="Beeper CLI" icon="message" href="__URL_153__>
   **@jules** • `messaging` `beeper` `cli` `automation`
 
-  通过 Beeper Desktop 读取、发送和归档消息。使用 Beeper 本地 MCP API，使代理能够在一个地方管理所有聊天（iMessage、WhatsApp 等）。
+  通过 Beeper Desktop 读取、发送和归档消息。使用 Beeper 本地 MCP API，使代理能够在一个地方管理所有聊天记录（iMessage、WhatsApp 等）。
 
   </Card>
 
@@ -216,7 +216,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Winix Air Purifier Control" icon="wind" href="__URL_154__>
   **@antonplex** • `automation` `hardware` `air-quality`
 
-  Claude Code 发现并确认了净化器的控制方式，随后由 OpenClaw 接手管理室内空气质量。
+  Claude Code 发现并确认了净化器的控制方式，随后由 OpenClaw 接管，负责管理室内空气质量。
 
   <img src="/assets/showcase/winix-air-purifier.jpg" alt="Winix air purifier control via OpenClaw" />
 </Card>
@@ -224,7 +224,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Pretty Sky Camera Shots" icon="camera" href="__URL_155__>
   **@signalgaining** • `automation` `camera` `skill` `images`
 
-  由屋顶摄像头触发：每当天空看起来很美时，就让 OpenClaw 拍一张天空照片——它设计了一个技能并完成了拍摄。
+  由屋顶摄像头触发：每当天空看起来美丽时，就让 OpenClaw 拍一张天空照片——它设计了一个技能并完成了拍摄。
 
   <img src="/assets/showcase/roof-camera-sky.jpg" alt="Roof camera sky snapshot captured by OpenClaw" />
 </Card>
@@ -232,7 +232,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Visual Morning Briefing Scene" icon="robot" href="__URL_156__>
   **@buddyhadry** • `automation` `briefing` `images` `telegram`
 
-  一个定时提示每天早上生成一张“场景”图像（天气、任务、日期、最喜欢的帖子/引言），通过 OpenClaw 人格完成。
+  一个定时提示每天早上生成一张“场景”图像（天气、任务、日期、最喜欢的帖子或名言），由 OpenClaw 人格完成。
 
   </Card>
 
@@ -254,7 +254,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Couch Potato Dev Mode" icon="couch" href="__URL_158__>
   **@davekiss** • `telegram` `website` `migration` `astro`
 
-  在观看 Netflix 的同时，通过 Telegram 重建了整个个人网站——Notion → Astro，迁移了 18 篇文章，DNS 迁移到 Cloudflare。从未打开过笔记本电脑。
+  在看 Netflix 的同时，通过 Telegram 重建了整个个人网站——Notion → Astro，迁移了 18 篇文章，DNS 迁移到 Cloudflare。从未打开过笔记本电脑。
 
   </Card>
 
@@ -289,7 +289,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="Slack Auto-Support" icon="slack">
   **@henrymascot** • `slack` `automation` `support`
 
-  监控公司 Slack 频道，提供有用的回应，并将通知转发到 Telegram。在未被要求的情况下，自主修复了已部署应用程序中的生产错误。
+  监控公司 Slack 频道，提供有益的响应，并将通知转发到 Telegram。在未被要求的情况下，自主修复了已部署应用程序中的生产错误。
 
   </Card>
 
@@ -344,7 +344,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="OpenRouter Transcription" icon="microphone" href="__URL_164__>
   **@obviyus** • `transcription` `multilingual` `skill`
 
-  多语言音频转录，通过 OpenRouter（Gemini 等）实现。可在 ClawHub 上使用。
+  多语言音频转录，通过 OpenRouter（Gemini 等）实现。已在 ClawHub 上提供。
 
   </Card>
 
@@ -391,7 +391,7 @@ __LINK_132#[在 YouTube 上观看]
 <Card title="GoHome Automation" icon="house-signal" href="__URL_169__>
   **@joshp123** • `home` `nix` `grafana`
 
-  Nix 原生的家庭自动化系统，以 OpenClaw 为接口，并配有精美的 Grafana 仪表板。
+  Nix 原生的家庭自动化系统，以 OpenClaw 为接口，并配有精美的 Grafana 仪表盘。
 
   <img src="/assets/showcase/gohome-grafana.png" alt="GoHome Grafana dashboard" />
 </Card>
@@ -423,14 +423,14 @@ __LINK_132#[在 YouTube 上观看]
 
 ## 提交你的项目
 
-有东西想分享吗？我们非常乐意展示！
+有东西想分享吗？我们很乐意展示！
 
 <Steps>
   <Step title="Share It">
     在 __LINK_136#[Discord 的 #showcase 频道] 或 __LINK_137#[在 X 上发布推文并标记 @openclaw] 发布
   </Step>
   <Step title="Include Details">
-    告诉我们你的项目是做什么的，附上仓库或演示的链接，如果有截图的话请一并分享
+    告诉我们你的项目是做什么的，附上仓库或演示链接，如果有截图请一并分享
   </Step>
   <Step title="Get Featured">
     我们会将优秀的项目添加到此页面

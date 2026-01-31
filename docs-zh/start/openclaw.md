@@ -17,7 +17,7 @@ OpenClaw 是一个为 **Pi** 代理提供的 WhatsApp + Telegram + Discord + iMe
 - 在你的工作空间中读写文件
 - 通过 WhatsApp/Telegram/Discord/Mattermost 发送消息（通过插件）
 
-因此，请从保守的配置开始：
+因此，请从保守的设置开始：
 - 始终设置 `channels.whatsapp.allowFrom`（切勿在你的个人 Mac 上以对互联网开放的方式运行）。
 - 为助理使用一个专用的 WhatsApp 号码。
 - 心跳现在默认每 30 分钟触发一次。在你完全信任该设置之前，可通过设置 `agents.defaults.heartbeat.every: "0m"` 来禁用心跳功能。
@@ -63,11 +63,11 @@ Your Phone (personal)          Second Phone (assistant)
                               └─────────────────┘
 ```
 
-如果你将个人 WhatsApp 与 OpenClaw 关联，那么发送给你的每一条消息都会被视为“代理输入”。这通常不是你想要的行为。
+如果你将个人 WhatsApp 与 OpenClaw 关联，那么发送给你的每一条消息都会被视为“代理输入”。这通常不是你想要的。
 
 ## 5 分钟快速入门
 
-1) 配对 WhatsApp Web（显示二维码；使用助理手机扫描）：
+1) 配对 WhatsApp Web（显示二维码；用助理手机扫描）：
 
 ```bash
 openclaw channels login
@@ -87,15 +87,15 @@ openclaw gateway --port 18789
 }
 ```
 
-现在，使用已授权的手机向助理号码发送消息。
+现在，使用已批准的手机向助理号码发送消息。
 
-当入职流程完成时，系统会自动打开仪表板，并显示你的网关令牌以及标记化的链接。以后若要重新打开：`openclaw dashboard`。
+完成初始设置后，系统会自动打开仪表板，并显示你的网关令牌以及标记化的链接。以后若需重新打开：`openclaw dashboard`。
 
 ## 为代理指定工作空间（AGENTS）
 
 OpenClaw 从其工作空间目录中读取操作指令和“记忆”。
 
-默认情况下，OpenClaw 使用 `~/.openclaw/workspace` 作为代理的工作空间，并会在设置或首次运行代理时自动创建该目录（同时创建初始的 `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`）。`BOOTSTRAP.md` 仅在工作空间全新时创建（删除后不应再次生成）。
+默认情况下，OpenClaw 使用 `~/.openclaw/workspace` 作为代理的工作空间，并会在设置或首次运行代理时自动创建该目录（同时创建起始文件 `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`）。`BOOTSTRAP.md` 仅在工作空间全新时创建（删除后不应再次生成）。
 
 提示：将此文件夹视为 OpenClaw 的“记忆”，并将其设为 Git 仓库（最好是私有），以便备份你的 `AGENTS.md` 和记忆文件。如果已安装 Git，全新的工作空间会自动初始化。
 
@@ -104,7 +104,7 @@ openclaw setup
 ```
 
 完整工作空间布局及备份指南：[代理工作空间](/concepts/agent-workspace)
-记忆工作流：[记忆](/concepts/memory)
+记忆工作流程：[记忆](/concepts/memory)
 
 可选：使用 `agents.defaults.workspace` 指定不同的工作空间（支持 `~`）。
 
@@ -116,7 +116,7 @@ openclaw setup
 }
 ```
 
-如果你已经从某个仓库中提供自己的工作空间文件，则可以完全禁用引导文件的自动生成：
+如果你已经从某个仓库中提供自己的工作空间文件，则可以完全禁用引导文件的创建：
 
 ```json5
 {
@@ -131,7 +131,7 @@ openclaw setup
 OpenClaw 默认提供良好的助理设置，但你通常需要调整以下内容：
 - 人物角色/指令：`SOUL.md`
 - 思考默认设置（如有需要）
-- 心跳频率（在你信任系统之后）
+- 心跳频率（一旦你信任该设置）
 
 示例：
 
@@ -174,19 +174,19 @@ OpenClaw 默认提供良好的助理设置，但你通常需要调整以下内�
 ## 会话和记忆
 
 - 会话文件：`~/.openclaw/agents/<agentId>/sessions/{{SessionId}}.jsonl`
-- 会话元数据（令牌使用情况、最后路由等）：`~/.openclaw/agents/<agentId>/sessions/sessions.json`（旧版：`~/.openclaw/sessions/sessions.json`）
-- `/new` 或 `/reset` 为该聊天启动一个新的会话（可通过 `resetTriggers` 配置）。如果单独发送，代理会回复简短的问候以确认重置。
+- 会话元数据（令牌使用、最后路由等）：`~/.openclaw/agents/<agentId>/sessions/sessions.json`（旧版：`~/.openclaw/sessions/sessions.json`）
+- `/new` 或 `/reset` 为该聊天启动一个新会话（可通过 `resetTriggers` 进行配置）。如果单独发送，代理会回复简短的问候以确认重置。
 - `/compact [instructions]` 会压缩会话上下文，并报告剩余的上下文预算。
 
 ## 心跳（主动模式）
 
 默认情况下，OpenClaw 每 30 分钟运行一次心跳，提示如下：
 `Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`
-设置 `agents.defaults.heartbeat.every: "0m"` 可禁用心跳功能。
+设置 `agents.defaults.heartbeat.every: "0m"` 可禁用心跳。
 
-- 如果存在 `HEARTBEAT.md`，但内容几乎为空（只有空行和 Markdown 标题，如 `# Heading`），OpenClaw 会跳过心跳运行以节省 API 调用。
-- 如果该文件不存在，心跳仍会运行，由模型决定如何处理。
-- 如果代理回复 `HEARTBEAT_OK`（可选附带简短填充；参见 `agents.defaults.heartbeat.ackMaxChars`），OpenClaw 会抑制该次心跳的对外发送。
+- 如果 `HEARTBEAT.md` 存在但实际上是空的（只有空行和如 `# Heading` 这样的 Markdown 标题），OpenClaw 会跳过此次心跳运行以节省 API 调用。
+- 如果该文件缺失，心跳仍会运行，由模型决定如何处理。
+- 如果代理回复 `HEARTBEAT_OK`（可选择附带简短填充；参见 `agents.defaults.heartbeat.ackMaxChars`），OpenClaw 会抑制该次心跳的对外消息发送。
 - 心跳会触发完整的代理回合——间隔越短，消耗的令牌越多。
 
 ```json5
@@ -222,13 +222,13 @@ openclaw status --deep   # adds gateway health probes (Telegram + Discord)
 openclaw health --json   # gateway health snapshot (WS)
 ```
 
-日志存储在 `/tmp/openclaw/` 下（默认： `openclaw-YYYY-MM-DD.log`）。
+日志存储在 `/tmp/openclaw/` 下（默认：`openclaw-YYYY-MM-DD.log`）。
 
 ## 后续步骤
 
 - WebChat：[WebChat](/web/webchat)
 - 网关操作：[网关运行手册](/gateway)
-- Cron 任务 + 唤醒：[Cron 作业](/automation/cron-jobs)
+- Cron 任务和唤醒机制：[Cron 作业](/automation/cron-jobs)
 - macOS 菜单栏伴侣：[OpenClaw macOS 应用](/platforms/macos)
 - iOS Node.js 应用：[iOS 应用](/platforms/ios)
 - Android Node.js 应用：[Android 应用](/platforms/android)

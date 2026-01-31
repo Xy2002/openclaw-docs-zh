@@ -12,10 +12,10 @@ permalink: /security/formal-verification/
 **目标（北极星）：** 在明确假设下，提供一个经机器检查的论证，证明 OpenClaw 能够在其预期的安全策略（授权、会话隔离、工具门控以及错误配置安全性）下运行。
 
 **当前定位：** 一套可执行的、由攻击者驱动的**安全回归测试套件**：
-- 每个安全断言都对应一个可在有限状态空间上运行的模型检查。
+- 每个安全断言都对应一个在有限状态空间上可运行的模型检查。
 - 许多断言还配有对应的**反例模型**，用于为某一类现实中的漏洞生成反例轨迹。
 
-**尚不包括的内容：** 目前尚未提供“OpenClaw 在所有方面都是安全的”的证明，也未证明完整的 TypeScript 实现是正确的。
+**尚不属于的内容：** 这些模型目前尚未构成“OpenClaw 在所有方面都是安全的”的证明，也未证明完整的 TypeScript 实现是正确的。
 
 ## 模型的存放位置
 
@@ -30,8 +30,8 @@ permalink: /security/formal-verification/
 ## 结果的复现
 
 目前，可通过在本地克隆模型仓库并运行 TLC 来复现结果（见下文）。未来的迭代可能提供：
-- 在 CI 中运行模型，并公开相关工件（反例轨迹、运行日志）；
-- 提供一个托管的“运行此模型”工作流，用于执行小型且有界的安全检查。
+- 在 CI 中运行的模型，并公开相关工件（如反例轨迹、运行日志）；
+- 托管的“运行此模型”工作流，用于执行小型且有界的安全检查。
 
 快速入门：
 
@@ -47,24 +47,24 @@ make <target>
 
 ### 网关暴露与开放网关错误配置
 
-**断言：** 如果在无身份验证的情况下绑定到环回以外的地址，可能会导致远程入侵的可能性增加；按模型假设，令牌或密码可以阻止未认证的攻击者。
+**断言：** 如果在没有身份验证的情况下绑定到环回以外的地址，可能会导致远程入侵的可能性增加；在模型假设范围内，令牌或密码可以阻止未认证的攻击者。
 
-- 通过的测试：
+- 绿色运行：
   - `make gateway-exposure-v2`
   - `make gateway-exposure-v2-protected`
-- 预期失败：
+- 红色（预期）：
   - `make gateway-exposure-v2-negative`
 
-更多信息请参见模型仓库中的 `docs/gateway-exposure-matrix.md`。
+另请参阅模型仓库中的 `docs/gateway-exposure-matrix.md`。
 
 ### Nodes.run 管道（最高风险功能）
 
-**断言：** `nodes.run` 要求：(a) 节点命令白名单加上已声明的命令；(b) 在启用时需实时批准；模型中通过标记化批准来防止重放攻击。
+**断言：** `nodes.run` 要求：(a) 节点命令白名单加上已声明的命令；(b) 在启用时需实时批准；在模型中，批准通过令牌化来防止重放。
 
-- 通过的测试：
+- 绿色运行：
   - `make nodes-pipeline`
   - `make approvals-token`
-- 预期失败：
+- 红色（预期）：
   - `make nodes-pipeline-negative`
   - `make approvals-token-negative`
 
@@ -72,10 +72,10 @@ make <target>
 
 **断言：** 配对请求遵守 TTL 和待处理请求上限。
 
-- 通过的测试：
+- 绿色运行：
   - `make pairing`
   - `make pairing-cap`
-- 预期失败：
+- 红色（预期）：
   - `make pairing-negative`
   - `make pairing-cap-negative`
 
@@ -83,18 +83,18 @@ make <target>
 
 **断言：** 在需要提及的群组上下文中，未经授权的“控制命令”无法绕过提及门控。
 
-- 通过的测试：
+- 绿色：
   - `make ingress-gating`
-- 预期失败：
+- 红色（预期）：
   - `make ingress-gating-negative`
 
 ### 路由/会话密钥隔离
 
-**断言：** 不同对等方之间的 DM 不会在未显式关联或配置的情况下合并到同一会话中。
+**断言：** 来自不同对等方的 DM 不会在未显式关联或配置的情况下合并到同一会话中。
 
-- 通过的测试：
+- 绿色：
   - `make routing-isolation`
-- 预期失败：
+- 红色（预期）：
   - `make routing-isolation-negative`
 
 
@@ -104,19 +104,19 @@ make <target>
 
 ### 配对存储的并发性与幂等性
 
-**断言：** 配对存储应在交错操作下仍能强制实施 `MaxPending` 并保持幂等性（即“先检查后写入”必须是原子操作或加锁操作；刷新不应产生重复条目）。
+**断言：** 配对存储应在交错操作下仍能强制实施 `MaxPending` 并保持幂等性（即，“先检查后写入”必须是原子操作或加锁操作；刷新不应产生重复条目）。
 
 含义：
-- 在并发请求下，对于某个通道，您不能超过 `MaxPending` 的限制。
-- 对同一 `(channel, sender)` 的重复请求或刷新不应产生重复的活动待处理行。
+- 在并发请求下，对于某个通道，您不能超过 `MaxPending`。
+- 对同一 `(channel, sender)` 的重复请求或刷新不应创建重复的活动待处理行。
 
-- 通过的测试：
-  - `make pairing-race`（原子/加锁的上限检查）
+- 绿色运行：
+  - `make pairing-race`（原子/加锁容量检查）
   - `make pairing-idempotency`
   - `make pairing-refresh`
   - `make pairing-refresh-race`
-- 预期失败：
-  - `make pairing-race-negative`（非原子的开始/提交上限竞争）
+- 红色（预期）：
+  - `make pairing-race-negative`（非原子开始/提交容量竞争）
   - `make pairing-idempotency-negative`
   - `make pairing-refresh-negative`
   - `make pairing-refresh-race-negative`
@@ -130,12 +130,12 @@ make <target>
 - 重试不会导致重复处理。
 - 如果缺少提供商事件 ID，去重机制将回退到一个安全键（如轨迹 ID），以避免丢失不同的事件。
 
-- 通过的测试：
+- 绿色：
   - `make ingress-trace`
   - `make ingress-trace2`
   - `make ingress-idempotency`
   - `make ingress-dedupe-fallback`
-- 预期失败：
+- 红色（预期）：
   - `make ingress-trace-negative`
   - `make ingress-trace2-negative`
   - `make ingress-idempotency-negative`
@@ -149,9 +149,9 @@ make <target>
 - 特定通道的 dmScope 优先级设置必须覆盖全局默认设置。
 - identityLinks 只应在显式关联的群组内合并会话，而不应在无关的对等方之间合并。
 
-- 通过的测试：
+- 绿色：
   - `make routing-precedence`
   - `make routing-identitylinks`
-- 预期失败：
+- 红色（预期）：
   - `make routing-precedence-negative`
   - `make routing-identitylinks-negative`

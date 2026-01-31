@@ -7,29 +7,29 @@ read_when:
 ---
 # 网络工具
 
-OpenClaw 提供两款轻量级网络工具：
+OpenClaw 提供了两款轻量级网络工具：
 
-- `web_search` — 通过 Brave Search API（默认）或 Perplexity Sonar（直接调用或通过 OpenRouter）搜索网络。
-- `web_fetch` — 执行 HTTP 获取并提取可读内容（HTML → Markdown/文本）。
+- `web_search` — 通过 Brave Search API（默认）或 Perplexity Sonar（直接调用或经由 OpenRouter）搜索网络。
+- `web_fetch` — 执行 HTTP 获取并提取可读内容（HTML → markdown/文本）。
 
-这些工具**并非**用于浏览器自动化。对于包含大量 JavaScript 的网站或需要登录的场景，请使用
+这些工具**并非**用于浏览器自动化。对于 JavaScript 重度加载的网站或需要登录的场景，请使用
 [浏览器工具](/tools/browser)。
 
 ## 工作原理
 
 - `web_search` 调用您配置的提供商并返回结果。
   - **Brave**（默认）：返回结构化结果（标题、URL、摘要）。
-  - **Perplexity**：返回由 AI 合成的答案，并附带来自实时网络搜索的引用。
+  - **Perplexity**：返回基于实时网络搜索引用的 AI 合成答案。
 - 搜索结果按查询缓存 15 分钟（可配置）。
-- `web_fetch` 执行普通的 HTTP GET 请求，并提取可读内容（HTML → Markdown/文本）。它**不**执行 JavaScript。
+- `web_fetch` 执行普通的 HTTP GET 请求，并提取可读内容（HTML → markdown/文本）。它**不**执行 JavaScript。
 - `web_fetch` 默认启用（除非显式禁用）。
 
 ## 选择搜索提供商
 
 | 提供商 | 优点 | 缺点 | API 密钥 |
 |----------|------|------|---------|
-| **Brave**（默认） | 结果快速且结构化，提供免费层级 | 传统搜索结果 | `BRAVE_API_KEY` |
-| **Perplexity** | AI 合成答案、引用、实时性 | 需要 Perplexity 或 OpenRouter 访问权限 | `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY` |
+| **Brave**（默认） | 速度快、结果结构化、免费层级 | 传统搜索结果 | `BRAVE_API_KEY` |
+| **Perplexity** | AI 合成答案、带引用、实时性 | 需要 Perplexity 或 OpenRouter 访问权限 | `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY` |
 
 有关特定提供商的详细信息，请参阅 [Brave Search 设置](/brave-search) 和 [Perplexity Sonar](/perplexity)。
 
@@ -72,17 +72,17 @@ OpenClaw 提供两款轻量级网络工具：
 2) 在仪表板中，选择 **Data for Search** 方案（而非“Data for AI”），并生成 API 密钥。
 3) 运行 `openclaw configure --section web` 将密钥存储在配置中（推荐），或在您的环境变量中设置 `BRAVE_API_KEY`。
 
-Brave 提供免费层级以及付费方案；请查看 Brave API 门户以了解当前的限制和定价。
+Brave 提供免费层级和付费方案；请查看 Brave API 门户以了解当前的限制和定价。
 
 ### 推荐的密钥设置位置
 
-**推荐方法：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 下的 `tools.web.search.apiKey` 中。
+**推荐：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 的 `tools.web.search.apiKey` 下。
 
-**环境变量替代方案：**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
+**环境替代方案：**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
 
-## 使用 Perplexity（直接调用或通过 OpenRouter）
+## 使用 Perplexity（直接调用或经由 OpenRouter）
 
-Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI 合成答案。您可以通过 OpenRouter 使用这些模型（无需信用卡——支持加密货币和预付支付）。
+Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI 合成答案。您可以通过 OpenRouter 使用这些模型（无需信用卡——支持加密货币和预付卡）。
 
 ### 获取 OpenRouter API 密钥
 
@@ -113,7 +113,7 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 }
 ```
 
-**环境变量替代方案：**在 Gateway 环境中设置 `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`。
+**环境替代方案：**在 Gateway 环境中设置 `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`。
 
 如果未设置基础 URL，OpenClaw 会根据 API 密钥来源选择默认值：
 
@@ -137,8 +137,8 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 
 - `tools.web.search.enabled` 不得为 `false`（默认：启用）。
 - 所选提供商的 API 密钥：
-  - **Brave**：`BRAVE_API_KEY` 或 `tools.web.search.apiKey`。
-  - **Perplexity**：`OPENROUTER_API_KEY`、`PERPLEXITY_API_KEY` 或 `tools.web.search.perplexity.apiKey`。
+  - **Brave**: `BRAVE_API_KEY` 或 `tools.web.search.apiKey`
+  - **Perplexity**: `OPENROUTER_API_KEY`、`PERPLEXITY_API_KEY` 或 `tools.web.search.perplexity.apiKey`
 
 ### 配置
 
@@ -160,12 +160,12 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 
 ### 工具参数
 
-- `query`（必填）。
-- `count`（1–10；默认来自配置）。
-- `country`（可选）：用于获取特定地区结果的双字母国家代码（例如，“DE”、“US”、“ALL”）。如果省略，Brave 将选择其默认地区。
-- `search_lang`（可选）：用于搜索结果的 ISO 语言代码（例如，“de”、“en”、“fr”）。
-- `ui_lang`（可选）：用于 UI 元素的语言代码。
-- `freshness`（可选，仅适用于 Brave）：按发现时间过滤（`pd`、`pw`、`pm`、`py` 或 `YYYY-MM-DDtoYYYY-MM-DD`）。
+- `query`（必填）
+- `count`（1–10；默认来自配置）
+- `country`（可选）：2 位数国家代码，用于获取特定地区的搜索结果（例如，“DE”、“US”、“ALL”）。如果省略，Brave 将选择其默认地区。
+- `search_lang`（可选）：ISO 语言代码，用于搜索结果（例如，“de”、“en”、“fr”）。
+- `ui_lang`（可选）：ISO 语言代码，用于 UI 元素。
+- `freshness`（可选，仅适用于 Brave）：按发现时间筛选（`pd`、`pw`、`pm`、`py` 或 `YYYY-MM-DDtoYYYY-MM-DD`）。
 
 **示例：**
 
@@ -232,17 +232,17 @@ await web_search({
 
 ### 工具参数
 
-- `url`（必填，仅支持 http/https）。
-- `extractMode`（`markdown` | `text`）。
-- `maxChars`（截断长页面）。
+- `url`（必填，仅支持 http/https）
+- `extractMode`（`markdown` | `text`）
+- `maxChars`（截断长页面）
 
 注意事项：
 - `web_fetch` 首先使用 Readability（主要内容提取），然后使用 Firecrawl（如果已配置）。如果两者都失败，工具将返回错误。
 - Firecrawl 请求默认使用规避机器人模式，并对结果进行缓存。
 - `web_fetch` 默认发送类似 Chrome 的 User-Agent 和 `Accept-Language`；如有需要，可覆盖 `userAgent`。
-- `web_fetch` 会阻止私有/内部主机名，并重新检查重定向（重定向次数受 `maxRedirects` 限制）。
+- `web_fetch` 会阻止私有/内部主机名，并重新检查重定向（重定向次数上限为 `maxRedirects`）。
 - `web_fetch` 是尽力而为的提取；某些网站可能仍需使用浏览器工具。
 - 有关密钥设置和服务详情，请参阅 [Firecrawl](/tools/firecrawl)。
-- 响应默认缓存 15 分钟，以减少重复获取。
+- 响应会被缓存（默认 15 分钟），以减少重复获取。
 - 如果您使用工具配置文件或白名单，请添加 `web_search`/`web_fetch` 或 `group:web`。
 - 如果缺少 Brave 密钥，`web_search` 会返回一条简短的设置提示，并附上文档链接。

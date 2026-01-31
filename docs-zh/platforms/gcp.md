@@ -11,53 +11,51 @@ read_when:
 
 ## 目标
 
-在 GCP Compute Engine 虚拟机上使用 Docker 运行一个持久化的 OpenClaw 网关，具备持久状态、内置二进制文件，并支持安全重启。
-
-如果你希望以每月约 5–12 美元的成本实现“OpenClaw 全天候运行”，那么这是在 Google Cloud 上的一个可靠部署方案。价格因机器类型和区域而异；请选择最适合你工作负载的最小虚拟机，如果遇到内存不足问题再进行升级。
+在 GCP Compute Engine 虚拟机上使用 Docker 运行持久化的 OpenClaw 网关，确保状态持久化、内置二进制文件，并具备安全的重启行为。如果你希望以每月约 5–12 美元的成本实现“OpenClaw 全天候运行”，那么这是在 Google Cloud 上的一个可靠部署方案。价格因机器类型和区域而异；请选择适合你工作负载的最小 VM，如果遇到内存不足问题再进行扩容。
 
 ## 我们要做什么？（简单说明）
 
-- 创建一个 GCP 项目并启用结算功能
-- 创建一个 Compute Engine 虚拟机
-- 安装 Docker（用于隔离的应用运行时）
+- 创建一个 GCP 项目并启用计费
+- 创建一台 Compute Engine 虚拟机
+- 安装 Docker（用于隔离的应用运行环境）
 - 在 Docker 中启动 OpenClaw 网关
-- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 的状态持久化到主机上（重启或重建后仍能保留）
-- 通过 SSH 隧道从笔记本电脑访问控制 UI
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 的状态持久化到宿主机上（重启或重建后仍能保留）
+- 通过 SSH 隧道从你的笔记本电脑访问控制 UI
 
-网关可以通过以下方式访问：
+网关可通过以下方式访问：
 - 从笔记本电脑通过 SSH 端口转发访问
-- 如果你自行管理防火墙和令牌，则可直接暴露端口
+- 如果你自行管理防火墙和令牌，则可直接暴露端口访问
 
-本指南使用 Debian 作为 GCP Compute Engine 的操作系统。Ubuntu 同样适用；只需相应调整软件包即可。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
+本指南使用 Debian 作为 GCP Compute Engine 的操作系统。Ubuntu 同样适用，只需相应调整软件包即可。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
 
 ---
 
-## 快速路径（适用于有经验的运维人员）
+## 快速路径（适用于有经验的操作人员）
 
 1) 创建 GCP 项目并启用 Compute Engine API
 2) 创建 Compute Engine 虚拟机（e2-small，Debian 12，20GB）
 3) 通过 SSH 登录到虚拟机
 4) 安装 Docker
 5) 克隆 OpenClaw 仓库
-6) 创建持久化的主机目录
+6) 创建持久化的宿主机目录
 7) 配置 `.env` 和 `docker-compose.yml`
-8) 构建所需的二进制文件，构建并启动容器
+8) 构建所需的二进制文件，构建镜像并启动服务
 
 ---
 
-## 所需条件
+## 你需要什么
 
 - GCP 帐户（e2-micro 可享受免费层级）
 - 已安装 gcloud CLI（或使用 Cloud Console）
 - 从笔记本电脑进行 SSH 访问
-- 对 SSH 和复制/粘贴操作有一定熟悉度
+- 对 SSH 和复制/粘贴操作的基本熟悉
 - 大约 20–30 分钟
 - Docker 和 Docker Compose
 - 模型身份验证凭据
 - 可选的提供商凭据
   - WhatsApp QR 码
   - Telegram 机器人令牌
-  - Gmail OAuth 凭证
+  - Gmail OAuth 凭据
 
 ---
 
@@ -89,7 +87,7 @@ gcloud projects create my-openclaw-project --name="OpenClaw Gateway"
 gcloud config set project my-openclaw-project
 ```
 
-在 https://console.cloud.google.com/billing 上启用结算功能（Compute Engine 所需）。
+在 https://console.cloud.google.com/billing 上启用计费（Compute Engine 所需）。
 
 启用 Compute Engine API：
 
@@ -101,7 +99,7 @@ gcloud services enable compute.googleapis.com
 
 1. 转到 IAM 和管理 > 创建项目
 2. 为项目命名并创建
-3. 为项目启用结算功能
+3. 为项目启用计费
 4. 导航到 API 和服务 > 启用 API > 搜索“Compute Engine API” > 启用
 
 ---
@@ -113,7 +111,7 @@ gcloud services enable compute.googleapis.com
 | 类型 | 规格 | 成本 | 备注 |
 |------|-------|------|-------|
 | e2-small | 2 vCPU，2GB 内存 | ~$12/月 | 推荐 |
-| e2-micro | 2 vCPU（共享），1GB 内存 | 可享受免费层级 | 在高负载下可能触发 OOM |
+| e2-micro | 2 vCPU（共享），1GB 内存 | 符合免费层级 | 在高负载下可能触发 OOM |
 
 **CLI：**
 
@@ -147,7 +145,7 @@ gcloud compute ssh openclaw-gateway --zone=us-central1-a
 
 **Console：**
 
-在 Compute Engine 仪表板中，点击你的虚拟机旁边的“SSH”按钮。
+在 Compute Engine 仪表板中，点击虚拟机旁边的“SSH”按钮。
 
 注意：SSH 密钥传播可能需要 1–2 分钟才能完成。如果连接被拒绝，请稍后再试。
 
@@ -190,13 +188,13 @@ git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 ```
 
-本指南假定你将构建一个自定义镜像，以确保二进制文件的持久性。
+本指南假定你将构建自定义镜像，以确保二进制文件的持久性。
 
 ---
 
-## 7) 创建持久化的主机目录
+## 7) 创建持久化的宿主机目录
 
-Docker 容器是临时的。所有长期状态必须存储在主机上。
+Docker 容器是临时的。所有长期状态必须存储在宿主机上。
 
 ```bash
 mkdir -p ~/.openclaw
@@ -292,7 +290,7 @@ services:
 
 这些只是示例，并非完整列表。你可以按照相同的模式安装任意数量的二进制文件。
 
-如果你以后添加了依赖于其他二进制文件的新技能，你需要：
+如果你以后添加了依赖于其他二进制文件的新技能，你必须：
 1. 更新 Dockerfile
 2. 重新构建镜像
 3. 重启容器
@@ -399,13 +397,13 @@ OpenClaw 在 Docker 中运行，但 Docker 并不是数据持久化的唯一来�
 
 | 组件 | 位置 | 持久化机制 | 备注 |
 |---|---|---|---|
-| 网关配置 | `/home/node/.openclaw/` | 主机卷挂载 | 包含 `openclaw.json` 和令牌 |
-| 模型身份验证配置文件 | `/home/node/.openclaw/` | 主机卷挂载 | OAuth 令牌、API 密钥 |
-| 技能配置 | `/home/node/.openclaw/skills/` | 主机卷挂载 | 技能级别的状态 |
-| 代理工作区 | `/home/node/.openclaw/workspace/` | 主机卷挂载 | 代码和代理工件 |
-| WhatsApp 会话 | `/home/node/.openclaw/` | 主机卷挂载 | 保留 QR 登录状态 |
-| Gmail 密钥环 | `/home/node/.openclaw/` | 主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
-| 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时预置 |
+| 网关配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | 包含 `openclaw.json` 和令牌 |
+| 模型身份验证配置 | `/home/node/.openclaw/` | 宿主机卷挂载 | OAuth 令牌和 API 密钥 |
+| 技能配置 | `/home/node/.openclaw/skills/` | 宿主机卷挂载 | 技能级别的状态 |
+| 代理工作区 | `/home/node/.openclaw/workspace/` | 宿主机卷挂载 | 代码和代理工件 |
+| WhatsApp 会话 | `/home/node/.openclaw/` | 宿主机卷挂载 | 保留 QR 登录状态 |
+| Gmail 密钥环 | `/home/node/.openclaw/` | 宿主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
+| 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时烘焙 |
 | Node 运行时 | 容器文件系统 | Docker 镜像 | 每次构建镜像时都会重建 |
 | 操作系统软件包 | 容器文件系统 | Docker 镜像 | 不应在运行时安装 |
 | Docker 容器 | 临时 | 可重启 | 可安全销毁 |
@@ -433,7 +431,7 @@ SSH 密钥传播可能需要 1–2 分钟才能完成。请等待并重试。
 
 **OS Login 问题**
 
-检查你的 OS Login 配置文件：
+检查你的 OS Login 配置：
 
 ```bash
 gcloud compute os-login describe-profile
@@ -443,7 +441,7 @@ gcloud compute os-login describe-profile
 
 **内存不足 (OOM)**
 
-如果使用 e2-micro 并遇到内存不足问题，可升级到 e2-small 或 e2-medium：
+如果使用 e2-micro 并遇到内存不足问题，请升级到 e2-small 或 e2-medium：
 
 ```bash
 # Stop the VM first

@@ -16,7 +16,7 @@ read_when:
 - 配置 CLI：[Config](/cli/config)
 
 注意事项：
-- 选择网关运行位置时，始终会更新`gateway.mode`。如果只需更改此设置，您可以跳过其他部分并直接选择“继续”。
+- 选择网关运行位置始终会更新`gateway.mode`。如果只需更改这一点，您可以跳过其他部分并直接选择“继续”。
 - 面向频道的服务（Slack/Discord/Matrix/Microsoft Teams）在设置过程中会提示输入频道/房间白名单。您可以输入名称或 ID；向导会在可能的情况下将名称解析为 ID。
 
 ## 示例

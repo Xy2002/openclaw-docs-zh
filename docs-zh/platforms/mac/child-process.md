@@ -11,7 +11,7 @@ read_when:
 
 ## 默认行为（launchd）
 
-- 应用程序会为每个用户安装一个名为 `bot.molt.gateway` 的 LaunchAgent（当使用 `--profile`/`OPENCLAW_PROFILE` 时则为 `bot.molt.<profile>`；仍支持旧版 `com.openclaw.*`）。
+- 应用程序会为每个用户安装一个名为 `bot.molt.gateway` 的 LaunchAgent（当使用 `--profile`/`OPENCLAW_PROFILE` 时为 `bot.molt.<profile>`；仍支持旧版 `com.openclaw.*`）。
 - 当启用本地模式时，应用程序会确保该 LaunchAgent 已加载，并在必要时启动网关。
 - 日志会写入 launchd 网关日志路径（可在调试设置中查看）。
 
@@ -26,11 +26,11 @@ launchctl bootout gui/$UID/bot.molt.gateway
 
 ## 未签名的开发版本
 
-`scripts/restart-mac.sh --no-sign` 适用于快速的本地构建，且你没有签名密钥的情况。为防止 launchd 指向未签名的中继二进制文件，它会执行以下操作：
+`scripts/restart-mac.sh --no-sign` 用于在没有签名密钥时进行快速的本地构建。为防止 launchd 指向未签名的中继二进制文件，它会执行以下操作：
 
 - 写入 `~/.openclaw/disable-launchagent`。
 
-如果存在此标记，已签名运行的 `scripts/restart-mac.sh` 会清除这一覆盖。若需手动重置：
+如果存在此标记，已签名运行的 `scripts/restart-mac.sh` 会清除此覆盖。若需手动重置：
 
 ```bash
 rm ~/.openclaw/disable-launchagent
@@ -50,4 +50,4 @@ rm ~/.openclaw/disable-launchagent
 - 内置的重启/KeepAlive 语义。
 - 可预测的日志和监督机制。
 
-如果将来再次需要真正的子进程模式，则应将其记录为一种单独的、明确的仅限开发人员使用的模式。
+如果将来再次需要真正的子进程模式，则应将其记录为一种单独且明确的仅限开发人员使用的模式。

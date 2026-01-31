@@ -8,7 +8,7 @@ read_when:
 ---
 # 子代理
 
-子代理是从现有代理运行中派生的后台代理运行。它们在自己的会话中运行（`agent:<agentId>:subagent:<uuid>`），并在完成时，将结果**宣布**回请求者聊天频道。
+子代理是从现有代理运行中派生的后台代理运行。它们在自己的会话中运行（`agent:<agentId>:subagent:<uuid>`），并在完成时将结果**宣布**回请求者聊天频道。
 
 ## 斜杠命令
 
@@ -22,12 +22,12 @@ read_when:
 `/subagents info` 显示运行元数据（状态、时间戳、会话 ID、转录路径、清理）。
 
 主要目标：
-- 在不阻塞主运行的情况下，并行化“研究/长任务/慢速工具”工作。
+- 在不阻塞主运行的情况下并行化“研究/长任务/慢速工具”工作。
 - 默认情况下保持子代理隔离（会话分离 + 可选沙箱）。
 - 使工具界面难以被误用：子代理默认**不**获取会话工具。
 - 避免嵌套扇出：子代理不能再派生子代理。
 
-成本说明：每个子代理都有其**独立**的上下文和令牌使用量。对于繁重或重复性任务，为子代理设置更便宜的模型，并让主代理使用更高质量的模型。您可以通过 `agents.defaults.subagents.model` 或按代理覆盖来配置这一点。
+成本说明：每个子代理都有其**自己的**上下文和令牌用量。对于繁重或重复性任务，为子代理设置更便宜的模型，并让主代理使用更高质量的模型。您可以通过 `agents.defaults.subagents.model` 或按代理覆盖来配置这一点。
 
 ## 工具
 
@@ -46,13 +46,13 @@ read_when:
 - `cleanup?`（`delete|keep`，默认 `keep`）
 
 白名单：
-- `agents.list[].subagents.allowAgents`：可通过 `agentId` 指定的目标代理 ID 列表（`["*"]` 允许任何）。默认：仅请求者代理。
+- `agents.list[].subagents.allowAgents`：可通过 `agentId` 指定的目标代理 ID 列表（`["*"]` 允许任意）。默认：仅请求者代理。
 
 发现：
 - 使用 `agents_list` 查看当前哪些代理 ID 允许用于 `sessions_spawn`。
 
 自动归档：
-- 子代理会话在 `agents.defaults.subagents.archiveAfterMinutes` 后自动归档（默认：60）。
+- 子代理会话在 `agents.defaults.subagents.archiveAfterMinutes`（默认：60）后自动归档。
 - 归档使用 `sessions.delete`，并将转录文件重命名为 `*.deleted.<timestamp>`（在同一文件夹中）。
 - `cleanup: "delete"` 在宣布后立即归档（仍通过重命名保留转录文件）。
 - 自动归档是尽力而为；如果网关重启，待处理的计时器将丢失。
@@ -60,7 +60,7 @@ read_when:
 
 ## 身份验证
 
-子代理的身份验证由**代理 ID**决定，而非会话类型：
+子代理的身份验证由**代理 ID**决定，而不是会话类型：
 - 子代理会话密钥是 `agent:<agentId>:subagent:<uuid>`。
 - 身份验证存储从该代理的 `agentDir` 加载。
 - 主代理的身份验证配置文件作为**后备**合并进来；在发生冲突时，代理配置文件优先于主配置文件。
@@ -74,17 +74,17 @@ read_when:
 - 如果子代理回复的内容与 `ANNOUNCE_SKIP` 完全一致，则不会发布任何内容。
 - 否则，宣布回复将通过后续的 `agent` 调用（`deliver=true`）发布到请求者聊天频道。
 - 宣布回复在可用时保留线程/话题路由（Slack 线程、Telegram 话题、Matrix 线程）。
-- 宣布消息被规范化为稳定的模板：
+- 宣布消息被标准化为稳定的模板：
   - `Status:` 根据运行结果生成（`success`、`error`、`timeout` 或 `unknown`）。
   - `Result:` 是来自宣布步骤的摘要内容（或 `(not available)` 如果缺失）。
   - `Notes:` 包含错误详情和其他有用上下文。
-- `Status` 不是从模型输出推断的；它是从运行时结果信号中得出的。
+- `Status` 并非从模型输出推断而来；它来自运行时结果信号。
 
 宣布负载在末尾包含一行统计数据（即使被包装）：
 - 运行时（例如，`runtime 5m12s`）
-- 令牌使用量（输入/输出/总计）
+- 令牌用量（输入/输出/总计）
 - 当已配置模型定价时的估算成本（`models.providers.*.models[].cost`）
-- `sessionKey`、`sessionId` 和转录路径（以便主代理可以通过 `sessions_history` 获取历史记录，或在磁盘上检查文件）
+- `sessionKey`、`sessionId` 和转录路径（以便主代理可通过 `sessions_history` 获取历史记录或在磁盘上检查文件）
 
 ## 工具政策（子代理工具）
 

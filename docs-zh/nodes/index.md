@@ -11,12 +11,12 @@ read_when:
 
 **节点**是一种配套设备（macOS/iOS/Android/无头），通过`role: "node"`连接到网关的 **WebSocket**（与操作员使用相同端口），并通过 `node.invoke` 暴露命令界面（例如 `canvas.*`、`camera.*`、`system.*`）。协议详情：[网关协议](/gateway/protocol)。
 
-旧版传输：[桥接协议](/gateway/bridge-protocol)（TCP JSONL；已弃用或移除，不再用于当前节点）。
+旧版传输：[桥接协议](/gateway/bridge-protocol)（TCP JSONL；已弃用/移除，不再用于当前节点）。
 
 macOS 也可以以 **节点模式** 运行：菜单栏应用会连接到网关的 WS 服务器，并将其本地画布/相机命令作为节点暴露出来（因此 `openclaw nodes …` 可以针对这台 Mac 工作）。
 
 注意事项：
-- 节点是 **外围设备**，而非网关。它们不运行网关服务。
+- 节点是 **外设**，而非网关。它们不运行网关服务。
 - Telegram/WhatsApp 等消息会到达 **网关**，而不是节点。
 
 ## 配对 + 状态
@@ -35,7 +35,7 @@ openclaw nodes describe --node <idOrNameOrIp>
 
 注意事项：
 - 当节点的设备配对角色包含 `node` 时，`nodes status` 会将节点标记为 **已配对**。
-- `node.pair.*`（CLI：`openclaw nodes pending/approve/reject`）是网关拥有的独立节点配对存储；它 **不** 限制 WS `connect` 握手。
+- `node.pair.*`（CLI：`openclaw nodes pending/approve/reject`）是网关拥有的独立节点配对存储；它 **不会** 对 WS `connect` 握手进行门控。
 
 ## 远程节点主机（system.run）
 
@@ -72,10 +72,10 @@ openclaw nodes list
 ```
 
 命名选项：
-- `--display-name` 在 `openclaw node run` / `openclaw node install` 上设置（持久化在节点上的 `~/.openclaw/node.json` 中）。
+- 在 `openclaw node run` / `openclaw node install` 上设置 `--display-name`（在节点上的 `~/.openclaw/node.json` 中持久化）。
 - `openclaw nodes rename --node <id|name|ip> --name "Build Node"`（网关覆盖）。
 
-### 允许列表中的命令
+### 允许列表命令
 
 执行审批是 **按节点主机** 的。从网关添加允许列表条目：
 
@@ -117,20 +117,20 @@ openclaw config set tools.exec.node "<id-or-name>"
 openclaw nodes invoke --node <idOrNameOrIp> --command canvas.eval --params '{"javaScript":"location.href"}'
 ```
 
-对于常见的“向代理提供 MEDIA 附件”工作流，存在更高级别的辅助工具。
+对于常见的“向代理提供 MEDIA 附件”工作流，存在更高级别的辅助函数。
 
 ## 截图（画布快照）
 
 如果节点正在显示画布（WebView），`canvas.snapshot` 会返回 `{ format, base64 }`。
 
-CLI 辅助工具（写入临时文件并打印 `MEDIA:<path>`）：
+CLI 辅助函数（写入临时文件并打印 `MEDIA:<path>`）：
 
 ```bash
 openclaw nodes canvas snapshot --node <idOrNameOrIp> --format png
 openclaw nodes canvas snapshot --node <idOrNameOrIp> --format jpg --max-width 1200 --quality 0.9
 ```
 
-### 画布控件
+### 画布控制
 
 ```bash
 openclaw nodes canvas present --node <idOrNameOrIp> --target https://example.com
@@ -152,7 +152,7 @@ openclaw nodes canvas a2ui reset --node <idOrNameOrIp>
 ```
 
 注意事项：
-- 仅支持 A2UI v0.8 JSONL（v0.9/createSurface 会被拒绝）。
+- 仅支持 A2UI v0.8 JSONL（v0.9/createSurface 被拒绝）。
 
 ## 照片 + 视频（节点相机）
 
@@ -172,7 +172,7 @@ openclaw nodes camera clip --node <idOrNameOrIp> --duration 3000 --no-audio
 ```
 
 注意事项：
-- 对于 `canvas.*` 和 `camera.*`，节点必须处于 **前台**（后台调用会返回 `NODE_BACKGROUND_UNAVAILABLE`）。
+- 节点必须处于 **前台** 才能执行 `canvas.*` 和 `camera.*`（后台调用会返回 `NODE_BACKGROUND_UNAVAILABLE`）。
 - 片段时长被限制（目前为 `<= 60s`），以避免过大的 base64 负载。
 - Android 会在可能的情况下提示获取 `CAMERA`/`RECORD_AUDIO` 权限；被拒绝的权限会导致 `*_PERMISSION_REQUIRED` 错误。
 
@@ -189,14 +189,14 @@ openclaw nodes screen record --node <idOrNameOrIp> --duration 10s --fps 10 --no-
 - `screen.record` 要求节点应用处于前台。
 - Android 在录制前会显示系统屏幕录制提示。
 - 屏幕录制时长被限制为 `<= 60s`。
-- `--no-audio` 会禁用麦克风捕获（iOS/Android 支持；macOS 使用系统音频捕获）。
+- `--no-audio` 禁用麦克风捕获（iOS/Android 支持；macOS 使用系统音频捕获）。
 - 当有多屏可用时，使用 `--screen <index>` 选择显示器。
 
 ## 位置（节点）
 
 当设置中启用位置功能时，节点会暴露 `location.get`。
 
-CLI 辅助工具：
+CLI 辅助函数：
 
 ```bash
 openclaw nodes location get --node <idOrNameOrIp>
@@ -219,7 +219,7 @@ openclaw nodes invoke --node <idOrNameOrIp> --command sms.send --params '{"to":"
 ```
 
 注意事项：
-- 必须在 Android 设备上先接受权限提示，该功能才会被公开。
+- 必须在 Android 设备上接受权限提示，才能公开此功能。
 - 仅支持 Wi-Fi、不支持电话功能的设备不会公开 `sms.send`。
 
 ## 系统命令（节点主机 / mac 节点）
@@ -235,12 +235,12 @@ openclaw nodes notify --node <idOrNameOrIp> --title "Ping" --body "Gateway ready
 
 注意事项：
 - `system.run` 在负载中返回 stdout/stderr/退出代码。
-- `system.notify` 尊重 macOS 应用的通知权限状态。
+- `system.notify` 尊重 macOS 应用中的通知权限状态。
 - `system.run` 支持 `--cwd`、`--env KEY=VAL`、`--command-timeout` 和 `--needs-screen-recording`。
 - `system.notify` 支持 `--priority <passive|active|timeSensitive>` 和 `--delivery <system|overlay|auto>`。
-- macOS 节点会忽略 `PATH` 的覆盖；无头节点主机仅在 `PATH` 前置节点主机 PATH 时才接受。
-- 在 macOS 节点模式下，`system.run` 受 macOS 应用中执行审批的限制（设置 → 执行审批）。询问/允许列表/完全行为与无头节点主机相同；被拒绝的提示会返回 `SYSTEM_RUN_DENIED`。
-- 在无头节点主机上，`system.run` 受执行审批的限制（`~/.openclaw/exec-approvals.json`）。
+- macOS 节点会忽略 `PATH` 重写；无头节点主机仅在 `PATH` 前置节点主机 PATH 时才接受。
+- 在 macOS 节点模式下，`system.run` 受 macOS 应用中执行审批的约束（设置 → 执行审批）。询问/允许列表/完整行为与无头节点主机相同；被拒绝的提示会返回 `SYSTEM_RUN_DENIED`。
+- 在无头节点主机上，`system.run` 受执行审批的约束（`~/.openclaw/exec-approvals.json`）。
 
 ## 绑定执行节点
 
@@ -272,7 +272,7 @@ openclaw config unset agents.list[0].tools.exec.node
 
 ## 无头节点主机（跨平台）
 
-OpenClaw 可以运行 **无头节点主机**（无 UI），它连接到网关 WebSocket 并暴露 `system.run` / `system.which`。这在 Linux/Windows 上非常有用，或者用于在服务器旁边运行一个极简节点。
+OpenClaw 可以运行 **无头节点主机**（无 UI），该主机连接到网关 WebSocket 并暴露 `system.run` / `system.which`。这在 Linux/Windows 上非常有用，或者用于在服务器旁边运行一个极简节点。
 
 启动它：
 
@@ -284,8 +284,8 @@ openclaw node run --host <gateway-host> --port 18789
 - 仍需配对（网关会显示节点批准提示）。
 - 节点主机将其节点 ID、令牌、显示名称和网关连接信息存储在 `~/.openclaw/node.json` 中。
 - 执行审批通过 `~/.openclaw/exec-approvals.json` 在本地强制执行（参见 [执行审批](/tools/exec-approvals))。
-- 在 macOS 上，无头节点主机优先使用可达的配套应用执行主机，如果应用不可用，则回退到本地执行。设置 `OPENCLAW_NODE_EXEC_HOST=app` 以要求使用应用，或 `OPENCLAW_NODE_EXEC_FALLBACK=0` 以禁用回退。
-- 如果网关 WS 使用 TLS，添加 `--tls` / `--tls-fingerprint`。
+- 在 macOS 上，无头节点主机优先使用可达的配套应用执行主机，如果应用不可用则回退到本地执行。设置 `OPENCLAW_NODE_EXEC_HOST=app` 以要求使用该应用，或 `OPENCLAW_NODE_EXEC_FALLBACK=0` 以禁用回退。
+- 当网关 WS 使用 TLS 时，添加 `--tls` / `--tls-fingerprint`。
 
 ## Mac 节点模式
 

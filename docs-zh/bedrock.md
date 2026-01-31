@@ -94,7 +94,7 @@ export AWS_BEARER_TOKEN_BEDROCK="..."
 
 当在附加了 IAM 角色的 EC2 实例上运行 OpenClaw 时，AWS SDK 会自动使用实例元数据服务 (IMDS) 进行身份验证。然而，目前 OpenClaw 的凭证检测仅检查环境变量，而不检查 IMDS 凭证。
 
-**变通方法：** 设置 `AWS_PROFILE=default`，以表明 AWS 凭证可用。实际的身份验证仍通过 IMDS 使用实例角色。
+**解决方法：** 设置 `AWS_PROFILE=default`，以表明 AWS 凭证可用。实际的身份验证仍通过 IMDS 使用实例角色完成。
 
 ```bash
 # Add to ~/.bashrc or your shell profile
@@ -154,6 +154,6 @@ openclaw models list
 - Bedrock 要求在您的 AWS 账户/区域中启用 **模型访问权限**。
 - 自动发现需要 `bedrock:ListFoundationModels` 权限。
 - 如果您使用配置文件，请在网关主机上设置 `AWS_PROFILE`。
-- OpenClaw 按以下顺序确定凭证来源：`AWS_BEARER_TOKEN_BEDROCK`，然后 `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`，然后 `AWS_PROFILE`，最后使用默认的 AWS SDK 凭证链。
+- OpenClaw 按照以下顺序确定凭证来源：`AWS_BEARER_TOKEN_BEDROCK`，然后 `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`，接着 `AWS_PROFILE`，最后使用默认的 AWS SDK 凭证链。
 - 对推理的支持取决于具体模型；请查看 Bedrock 模型卡片以了解当前功能。
 - 如果您更倾向于托管密钥流程，也可以在 Bedrock 前放置一个兼容 OpenAI 的代理，并将其配置为 OpenAI 提供者。

@@ -31,7 +31,7 @@ read_when:
 
 - **本地主机**：打开 `http://127.0.0.1:18789/`。如果显示“未授权”，请运行 `openclaw dashboard` 并使用带令牌的链接 (`?token=...`)。
 - **令牌来源**：`gateway.auth.token`（或 `OPENCLAW_GATEWAY_TOKEN`）；UI 在首次加载后会存储该令牌。
-- **非本地主机**：使用 Tailscale Serve（如果 `gateway.auth.allowTailscale: true` 则无需令牌）、使用令牌绑定到 tailnet，或使用 SSH 隧道。有关更多信息，请参阅 [Web 表面](/web)。
+- **非本地主机**：使用 Tailscale Serve（如果 `gateway.auth.allowTailscale: true` 为空，则无需令牌）、使用令牌绑定到 tailnet，或使用 SSH 隧道。有关更多信息，请参阅 [Web 表面](/web)。
 
 ## 如果您看到“未授权”/1008
 

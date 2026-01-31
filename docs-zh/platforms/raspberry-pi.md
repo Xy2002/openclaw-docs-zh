@@ -9,7 +9,7 @@ read_when:
 
 ## 目标
 
-在树莓派上运行一个持久、始终在线的 OpenClaw 网关，一次性成本约为 **35–80 美元**（无月费）。非常适合：
+在树莓派上运行一个持久、始终在线的 OpenClaw 网关，一次性成本约为 **35–80 美元**（无月费）。非常适合以下场景：
 - 全天候个人 AI 助手
 - 家庭自动化中枢
 - 低功耗、随时可用的 Telegram/WhatsApp 机器人
@@ -20,17 +20,17 @@ read_when:
 |------------|--------|----------|------|
 | **Pi 5**   | 4GB/8GB | ✅ 最佳 | 速度最快，推荐使用 |
 | **Pi 4**   | 4GB    | ✅ 良好 | 大多数用户的理想选择 |
-| **Pi 4**   | 2GB    | ✅ 可用 | 可运行，需添加交换空间 |
-| **Pi 4**   | 1GB    | ⚠️ 吃力 | 可通过交换空间运行，配置需精简 |
-| **Pi 3B+** | 1GB    | ⚠️ 缓慢 | 可运行，但性能较差 |
-| **Pi Zero 2 W** | 512MB | ❌ | 不推荐 |
+| **Pi 4**   | 2GB    | ✅ 可行 | 可用，需添加交换空间 |
+| **Pi 4**   | 1GB    | ⚠️ 吃力 | 可通过交换空间实现，配置需精简 |
+| **Pi 3B+** | 1GB    | ⚠️ 缓慢 | 可用，但运行速度较慢 |
+| **Pi Zero 2 W** | 512MB | ❌ 不推荐 |
 
 **最低配置：** 1GB RAM、1 核、500MB 磁盘  
 **推荐配置：** 2GB+ RAM、64 位操作系统、16GB+ SD 卡（或 USB SSD）
 
 ## 所需物品
 
-- 树莓派 4 或 5（推荐 2GB+）
+- 树莓派 4 或 5（建议 2GB+）
 - MicroSD 卡（16GB+）或 USB SSD（性能更优）
 - 电源适配器（推荐使用官方 Pi PSU）
 - 网络连接（以太网或 WiFi）
@@ -47,7 +47,7 @@ read_when:
    - 启用 SSH
    - 设置用户名/密码
    - 配置 WiFi（如果不使用以太网）
-4. 将系统刷写到 SD 卡或 USB 驱动器
+4. 将镜像刷写到 SD 卡或 USB 驱动器
 5. 插入并启动树莓派
 
 ## 2) 通过 SSH 连接
@@ -71,7 +71,7 @@ sudo apt install -y git curl build-essential
 sudo timedatectl set-timezone America/Chicago  # Change to your timezone
 ```
 
-## 4) 安装 Node.js 22（ARM64 版）
+## 4) 安装 Node.js 22（ARM64）
 
 ```bash
 # Install Node.js via NodeSource
@@ -83,7 +83,7 @@ node --version  # Should show v22.x.x
 npm --version
 ```
 
-## 5) 添加交换空间（对 2GB 或以下内存至关重要）
+## 5) 添加交换空间（对 2GB 或更少内存至关重要）
 
 交换空间可防止因内存不足而导致的崩溃：
 
@@ -105,13 +105,11 @@ sudo sysctl -p
 ## 6) 安装 OpenClaw
 
 ### 选项 A：标准安装（推荐）
-
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash
 ```
 
-### 选项 B：可自定义安装（适合深度调试）
-
+### 选项 B：可深度定制的安装（适合折腾）
 ```bash
 git clone https://github.com/openclaw/openclaw.git
 cd openclaw
@@ -120,7 +118,7 @@ npm run build
 npm link
 ```
 
-可自定义安装允许您直接访问日志和代码，有助于排查 ARM 特有的问题。
+可深度定制的安装可让你直接访问日志和代码，这对于调试 ARM 特定问题非常有用。
 
 ## 7) 运行入门向导
 
@@ -130,7 +128,7 @@ openclaw onboard --install-daemon
 
 按照向导操作：
 1. **网关模式：** 本地
-2. **认证：** 推荐使用 API 密钥（OAuth 在无头树莓派上可能比较麻烦）
+2. **认证：** 推荐使用 API 密钥（OAuth 在无头树莓派上可能不太稳定）
 3. **渠道：** 从 Telegram 开始最容易
 4. **守护进程：** 是（使用 systemd）
 
@@ -149,7 +147,7 @@ journalctl -u openclaw -f
 
 ## 9) 访问仪表板
 
-由于树莓派是无头的，可通过 SSH 隧道访问：
+由于树莓派是无头的，可以使用 SSH 隧道：
 
 ```bash
 # From your laptop/desktop
@@ -175,16 +173,16 @@ sudo systemctl restart openclaw
 
 ## 性能优化
 
-### 使用 USB SSD（大幅提升性能）
+### 使用 USB SSD（性能大幅提升）
 
-SD 卡速度慢且易磨损。使用 USB SSD 可显著提升性能：
+SD 卡速度慢且容易磨损。使用 USB SSD 可显著提升性能：
 
 ```bash
 # Check if booting from USB
 lsblk
 ```
 
-有关设置详情，请参阅 [树莓派 USB 启动指南](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot)。
+有关设置说明，请参阅 [Pi USB 启动指南](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot)。
 
 ### 减少内存占用
 
@@ -215,7 +213,7 @@ htop
 
 ### 二进制兼容性
 
-大多数 OpenClaw 功能可在 ARM64 上运行，但某些外部二进制文件可能需要 ARM 构建版本：
+大多数 OpenClaw 功能在 ARM64 上均可正常运行，但某些外部二进制文件可能需要 ARM 构建版本：
 
 | 工具       | ARM64 状态 | 备注 |
 |------------|------------|------|
@@ -223,13 +221,13 @@ htop
 | WhatsApp（Baileys） | ✅ | 纯 JS，无问题 |
 | Telegram   | ✅         | 纯 JS，无问题 |
 | gog（Gmail CLI） | ⚠️ | 检查是否有 ARM 版本 |
-| Chromium（浏览器） | ✅ | `sudo apt install chromium-browser` |
+| Chromium（浏览器） | ✅ | `sudo apt install chromium-browser`
 
-如果某个技能无法运行，请检查其二进制文件是否提供 ARM 构建版本。许多 Go/Rust 工具都支持；有些则不支持。
+如果某个技能无法运行，检查其二进制文件是否提供 ARM 构建版本。许多 Go/Rust 工具都支持；有些则不支持。
 
 ### 32 位 vs 64 位
 
-**务必使用 64 位操作系统。** Node.js 和许多现代工具都需要 64 位环境。可通过以下命令检查：
+**务必使用 64 位操作系统。** Node.js 和许多现代工具都需要 64 位系统。可通过以下命令检查：
 
 ```bash
 uname -m
@@ -261,7 +259,7 @@ uname -m
 
 ## 开机自启动
 
-入门向导会自动设置开机自启动，但您也可以通过以下命令进行验证：
+入门向导会自动设置开机自启动，但你可以通过以下命令进行验证：
 
 ```bash
 # Check service is enabled
@@ -310,7 +308,7 @@ sudo systemctl restart openclaw
 
 如果某个技能因“exec 格式错误”而失败：
 1. 检查该二进制文件是否有 ARM64 构建版本
-2. 尝试从源代码构建
+2. 尝试从源代码编译
 3. 或使用支持 ARM 的 Docker 容器
 
 ### WiFi 断连
@@ -329,23 +327,23 @@ echo 'wireless-power off' | sudo tee -a /etc/network/interfaces
 
 ## 成本对比
 
-| 设置           | 一次性成本 | 月度成本 | 备注 |
+| 设置           | 一次性成本 | 月费     | 备注 |
 |----------------|------------|----------|------|
 | **Pi 4（2GB）** | ~$45      | $0       | 加上电源费用（约 $5/年） |
-| **Pi 4（4GB）** | ~$55      | $0       | 推荐使用 |
+| **Pi 4（4GB）** | ~$55      | $0       | 推荐 |
 | **Pi 5（4GB）** | ~$60      | $0       | 性能最佳 |
 | **Pi 5（8GB）** | ~$80      | $0       | 过于强大但更具未来性 |
 | DigitalOcean   | $0        | $6/月   | 年费 $72 |
 | Hetzner        | $0        | €3.79/月 | 年费约 $50 |
 
-**盈亏平衡点：** 树莓派在约 6–12 个月内即可收回成本，优于云 VPS。
+**盈亏平衡点：** 树莓派在约 6–12 个月内即可收回成本，相比云 VPS 更具性价比。
 
 ---
 
-## 更多参考
+## 参考资料
 
 - [Linux 指南](/platforms/linux) — 通用 Linux 设置
 - [DigitalOcean 指南](/platforms/digitalocean) — 云替代方案
 - [Hetzner 指南](/platforms/hetzner) — Docker 设置
 - [Tailscale](/gateway/tailscale) — 远程访问
-- [Nodes](/nodes) — 将您的笔记本电脑/手机与树莓派网关配对
+- [Nodes](/nodes) — 将你的笔记本电脑/手机与树莓派网关配对

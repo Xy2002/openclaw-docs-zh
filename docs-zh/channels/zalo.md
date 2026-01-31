@@ -22,7 +22,7 @@ Zalo以插件形式提供，不随核心安装包一起打包。
    - 环境变量：`ZALO_BOT_TOKEN=...`
    - 或配置文件：`channels.zalo.botToken: "..."`。
 3) 重启网关（或完成引导）。
-4) 默认使用配对方式获取私信访问权限；首次联系时请批准配对代码。
+4) 默认情况下，私信访问采用配对模式；首次联系时请批准配对代码。
 
 最小配置：
 ```json5
@@ -40,10 +40,10 @@ Zalo以插件形式提供，不随核心安装包一起打包。
 ## 功能简介
 Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运行一个用于一对一对话的机器人。
 它非常适合需要确定性路由回 Zalo 的支持或通知场景。
-- 网关拥有一个 Zalo Bot API 渠道。
+- 网关拥有的 Zalo Bot API 渠道。
 - 确定性路由：回复会返回到 Zalo；模型不会自行选择渠道。
 - 私信共享代理的主要会话。
-- 群组功能尚未支持（Zalo 文档说明“即将推出”）。
+- 群组尚未支持（Zalo 文档说明“即将推出”）。
 
 ## 设置（快速路径）
 
@@ -77,11 +77,11 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 ## 工作原理（行为）
 - 入站消息会被规范化为共享通道信封，并包含媒体占位符。
 - 回复始终路由回同一个 Zalo 聊天。
-- 默认使用长轮询；可通过 `channels.zalo.webhookUrl` 启用 Webhook 模式。
+- 默认采用长轮询；可通过 `channels.zalo.webhookUrl` 启用 Webhook 模式。
 
 ## 限制
 - 出站文本按 2000 字符分块发送（Zalo API 限制）。
-- 媒体下载/上传数量上限为 `channels.zalo.mediaMaxMb`（默认 5）。
+- 媒体下载/上传受 `channels.zalo.mediaMaxMb` 限制（默认为 5）。
 - 由于 2000 字符限制使流式传输效用降低，默认会阻止流式传输。
 
 ## 访问控制（私信）
@@ -99,7 +99,7 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 - Webhook 模式：设置 `channels.zalo.webhookUrl` 和 `channels.zalo.webhookSecret`。
   - Webhook 密钥必须为 8–256 个字符。
   - Webhook URL 必须使用 HTTPS。
-  - Zalo 使用 `X-Bot-Api-Secret-Token` 头部发送事件以进行验证。
+  - Zalo 使用 `X-Bot-Api-Secret-Token` 标头发送事件以进行验证。
   - 网关 HTTP 在 `channels.zalo.webhookPath` 处处理 Webhook 请求（默认为 Webhook URL 路径）。
 
 **注意：** 根据 Zalo API 文档，getUpdates（轮询）和 Webhook 互斥。
@@ -136,19 +136,19 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 **Webhook 未接收事件：**
 - 确保 Webhook URL 使用 HTTPS
 - 验证密钥长度为 8–256 个字符
-- 确认网关 HTTP 端点可在配置的路径上访问
+- 确认网关 HTTP 端点在配置的路径上可访问
 - 检查 getUpdates 轮询是否正在运行（两者互斥）
 
 ## 配置参考（Zalo）
 完整配置：[配置](/gateway/configuration)
 
 提供商选项：
-- `channels.zalo.enabled`：启用或禁用频道启动。
+- `channels.zalo.enabled`：启用或禁用渠道启动。
 - `channels.zalo.botToken`：来自 Zalo Bot 平台的机器人令牌。
 - `channels.zalo.tokenFile`：从文件路径读取令牌。
 - `channels.zalo.dmPolicy`：`pairing | allowlist | open | disabled`（默认：配对）。
 - `channels.zalo.allowFrom`：私信白名单（用户 IDs）。`open` 需要 `"*"`。向导会要求输入数字 ID。
-- `channels.zalo.mediaMaxMb`：入站/出站媒体数量上限（MB，默认 5）。
+- `channels.zalo.mediaMaxMb`：入站/出站媒体上限（MB，默认 5）。
 - `channels.zalo.webhookUrl`：启用 Webhook 模式（需 HTTPS）。
 - `channels.zalo.webhookSecret`：Webhook 密钥（8–256 个字符）。
 - `channels.zalo.webhookPath`：网关 HTTP 服务器上的 Webhook 路径。

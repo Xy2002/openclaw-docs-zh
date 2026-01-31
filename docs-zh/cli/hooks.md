@@ -97,7 +97,7 @@ Requirements:
 openclaw hooks check
 ```
 
-显示钩子符合性状态摘要（有多少已就绪，多少未就绪）。
+显示钩子符合性状态的摘要（有多少已就绪，多少未就绪）。
 
 **选项：**
 - `--json`：以 JSON 格式输出
@@ -118,7 +118,7 @@ Not ready: 0
 openclaw hooks enable <name>
 ```
 
-通过将其添加到配置中来启用特定钩子(`~/.openclaw/config.json`)。
+通过将其添加到您的配置中来启用特定钩子(`~/.openclaw/config.json`)。
 
 **注意：** 由插件管理的钩子在`openclaw hooks list`中显示`plugin:<id>`，无法在此处启用或禁用。请改用插件进行启用或禁用。
 
@@ -139,11 +139,11 @@ openclaw hooks enable session-memory
 
 **作用：**
 - 检查钩子是否存在且符合条件
-- 更新配置中的`hooks.internal.entries.<name>.enabled = true`
+- 更新您配置中的`hooks.internal.entries.<name>.enabled = true`
 - 将配置保存到磁盘
 
 **启用后：**
-- 重启网关以重新加载钩子（macOS 上为菜单栏应用重启，或在开发环境中重启网关进程）。
+- 重启网关以重新加载钩子（在 macOS 上重启菜单栏应用，或在开发环境中重启网关进程）。
 
 ## 禁用钩子
 
@@ -151,7 +151,7 @@ openclaw hooks enable session-memory
 openclaw hooks disable <name>
 ```
 
-通过更新配置来禁用特定钩子。
+通过更新您的配置来禁用特定钩子。
 
 **参数：**
 - `<name>`：钩子名称（例如，`command-logger`）
@@ -169,7 +169,7 @@ openclaw hooks disable command-logger
 ```
 
 **禁用后：**
-- 重启网关以重新加载钩子。
+- 重启网关以重新加载钩子
 
 ## 安装钩子
 
@@ -215,14 +215,14 @@ openclaw hooks update --all
 更新已安装的钩子包（仅限 npm 安装）。
 
 **选项：**
-- `--all`：更新所有跟踪的钩子包
-- `--dry-run`：显示将要更改的内容但不实际写入
+- `--all`：更新所有受跟踪的钩子包
+- `--dry-run`：显示在不写入的情况下将发生哪些变化
 
 ## 捆绑钩子
 
 ### session-memory
 
-在您发出`/new`时，将会话上下文保存到内存中。
+当您发出`/new`时，会将会话上下文保存到内存中。
 
 **启用：**
 

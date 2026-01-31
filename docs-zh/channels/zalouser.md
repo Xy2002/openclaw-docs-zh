@@ -13,7 +13,7 @@ read_when:
 > **警告：** 这是一个非官方集成，可能导致账号被暂停或封禁。请自行承担使用风险。
 
 ## 需要插件
-Zalo 个人版以插件形式提供，未随核心安装包一起打包。
+Zalo 个人版以插件形式提供，不包含在核心安装中。
 - 通过 CLI 安装：`openclaw plugins install @openclaw/zalouser`
 - 或从源代码检出安装：`openclaw plugins install ./extensions/zalouser`
 - 详情：[插件](/plugin)
@@ -42,7 +42,7 @@ Zalo 个人版以插件形式提供，未随核心安装包一起打包。
 }
 ```
 
-4) 重启网关（或完成首次配置）。
+4) 重启网关（或完成初始设置）。
 5) 私信访问默认为配对；首次联系时，请批准配对码。
 
 ## 功能简介
@@ -63,8 +63,8 @@ openclaw directory groups list --channel zalouser --query "work"
 ```
 
 ## 限制
-- 出站文本会被分块，每条约 2000 字符（受 Zalo 客户端限制）。
-- 默认情况下禁止流式传输。
+- 出站文本会被分块，每块约 2000 个字符（受 Zalo 客户端限制）。
+- 流式传输默认被阻止。
 
 ## 访问控制（私信）
 `channels.zalouser.dmPolicy` 支持：`pairing | allowlist | open | disabled`（默认：`pairing`）。
@@ -75,11 +75,11 @@ openclaw directory groups list --channel zalouser --query "work"
 - `openclaw pairing approve zalouser <code>`
 
 ## 群组访问（可选）
-- 默认：`channels.zalouser.groupPolicy = "open"`（允许群组）。如果未设置，可使用 `channels.defaults.groupPolicy` 覆盖默认设置。
+- 默认：`channels.zalouser.groupPolicy = "open"`（允许群组）。未设置时，使用 `channels.defaults.groupPolicy` 覆盖默认设置。
 - 通过以下方式限制为白名单：
   - `channels.zalouser.groupPolicy = "allowlist"`
   - `channels.zalouser.groups`（键为群组 ID 或名称）
-- 阻止所有群组：`channels.zalouser.groupPolicy = "disabled"`。
+- 阻止所有群组： `channels.zalouser.groupPolicy = "disabled"`。
 - 配置向导可以提示输入群组白名单。
 - 在启动时，OpenClaw 会将白名单中的群组/用户名称解析为 ID，并记录映射关系；未解析的条目将按原样保留。
 
@@ -120,6 +120,6 @@ openclaw directory groups list --channel zalouser --query "work"
 **未找到 `zca`：**
 - 安装 zca-cli，并确保它位于网关进程的 `PATH` 中。
 
-**登录不生效：**
+**登录不稳定：**
 - `openclaw channels status --probe`
-- 重新登录： `openclaw channels logout --channel zalouser && openclaw channels login --channel zalouser`
+- 重新登录：`openclaw channels logout --channel zalouser && openclaw channels login --channel zalouser`

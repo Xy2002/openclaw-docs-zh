@@ -20,7 +20,7 @@ read_when:
 ### Gateway（守护进程）
 - 维护各提供商的连接。
 - 公开类型化的 WS API（请求、响应和服务器推送事件）。
-- 根据 JSON Schema 验证传入的消息帧。
+- 根据 JSON Schema 验证入站帧。
 - 发出诸如 `agent`、`chat`、`presence`、`health`、`heartbeat` 和 `cron` 等事件。
 
 ### 客户端（mac 应用 / CLI / Web 管理界面）
@@ -30,7 +30,7 @@ read_when:
 
 ### 节点（macOS / iOS / Android / 无头设备）
 - 使用 `role: node` 连接到 **同一 WS 服务器**。
-- 在 `connect` 中提供设备身份；配对基于 **设备**（角色为 `node`），批准信息存储在设备配对库中。
+- 在 `connect` 中提供设备身份；配对基于 **设备**（角色为 `node`），且批准信息存储在设备配对存储中。
 - 公开诸如 `canvas.*`、`camera.*`、`screen.record` 和 `location.get` 等命令。
 
 协议详情：
@@ -67,15 +67,15 @@ Client                    Gateway
   - 请求：`{type:"req", id, method, params}` → `{type:"res", id, ok, payload|error}`
   - 事件：`{type:"event", event, payload, seq?, stateVersion?}`
 - 如果设置了 `OPENCLAW_GATEWAY_TOKEN`（或 `--token`），则 `connect.params.auth.token` 必须匹配，否则套接字将关闭。
-- 对于具有副作用的方法（`send`、`agent`），需要使用幂等密钥以安全重试；服务器维护一个短期去重缓存。
+- 对于具有副作用的方法（`send`、`agent`），需要使用幂等键以安全重试；服务器维护一个短期去重缓存。
 - 节点必须在 `connect` 中包含 `role: "node"` 以及能力、命令和权限。
 
 ## 配对 + 本地信任
 
 - 所有 WS 客户端（操作员和节点）在 `connect` 中包含 **设备身份**。
 - 新设备 ID 需要配对批准；Gateway 会为后续连接颁发 **设备令牌**。
-- **本地**连接（环回地址或网关主机自身的 tailnet 地址）可以自动批准，以保持同主机环境下的流畅用户体验。
-- **非本地**连接必须签名 `connect.challenge` 随机数，并需明确批准。
+- **本地**连接（环回地址或网关主机自身的 tailnet 地址）可以自动批准，以确保同主机用户体验流畅。
+- **非本地**连接必须签署 `connect.challenge` 难度值，并需明确批准。
 - Gateway 身份验证（`gateway.auth.*`）仍然适用于 **所有**连接，无论是本地还是远程。
 
 详情：[Gateway 协议](/gateway/protocol)、[配对](/start/pairing)、[安全性](/gateway/security)。
@@ -83,8 +83,8 @@ Client                    Gateway
 ## 协议类型化与代码生成
 
 - TypeBox 模式定义了协议。
-- 从这些模式生成 JSON Schema。
-- 从 JSON Schema 生成 Swift 模型。
+- JSON Schema 从这些模式中生成。
+- Swift 模型从 JSON Schema 中生成。
 
 ## 远程访问
 
@@ -94,7 +94,7 @@ Client                    Gateway
   ssh -N -L 18789:127.0.0.1:18789 user@host
   ```
 - 同样的握手和身份验证令牌同样适用于隧道连接。
-- 在远程设置中，可以为 WS 启用 TLS 并选择性启用证书锁定。
+- 在远程设置中，可以为 WS 启用 TLS 并选择性启用证书固定。
 
 ## 运维快照
 
@@ -106,4 +106,4 @@ Client                    Gateway
 
 - 每台主机恰好有一个 Gateway 控制一个 Baileys 会话。
 - 握手是强制性的；任何非 JSON 或非连接的第一帧都会导致硬关闭。
-- 事件不会被重放；客户端必须在出现间隙时主动刷新。
+- 事件不会被重放；客户端必须在出现间隙时刷新。

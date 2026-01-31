@@ -21,7 +21,7 @@ read_when:
 
 将其保存到`~/.openclaw/openclaw.json`，您即可通过该号码向机器人发送私信。
 
-### 推荐的入门配置
+### 推荐的初始配置
 ```json5
 {
   identity: {
@@ -443,7 +443,7 @@ read_when:
 }
 ```
 
-### 使用 API 密钥作为 OAuth 备用
+### OAuth 结合 API 密钥故障转移
 ```json5
 {
   auth: {
@@ -510,7 +510,7 @@ read_when:
 }
 ```
 
-### 工作机器人（受限访问）
+### 工作用机器人（受限访问）
 ```json5
 {
   identity: {
@@ -567,7 +567,7 @@ read_when:
 
 ## 小贴士
 
-- 如果您设置了`dmPolicy: "open"`，则匹配的`allowFrom`列表必须包含`"*"`。
-- 不同提供商的 ID 格式不同（例如电话号码、用户 ID、频道 ID）。请参考提供商文档以确认具体格式。
+- 如果您设置了`dmPolicy: "open"`，则相应的`allowFrom` 列表必须包含`"*"`。
+- 不同提供商的 ID 格式各异（例如电话号码、用户 ID、频道 ID）。请参考提供商文档以确认正确的格式。
 - 您可以稍后添加的可选部分包括：`web`、`browser`、`ui`、`discovery`、`canvasHost`、`talk`、`signal`、`imessage`。
 - 如需更深入的设置说明，请参阅[提供商](/channels/whatsapp)和[故障排除](/gateway/troubleshooting)。

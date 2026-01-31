@@ -105,7 +105,7 @@ cd ./extensions/voice-call && pnpm install
 - `skipSignatureVerification` 仅用于本地测试。
 - 如果您使用 ngrok 免费层级，请将 `publicUrl` 设置为确切的 ngrok URL；签名验证始终强制执行。
 - `tunnel.allowNgrokFreeTierLoopbackBypass: true` 仅在 `tunnel.provider="ngrok"` 和 `serve.bind` 为环回（ngrok 本地代理）时，允许带有无效签名的 Twilio Webhook。仅供本地开发使用。
-- Ngrok 免费层级的 URL 可能会变化或引入插页式行为；如果 `publicUrl` 发生漂移，Twilio 签名将失败。对于生产环境，建议使用稳定的域名或 Tailscale 漏斗。
+- Ngrok 免费层级的 URL 可能会更改或添加插页行为；如果 `publicUrl` 发生漂移，Twilio 签名将失败。对于生产环境，建议使用稳定的域名或 Tailscale 漏斗。
 
 ## 通话中的 TTS
 

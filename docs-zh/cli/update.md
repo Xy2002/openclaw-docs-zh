@@ -38,7 +38,7 @@ openclaw --update
 
 ## `update status`
 
-显示当前活动的更新通道以及 Git 标签/分支/SHA（用于源码检出），并显示是否有可用更新。
+显示当前活动的更新通道以及 Git 标签/分支/SHA（用于源码检出），并显示可用更新信息。
 
 ```bash
 openclaw update status
@@ -52,7 +52,7 @@ openclaw update status --timeout 10
 
 ## `update wizard`
 
-交互式流程，用于选择更新通道，并确认是否在更新后重启 Gateway（默认为重启）。如果您在没有 Git 检出的情况下选择 `dev`，系统会提示您创建一个检出。
+交互式流程，用于选择更新通道并确认是否在更新后重启 Gateway（默认为重启）。如果您在没有 Git 检出的情况下选择 `dev`，系统会提示您创建一个检出。
 
 ## 功能说明
 
@@ -66,17 +66,17 @@ openclaw update status --timeout 10
 通道：
 - `stable`：检出最新的非测试版标签，然后执行构建和检查。
 - `beta`：检出最新的 `-beta` 标签，然后执行构建和检查。
-- `dev`：检出 `main`，然后执行获取和变基。
+- `dev`：检出 `main`，然后执行 fetch 和 rebase。
 
 高级流程：
 1. 要求工作树干净（无未提交的更改）。
 2. 切换到所选通道（标签或分支）。
-3. 获取上游（仅限开发通道）。
-4. 仅限开发通道：在临时工作树中执行预检查的 lint 和 TypeScript 构建；如果最新提交失败，则回溯最多 10 个提交，以找到最近的干净构建。
-5. 基于所选提交进行变基（仅限开发通道）。
+3. 获取上游代码（仅限开发通道）。
+4. 仅限开发通道：在临时工作树中执行预检查 lint 和 TypeScript 构建；如果最新提交失败，则回溯最多 10 个提交，以找到最近的干净构建。
+5. 仅限开发通道：基于所选提交执行变基。
 6. 安装依赖项（优先使用 pnpm，备用 npm）。
 7. 执行构建，并构建 Control UI。
-8. 运行 `openclaw doctor` 作为最终的“安全更新”检查。
+8. 最后运行 `openclaw doctor` 作为“安全更新”检查。
 9. 将插件同步到当前活动通道（开发通道使用捆绑扩展；稳定/测试通道使用 npm 插件），并更新通过 npm 安装的插件。
 
 ## `--update` 简写
@@ -85,7 +85,7 @@ openclaw update status --timeout 10
 
 ## 参见
 
-- `openclaw doctor`（在 Git 检出上优先运行更新）
+- `openclaw doctor`（建议在 Git 检出上先运行更新）
 - [开发通道](/install/development-channels)
 - [更新](/install/updating)
 - [CLI 参考](/cli)

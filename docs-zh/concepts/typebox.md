@@ -9,7 +9,7 @@ read_when:
 
 TypeBox 是一个以 TypeScript 为先的模式库。我们使用它来定义 **Gateway WebSocket 协议**（握手、请求/响应、服务器事件）。这些模式驱动着 **运行时验证**、**JSON Schema 导出**以及 macOS 应用程序的 **Swift 代码生成**。单一事实来源；其他一切均由其生成。
 
-若需更高层次的协议上下文，请从 [Gateway 架构](/concepts/architecture) 开始。
+若需了解更高层次的协议上下文，请从 [Gateway 架构](/concepts/architecture) 开始。
 
 ## 心智模型（30 秒）
 
@@ -32,7 +32,7 @@ Client                    Gateway
   |<---- res:health ----------|
 ```
 
-常见方法 + 事件：
+常见方法与事件：
 
 | 类别 | 示例 | 备注 |
 | --- | --- | --- |
@@ -65,7 +65,7 @@ Client                    Gateway
 
 ## 模式在运行时的使用方式
 
-- **服务器端**：每个入站帧都通过 AJV 验证。握手仅接受参数与 `ConnectParams` 匹配的 `connect` 请求。
+- **服务器端**：每个入站帧都通过 AJV 验证。握手仅接受参数匹配 `ConnectParams` 的 `connect` 请求。
 - **客户端端**：JS 客户端在使用事件和响应帧之前对其进行验证。
 - **方法表面**：Gateway 在 `hello-ok` 中公布支持的 `methods` 和 `events`。
 
@@ -169,7 +169,7 @@ ws.on("message", (data) => {
 
 ## 实例演练：端到端添加一个方法
 
-示例：添加一个新的 `system.echo` 请求，该请求返回 `{ ok: true, text }`。
+示例：添加一个新的 `system.echo` 请求，返回 `{ ok: true, text }`。
 
 1) **模式（事实来源）**
 
@@ -187,7 +187,7 @@ export const SystemEchoResultSchema = Type.Object(
 );
 ```
 
-将两者添加到 `ProtocolSchemas` 并导出类型：
+同时将其添加到 `ProtocolSchemas` 并导出类型：
 
 ```ts
   SystemEchoParams: SystemEchoParamsSchema,
@@ -221,7 +221,7 @@ export const systemHandlers: GatewayRequestHandlers = {
 };
 ```
 
-将其注册到 `src/gateway/server-methods.ts`（已合并 `systemHandlers`），然后将 `"system.echo"` 添加到 `METHODS` 的 `src/gateway/server.ts`。
+将其注册到 `src/gateway/server-methods.ts`（已合并 `systemHandlers`），然后将 `"system.echo"` 添加到 `METHODS` 中的 `src/gateway/server.ts`。
 
 4) **重新生成**
 
@@ -235,13 +235,13 @@ pnpm protocol:check
 
 ## Swift 代码生成行为
 
-Swift 生成器会输出：
+Swift 生成器会发出：
 
 - 包含 `GatewayFrame`、`req`、`res` 和 `event` 案例的 `unknown` 枚举
 - 强类型负载结构体/枚举
 - `ErrorCode` 值和 `GATEWAY_PROTOCOL_VERSION`
 
-未知帧类型将保留为原始负载，以实现向前兼容性。
+未知帧类型将保留为原始负载，以确保向前兼容性。
 
 ## 版本控制 + 兼容性
 
@@ -254,7 +254,7 @@ Swift 生成器会输出：
 - 大多数对象使用 `additionalProperties: false` 来实现严格负载。
 - `NonEmptyString` 是 ID 和方法/事件名称的默认值。
 - 顶级 `GatewayFrame` 在 `type` 上使用 **判别符**。
-- 带有副作用的方法通常要求参数中包含 `idempotencyKey`（例如：`send`、`poll`、`agent`、`chat.send`）。
+- 带有副作用的方法通常要求在参数中包含 `idempotencyKey`（例如：`send`、`poll`、`agent`、`chat.send`）。
 
 ## 实时模式 JSON
 

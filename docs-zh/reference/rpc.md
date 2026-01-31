@@ -16,7 +16,7 @@ OpenClaw通过JSON-RPC集成外部CLI。目前使用两种模式。
 
 有关设置和端点，请参阅[Signal](/channels/signal)。
 
-## 模式B：标准输入/输出子进程（imsg）
+## 模式B：标准输入输出子进程（imsg）
 - OpenClaw将`imsg rpc`作为子进程启动。
 - JSON-RPC通过标准输入/输出以换行分隔的方式传输（每行一个JSON对象）。
 - 无需TCP端口，也不需要守护进程。

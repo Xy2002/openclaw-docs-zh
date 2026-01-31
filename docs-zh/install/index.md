@@ -132,14 +132,14 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 
 - `--install-method npm|git`
 - `--git-dir <path>`（默认：`~/openclaw`）
-- `--no-git-update`（使用现有检出目录时跳过 `git pull`）
+- `--no-git-update`（使用现有检出时跳过 `git pull`）
 - `--no-prompt`（禁用提示；在 CI/自动化中必需）
 - `--dry-run`（打印将发生什么；不进行任何更改）
 - `--no-onboard`（跳过入门流程）
 
 ### 环境变量
 
-等效的环境变量（适用于自动化）：
+等效的环境变量（对自动化有用）：
 
 - `OPENCLAW_INSTALL_METHOD=git|npm`
 - `OPENCLAW_GIT_DIR=...`

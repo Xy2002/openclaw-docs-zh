@@ -9,12 +9,12 @@ read_when:
 
 OpenClaw 的网关可以提供一个小型的 OpenAI 兼容聊天补全端点。
 
-此端点在默认情况下是__已禁用__的。请先在配置中将其启用。
+此端点在默认情况下是__已禁用__的。请先在配置中启用它。
 
 - `POST /v1/chat/completions`
 - 与网关使用相同端口（WS + HTTP 多路复用）：`http://<gateway-host>:<port>/v1/chat/completions`
 
-在底层，请求以与普通网关代理运行相同的代码路径执行（与 `openclaw agent` 相同），因此路由、权限和配置与您的网关一致。
+在底层，请求以普通网关代理运行的方式执行（与 `openclaw agent` 使用相同的代码路径），因此路由/权限/配置与您的网关一致。
 
 ## 身份验证
 
@@ -30,7 +30,7 @@ OpenClaw 的网关可以提供一个小型的 OpenAI 兼容聊天补全端点。
 
 无需自定义标头：将代理 ID 编码到 OpenAI 的 `model` 字段中：
 
-- `model: "openclaw:<agentId>"`（示例：`"openclaw:main"`, `"openclaw:beta"`）
+- `model: "openclaw:<agentId>"`（示例：`"openclaw:main"`、`"openclaw:beta"`）
 - `model: "agent:<agentId>"`（别名）
 
 或者通过标头指定特定的 OpenClaw 代理：
@@ -74,7 +74,7 @@ OpenClaw 的网关可以提供一个小型的 OpenAI 兼容聊天补全端点。
 
 ## 会话行为
 
-默认情况下，该端点是**每次请求无状态的**（每次调用都会生成一个新的会话密钥）。
+默认情况下，该端点是**每请求无状态的**（每次调用都会生成一个新的会话密钥）。
 
 如果请求包含 OpenAI 的 `user` 字符串，网关会从中派生出一个稳定的会话密钥，因此重复调用可以共享同一个代理会话。
 

@@ -50,13 +50,14 @@ CLI 捕获 `console.log/info/warn/error/debug/trace` 并将其写入文件日志
 
 ## 工具摘要脱敏
 
-详细的工具摘要（例如 `🛠️ Exec: ...`）可在敏感标记进入控制台流之前对其进行屏蔽。这仅适用于工具，不会更改文件日志。
+详细的工具摘要（例如 `🛠️ Exec: ...`）可在敏感标记进入
+控制台流之前对其进行屏蔽。这仅适用于工具，不会更改文件日志。
 
-- `logging.redactSensitive`：`off` | `tools`（默认：`tools`）
-- `logging.redactPatterns`：正则表达式字符串数组（覆盖默认设置）
+- `logging.redactSensitive`: `off` | `tools`（默认：`tools`）
+- `logging.redactPatterns`: 正则表达式字符串数组（覆盖默认设置）
   - 使用原始正则表达式字符串（自动 `gi`），或者如果您需要自定义标志，则使用 `/pattern/flags`。
   - 匹配项通过保留前 6 个字符和后 4 个字符进行屏蔽（长度 ≥ 18），否则使用 `***`。
-  - 默认设置涵盖常见的键赋值、CLI 标志、JSON 字段、承载头、PEM 块以及流行的令牌前缀。
+  - 默认设置涵盖常见的密钥分配、CLI 标志、JSON 字段、承载头、PEM 块以及流行的令牌前缀。
 
 ## 网关 WebSocket 日志
 
@@ -104,7 +105,7 @@ openclaw gateway --verbose --ws-log full
 - **按子系统划分的子日志记录器**（自动前缀 + 结构化字段 `{ subsystem }`）
 - **`logRaw()`** 用于 QR/UX 输出（无前缀，无格式）
 - **控制台样式**（例如 `pretty | compact | json`）
-- **控制台日志级别**与文件日志级别分开（当 `logging.level` 设置为 `debug`/`trace` 时，文件保持完整细节）
+- **控制台日志级别**独立于文件日志级别（当 `logging.level` 设置为 `debug`/`trace` 时，文件保持完整细节）
 - **WhatsApp 消息正文**以 `debug` 记录（使用 `--verbose` 查看它们）
 
 这在保持现有文件日志稳定的同时，使交互式输出易于扫描。

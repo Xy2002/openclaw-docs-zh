@@ -31,7 +31,7 @@ read_when:
 
 钩子系统使您能够：
 - 在发出 `/new` 时将会话上下文保存到内存
-- 记录所有命令以进行审计
+- 记录所有命令以供审计
 - 在代理生命周期事件上触发自定义自动化
 - 扩展 OpenClaw 的行为而无需修改核心代码
 
@@ -39,7 +39,7 @@ read_when:
 
 ### 内置钩子
 
-OpenClaw 自带四个内置钩子，这些钩子会自动被发现：
+OpenClaw 自带四个内置钩子，这些钩子会自动发现：
 
 - **💾 session-memory**：在您发出 `/new` 时，将会话上下文保存到您的代理工作区（默认 `~/.openclaw/workspace/memory/`）
 - **📝 command-logger**：将所有命令事件记录到 `~/.openclaw/logs/commands.log`
@@ -112,7 +112,7 @@ openclaw hooks install <path-or-spec>
 }
 ```
 
-每个条目指向一个包含 `HOOK.md` 和 `handler.ts`（或 `index.ts`）的钩子目录。钩子包可以携带依赖项；这些依赖项将被安装在 `~/.openclaw/hooks/<id>` 下。
+每个条目指向一个包含 `HOOK.md` 和 `handler.ts`（或 `index.ts`）的钩子目录。钩子包可以携带依赖项；它们将被安装在 `~/.openclaw/hooks/<id>` 下。
 
 ## 钩子结构
 
@@ -157,7 +157,7 @@ No configuration needed.
 - **`homepage`**：文档 URL
 - **`requires`**：可选要求
   - **`bins`**：PATH 上所需的二进制文件（如 `["git", "node"]`）
-  - **`anyBins`**：必须存在这些二进制文件之一
+  - **`anyBins`**：必须至少存在其中一个二进制文件
   - **`env`**：所需的环境变量
   - **`config`**：所需的配置路径（如 `["workspace.dir"]`）
   - **`os`**：所需的平台（如 `["darwin", "linux"]`）
@@ -221,13 +221,13 @@ export default myHandler;
 在代理命令发出时触发：
 
 - **`command`**：所有命令事件（通用监听器）
-- **`command:new`**：当 `/new` 命令发出时
-- **`command:reset`**：当 `/reset` 命令发出时
-- **`command:stop`**：当 `/stop` 命令发出时
+- **`command:new`**：当发出 `/new` 命令时
+- **`command:reset`**：当发出 `/reset` 命令时
+- **`command:stop`**：当发出 `/stop` 命令时
 
 ### 代理事件
 
-- **`agent:bootstrap`**：在工作区引导文件注入之前（钩子可能会改变 `context.bootstrapFiles`）
+- **`agent:bootstrap`**：在注入工作区引导文件之前（钩子可能会改变 `context.bootstrapFiles`）
 
 ### 网关事件
 
@@ -239,17 +239,17 @@ export default myHandler;
 
 这些钩子不是事件流监听器；它们允许插件在 OpenClaw 将工具结果持久化之前同步调整工具结果。
 
-- **`tool_result_persist`**：在工具结果写入会话记录之前对其进行转换。必须是同步的；返回更新的工具结果负载或 `undefined` 以保持原样。请参阅 [代理循环](/concepts/agent-loop)。
+- **`tool_result_persist`**：在将工具结果写入会话记录之前转换工具结果。必须是同步的；返回更新的工具结果负载或 `undefined` 以保持原样。请参阅 [代理循环](/concepts/agent-loop)。
 
 ### 未来事件
 
 计划中的事件类型：
 
-- **`session:start`**：当新会话开始时
-- **`session:end`**：当会话结束时
-- **`agent:error`**：当代理遇到错误时
-- **`message:sent`**：当消息发送时
-- **`message:received`**：当消息接收时
+- **`session:start`**：新会话开始时
+- **`session:end`**：会话结束时
+- **`agent:error`**：代理遇到错误时
+- **`message:sent`**：发送消息时
+- **`message:received`**：接收消息时
 
 ## 创建自定义钩子
 
@@ -389,7 +389,7 @@ openclaw hooks enable my-hook
 }
 ```
 
-**迁移**：对于新钩子，请使用基于发现的新系统。旧版处理程序将在基于目录的钩子之后加载。
+**迁移**：对于新钩子，请使用新的基于发现的系统。旧版处理程序将在基于目录的钩子之后加载。
 
 ## CLI 命令
 
@@ -454,10 +454,10 @@ openclaw hooks disable command-logger
 **它做什么**：
 1. 使用重置前的会话条目来找到正确的会话记录
 2. 提取最后 15 行对话
-3. 使用 LLM 生成描述性的文件名别名
-4. 将会话元数据保存到带有日期的内存文件中
+3. 使用 LLM 生成描述性的文件名 slug
+4. 将会话元数据保存到带有日期的内存文件
 
-**输出示例**：
+**示例输出**：
 
 ```markdown
 # Session: 2026-01-16 14:30:00 UTC
@@ -470,7 +470,7 @@ openclaw hooks disable command-logger
 **文件名示例**：
 - `2026-01-16-vendor-pitch.md`
 - `2026-01-16-api-design.md`
-- `2026-01-16-1430.md`（如果别名生成失败，则使用回退时间戳）
+- `2026-01-16-1430.md`（如果 slug 生成失败，则使用回退时间戳）
 
 **启用**：
 
@@ -480,7 +480,7 @@ openclaw hooks enable session-memory
 
 ### command-logger
 
-将所有命令事件记录到一个集中式的审计文件中。
+将所有命令事件记录到中央审计文件中。
 
 **事件**：`command`
 
@@ -489,8 +489,8 @@ openclaw hooks enable session-memory
 **输出**：`~/.openclaw/logs/commands.log`
 
 **它做什么**：
-1. 捕获事件详情（命令动作、时间戳、会话密钥、发送者 ID、来源）
-2. 以 JSONL 格式追加到日志文件中
+1. 捕获事件详情（命令动作、时间戳、会话密钥、发件人 ID、来源）
+2. 以 JSONL 格式追加到日志文件
 3. 在后台静默运行
 
 **日志条目示例**：
@@ -557,7 +557,7 @@ openclaw hooks enable soul-evil
 
 ### boot-md
 
-在网关启动时（通道启动后）运行 `BOOT.md`。必须启用内部钩子才能运行。
+在网关启动时（在通道启动后）运行 `BOOT.md`。必须启用内部钩子才能运行。
 
 **事件**：`gateway:startup`
 
@@ -641,7 +641,7 @@ metadata: {"openclaw":{"events":["command"]}}      # General - more overhead
 
 ### 启用钩子日志
 
-网关在启动时记录钩子加载：
+网关在启动时会记录钩子加载情况：
 
 ```
 Registered hook: session-memory -> command:new
@@ -787,7 +787,7 @@ Session reset
 openclaw hooks info my-hook
 ```
 
-查找缺失的内容：
+寻找缺失的内容：
 - 二进制文件（检查 PATH）
 - 环境变量
 - 配置值

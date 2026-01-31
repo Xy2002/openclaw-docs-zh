@@ -41,13 +41,13 @@ Agent -> Gateway -> Node Service (WS)
 ## 操作流程
 - 重启/重建：`SIGN_IDENTITY="Apple Development: <Developer Name> (<TEAMID>)" scripts/restart-mac.sh`
   - 终止现有实例
-  - 使用 Swift 进行构建和打包
+  - 使用 Swift 构建并打包
   - 写入/引导/启动 LaunchAgent
-- 单一实例：如果已存在具有相同捆绑包 ID 的其他实例，应用会提前退出。
+- 单一实例：如果已有具有相同捆绑包 ID 的实例正在运行，应用会提前退出。
 
 ## 强化注意事项
-- 尽量要求所有特权界面都匹配 TeamID。
+- 尽可能要求所有特权界面匹配 TeamID。
 - PeekabooBridge：`PEEKABOO_ALLOW_UNSIGNED_SOCKET_CLIENTS=1`（仅用于 DEBUG）可能允许同 UID 调用者进行本地开发。
 - 所有通信均保持本地隔离；不暴露任何网络套接字。
 - TCC 提示仅来自 GUI 应用程序捆绑包；确保在重建过程中签名的捆绑包 ID 保持稳定。
-- IPC 强化措施：套接字模式 `0600`、令牌、对等 UID 检查、HMAC 挑战/响应机制以及短 TTL。
+- IPC 强化措施：套接字模式 `0600`、令牌、对端 UID 检查、HMAC 挑战/响应机制以及短 TTL。

@@ -28,18 +28,18 @@ OAuth 提供商通常会在登录或刷新流程中生成一个 **新的刷新�
 - 您通过 OpenClaw 和 Claude Code/Codex CLI 同时登录 → 其中一个随后会随机“登出”
 
 为减少这种情况，OpenClaw 将 `auth-profiles.json` 视为 **令牌接收器**：
-- 运行时从 **单一位置**读取凭据
+- 运行时从 **一个位置** 读取凭据
 - 我们可以保存多个配置文件，并以确定性方式路由它们
 
 ## 存储（令牌的存放位置）
 
-凭据按 **代理**存储：
+凭据按 **代理** 分别存储：
 
 - 身份验证配置文件（OAuth + API 密钥）：`~/.openclaw/agents/<agentId>/agent/auth-profiles.json`
 - 运行时缓存（自动管理；请勿手动编辑）：`~/.openclaw/agents/<agentId>/agent/auth.json`
 
 旧版仅用于导入的文件（仍受支持，但不再是主要存储）：
-- `~/.openclaw/credentials/oauth.json`（首次使用时导入到 `auth-profiles.json` 中）
+- `~/.openclaw/credentials/oauth.json`（首次使用时导入到 `auth-profiles.json`）
 
 上述所有内容也遵循 `$OPENCLAW_STATE_DIR`（状态目录覆盖）。完整参考：[/gateway/configuration](/gateway/configuration#auth-storage-oauth--api-keys)
 
@@ -73,7 +73,7 @@ OpenClaw 的交互式登录流程由 `@mariozechner/pi-ai` 实现，并与向导
 
 1) 运行 `claude setup-token`
 2) 将令牌粘贴到 OpenClaw
-3) 存储为令牌身份验证配置文件（无刷新）
+3) 作为令牌身份验证配置文件存储（无刷新）
 
 向导路径为 `openclaw onboard` → 身份验证选项 `setup-token`（Anthropic）。
 
@@ -96,15 +96,15 @@ OpenClaw 的交互式登录流程由 `@mariozechner/pi-ai` 实现，并与向导
 
 在运行时：
 - 如果 `expires` 在未来 → 使用存储的访问令牌
-- 如果已过期 → 在文件锁保护下刷新，并覆盖存储的凭据
+- 如果已过期 → 在文件锁保护下执行刷新，并覆盖存储的凭据
 
-刷新流程是自动的；通常无需手动管理令牌。
+刷新流程是自动的；通常您无需手动管理令牌。
 
 ## 多个账户（配置文件）+ 路由
 
 两种模式：
 
-### 1) 推荐：分离代理
+### 1) 推荐：使用独立代理
 
 如果您希望“个人”和“工作”之间永不交互，请使用隔离的代理（独立会话 + 凭据 + 工作区）：
 
@@ -115,9 +115,9 @@ openclaw agents add personal
 
 然后为每个代理配置身份验证（通过向导），并将聊天路由到正确的代理。
 
-### 2) 高级：单个代理中的多个配置文件
+### 2) 高级：在一个代理中使用多个配置文件
 
-`auth-profiles.json` 支持同一提供商下的多个配置文件 ID。
+`auth-profiles.json` 支持同一提供商的多个配置文件 ID。
 
 选择使用的配置文件：
 - 通过配置排序全局指定（`auth.order`）

@@ -7,7 +7,7 @@ read_when:
 ---
 # 桥接协议（旧版节点传输）
 
-桥接协议是一种**旧版**节点传输协议（TCP JSONL）。新节点客户端应改用统一的网关 WebSocket 协议。
+桥接协议是一种**旧版**节点传输协议（TCP JSONL）。新的节点客户端应改用统一的网关 WebSocket 协议。
 
 如果您正在构建运营商或节点客户端，请使用[网关协议](/gateway/protocol)。
 
@@ -16,7 +16,7 @@ read_when:
 ## 为什么同时存在这两种协议
 
 - **安全边界**：桥接协议暴露的是一个小型白名单，而非完整的网关 API 表面。
-- **配对与节点身份**：节点准入由网关负责，并与每个节点的令牌绑定。
+- **配对与节点身份**：节点准入由网关负责，并与每个节点的专用令牌绑定。
 - **发现用户体验**：节点可通过局域网上的 Bonjour 发现网关，或直接通过 Tailnet 进行连接。
 - **环回 WS**：完整的 WS 控制平面默认保留在本地，除非通过 SSH 隧道进行转发。
 
@@ -45,9 +45,9 @@ read_when:
 
 网关 → 客户端：
 - `invoke` / `invoke-res`：节点命令(`canvas.*`, `camera.*`, `screen.record`,
-`location.get`, `sms.send`)
+  `location.get`, `sms.send`)
 - `event`：已订阅会话的聊天更新
-- `ping` / `pong`：保活消息
+- `ping` / `pong`：保持活动
 
 旧版白名单强制实施功能位于`src/gateway/server-bridge.ts`中（已移除）。
 
@@ -59,7 +59,7 @@ read_when:
 - `sessionKey`（必填）：接收系统事件的代理会话。
 - `runId`：用于分组的唯一执行 ID。
 - `command`：原始或格式化的命令字符串。
-- `exitCode`, `timedOut`, `success`, `output`：完成详情（仅在任务完成时提供）。
+- `exitCode`, `timedOut`, `success`, `output`：完成详情（仅在已完成时提供）。
 - `reason`：拒绝原因（仅在被拒绝时提供）。
 
 ## Tailnet 使用

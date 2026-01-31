@@ -56,12 +56,12 @@ openclaw devices revoke --device <deviceId> --role node
 ## 常见选项
 
 - `--url <url>`: 网关 WebSocket URL（配置时默认为 `gateway.remote.url`）。
-- `--token <token>`: 网关令牌（如果需要）。
+- `--token <token>`: 网关令牌（如需）。
 - `--password <password>`: 网关密码（密码认证）。
 - `--timeout <ms>`: RPC 超时。
 - `--json`: JSON 输出（建议用于脚本）。
 
 ## 注意事项
 
-- 令牌轮换会返回一个新的令牌（敏感信息），请将其视为机密。
+- 令牌轮换会返回一个新的令牌（敏感信息），请将其视为密钥对待。
 - 这些命令需要 `operator.pairing`（或 `operator.admin`）作用域。

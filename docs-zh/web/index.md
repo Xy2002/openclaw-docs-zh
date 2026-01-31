@@ -92,12 +92,12 @@ openclaw gateway
 - 非环回绑定仍然 **需要** 共享令牌/密码（`gateway.auth` 或环境变量）。
 - 向导默认会生成网关令牌（即使在环回地址上）。
 - UI 发送 `connect.params.auth.token` 或 `connect.params.auth.password`。
-- 使用 Serve 时，Tailscale 身份标头可以在 `gateway.auth.allowTailscale` 为 `true` 时满足身份验证要求（无需令牌/密码）。设置 `gateway.auth.allowTailscale: false` 以强制使用显式凭据。请参阅 [Tailscale](/gateway/tailscale) 和 [安全](/gateway/security)。
+- 使用 Serve 时，Tailscale 身份标头可在 `gateway.auth.allowTailscale` 为 `true` 时满足身份验证要求（无需令牌/密码）。设置 `gateway.auth.allowTailscale: false` 以强制使用显式凭据。请参阅 [Tailscale](/gateway/tailscale) 和 [安全](/gateway/security)。
 - `gateway.tailscale.mode: "funnel"` 需要 `gateway.auth.mode: "password"`（共享密码）。
 
 ## 构建 UI
 
-网关从 `dist/control-ui` 提供静态文件。构建它们的方法如下：
+网关从 `dist/control-ui` 提供静态文件。可通过以下方式构建这些文件：
 
 ```bash
 pnpm ui:build # auto-installs UI deps on first run

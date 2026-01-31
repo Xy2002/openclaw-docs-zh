@@ -99,7 +99,7 @@ openclaw doctor
 
 使用 `/model <alias-or-id>@<profileId>` 可以为当前会话固定特定提供商的凭据（示例配置文件 ID：`anthropic:default`、`anthropic:work`）。
 
-使用 `/model`（或 `/model list`）可获得紧凑的选择器；使用 `/model status` 可查看完整视图（候选人列表、下一个身份验证配置文件，以及在已配置时显示提供商端点详情）。
+使用 `/model`（或 `/model list`）可获得紧凑的选择器；使用 `/model status` 可获得完整视图（包括候选凭据、下一个身份验证配置文件，以及已配置时的提供商端点详情）。
 
 ### 按代理（CLI 覆盖）
 
@@ -125,9 +125,9 @@ openclaw models status
 
 ### 令牌即将过期或已过期
 
-运行 `openclaw models status` 以确认哪个配置文件即将过期。如果该配置文件丢失，请重新运行 `claude setup-token` 并再次粘贴令牌。
+运行 `openclaw models status` 以确认哪个配置文件即将过期。如果该配置文件丢失，请重新运行 `claude setup-token`，并再次粘贴令牌。
 
-## 要求
+## 必需条件
 
-- Claude Max 或 Pro 订阅（适用于 `claude setup-token`）
+- Claude Max 或 Pro 订阅（用于 `claude setup-token`）
 - 已安装 Claude Code CLI（`claude` 命令可用）

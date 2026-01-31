@@ -31,14 +31,14 @@ OpenClaw 的网关可以提供与 OpenResponses 兼容的 `POST /v1/responses` �
 
 无需自定义标头：将代理 ID 编码到 OpenResponses 的 `model` 字段中：
 
-- `model: "openclaw:<agentId>"`（示例：`"openclaw:main"`、`"openclaw:beta"`）
+- `model: "openclaw:<agentId>"`（示例：`"openclaw:main"`, `"openclaw:beta"`）
 - `model: "agent:<agentId>"`（别名）
 
 或者通过标头指定特定的 OpenClaw 代理：
 
 - `x-openclaw-agent-id: <agentId>`（默认：`main`）
 
-高级用法：
+高级选项：
 - `x-openclaw-session-key: <sessionKey>` 可以完全控制会话路由。
 
 ## 启用端点
@@ -103,7 +103,7 @@ OpenClaw 的网关可以提供与 OpenResponses 兼容的 `POST /v1/responses` �
 ## 项目（输入）
 
 ### `message`
-角色：`system`、`developer`、`user`、`assistant`。
+角色：`system`, `developer`, `user`, `assistant`。
 
 - `system` 和 `developer` 会被附加到系统提示中。
 - 最近的 `user` 或 `function_call_output` 项目将成为“当前消息”。
@@ -123,7 +123,7 @@ OpenClaw 的网关可以提供与 OpenResponses 兼容的 `POST /v1/responses` �
 
 ### `reasoning` 和 `item_reference`
 
-为保持模式兼容性而接受，但在构建提示时会被忽略。
+为保持模式兼容性而接受，但在构建提示时被忽略。
 
 ## 工具（客户端函数工具）
 
@@ -142,7 +142,8 @@ OpenClaw 的网关可以提供与 OpenResponses 兼容的 `POST /v1/responses` �
 }
 ```
 
-当前允许的 MIME 类型：`image/jpeg`、`image/png`、`image/gif`、`image/webp`。当前最大尺寸：10MB。
+当前允许的 MIME 类型：`image/jpeg`, `image/png`, `image/gif`, `image/webp`。
+当前最大尺寸：10MB。
 
 ## 文件（`input_file`）
 
@@ -160,21 +161,20 @@ OpenClaw 的网关可以提供与 OpenResponses 兼容的 `POST /v1/responses` �
 }
 ```
 
-当前允许的 MIME 类型：`text/plain`、`text/markdown`、`text/html`、`text/csv`、
-`application/json`、`application/pdf`。
+当前允许的 MIME 类型：`text/plain`, `text/markdown`, `text/html`, `text/csv`,
+`application/json`, `application/pdf`。
 
 当前最大尺寸：5MB。
 
 当前行为：
-- 文件内容会被解码并添加到**系统提示**中，而不是用户消息中，
-  因此它只是一次性的（不会保存在会话历史中）。
-- PDF 文件会被解析以提取文本。如果发现的文本很少，则前几页会被光栅化成图像并传递给模型。
+- 文件内容会被解码并添加到**系统提示**中，而不是用户消息中，因此它是短暂的（不会保存在会话历史中）。
+- PDF 文件会被解析以提取文本。如果发现的文本很少，前几页会被光栅化为图像并传递给模型。
 
-PDF 解析使用对 Node 友好的 `pdfjs-dist` 旧版构建（无需 worker）。现代的 PDF.js 构建需要浏览器 worker/DOM 全局变量，因此在网关中未使用。
+PDF 解析使用对 Node 友好的 `pdfjs-dist` 旧版构建（无 worker）。现代的 PDF.js 构建需要浏览器 worker/DOM 全局变量，因此在网关中未使用。
 
 URL 获取的默认设置：
-- `files.allowUrl`：`true`
-- `images.allowUrl`：`true`
+- `files.allowUrl`: `true`
+- `images.allowUrl`: `true`
 - 请求受到保护（DNS 解析、私有 IP 阻止、重定向限制、超时）。
 
 ## 文件和图片限制（配置）
@@ -217,17 +217,17 @@ URL 获取的默认设置：
 ```
 
 省略时的默认值：
-- `maxBodyBytes`：20MB
-- `files.maxBytes`：5MB
-- `files.maxChars`：20万
-- `files.maxRedirects`：3
-- `files.timeoutMs`：10秒
-- `files.pdf.maxPages`：4
-- `files.pdf.maxPixels`：4,000,000
-- `files.pdf.minTextChars`：200
-- `images.maxBytes`：10MB
-- `images.maxRedirects`：3
-- `images.timeoutMs`：10秒
+- `maxBodyBytes`: 20MB
+- `files.maxBytes`: 5MB
+- `files.maxChars`: 20万
+- `files.maxRedirects`: 3
+- `files.timeoutMs`: 10秒
+- `files.pdf.maxPages`: 4
+- `files.pdf.maxPixels`: 4,000,000
+- `files.pdf.minTextChars`: 200
+- `images.maxBytes`: 10MB
+- `images.maxRedirects`: 3
+- `images.timeoutMs`: 10秒
 
 ## 流式传输（SSE）
 
@@ -268,7 +268,7 @@ URL 获取的默认设置：
 
 ## 示例
 
-非流式：
+非流式传输：
 ```bash
 curl -sS http://127.0.0.1:18789/v1/responses \
   -H 'Authorization: Bearer YOUR_TOKEN' \
@@ -280,7 +280,7 @@ curl -sS http://127.0.0.1:18789/v1/responses \
   }'
 ```
 
-流式：
+流式传输：
 ```bash
 curl -N http://127.0.0.1:18789/v1/responses \
   -H 'Authorization: Bearer YOUR_TOKEN' \

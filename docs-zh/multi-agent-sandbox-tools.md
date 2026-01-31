@@ -27,9 +27,9 @@ status: active
 ~/.openclaw/agents/<agentId>/agent/auth-profiles.json
 ```
 
-智能体之间**不共享**凭据。请勿在不同智能体之间重复使用 `agentDir`。如果需要共享凭据，请将 `auth-profiles.json` 复制到另一智能体的 `agentDir` 中。
+智能体之间**不共享**凭据。请勿在不同智能体之间重复使用 `agentDir`。如果需要共享凭据，请将 `auth-profiles.json` 复制到另一个智能体的 `agentDir` 中。
 
-有关沙盒在运行时的行为，请参阅 [沙盒](/gateway/sandboxing)。有关调试“为什么被阻止？”的问题，请参阅 [沙盒 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated) 和 `openclaw sandbox explain`。
+有关沙盒在运行时的行为，请参阅 [沙盒化](/gateway/sandboxing)。要调试“为什么此操作被阻止？”，请参阅 [沙盒 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated)和 `openclaw sandbox explain`。
 
 ---
 
@@ -134,7 +134,7 @@ status: active
 
 **结果：**
 - 默认智能体获得编码工具
-- `support` 智能体仅用于消息传递（并包含 Slack 工具）
+- `support` 智能体仅用于消息传递（并配备 Slack 工具）
 
 ---
 
@@ -178,7 +178,7 @@ status: active
 
 ## 配置优先级
 
-当同时存在全局 (`agents.defaults.*`) 和智能体特定 (`agents.list[].*`) 配置时：
+当同时存在全局（`agents.defaults.*`）和智能体特定（`agents.list[].*`）配置时：
 
 ### 沙盒配置
 智能体特定设置优先于全局设置：
@@ -206,7 +206,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 7. **沙盒工具政策**（`tools.sandbox.tools` 或 `agents.list[].tools.sandbox.tools`）
 8. **子智能体工具政策**（`tools.subagents.tools`，如适用）
 
-每一层都可以进一步限制工具，但不能恢复先前层次中被拒绝的工具。如果设置了 `agents.list[].tools.sandbox.tools`，它将取代该智能体的 `tools.sandbox.tools`。如果设置了 `agents.list[].tools.profile`，它将覆盖该智能体的 `tools.profile`。提供商工具密钥接受 `provider`（例如 `google-antigravity`）或 `provider/model`（例如 `openai/gpt-5.2`）。
+每一层都可以进一步限制工具，但不能恢复之前层级已拒绝的工具。如果设置了 `agents.list[].tools.sandbox.tools`，它将取代该智能体的 `tools.sandbox.tools`。如果设置了 `agents.list[].tools.profile`，它将覆盖该智能体的 `tools.profile`。提供商工具密钥可接受 `provider`（如 `google-antigravity`）或 `provider/model`（如 `openai/gpt-5.2`）。
 
 ### 工具组（简写）
 
@@ -227,9 +227,9 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 
 缓解模式：
 - 对不受信任的智能体拒绝 `exec`（`agents.list[].tools.deny: ["exec"]`）
-- 避免对路由到受限智能体的发送者进行白名单处理
-- 如果只想进行沙盒执行，则在全球范围内禁用提升权限（`tools.elevated.enabled: false`）
-- 对敏感配置的智能体禁用提升权限（`agents.list[].tools.elevated.enabled: false`）
+- 避免对路由到受限智能体的发送者进行白名单设置
+- 如果您只希望沙盒执行，请在全球范围内禁用提升权限（`tools.elevated.enabled: false`）
+- 对敏感配置的智能体，逐个禁用提升权限（`agents.list[].tools.elevated.enabled: false`）
 
 ---
 
@@ -313,7 +313,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 
 ## 常见陷阱：“非主”
 
-`agents.defaults.sandbox.mode: "non-main"` 基于 `session.mainKey`（默认 `"main"`），而不是智能体 ID。群组/频道会话始终拥有自己的密钥，因此被视为非主，并将被置于沙盒中。如果您希望某个智能体永远不被置于沙盒中，请设置 `agents.list[].sandbox.mode: "off"`。
+`agents.defaults.sandbox.mode: "non-main"` 基于 `session.mainKey`（默认 `"main"`），而非智能体 ID。群组/频道会话始终拥有自己的密钥，因此被视为非主，并将被置于沙盒中。如果您希望某个智能体永远不被置于沙盒中，请设置 `agents.list[].sandbox.mode: "off"`。
 
 ---
 
@@ -333,7 +333,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 
 3. **测试工具限制：**
    - 发送一条需要受限工具的消息
-   - 验证智能体无法使用被拒绝的工具
+   - 确认智能体无法使用被拒绝的工具
 
 4. **监控日志：**
    ```exec
@@ -349,9 +349,9 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 - 智能体特定配置优先，因此请设置 `agents.list[].sandbox.mode: "all"`
 
 ### 尽管有拒绝列表，工具仍然可用
-- 检查工具过滤顺序：全局 → 智能体 → 沙盒 → 子智能体
+- 检查工具过滤顺序：全球 → 智能体 → 沙盒 → 子智能体
 - 每一层只能进一步限制，不能恢复
-- 通过日志进行验证：`[tools] filtering tools for agent:${agentId}`
+- 通过日志进行验证： `[tools] filtering tools for agent:${agentId}`
 
 ### 每个智能体的容器未隔离
 - 在智能体特定的沙盒配置中设置 `scope: "agent"`

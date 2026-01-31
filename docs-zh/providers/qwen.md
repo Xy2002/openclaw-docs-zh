@@ -6,7 +6,7 @@ read_when:
 ---
 # Qwen
 
-Qwen为Qwen Coder和Qwen Vision模型提供免费级OAuth流程
+Qwen为Qwen Coder和Qwen Vision模型提供免费层级的OAuth流程
 （每日2,000次请求，受Qwen速率限制约束）。
 
 ## 启用插件
@@ -37,7 +37,7 @@ openclaw models auth login --provider qwen-portal --set-default
 openclaw models set qwen-portal/coder-model
 ```
 
-## 复用Qwen Code CLI登录
+## 复用Qwen Code CLI登录信息
 
 如果您已使用Qwen Code CLI登录，OpenClaw在加载身份验证存储时会从
 `~/.qwen/oauth_creds.json`同步凭据。您仍然需要一个`models.providers.qwen-portal`条目（可使用上述登录命令创建）。
@@ -45,6 +45,6 @@ openclaw models set qwen-portal/coder-model
 ## 注意事项
 
 - 令牌会自动刷新；如果刷新失败或访问被撤销，请重新运行登录命令。
-- 默认基础URL：`https://portal.qwen.ai/v1`（如果Qwen提供了不同的端点，可用
+- 默认基础URL：`https://portal.qwen.ai/v1`（如果Qwen提供不同的端点，可用
   `models.providers.qwen-portal.baseUrl`进行覆盖）。
-- 有关提供商范围内的规则，请参阅[模型提供商](/concepts/model-providers)。
+- 有关适用于所有提供商的规则，请参阅[模型提供商](/concepts/model-providers)。

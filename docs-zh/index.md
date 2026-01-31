@@ -19,7 +19,7 @@ read_when:
 <p align="center">
   <strong>适用于任何操作系统的 AI 代理（Pi）的 WhatsApp/Telegram/Discord/iMessage 网关。</strong><br />
   插件支持 Mattermost 等更多功能。
-  发送一条消息，即可在口袋中获得代理的响应。</p>
+  发送一条消息，即可在口袋里获得代理的响应。</p>
 
 <p align="center">
   <a href="__URL_75__>GitHub</a> ·
@@ -28,13 +28,13 @@ read_when:
   <a href="/start/openclaw">OpenClaw 助手设置</a>
 </p>
 
-OpenClaw 将 WhatsApp（通过 WhatsApp Web / Baileys）、Telegram（Bot API / grammY）、Discord（Bot API / channels.discord.js）和 iMessage（imsg CLI）桥接到像 [Pi](https://github.com/badlogic/pi-mono) 这样的编码代理。插件还增加了对 Mattermost（Bot API + WebSocket）等的支持。
+OpenClaw 将 WhatsApp（通过 WhatsApp Web / Baileys）、Telegram（Bot API / grammY）、Discord（Bot API / channels.discord.js）和 iMessage（imsg CLI）与像 [Pi](https://github.com/badlogic/pi-mono) 这样的编码代理连接起来。插件还支持 Mattermost（Bot API + WebSocket）等更多功能。
 OpenClaw 同时也为 OpenClaw 助手提供支持。
 
 ## 从这里开始
 
-- **全新安装：** [入门](/start/getting-started)
-- **引导式设置（推荐）：** [向导](/start/wizard) (`openclaw onboard`)
+- **全新安装：** [入门指南](/start/getting-started)
+- **推荐的引导式设置：** [向导](/start/wizard) (`openclaw onboard`)
 - **打开仪表板（本地网关）：** http://127.0.0.1:18789/（或 http://localhost:18789/）
 
 如果网关在同一台计算机上运行，该链接会立即打开浏览器控制界面。如果失败，请先启动网关：`openclaw gateway`。
@@ -42,8 +42,8 @@ OpenClaw 同时也为 OpenClaw 助手提供支持。
 ## 仪表板（浏览器控制界面）
 
 仪表板是用于聊天、配置、节点、会话等功能的浏览器控制界面。
-本地默认： http://127.0.0.1:18789/
-远程访问： [Web 表面](/web) 和 [Tailscale](/gateway/tailscale)
+本地默认地址：http://127.0.0.1:18789/
+远程访问：[Web 表面](/web) 和 [Tailscale](/gateway/tailscale)
 
 <p align="center">
   <img src="whatsapp-openclaw.jpg" alt="OpenClaw" width="420" />
@@ -74,7 +74,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 
 ## 网络模型
 
-- **每台主机一个网关（推荐）：** 它是唯一可以拥有 WhatsApp Web 会话的进程。如果你需要救援机器人或严格隔离，可以使用隔离的配置文件和端口运行多个网关；请参阅 [多网关](/gateway/multiple-gateways)。
+- **每台主机一个网关（推荐）：** 它是唯一可以拥有 WhatsApp Web 会话的进程。如果你需要救援机器人或严格的隔离，可以使用隔离的配置文件和端口运行多个网关；请参阅 [多网关](/gateway/multiple-gateways)。
 - **环回优先：** 网关 WS 默认为 `ws://127.0.0.1:18789`。
   - 向导现在默认生成网关令牌（即使是环回）。
   - 对于 Tailnet 访问，运行 `openclaw gateway --bind tailnet --token ...`（非环回绑定需要令牌）。
@@ -85,27 +85,27 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 ## 功能（高层次）
 
 - 📱 **WhatsApp 集成** — 使用 Baileys 处理 WhatsApp Web 协议
-- ✈️ **Telegram 机器人** — 通过 grammY 实现私信和群组功能
-- 🎮 **Discord 机器人** — 通过 channels.discord.js 实现私信和公会频道功能
-- 🧩 **Mattermost 机器人（插件）** — 机器人令牌 + WebSocket 事件
+- ✈️ **Telegram 机器人** — 通过 grammY 处理私信和群组
+- 🎮 **Discord 机器人** — 通过 channels.discord.js 处理私信和公会频道
+- 🧩 **Mattermost 机器人（插件）** — 使用机器人令牌和 WebSocket 事件
 - 💬 **iMessage** — 本地 imsg CLI 集成（macOS）
-- 🤖 **代理桥接** — Pi（RPC 模式）与工具流传输
-- ⏱️ **流媒体 + 分块传输** — 块级流媒体 + Telegram 草稿流媒体细节 ([/concepts/streaming](/concepts/streaming))
-- 🧠 **多代理路由** — 将提供商账户/同行路由到隔离的代理（工作空间 + 每个代理的会话）
+- 🤖 **代理桥接** — Pi（RPC 模式）配合工具流传输
+- ⏱️ **流式传输 + 分块** — 块级流式传输 + Telegram 草稿流式传输细节（[/concepts/streaming](/concepts/streaming)）
+- 🧠 **多代理路由** — 将提供商账户/对等方路由到隔离的代理（工作空间 + 每个代理的会话）
 - 🔐 **订阅认证** — Anthropic（Claude Pro/Max）+ OpenAI（ChatGPT/Codex）通过 OAuth
-- 💬 **会话** — 直接聊天合并为共享的 `main`（默认）；群组是隔离的
-- 👥 **群聊支持** — 默认基于提及；所有者可以切换 `/activation always|mention`
+- 💬 **会话** — 直接聊天合并为共享的 `main`（默认）；群组则被隔离
+- 👥 **群聊支持** — 默认基于提及；所有者可切换 `/activation always|mention`
 - 📎 **媒体支持** — 可发送和接收图片、音频、文档
 - 🎤 **语音备忘录** — 可选转录钩子
 - 🖥️ **WebChat + macOS 应用程序** — 本地 UI + 菜单栏伴侣，用于运维和语音唤醒
-- 📱 **iOS 节点** — 作为节点配对，并暴露 Canvas 表面
-- 📱 **Android 节点** — 作为节点配对，并暴露 Canvas + Chat + Camera
+- 📱 **iOS 节点** — 既作为节点配对，又暴露 Canvas 表面
+- 📱 **Android 节点** — 既作为节点配对，又暴露 Canvas + Chat + Camera
 
 注意：旧版 Claude/Codex/Gemini/Opencode 路径已被移除；Pi 是唯一的编码代理路径。
 
 ## 快速入门
 
-运行时要求： **Node ≥ 22**。
+运行时要求：**Node ≥ 22**。
 
 ```bash
 # Recommended: global install (npm/pnpm)
@@ -156,7 +156,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 配置位于 `~/.openclaw/openclaw.json`。
 
 - 如果你 **什么都不做**，OpenClaw 会以 RPC 模式使用捆绑的 Pi 二进制文件，并为每个发送者提供独立的会话。
-- 如果你想锁定配置，可以从 `channels.whatsapp.allowFrom` 开始，并针对群组设置提及规则。
+- 如果你想锁定配置，可以从 `channels.whatsapp.allowFrom` 开始，对于群组则使用提及规则。
 
 示例：
 
@@ -192,7 +192,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
   - [网关运行手册](/gateway)
   - [节点（iOS/Android）](/nodes)
   - [Web 表面（控制界面）](/web)
-  - [发现 + 运输](/gateway/discovery)
+  - [发现 + 交通工具](/gateway/discovery)
   - [远程访问](/gateway/remote)
 - 提供商和用户体验：
   - [WebChat](/web/webchat)
@@ -219,7 +219,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
   - [安全](/gateway/security)
   - [故障排除](/gateway/troubleshooting)
 
-## 名称的由来
+## 名称由来
 
 **OpenClaw = CLAW + TARDIS** — 因为每只太空龙虾都需要一台时空机器。
 

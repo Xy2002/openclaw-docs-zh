@@ -7,23 +7,23 @@ read_when:
 # 日志记录（macOS）
 
 ## 轮转诊断文件日志（调试面板）
-OpenClaw 通过 swift-log 将 macOS 应用的日志路由出去（默认使用统一日志），并在需要持久化捕获时，可将本地轮转文件日志写入磁盘。
+OpenClaw 通过 swift-log 将 macOS 应用的日志路由出去（默认使用统一日志），并在需要持久化捕获时，可将本地的轮转文件日志写入磁盘。
 
 - 详细程度：**调试面板 → 日志 → 应用日志 → 详细程度**
 - 启用：**调试面板 → 日志 → 应用日志 → “写入轮转诊断日志（JSONL）”**
-- 位置：`~/Library/Logs/OpenClaw/diagnostics.jsonl`（自动轮转；旧文件会附加 `.1`、`.2` 等后缀）。
+- 位置：`~/Library/Logs/OpenClaw/diagnostics.jsonl`（自动轮转；旧文件会附加 `.1`、`.2` 等后缀）
 - 清除：**调试面板 → 日志 → 应用日志 → “清除”**
 
 注意事项：
-- 默认情况下此功能处于关闭状态。仅在主动进行调试时启用。
+- 此功能**默认关闭**。仅在主动调试时启用。
 - 请将该文件视为敏感信息；未经审查，请勿共享。
 
 ## macOS 统一日志中的隐私数据
 
-除非某个子系统明确选择加入 `privacy -off`，否则统一日志会屏蔽大多数负载。根据 Peter 在 2025 年关于 macOS 日志隐私“猫腻”的文章 __LINK_10__，这一行为由位于 `/Library/Preferences/Logging/Subsystems/` 中的一个 plist 控制，其键为子系统名称。只有新生成的日志条目才会应用此标记，因此请在重现问题之前先启用它。
+除非子系统选择加入 `privacy -off`，否则统一日志会屏蔽大多数负载。根据 Peter 在 2025 年关于 macOS [日志隐私乱象](https://steipete.me/posts/2025/logging-privacy-shenanigans) 的文章所述，这一行为由位于 `/Library/Preferences/Logging/Subsystems/` 中的一个 plist 控制，其键为子系统名称。只有新生成的日志条目才会应用此标记，因此请在重现问题之前先启用它。
 
 ## 为 OpenClaw 启用 `bot.molt`
-- 首先将 plist 写入一个临时文件，然后以 root 权限以原子方式安装：
+- 先将 plist 写入一个临时文件，然后以 root 权限原子性地安装：
 
 ```bash
 cat <<'EOF' >/tmp/bot.molt.plist

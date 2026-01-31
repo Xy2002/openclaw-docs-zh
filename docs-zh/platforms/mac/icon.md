@@ -17,10 +17,10 @@ read_when:
 - 代理活动：在工作时段周围设置 `AppStateStore.shared.setWorking(true/false)`（已在 WebChat 代理调用中实现）。确保工作时段尽可能短，并在 `defer` 块中重置状态，以避免动画卡住。
 
 形状与尺寸
-- 基础图标在 `CritterIconRenderer.makeIcon(blink:legWiggle:earWiggle:earScale:earHoles:)` 中绘制。
-- 耳朵缩放默认为 `1.0`；语音增强会设置 `earScale=1.9` 并切换 `earHoles=true`，但不改变整体框架大小（18×18 pt 模板图像渲染到 36×36 px 的 Retina 备用存储中）。
-- 小幅度抖动的腿部摆动幅度最高可达约 1.0，并伴有轻微的水平晃动；它会叠加到现有的空闲抖动之上。
+- 基础图标使用 `CritterIconRenderer.makeIcon(blink:legWiggle:earWiggle:earScale:earHoles:)` 绘制。
+- 耳朵缩放默认为 `1.0`；语音增强会设置 `earScale=1.9` 并切换 `earHoles=true`，而不会改变整体框架大小（18×18 pt 模板图像会被渲染到 36×36 px 的 Retina 后备存储中）。
+- 小幅度抖动的腿部摆动幅度最高可达约 1.0，并伴有轻微的水平晃动；它会与现有的空闲抖动叠加。
 
 行为注意事项
 - 不对外暴露用于控制耳朵或工作状态的 CLI 或代理开关；所有切换逻辑应保留在应用内部信号中，以避免意外触发。
-- TTL 时间应设置得较短（<10 秒），以便在任务挂起时图标能迅速恢复到初始状态。
+- 设置较短的 TTL（<10 秒），以便在任务挂起时图标能迅速恢复到初始状态。

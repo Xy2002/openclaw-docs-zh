@@ -16,18 +16,18 @@ read_when:
 - 如果模型使用 **API 密钥认证**，`/status` 还会显示上一条回复的**预估费用**。
 
 **每条消息的费用页脚**
-- `/usage full` 会在每条回复后附加一个用量页脚，其中包含**预估费用**（仅适用于 API 密钥）。
+- `/usage full` 会在每条回复中附加一个用量页脚，其中包含**预估费用**（仅适用于 API 密钥）。
 - `/usage tokens` 仅显示 token 数；OAuth 流程会隐藏美元费用。
 
 **CLI 用量窗口（提供商配额）**
-- `openclaw status --usage` 和 `openclaw channels list` 显示提供商的**用量窗口**
+- `openclaw status --usage` 和 `openclaw channels list` 显示提供商的**用量窗口**，
   （配额快照，而非每条消息的费用）。
 
 有关详细信息和示例，请参阅 [Token 使用与费用](/token-use)。
 
 ## 密钥的发现方式
 
-OpenClaw 可以从以下来源获取凭据：
+OpenClaw 可从以下来源获取凭据：
 - **认证配置文件**（按代理存储，位于 `auth-profiles.json` 中）。
 - **环境变量**（例如 `OPENAI_API_KEY`、`BRAVE_API_KEY`、`FIRECRAWL_API_KEY`）。
 - **配置**（`models.providers.*.apiKey`、`tools.web.search.*`、`tools.web.fetch.firecrawl.*`、
@@ -39,10 +39,10 @@ OpenClaw 可以从以下来源获取凭据：
 ### 1) 核心模型响应（聊天 + 工具）
 每次回复或工具调用都会使用**当前模型提供商**（OpenAI、Anthropic 等）。这是使用量和费用的主要来源。
 
-有关定价配置的详细信息，请参阅 [模型](/providers/models)；有关显示方式的详细信息，请参阅 [Token 使用与费用](/token-use)。
+有关定价配置，请参阅 [模型](/providers/models)；有关显示信息，请参阅 [Token 使用与费用](/token-use)。
 
 ### 2) 媒体理解（音频/图像/视频）
-在回复运行之前，传入的媒体可以先进行摘要或转录。这会使用模型/提供商的 API。
+在回复执行之前，传入的媒体可以先进行摘要或转录。这会使用模型/提供商的 API。
 
 - 音频：OpenAI / Groq / Deepgram（当存在密钥时**自动启用**）。
 - 图像：OpenAI / Anthropic / Google。
@@ -54,9 +54,9 @@ OpenClaw 可以从以下来源获取凭据：
 当为远程提供商配置时，语义内存搜索会使用**嵌入 API**：
 - `memorySearch.provider = "openai"` → OpenAI 嵌入
 - `memorySearch.provider = "gemini"` → Gemini 嵌入
-- 如果本地嵌入失败，则可选择回退到 OpenAI。
+- 如果本地嵌入失败，可选择回退到 OpenAI
 
-您可以通过 `memorySearch.provider = "local"` 将其保留在本地（不产生 API 使用费用）。
+您可以通过 `memorySearch.provider = "local"` 将其保留在本地（无需使用 API）。
 
 有关更多信息，请参阅 [内存](/concepts/memory)。
 
@@ -69,7 +69,7 @@ OpenClaw 可以从以下来源获取凭据：
 **Brave 免费层级（相当慷慨）：**
 - **每月 2,000 次请求**
 - **每秒 1 次请求**
-- **需要信用卡验证**（除非您升级，否则不会收费）
+- **需提供信用卡以进行验证**（除非升级，否则不会收费）
 
 有关更多信息，请参阅 [网络工具](/tools/web)。
 
@@ -77,7 +77,7 @@ OpenClaw 可以从以下来源获取凭据：
 当存在 API 密钥时，`web_fetch` 可以调用**Firecrawl**：
 - `FIRECRAWL_API_KEY` 或 `tools.web.fetch.firecrawl.apiKey`
 
-如果未配置 Firecrawl，该工具将回退到直接抓取 + 可读性分析（不产生付费 API 费用）。
+如果未配置 Firecrawl，该工具将回退到直接抓取 + 可读性分析（不涉及付费 API）。
 
 有关更多信息，请参阅 [网络工具](/tools/web)。
 
@@ -94,17 +94,17 @@ OpenClaw 可以从以下来源获取凭据：
 有关更多信息，请参阅 [会话管理 + 整理](/reference/session-management-compaction)。
 
 ### 8) 模型扫描/探测
-`openclaw models scan` 可以探测 OpenRouter 模型，并在启用探测时使用 `OPENROUTER_API_KEY`。
+当启用探测功能时，`openclaw models scan` 可以探测 OpenRouter 模型，并使用 `OPENROUTER_API_KEY`。
 
 有关更多信息，请参阅 [模型 CLI](/cli/models)。
 
 ### 9) Talk（语音）
-在已配置的情况下，Talk 模式可以调用**ElevenLabs**：
+当已配置时，Talk 模式可以调用**ElevenLabs**：
 - `ELEVENLABS_API_KEY` 或 `talk.apiKey`
 
 有关更多信息，请参阅 [Talk 模式](/nodes/talk)。
 
 ### 10) 技能（第三方 API）
-技能可以将 `apiKey` 存储在 `skills.entries.<name>.apiKey` 中。如果技能使用该密钥调用外部 API，则可能根据技能所属的提供商产生费用。
+技能可以将 `apiKey` 存储在 `skills.entries.<name>.apiKey` 中。如果技能使用该密钥调用外部 API，则可能根据技能提供商的规定产生费用。
 
 有关更多信息，请参阅 [技能](/tools/skills)。

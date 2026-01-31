@@ -19,7 +19,7 @@ read_when:
 ## 模式
 将 `agents.defaults.typingMode` 设置为以下之一：
 - `never` — 永不显示键入指示器。
-- `instant` — 在**模型循环一启动**就立即开始键入，即使运行随后仅返回静默回复标记。
+- `instant` — 在**模型循环一启动**就立即开始键入，即使后续运行仅返回静默回复标记。
 - `thinking` — 在**第一个推理增量**时开始键入（需要为运行启用 `reasoningLevel: "stream"`）。
 - `message` — 在**第一个非静默文本增量**时开始键入（忽略 `NO_REPLY` 静默标记）。
 
@@ -47,7 +47,7 @@ read_when:
 ```
 
 ## 注意事项
-- `message` 模式不会为仅包含静默回复的消息显示键入（例如用于抑制输出的 `NO_REPLY`
+- `message` 模式不会为仅包含静默回复的情况显示键入（例如用于抑制输出的 `NO_REPLY`
   标记）。
 - `thinking` 仅在运行流式传输推理时才会触发（`reasoningLevel: "stream"`）。
   如果模型不发出推理增量，键入将不会启动。

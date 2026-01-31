@@ -104,12 +104,12 @@ OpenProse 支持多种状态后端：
 
 注意事项：
 - sqlite/postgres 属于可选功能，目前仍处于实验阶段。
-- PostgreSQL 凭证会记录在子代理日志中；请使用专用且权限最小化的数据库。
+- Postgres 凭证会记录在子代理日志中；请使用专用且权限最低的数据库。
 
 ## 远程程序
 
 `/prose run <handle/slug>` 解析为 `https://p.prose.md/<handle>/<slug>`。
-直接 URL 会按原样获取。这使用了 `web_fetch` 工具（或对于 POST 请求使用 `exec`）。
+直接 URL 按原样获取。这使用 `web_fetch` 工具（或对于 POST 请求使用 `exec`）。
 
 ## OpenClaw 运行时映射
 
@@ -125,6 +125,6 @@ OpenProse 程序映射到 OpenClaw 原语：
 
 ## 安全与审批
 
-请将 `.prose` 文件视为代码对待。在运行前务必进行审查。使用 OpenClaw 工具白名单和审批门控来控制副作用。
+请将 `.prose` 文件视为代码对待。在运行前进行审查。使用 OpenClaw 工具白名单和审批门控来控制副作用。
 
-如需实现确定性且经审批的工作流，请参考 [Lobster](/tools/lobster)。
+如需确定性且经审批的工作流，请参考 [Lobster](/tools/lobster)。

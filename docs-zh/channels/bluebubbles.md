@@ -61,11 +61,11 @@ openclaw channels add bluebubbles --http-url http://192.168.1.100:1234 --passwor
 ## 访问控制（DM + 群组）
 DM：
 - 默认：`channels.bluebubbles.dmPolicy = "pairing"`。
-- 未知发件人会收到配对码；消息在批准前会被忽略（配对码在一小时内过期）。
+- 未知发件人会收到配对码；消息在批准前会被忽略（配对码 1 小时后失效）。
 - 可通过以下方式批准：
   - `openclaw pairing list bluebubbles`
   - `openclaw pairing approve bluebubbles <CODE>`
-- 配对是默认的令牌交换方式。详情：[Pairing](/start/pairing)
+- 配对是默认的令牌交换方式。详情请参见 [Pairing](/start/pairing)
 
 群组：
 - `channels.bluebubbles.groupPolicy = open | allowlist | disabled`（默认：`allowlist`）。
@@ -74,8 +74,8 @@ DM：
 ### 提及门控（群组）
 BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 - 使用 `agents.list[].groupChat.mentionPatterns`（或 `messages.groupChat.mentionPatterns`）检测提及。
-- 当 `requireMention` 为某个群组启用时，代理仅在被提及时才会响应。
-- 来自授权发件人的控制命令会绕过提及门控。
+- 当为某个群组启用 `requireMention` 时，代理仅在被提及时才会响应。
+- 来自授权发件人的控制命令可绕过提及门控。
 
 每群组配置：
 ```json5
@@ -143,7 +143,7 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 - **edit**：编辑已发送的消息（`messageId`、`text`）
 - **unsend**：撤回已发送的消息（`messageId`）
 - **reply**：回复特定消息（`messageId`、`text`、`to`）
-- **sendWithEffect**：使用 iMessage 效果发送消息（`text`、`to`、`effectId`）
+- **sendWithEffect**：使用 iMessage 效果发送（`text`、`to`、`effectId`）
 - **renameGroup**：重命名群聊（`chatGuid`、`displayName`）
 - **setGroupIcon**：设置群聊的图标/照片（`chatGuid`、`media`）——在 macOS 26 Tahoe 上表现不稳定（API 可能返回成功，但图标不会同步）。
 - **addParticipant**：将某人添加到群组（`chatGuid`、`address`）
@@ -153,20 +153,20 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
   - 语音备忘录：设置 `asVoice: true`，使用 **MP3** 或 **CAF** 音频作为 iMessage 语音消息发送。BlueBubbles 在发送语音备忘录时会将 MP3 转换为 CAF。
 
 ### 消息 ID（短 ID vs 全 ID）
-为了节省 token，OpenClaw 可能会显示*短*消息 ID（例如 `1`、`2`）。
+为了节省 token，OpenClaw 可能会呈现 *短* 消息 ID（例如 `1`、`2`）。
 - `MessageSid` / `ReplyToId` 可以是短 ID。
 - `MessageSidFull` / `ReplyToIdFull` 包含提供商的完整 ID。
 - 短 ID 存储在内存中；在重启或缓存淘汰时可能会失效。
 - 操作接受短 ID 或全 ID，但如果短 ID 不再可用，则会报错。
 
-对于持久自动化和存储，请使用全 ID：
+对于持久自动化和存储，请使用完整 ID：
 - 模板：`{{MessageSidFull}}`、`{{ReplyToIdFull}}`
 - 上下文：入站负载中的 `MessageSidFull` / `ReplyToIdFull`
 
 有关模板变量，请参阅 [Configuration](/gateway/configuration)。
 
 ## 分块流式传输
-控制是否将回复作为单条消息发送，或以分块形式流式传输：
+控制回复是以单条消息发送还是分块流式传输：
 ```json5
 {
   channels: {
@@ -197,9 +197,9 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 - `channels.bluebubbles.groups`：每群组配置（`requireMention` 等）。
 - `channels.bluebubbles.sendReadReceipts`：发送已读回执（默认：`true`）。
 - `channels.bluebubbles.blockStreaming`：启用分块流式传输（默认：`true`）。
-- `channels.bluebubbles.textChunkLimit`：出站分块大小（以字符计，默认：4000）。
+- `channels.bluebubbles.textChunkLimit`：出站分块大小（以字符为单位，默认：4000）。
 - `channels.bluebubbles.chunkMode`：`length`（默认）仅在超过 `textChunkLimit` 时才进行拆分；`newline` 在长度拆分之前先按空行（段落边界）拆分。
-- `channels.bluebubbles.mediaMaxMb`：入站媒体上限（以 MB 计，默认：8）。
+- `channels.bluebubbles.mediaMaxMb`：入站媒体上限（以 MB 为单位，默认：8）。
 - `channels.bluebubbles.historyLimit`：上下文中的最大群组消息数（0 表示禁用）。
 - `channels.bluebubbles.dmHistoryLimit`：DM 历史记录限制。
 - `channels.bluebubbles.actions`：启用或禁用特定操作。
@@ -220,16 +220,16 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 ## 安全性
 - Webhook 请求通过比较 `guid`/`password` 查询参数或标头与 `channels.bluebubbles.password` 来进行身份验证。来自 `localhost` 的请求也被接受。
 - 请保密 API 密码和 Webhook 端点（将其视为凭据）。
-- Localhost 信任意味着同一主机上的反向代理可能会无意中绕过密码。如果您代理网关，请在代理处要求身份验证，并配置 `gateway.trustedProxies`。请参阅 [Gateway security](/gateway/security#reverse-proxy-configuration)。
+- 本地主机信任意味着同一主机上的反向代理可能会无意中绕过密码。如果您代理网关，请在代理处要求身份验证，并配置 `gateway.trustedProxies`。请参阅 [Gateway security](/gateway/security#reverse-proxy-configuration)。
 - 如果将 BlueBubbles 服务器暴露在 LAN 之外，请启用 HTTPS 并配置防火墙规则。
 
 ## 故障排除
 - 如果打字/已读事件停止工作，请检查 BlueBubbles Webhook 日志，并确保网关路径与 `channels.bluebubbles.webhookPath` 匹配。
-- 配对码在一小时内过期；请使用 `openclaw pairing list bluebubbles` 和 `openclaw pairing approve bluebubbles <code>`。
+- 配对码在一小时内失效；请使用 `openclaw pairing list bluebubbles` 和 `openclaw pairing approve bluebubbles <code>`。
 - 反应需要 BlueBubbles 私有 API（`POST /api/v1/message/react`）；请确保服务器版本公开了该 API。
 - 编辑/撤回发送需要 macOS 13+ 和兼容的 BlueBubbles 服务器版本。在 macOS 26（Tahoe）上，由于私有 API 的变化，编辑功能目前存在缺陷。
 - 在 macOS 26（Tahoe）上，群组图标更新可能不稳定：API 可能返回成功，但新图标不会同步。
 - OpenClaw 会根据 BlueBubbles 服务器的 macOS 版本自动隐藏已知存在问题的行动。如果在 macOS 26（Tahoe）上编辑功能仍然显示，请使用 `channels.bluebubbles.actions.edit=false` 手动禁用它。
-- 如需状态/健康信息：`openclaw status --all` 或 `openclaw status --deep`。
+- 如需状态/健康信息，请使用 `openclaw status --all` 或 `openclaw status --deep`。
 
 有关通用通道工作流程的参考，请参阅 [Channels](/channels) 和 [Plugins](/plugins) 指南。

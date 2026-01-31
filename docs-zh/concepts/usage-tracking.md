@@ -12,11 +12,11 @@ read_when:
 
 ## 使用情况的展示位置
 - 聊天中的`/status`：富含表情符号的状态卡片，显示会话令牌及预估费用（仅适用于 API 密钥）。在可用时，将显示**当前模型提供商**的用量信息。
-- 聊天中的`/usage off|tokens|full`：每条回复下方的用量页脚（OAuth 仅显示令牌）。
+- 聊天中的`/usage off|tokens|full`：每条回复下方的用量页脚（OAuth 只显示令牌）。
 - 聊天中的`/usage cost`：基于 OpenClaw 会话日志聚合的本地费用摘要。
-- CLI：`openclaw status --usage` 打印完整的按提供商细分的用量明细。
-- CLI：`openclaw channels list` 打印相同的用量快照，并附带提供商配置（可使用 `--no-usage` 跳过配置输出）。
-- macOS 菜单栏：上下文菜单下的“使用情况”部分（仅在可用时显示）。
+- CLI：`openclaw status --usage` 输出完整的按提供商细分的用量明细。
+- CLI：`openclaw channels list` 输出相同的用量快照，并附带提供商配置（可使用 `--no-usage` 跳过配置输出）。
+- macOS 菜单栏：“上下文”下的“用量”部分（仅在可用时显示）。
 
 ## 支持的提供商与凭证
 - **Anthropic（Claude）**：认证配置文件中的 OAuth 令牌。

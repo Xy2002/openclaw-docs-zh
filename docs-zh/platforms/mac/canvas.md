@@ -28,12 +28,12 @@ Canvas 面板通过一种 **自定义 URL 方案** 提供这些文件：
 
 ## 面板行为
 
-- 无边框、可调整大小的面板，固定在菜单栏附近（或鼠标光标附近）。
+- 无边框、可调整大小的面板，固定在菜单栏附近（或鼠标光标处）。
 - 每个会话都会记住面板的大小和位置。
 - 当本地 Canvas 文件发生更改时，面板会自动重新加载。
 - 同一时间仅显示一个 Canvas 面板（必要时切换会话）。
 
-您可以在“设置”中关闭 Canvas 功能：**允许 Canvas**。当 Canvas 被禁用时，Canvas 节点命令将返回 `CANVAS_DISABLED`。
+您可以在“设置”中关闭 Canvas 功能：**允许 Canvas**。当 Canvas 被禁用时，canvas 节点命令将返回 `CANVAS_DISABLED`。
 
 ## 代理 API 接口
 
@@ -41,7 +41,7 @@ Canvas 通过 **Gateway WebSocket** 公开，因此代理可以：
 
 - 显示或隐藏面板
 - 导航到某个路径或 URL
-- 执行 JavaScript
+- 执行 JavaScript 代码
 - 捕获快照图像
 
 CLI 示例：
@@ -54,12 +54,12 @@ openclaw nodes canvas snapshot --node <id>
 ```
 
 注意事项：
-- `canvas.navigate` 接受 **本地 Canvas 路径**，`http(s)` 接受 URL，`file://` 也接受 URL。
+- `canvas.navigate` 接受 **本地 Canvas 路径**，`http(s)` 接受 URL，`file://` 同样接受 URL。
 - 如果您传递 `"/"`，Canvas 将显示本地脚手架或 `index.html`。
 
 ## A2UI 在 Canvas 中
 
-A2UI 由 Gateway Canvas 主机托管，并在 Canvas 面板中渲染。当 Gateway 宣布提供 Canvas 主机时，macOS 应用会在首次打开时自动导航到 A2UI 主机页面。
+A2UI 由 Gateway Canvas 主机托管，并在 Canvas 面板中渲染。当 Gateway 宣布一个 Canvas 主机时，macOS 应用会在首次打开时自动导航到 A2UI 主机页面。
 
 默认 A2UI 主机 URL：
 
@@ -69,14 +69,14 @@ http://<gateway-host>:18793/__openclaw__/a2ui/
 
 ### A2UI 命令（v0.8）
 
-Canvas 目前接受 **A2UI v0.8** 服务器到客户端消息：
+Canvas 目前支持 **A2UI v0.8** 服务器到客户端的消息：
 
 - `beginRendering`
 - `surfaceUpdate`
 - `dataModelUpdate`
 - `deleteSurface`
 
-不支持 `createSurface`（v0.9）。
+`createSurface`（v0.9）目前不受支持。
 
 CLI 示例：
 

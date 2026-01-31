@@ -16,7 +16,7 @@ OpenClaw 可以在隔离的 Docker 容器中运行代理，以提高安全性。
 
 ### `openclaw sandbox explain`
 
-检查**有效**的沙盒模式/范围/工作区访问权限、沙盒工具策略以及提升的门控（包含修复配置密钥路径）。
+检查**生效的**沙盒模式/范围/工作区访问权限、沙盒工具策略以及提升的门控（包含修复配置密钥路径）。
 
 ```bash
 openclaw sandbox explain
@@ -113,11 +113,11 @@ openclaw sandbox recreate --agent alfred
 
 **解决方案：** 使用 `openclaw sandbox recreate` 强制移除旧容器。当下次需要时，它们将自动使用当前设置重新创建。
 
-提示：相比手动 `docker rm`，更推荐使用 `openclaw sandbox recreate`。它使用网关的容器命名规则，并在范围/会话密钥发生变化时避免出现不匹配的情况。
+提示：相比手动操作 `docker rm`，更推荐使用 `openclaw sandbox recreate`。它使用网关的容器命名规则，并在范围/会话密钥发生变化时避免出现不匹配。
 
 ## 配置
 
-沙盒设置位于 `~/.openclaw/openclaw.json` 下的 `agents.defaults.sandbox` 中（每代理覆盖设置位于 `agents.list[].sandbox` 中）：
+沙盒设置位于 `~/.openclaw/openclaw.json` 下的 `agents.defaults.sandbox` 中（每个代理的覆盖设置位于 `agents.list[].sandbox` 中）：
 
 ```jsonc
 {

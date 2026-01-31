@@ -6,9 +6,9 @@ read_when:
 ---
 # apply_patch 工具
 
-使用结构化补丁格式应用文件更改。这非常适合多文件或多块编辑，其中单个 `edit` 调用会很脆弱。
+使用结构化补丁格式应用文件更改。这非常适合多文件或多块编辑，其中单个 `edit` 调用会非常脆弱。
 
-该工具接受一个 `input` 字符串，用于封装一个或多个文件操作：
+该工具接受一个 `input` 字符串，其中包含一个或多个文件操作：
 
 ```
 *** Begin Patch
@@ -31,7 +31,7 @@ read_when:
 
 - 路径是相对于工作区根目录解析的。
 - 在 `*** Update File:` 块中使用 `*** Move to:` 来重命名文件。
-- 必要时，`*** End of File` 标记仅在 EOF 处插入的内容。
+- 必要时，`*** End of File` 标记仅在文件末尾插入内容。
 - 实验性功能，默认禁用。可通过 `tools.exec.applyPatch.enabled` 启用。
 - 仅适用于 OpenAI（包括 OpenAI Codex）。可选择通过 `tools.exec.applyPatch.allowModels` 按模型进行限制。
 - 配置仅位于 `tools.exec` 下。

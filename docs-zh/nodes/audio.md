@@ -20,14 +20,14 @@ read_when:
 ## 自动检测（默认）
 如果您 **未配置模型** 且 `tools.media.audio.enabled` 未设置为 `false`，OpenClaw会按以下顺序进行自动检测，并在找到首个可用选项时停止：
 
-1) **本地 CLI**（若已安装）
-   - `sherpa-onnx-offline`（需要 `SHERPA_ONNX_MODEL_DIR`，包含编码器、解码器、连接器和标记）
-   - `whisper-cli`（来自 `whisper-cpp`；使用 `WHISPER_CPP_MODEL` 或捆绑的小型模型）
-   - `whisper`（Python CLI；可自动下载模型）
+1) **本地 CLI**（如果已安装）
+   - `sherpa-onnx-offline`（需要 `SHERPA_ONNX_MODEL_DIR`，包含编码器/解码器/连接器/标记）
+   - `whisper-cli`（来自 `whisper-cpp`；使用 `WHISPER_CPP_MODEL` 或捆绑的微型模型）
+   - `whisper`（Python CLI；自动下载模型）
 2) **Gemini CLI** (`gemini`) 使用 `read_many_files`
 3) **提供商密钥**（OpenAI → Groq → Deepgram → Google）
 
-要禁用自动检测，请设置 `tools.media.audio.enabled: false`。要自定义检测顺序，请设置 `tools.media.audio.models`。注意：二进制检测在 macOS/Linux/Windows 上属于尽力而为；请确保 CLI 的路径位于 `PATH` 中（我们会扩展 `~`），或者通过完整命令路径显式指定 CLI 模型。
+要禁用自动检测，请设置 `tools.media.audio.enabled: false`。要自定义检测顺序，请设置 `tools.media.audio.models`。注意：二进制检测在 macOS/Linux/Windows 上属于尽力而为；请确保 CLI 的路径位于 `PATH` 上（我们会扩展 `~`），或者通过完整的命令路径显式指定 CLI 模型。
 
 ## 配置示例
 
@@ -92,17 +92,17 @@ read_when:
 
 ## 注意事项与限制
 - 提供商身份验证遵循标准模型身份验证顺序（身份验证配置文件、环境变量、`models.providers.*.apiKey`）。
-- 当使用 `provider: "deepgram"` 时，Deepgram 会优先使用 `DEEPGRAM_API_KEY`。
+- 当使用 `provider: "deepgram"` 时，Deepgram 会采用 `DEEPGRAM_API_KEY`。
 - Deepgram 设置详情：[Deepgram（音频转录）](/providers/deepgram)。
 - 音频提供商可通过 `tools.media.audio` 覆盖 `baseUrl`、`headers` 和 `providerOptions`。
-- 默认大小上限为 20MB（`tools.media.audio.maxBytes`）。超过此大小的音频将被跳过，并尝试下一个模型条目。
-- 音频的默认 `maxChars` 设置为 **未设置**（完整转录）。如需裁剪输出，可设置 `tools.media.audio.maxChars` 或针对每个条目的 `maxChars`。
+- 默认大小上限为 20MB（`tools.media.audio.maxBytes`）。超过此大小的音频将被跳过，并尝试下一个条目。
+- 音频的默认 `maxChars` 设置为 **未设置**（完整转录）。若需裁剪输出，可设置 `tools.media.audio.maxChars` 或针对每个条目的 `maxChars`。
 - OpenAI 的自动默认值为 `gpt-4o-mini-transcribe`；如需更高精度，可设置 `model: "gpt-4o-transcribe"`。
 - 使用 `tools.media.audio.attachments` 可处理多条语音笔记（`mode: "all"` + `maxAttachments`）。
 - 转录文本可作为 `{{Transcript}}` 提供给模板。
 - CLI 标准输出有上限（5MB）；请保持 CLI 输出简洁。
 
-## 需要注意的问题
+## 易错点
 - 作用域规则采用“首次匹配优先”原则。`chatType` 会被规范化为 `direct`、`group` 或 `room`。
 - 确保您的 CLI 以退出代码 0 结束，并输出纯文本；JSON 数据需要通过 `jq -r .text` 进行处理。
-- 请设置合理的超时时间（`timeoutSeconds`，默认 60 秒），以避免阻塞回复队列。
+- 请设置合理的超时时间（`timeoutSeconds`，默认 60 秒），以免阻塞回复队列。

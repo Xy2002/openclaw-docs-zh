@@ -25,13 +25,13 @@ read_when:
 - **配置：** `~/.openclaw/openclaw.json`（JSON/JSON5 风格）
 - **工作区：** `~/.openclaw/workspace`（技能、提示、记忆；将其设为私有 Git 仓库）
 
-一次性完成初始化：
+只需初始化一次：
 
 ```bash
 openclaw setup
 ```
 
-在该仓库内，使用本地 CLI 入口：
+在此仓库内，使用本地 CLI 入口：
 
 ```bash
 openclaw setup
@@ -56,12 +56,12 @@ openclaw channels login
 openclaw health
 ```
 
-如果你的构建中没有引导功能：
+如果你的构建中未提供引导功能：
 - 先运行 `openclaw setup`，再运行 `openclaw channels login`，然后手动启动 Gateway（`openclaw gateway`）。
 
 ## 前沿工作流（在终端中运行 Gateway）
 
-目标：在 TypeScript Gateway 上开发，获得热重载功能，并保持 macOS 应用界面连接。
+目标：开发 TypeScript Gateway，获得热重载，并保持 macOS 应用界面连接。
 
 ### 0) （可选）也从源码运行 macOS 应用
 
@@ -78,7 +78,7 @@ pnpm install
 pnpm gateway:watch
 ```
 
-`gateway:watch` 以监听模式运行 Gateway，并在 TypeScript 文件更改时自动重新加载。
+`gateway:watch` 以监听模式运行 Gateway，并在 TypeScript 发生变化时自动重新加载。
 
 ### 2) 将 macOS 应用指向你正在运行的 Gateway
 
@@ -89,7 +89,7 @@ pnpm gateway:watch
 
 ### 3) 验证
 
-- 应用内的 Gateway 状态应显示为 **“正在使用现有 Gateway …”**
+- 应用内的 Gateway 状态应显示 **“正在使用现有 Gateway …”**
 - 或通过 CLI：
 
 ```bash
@@ -97,7 +97,7 @@ openclaw health
 ```
 
 ### 常见陷阱
-- **端口错误：** Gateway 的 WebSocket 默认端口为 `ws://127.0.0.1:18789`；请确保应用和 CLI 使用相同的端口。
+- **端口错误：** Gateway WS 默认使用 `ws://127.0.0.1:18789`；请确保应用和 CLI 使用同一端口。
 - **状态存储位置：**
   - 凭证： `~/.openclaw/credentials/`
   - 会话： `~/.openclaw/agents/<agentId>/sessions/`
@@ -119,17 +119,17 @@ openclaw health
 ## 更新（避免破坏现有配置）
 
 - 保留 `~/.openclaw/workspace` 和 `~/.openclaw/` 作为“你的内容”；不要将个人提示或配置放入 `openclaw` 仓库。
-- 更新源码：`git pull` + `pnpm install`（当 lockfile 发生变化时）+ 继续使用 `pnpm gateway:watch`。
+- 更新源码：`git pull` + `pnpm install`（当 lockfile 更改时）+ 继续使用 `pnpm gateway:watch`。
 
 ## Linux（systemd 用户服务）
 
-Linux 安装使用 systemd 的 **用户** 服务。默认情况下，systemd 会在用户注销或空闲时停止用户服务，这会导致 Gateway 被终止。引导流程会尝试为你启用 linger 功能（可能需要输入 sudo）。如果 linger 仍未启用，请运行：
+Linux 安装使用 systemd 的 **用户** 服务。默认情况下，systemd 在用户注销或空闲时停止用户服务，这会导致 Gateway 被终止。引导流程会尝试为你启用 linger 功能（可能需要输入 sudo）。如果 linger 仍未启用，请运行：
 
 ```bash
 sudo loginctl enable-linger $USER
 ```
 
-对于始终在线或多用户服务器，可以考虑使用 **系统** 服务而非用户服务（无需 linger）。有关 systemd 相关注意事项，请参阅 [Gateway 运行手册](/gateway)。
+对于始终在线或多用户服务器，可考虑使用 **系统** 服务而非用户服务（无需 linger）。有关 systemd 相关注意事项，请参阅 [Gateway 运行手册](/gateway)。
 
 ## 相关文档
 

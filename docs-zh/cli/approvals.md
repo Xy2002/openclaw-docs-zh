@@ -46,4 +46,4 @@ openclaw approvals allowlist remove "~/Projects/**/bin/rg"
 - `--node` 使用与 `openclaw nodes` 相同的解析器（ID、名称、IP 或 ID 前缀）。
 - `--agent` 默认为 `"*"`，适用于所有代理。
 - 节点主机必须通告 `system.execApprovals.get/set`（macOS 应用程序或无头节点主机）。
-- 审批文件按主机存储在 `~/.openclaw/exec-approvals.json`。
+- 审批文件按主机存储在 `~/.openclaw/exec-approvals.json` 中。

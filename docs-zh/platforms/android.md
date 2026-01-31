@@ -15,18 +15,18 @@ read_when:
   - 协议：[网关协议](/gateway/protocol)（节点 + 控制平面）。
 
 ## 系统控制
-系统控制（launchd/systemd）位于网关主机上。详情请参见 [网关](/gateway)。
+系统控制（launchd/systemd）位于网关主机上。详情请参阅 [网关](/gateway)。
 
 ## 连接操作手册
 
 Android 节点应用 ⇄ (mDNS/NSD + WebSocket) ⇄ **网关**
 
-Android 直接连接到网关 WebSocket（默认 `ws://<host>:18789`），并使用由网关管理的配对机制。
+Android 直接连接到网关的 WebSocket（默认为 `ws://<host>:18789`），并使用由网关管理的配对机制。
 
 ### 先决条件
 
 - 您可以在“主”机器上运行网关。
-- Android 设备/模拟器可以访问网关 WebSocket：
+- Android 设备/模拟器能够访问网关 WebSocket：
   - 与网关处于同一局域网，并使用 mDNS/NSD，**或**
   - 通过 Tailscale 尾网使用广域 Bonjour / 单播 DNS-SD（见下文），**或**
   - 手动指定网关主机和端口（备用方案）
@@ -43,12 +43,12 @@ openclaw gateway --port 18789 --verbose
 
 对于仅使用尾网的设置（推荐用于维也纳 ⇄ 伦敦），将网关绑定到尾网 IP：
 
-- 在网关主机上的 `~/.openclaw/openclaw.json` 中设置 `gateway.bind: "tailnet"`。
+- 在网关主机上将 `gateway.bind: "tailnet"` 设置到 `~/.openclaw/openclaw.json` 中。
 - 重启网关或 macOS 菜单栏应用。
 
 ### 2) 验证发现（可选）
 
-从网关机器执行：
+从网关机器：
 
 ```bash
 dns-sd -B _openclaw-gw._tcp local.
@@ -71,12 +71,12 @@ Android 的 NSD/mDNS 发现无法跨网络工作。如果您的 Android 节点�
 
 - 应用通过**前台服务**（持续通知）保持与网关的连接。
 - 打开**设置**。
-- 在**已发现的网关**中选择您的网关并点击**连接**。
+- 在**已发现的网关**中，选择您的网关并点击**连接**。
 - 如果 mDNS 被阻止，请使用**高级 → 手动网关**（主机 + 端口）并点击**手动连接**。
 
 首次成功配对后，Android 在启动时会自动重新连接：
 - 如果启用了手动端点，则使用手动端点；否则，
-- 使用最近发现的网关（尽力而为）。
+- 使用上次发现的网关（尽力而为）。
 
 ### 4) 通过 CLI 批准配对
 
@@ -110,7 +110,7 @@ Android 节点的聊天界面使用网关的**主会话密钥**（`main`），�
 
 ### 7) 画布 + 相机
 
-#### 网关画布主机（推荐用于 Web 内容）
+#### 网关画布主机（推荐用于网页内容）
 
 如果您希望节点显示代理可在磁盘上编辑的真实 HTML/CSS/JS，请将节点指向网关画布主机。
 
@@ -118,21 +118,21 @@ Android 节点的聊天界面使用网关的**主会话密钥**（`main`），�
 
 1) 在网关主机上创建 `~/.openclaw/workspace/canvas/index.html`。
 
-2) 通过局域网将节点导航到该地址：
+2) 让节点通过局域网导航到该地址：
 
 ```bash
 openclaw nodes invoke --node "<Android Node>" --command canvas.navigate --params '{"url":"http://<gateway-hostname>.local:18793/__openclaw__/canvas/"}'
 ```
 
-尾网（可选）：如果两台设备都位于 Tailscale 尾网中，可使用 MagicDNS 名称或尾网 IP 替代 `.local`，例如 `http://<gateway-magicdns>:18793/__openclaw__/canvas/`。
+尾网（可选）：如果两台设备都位于 Tailscale 尾网中，可用 MagicDNS 名称或尾网 IP 替代 `.local`，例如 `http://<gateway-magicdns>:18793/__openclaw__/canvas/`。
 
 此服务器会将实时重载客户端注入 HTML，并在文件更改时自动重载。A2UI 主机位于 `http://<gateway-host>:18793/__openclaw__/a2ui/`。
 
 画布命令（仅限前台）：
-- `canvas.eval`、`canvas.snapshot`、`canvas.navigate`（使用 `{"url":""}` 或 `{"url":"/"}` 返回默认框架）。`canvas.snapshot` 返回 `{ format, base64 }`（默认 `format="jpeg"`）。
+- `canvas.eval`、`canvas.snapshot`、`canvas.navigate`（使用 `{"url":""}` 或 `{"url":"/"}` 可返回默认框架）。`canvas.snapshot` 返回 `{ format, base64 }`（默认 `format="jpeg"`）。
 - A2UI：`canvas.a2ui.push`、`canvas.a2ui.reset`（`canvas.a2ui.pushJSONL` 是旧别名）。
 
-相机命令（仅限前台；需权限）：
+相机命令（仅限前台；受权限限制）：
 - `camera.snap`（jpg）
 - `camera.clip`（mp4）
 

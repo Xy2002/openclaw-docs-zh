@@ -50,12 +50,12 @@ openclaw message poll --channel msteams --target conversation:19:abc@thread.tacv
 - `channel`（字符串，可选，默认为 `whatsapp`）
 - `idempotencyKey`（字符串，必填）
 
-## 各渠道差异
+## 渠道差异
 - WhatsApp：2–12 个选项，`maxSelections` 必须在选项数量范围内，忽略 `durationHours`。
-- Discord：2–10 个选项，`durationHours` 被限制在 1–768 小时之间（默认值为 24）。`maxSelections > 1` 启用多选；Discord 不支持严格限定选择数量。
-- MS Teams：由 OpenClaw 管理的自适应卡片投票。无原生投票 API；`durationHours` 被忽略。
+- Discord：2–10 个选项，`durationHours` 被限制在 1–768 小时之间（默认为 24）。`maxSelections > 1` 启用多选；Discord 不支持严格限定选项数量。
+- MS Teams：由 OpenClaw 管理的自适应卡片投票。没有原生投票 API；`durationHours` 被忽略。
 
 ## 代理工具（消息）
 使用 `message` 工具，并指定 `poll` 操作（`to`、`pollQuestion`、`pollOption`，以及可选的 `pollMulti`、`pollDurationHours`、`channel`）。
 
-注意：Discord 没有“精确选择 N 项”模式；`pollMulti` 映射到多选模式。Teams 投票以自适应卡片形式呈现，需要网关保持在线，以便在 `~/.openclaw/msteams-polls.json` 中记录投票结果。
+注意：Discord 没有“精确选择 N 个”的模式；`pollMulti` 映射到多选模式。Teams 投票以自适应卡片形式呈现，需要网关保持在线，以便在 `~/.openclaw/msteams-polls.json` 中记录投票结果。

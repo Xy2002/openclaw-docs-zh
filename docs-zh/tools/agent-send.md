@@ -20,10 +20,10 @@ __ INLINE_CODE_2__ 在无需入站聊天消息的情况下运行单个代理回�
 - 输出：
   - 默认：打印回复文本（加上 `MEDIA:<url>` 行）
   - `--json`：打印结构化负载 + 元数据
-- 可选通过 `--deliver` + `--channel` 将结果发送回渠道（目标格式与 `openclaw message --target` 匹配）。
+- 可选通过 `--deliver` + `--channel` 将结果发送回频道（目标格式与 `openclaw message --target` 匹配）。
 - 使用 `--reply-channel`/`--reply-to`/`--reply-account` 可在不更改会话的情况下覆盖交付。
 
-如果网关无法访问，CLI **将回退**到嵌入式的本地运行。
+如果网关无法访问，CLI 会**回退**到本地嵌入式运行。
 
 ## 示例
 
@@ -39,11 +39,11 @@ openclaw agent --agent ops --message "Generate report" --deliver --reply-channel
 ## 标志
 
 - `--local`：在本地运行（需要在您的 shell 中提供模型提供商 API 密钥）
-- `--deliver`：将回复发送到所选渠道
-- `--channel`：交付渠道（`whatsapp|telegram|discord|googlechat|slack|signal|imessage`，默认：`whatsapp`）
-- `--reply-to`：交付目标覆盖
-- `--reply-channel`：交付渠道覆盖
-- `--reply-account`：交付账户 ID 覆盖
+- `--deliver`：将回复发送到所选频道
+- `--channel`：交付频道（`whatsapp|telegram|discord|googlechat|slack|signal|imessage`，默认：`whatsapp`）
+- `--reply-to`：覆盖交付目标
+- `--reply-channel`：覆盖交付频道
+- `--reply-account`：覆盖交付账户 ID
 - `--thinking <off|minimal|low|medium|high|xhigh>`：持久化思考级别（仅适用于 GPT-5.2 和 Codex 模型）
 - `--verbose <on|full|off>`：持久化详细级别
 - `--timeout <seconds>`：覆盖代理超时时间

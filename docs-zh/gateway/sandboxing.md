@@ -8,9 +8,9 @@ status: active
 ---
 # 沙箱机制
 
-OpenClaw 可以在 **Docker 容器中运行工具**，从而缩小潜在的破坏范围。此功能是 **可选的**，由配置控制（`agents.defaults.sandbox` 或 `agents.list[].sandbox`）。如果未启用沙箱，工具将直接在宿主机上运行。网关始终运行在宿主机上；当沙箱功能启用时，工具执行将在隔离的沙箱环境中进行。
+OpenClaw 可以在 **Docker 容器中运行工具**，从而缩小潜在的破坏范围。此功能是 **可选的**，并通过配置进行控制（`agents.defaults.sandbox` 或 `agents.list[].sandbox`）。如果未启用沙箱，工具将直接在宿主机上运行。网关始终运行在宿主机上；当沙箱功能启用时，工具执行将在隔离的沙箱环境中进行。
 
-虽然这并非完美的安全边界，但在模型做出不当行为时，它能显著限制对文件系统和进程的访问权限。
+虽然这并非完美的安全边界，但在模型做出不当行为时，它能够显著限制对文件系统和进程的访问权限。
 
 ## 哪些内容会被沙箱化
 - 工具执行（`exec`、`read`、`write`、`edit`、`apply_patch`、`process` 等）。
@@ -23,7 +23,7 @@ OpenClaw 可以在 **Docker 容器中运行工具**，从而缩小潜在的破�
 - 网关进程本身。
 - 显式允许在宿主机上运行的任何工具（例如 `tools.elevated`）。
   - **提升权限的执行会在宿主机上运行，并绕过沙箱保护。**
-  - 如果沙箱未启用，`tools.elevated` 不会影响执行方式（因为工具本就运行在宿主机上）。请参阅 [提升模式](/tools/elevated)。
+  - 如果沙箱未启用，`tools.elevated` 不会影响执行方式（因为工具已在宿主机上运行）。请参阅 [提升模式](/tools/elevated)。
 
 ## 模式
 `agents.defaults.sandbox.mode` 控制 **何时** 使用沙箱：
@@ -45,13 +45,13 @@ OpenClaw 可以在 **Docker 容器中运行工具**，从而缩小潜在的破�
 - `"ro"`：以只读方式挂载代理工作区至 `/agent`（禁用 `write`/`edit`/`apply_patch`）。
 - `"rw"`：以读写方式挂载代理工作区至 `/workspace`。
 
-传入的媒体会被复制到活动的沙箱工作区（`media/inbound/*`）。技能说明：`read` 工具位于沙箱根目录下。借助 `workspaceAccess: "none"`，OpenClaw 会将符合条件的技能镜像到沙箱工作区（`.../skills`），以便这些技能可以被读取。通过 `"rw"`，工作区中的技能可以通过 `/workspace/skills` 被读取。
+传入的媒体会被复制到活动的沙箱工作区（`media/inbound/*`）。技能注意事项：`read` 工具位于沙箱根目录下。借助 `workspaceAccess: "none"`，OpenClaw 会将符合条件的技能镜像到沙箱工作区（`.../skills`），以便这些技能可以被读取。通过 `"rw"`，工作区中的技能可以通过 `/workspace/skills` 被读取。
 
 ## 自定义绑定挂载
 `agents.defaults.sandbox.docker.binds` 将额外的宿主机目录挂载到容器中。
 格式：`host:container:mode`（例如，`"/home/user/source:/source:rw"`）。
 
-全局和每代理的绑定会 **合并**，而不是替换。在 `scope: "shared"` 下，每代理的绑定会被忽略。
+全局绑定和代理特定绑定会 **合并**，而不是替换。在 `scope: "shared"` 的设置下，代理特定绑定将被忽略。
 
 示例（只读源 + Docker 套接字）：
 
@@ -84,19 +84,19 @@ OpenClaw 可以在 **Docker 容器中运行工具**，从而缩小潜在的破�
 
 安全注意事项：
 - 绑定绕过了沙箱文件系统：它们会以您设置的模式暴露宿主机路径（`:ro` 或 `:rw`）。
-- 敏感挂载（如 `docker.sock`、秘密、SSH 密钥）除非绝对必要，否则应避免使用 `:ro`。
-- 如果您只需要对工作区的只读访问权限，可结合 `workspaceAccess: "ro"` 使用；绑定模式保持独立。
+- 敏感挂载（如 `docker.sock`、秘密、SSH 密钥）除非绝对必要，否则应保持 `:ro`。
+- 如果您只需要对工作区的只读访问权限，可结合 `workspaceAccess: "ro"` 使用；绑定模式彼此独立。
 - 请参阅 [沙箱 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated)，了解绑定如何与工具策略和提升权限执行相互作用。
 
 ## 镜像与设置
 默认镜像：`openclaw-sandbox:bookworm-slim`
 
-只需构建一次：
+一次性构建：
 ```bash
 scripts/sandbox-setup.sh
 ```
 
-注意：默认镜像 **不包含 Node**。如果某个技能需要 Node（或其他运行时），您可以构建自定义镜像，或通过 `sandbox.docker.setupCommand` 进行安装（需要网络出口、可写根目录以及 root 用户）。
+注意：默认镜像 **不包含 Node**。如果某个技能需要 Node（或其他运行时），您可以构建自定义镜像，或通过 `sandbox.docker.setupCommand` 进行安装（需要网络出口、可写根目录和 root 用户）。
 
 沙箱浏览器镜像：
 ```bash
@@ -105,32 +105,32 @@ scripts/sandbox-browser-setup.sh
 
 默认情况下，沙箱容器 **无网络连接**。可通过 `agents.defaults.sandbox.docker.network` 进行覆盖。
 
-Docker 的安装以及容器化的网关可在此处找到：
+Docker 安装和容器化网关的相关信息请参见：
 [Docker](/install/docker)
 
 ## setupCommand（一次性容器设置）
-`setupCommand` 在沙箱容器创建后 **仅运行一次**（不是每次运行时都执行）。它通过 `sh -lc` 在容器内执行。
+`setupCommand` 在沙箱容器创建后 **仅运行一次**（不是每次运行时都会执行）。它通过 `sh -lc` 在容器内执行。
 
 路径：
 - 全局：`agents.defaults.sandbox.docker.setupCommand`
-- 每代理：`agents.list[].sandbox.docker.setupCommand`
+- 代理特定：`agents.list[].sandbox.docker.setupCommand`
 
 
 常见陷阱：
-- 默认的 `docker.network` 是 `"none"`（无出口），因此包安装会失败。
+- 默认 `docker.network` 是 `"none"`（无出口），因此软件包安装会失败。
 - `readOnlyRoot: true` 会阻止写操作；请设置 `readOnlyRoot: false` 或构建自定义镜像。
-- `user` 必须以 root 身份运行才能安装包（请勿省略 `user` 或设置 `user: "0:0"`）。
+- `user` 必须以 root 用户身份运行才能安装软件包（请勿省略 `user` 或设置 `user: "0:0"`）。
 - 沙箱执行 **不会继承** 宿主机的 `process.env`。对于技能 API 密钥，请使用 `agents.defaults.sandbox.docker.env`（或自定义镜像）。
 
-## 工具策略与逃生舱口
-在应用沙箱规则之前，工具允许/拒绝策略仍然适用。如果某项工具在全球或针对特定代理被拒绝，沙箱机制无法将其重新启用。
+## 工具策略与逃生通道
+在应用沙箱规则之前，工具允许/禁止策略仍然适用。如果某项工具在全球或代理层面被禁止，沙箱机制无法将其重新启用。
 
-`tools.elevated` 是一个显式的逃生舱口，可在宿主机上运行 `exec`。
-`/exec` 指令仅适用于授权发送者，并在会话级别持续生效；要彻底禁用，应使用工具策略中的拒绝指令（请参阅 [沙箱 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated))。
+`tools.elevated` 是一个显式的逃生通道，可在宿主机上运行 `exec`。
+`/exec` 指令仅适用于授权发送者，并在会话级别持续生效；要彻底禁用，应使用工具策略中的禁止指令（请参阅 [沙箱 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated))。
 
 调试：
 - 使用 `openclaw sandbox explain` 来检查有效的沙箱模式、工具策略以及修复配置键。
-- 请参阅 [沙箱 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated)，以理解“为什么这项被阻止？”的心理模型。务必保持严格的锁定状态。
+- 请参阅 [沙箱 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated)，以理解“为什么这项被阻止？”的心理模型。请务必保持严格的锁定状态。
 
 ## 多代理覆盖
 每个代理都可以覆盖沙箱和工具设置：
