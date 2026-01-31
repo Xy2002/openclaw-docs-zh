@@ -71,6 +71,15 @@ const SYNTAX_FIXES: SyntaxFix[] = [
         replacement: '$1小于 $2',
         description: 'Fixed standalone less-than comparison',
     },
+
+    // Fix closing HTML tags that should be on their own line for MDX
+    // e.g., "text</p>" -> "text\n</p>"
+    // This fixes MDX parsing errors where inline closing tags break paragraph parsing
+    {
+        pattern: /([^\n\s>])((?:<\/p>|<\/div>|<\/section>))/gi,
+        replacement: '$1\n$2',
+        description: 'Fixed closing HTML tag not on its own line',
+    },
 ];
 
 /**
