@@ -1,45 +1,51 @@
 ---
-summary: What the OpenClaw system prompt contains and how it is assembled
+summary: "What the OpenClaw system prompt contains and how it is assembled"
 read_when:
-  - 'Editing system prompt text, tools list, or time/heartbeat sections'
+  - Editing system prompt text, tools list, or time/heartbeat sections
   - Changing workspace bootstrap or skills injection behavior
 ---
-# 系统提示
+# System Prompt
 
-OpenClaw 为每次代理运行构建自定义系统提示。该提示由 OpenClaw 自主管理，不使用 p-coding-agent 的默认提示。
+OpenClaw builds a custom system prompt for every agent run. The prompt is **OpenClaw-owned** and does not use the p-coding-agent default prompt.
 
-提示由 OpenClaw 组装，并在每次代理运行时注入。
+The prompt is assembled by OpenClaw and injected into each agent run.
 
-## 结构
+## Structure
 
-提示经过精心设计，结构紧凑，采用固定板块：
+The prompt is intentionally compact and uses fixed sections:
 
-- **工具**：当前工具列表 + 简短描述。
-- **技能**（如有）：告知模型如何按需加载技能指令。
-- **OpenClaw 自我更新**：说明如何运行 `config.apply` 和 `update.run`。
-- **工作区**：工作目录 (`agents.defaults.workspace`)。
-- **文档**：OpenClaw 文档的本地路径（仓库或 npm 包），以及何时查阅这些文档。
-- **工作区文件（注入）**：表明下方包含引导文件。
-- **沙箱**（启用时）：指示沙箱运行时、沙箱路径，以及是否可进行提升权限执行。
-- **当前日期与时间**：用户本地时间、时区和时间格式。
-- **回复标签**：适用于支持提供商的可选回复标签语法。
-- **心跳**：心跳提示及确认行为。
-- **运行时**：主机、操作系统、Node.js 版本、模型、检测到的仓库根目录（如适用）、思考层级（一行）。
-- **推理**：当前可见性级别 + /reasoning 切换提示。
+- **Tooling**: current tool list + short descriptions.
+- **Skills** (when available): tells the model how to load skill instructions on demand.
+- **OpenClaw Self-Update**: how to run `config.apply` and `update.run`.
+- **Workspace**: working directory (`agents.defaults.workspace`).
+- **Documentation**: local path to OpenClaw docs (repo or npm package) and when to read them.
+- **Workspace Files (injected)**: indicates bootstrap files are included below.
+- **Sandbox** (when enabled): indicates sandboxed runtime, sandbox paths, and whether elevated exec is available.
+- **Current Date & Time**: user-local time, timezone, and time format.
+- **Reply Tags**: optional reply tag syntax for supported providers.
+- **Heartbeats**: heartbeat prompt and ack behavior.
+- **Runtime**: host, OS, node, model, repo root (when detected), thinking level (one line).
+- **Reasoning**: current visibility level + /reasoning toggle hint.
 
-## 提示模式
+## Prompt modes
 
-OpenClaw 可以为子代理渲染更小的系统提示。运行时为每次运行设置一个 `promptMode`（非面向用户的配置）：
+OpenClaw can render smaller system prompts for sub-agents. The runtime sets a
+`promptMode` for each run (not a user-facing config):
 
-- `full`（默认）：包含上述所有板块。
-- `minimal`：用于子代理；省略 **技能**、**记忆调用**、**OpenClaw 自我更新**、**模型别名**、**用户身份**、**回复标签**、**消息传递**、**静默回复** 和 **心跳**。工具、工作区、沙箱、已知的当前日期与时间、运行时以及注入的上下文仍可用。
-- `none`：仅返回基础身份行。
+- `full` (default): includes all sections above.
+- `minimal`: used for sub-agents; omits **Skills**, **Memory Recall**, **OpenClaw
+  Self-Update**, **Model Aliases**, **User Identity**, **Reply Tags**,
+  **Messaging**, **Silent Replies**, and **Heartbeats**. Tooling, Workspace,
+  Sandbox, Current Date & Time (when known), Runtime, and injected context stay
+  available.
+- `none`: returns only the base identity line.
 
-当 `promptMode=minimal` 时，额外注入的提示被标记为 **子代理上下文**，而非 **群聊上下文**。
+When `promptMode=minimal`, extra injected prompts are labeled **Subagent
+Context** instead of **Group Chat Context**.
 
-## 工作区引导注入
+## Workspace bootstrap injection
 
-引导文件经裁剪后附加到 **项目上下文** 下，使模型无需显式读取即可看到身份和配置文件上下文：
+Bootstrap files are trimmed and appended under **Project Context** so the model sees identity and profile context without needing explicit reads:
 
 - `AGENTS.md`
 - `SOUL.md`
@@ -47,30 +53,40 @@ OpenClaw 可以为子代理渲染更小的系统提示。运行时为每次运�
 - `IDENTITY.md`
 - `USER.md`
 - `HEARTBEAT.md`
-- `BOOTSTRAP.md`（仅适用于全新工作区）
+- `BOOTSTRAP.md` (only on brand-new workspaces)
 
-大文件通过标记进行截断。每文件最大大小由 `agents.defaults.bootstrapMaxChars` 控制（默认：20000）。缺失的文件会注入一个简短的缺失文件标记。
+Large files are truncated with a marker. The max per-file size is controlled by
+`agents.defaults.bootstrapMaxChars` (default: 20000). Missing files inject a
+short missing-file marker.
 
-内部钩子可通过 `agent:bootstrap` 拦截此步骤，以修改或替换注入的引导文件（例如用 `SOUL.md` 替换为备选角色）。
+Internal hooks can intercept this step via `agent:bootstrap` to mutate or replace
+the injected bootstrap files (for example swapping `SOUL.md` for an alternate persona).
 
-要检查每个注入文件的实际贡献量（原始 vs 注入、截断以及工具模式开销），可使用 `/context list` 或 `/context detail`。详情参见 [上下文](/concepts/context)。
+To inspect how much each injected file contributes (raw vs injected, truncation, plus tool schema overhead), use `/context list` or `/context detail`. See [Context](/concepts/context).
 
-## 时间处理
+## Time handling
 
-当已知用户时区时，系统提示包含专门的 **当前日期与时间** 板块。为保持提示缓存稳定，现在仅包含 **时区**（不含动态时钟或时间格式）。
+The system prompt includes a dedicated **Current Date & Time** section when the
+user timezone is known. To keep the prompt cache-stable, it now only includes
+the **time zone** (no dynamic clock or time format).
 
-当代理需要当前时间时，请使用 `session_status`；状态卡中包含时间戳行。
+Use `session_status` when the agent needs the current time; the status card
+includes a timestamp line.
 
-可通过以下配置进行设置：
+Configure with:
 
 - `agents.defaults.userTimezone`
-- `agents.defaults.timeFormat`（`auto` | `12` | `24`）
+- `agents.defaults.timeFormat` (`auto` | `12` | `24`)
 
-完整行为详情请参见 [日期与时间](/date-time)。
+See [Date & Time](/date-time) for full behavior details.
 
-## 技能
+## Skills
 
-当存在符合条件的技能时，OpenClaw 会注入一份精简的 **可用技能列表** (`formatSkillsForPrompt`)，其中包含每项技能的 **文件路径**。提示指示模型使用 `read` 在所列位置（工作区、托管或捆绑）加载 SKILL.md 文件。如果没有符合条件的技能，则省略技能板块。
+When eligible skills exist, OpenClaw injects a compact **available skills list**
+(`formatSkillsForPrompt`) that includes the **file path** for each skill. The
+prompt instructs the model to use `read` to load the SKILL.md at the listed
+location (workspace, managed, or bundled). If no skills are eligible, the
+Skills section is omitted.
 
 ```
 <available_skills>
@@ -82,8 +98,13 @@ OpenClaw 可以为子代理渲染更小的系统提示。运行时为每次运�
 </available_skills>
 ```
 
-此举在保持基础提示简洁的同时，仍可实现对特定技能的精准调用。
+This keeps the base prompt small while still enabling targeted skill usage.
 
-## 文档
+## Documentation
 
-当可用时，系统提示包含 **文档** 板块，指向本地 OpenClaw 文档目录（位于仓库工作区中的 `docs/` 或捆绑的 npm 包文档），并注明公开镜像、源代码仓库、社区 Discord 以及 ClawHub（https://clawhub.com），以方便发现技能。提示指示模型首先查阅本地文档，了解 OpenClaw 的行为、命令、配置或架构，并在可能的情况下自行运行 `openclaw status`（仅在无访问权限时才询问用户）。
+When available, the system prompt includes a **Documentation** section that points to the
+local OpenClaw docs directory (either `docs/` in the repo workspace or the bundled npm
+package docs) and also notes the public mirror, source repo, community Discord, and
+ClawHub (https://clawhub.com) for skills discovery. The prompt instructs the model to consult local docs first
+for OpenClaw behavior, commands, configuration, or architecture, and to run
+`openclaw status` itself when possible (asking the user only when it lacks access).

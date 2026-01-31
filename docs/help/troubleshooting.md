@@ -1,14 +1,15 @@
 ---
-summary: 'Troubleshooting hub: symptoms → checks → fixes'
+summary: "Troubleshooting hub: symptoms → checks → fixes"
 read_when:
   - You see an error and want the fix path
   - The installer says “success” but the CLI doesn’t work
 ---
-# 故障排除
 
-## 前60秒
+# Troubleshooting
 
-按顺序运行以下命令：
+## First 60 seconds
+
+Run these in order:
 
 ```bash
 openclaw status
@@ -18,77 +19,79 @@ openclaw logs --follow
 openclaw doctor
 ```
 
-如果网关可访问，则执行深度探测：
+If the gateway is reachable, deep probes:
 
 ```bash
 openclaw status --deep
 ```
 
-## 常见“出问题了”情形
+## Common “it broke” cases
 
 ### `openclaw: command not found`
 
-几乎总是与 Node/npm PATH 有关的问题。请从这里开始：
+Almost always a Node/npm PATH issue. Start here:
 
-- [安装（Node/npm PATH 是否正常）](/install#nodejs--npm-path-sanity)
+- [Install (Node/npm PATH sanity)](/install#nodejs--npm-path-sanity)
 
-### 安装程序失败（或需要完整日志）
+### Installer fails (or you need full logs)
 
-以详细模式重新运行安装程序，以查看完整的调用栈和 npm 输出：
+Re-run the installer in verbose mode to see the full trace and npm output:
 
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --verbose
 ```
 
-对于测试版安装：
+For beta installs:
 
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 ```
 
-您也可以设置 `OPENCLAW_VERBOSE=1`，而不是使用该标志。
+You can also set `OPENCLAW_VERBOSE=1` instead of the flag.
 
-### 网关显示“未授权”，无法连接，或不断重新连接
+### Gateway “unauthorized”, can’t connect, or keeps reconnecting
 
-- [网关故障排除](/gateway/troubleshooting)
-- [网关身份验证](/gateway/authentication)
+- [Gateway troubleshooting](/gateway/troubleshooting)
+- [Gateway authentication](/gateway/authentication)
 
-### 控制 UI 在 HTTP 上失败（需要设备身份）
+### Control UI fails on HTTP (device identity required)
 
-- [网关故障排除](/gateway/troubleshooting)
-- [控制 UI](/web/control-ui#insecure-http)
+- [Gateway troubleshooting](/gateway/troubleshooting)
+- [Control UI](/web/control-ui#insecure-http)
 
-### `docs.openclaw.ai` 显示 SSL 错误（Comcast/Xfinity）
+### `docs.openclaw.ai` shows an SSL error (Comcast/Xfinity)
 
-某些 Comcast/Xfinity 连接会通过 Xfinity 高级安全功能阻止 `docs.openclaw.ai`。请禁用高级安全功能，或将 `docs.openclaw.ai` 添加到白名单，然后重试。
+Some Comcast/Xfinity connections block `docs.openclaw.ai` via Xfinity Advanced Security.
+Disable Advanced Security or add `docs.openclaw.ai` to the allowlist, then retry.
 
-- Xfinity 高级安全帮助： https://www.xfinity.com/support/articles/using-xfinity-xfi-advanced-security
-- 快速检查：尝试使用移动热点或 VPN 来确认是否是 ISP 级别的过滤导致的问题
+- Xfinity Advanced Security help: https://www.xfinity.com/support/articles/using-xfinity-xfi-advanced-security
+- Quick sanity checks: try a mobile hotspot or VPN to confirm it’s ISP-level filtering
 
-### 服务显示正在运行，但 RPC 探测失败
+### Service says running, but RPC probe fails
 
-- [网关故障排除](/gateway/troubleshooting)
-- [后台进程/服务](/gateway/background-process)
+- [Gateway troubleshooting](/gateway/troubleshooting)
+- [Background process / service](/gateway/background-process)
 
-### 模型/认证失败（速率限制、计费、“所有模型均失败”）
+### Model/auth failures (rate limit, billing, “all models failed”)
 
-- [模型](/cli/models)
-- [OAuth / 认证概念](/concepts/oauth)
+- [Models](/cli/models)
+- [OAuth / auth concepts](/concepts/oauth)
 
-### `/model` 显示 `model not allowed`
+### `/model` says `model not allowed`
 
-这通常意味着 `agents.defaults.models` 已配置为白名单。当白名单不为空时，只能选择这些提供商/模型密钥。
+This usually means `agents.defaults.models` is configured as an allowlist. When it’s non-empty,
+only those provider/model keys can be selected.
 
-- 检查白名单： `openclaw config get agents.defaults.models`
-- 添加您想要的模型（或清空白名单），然后重试 `/model`
-- 使用 `/models` 浏览允许的提供商/模型
+- Check the allowlist: `openclaw config get agents.defaults.models`
+- Add the model you want (or clear the allowlist) and retry `/model`
+- Use `/models` to browse the allowed providers/models
 
-### 提交问题时
+### When filing an issue
 
-粘贴一份安全报告：
+Paste a safe report:
 
 ```bash
 openclaw status --all
 ```
 
-如果可能，请附上来自 `openclaw logs --follow` 的相关日志尾部。
+If you can, include the relevant log tail from `openclaw logs --follow`.

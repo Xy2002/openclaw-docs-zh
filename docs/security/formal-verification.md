@@ -3,37 +3,40 @@ title: Formal Verification (Security Models)
 summary: Machine-checked security models for OpenClaw’s highest-risk paths.
 permalink: /security/formal-verification/
 ---
-# 形式化验证（安全模型）
 
-本页面跟踪 OpenClaw 的**形式化安全模型**（目前使用 TLA+/TLC；未来将根据需要扩展更多）。
+# Formal Verification (Security Models)
 
-> 注意：部分旧链接可能仍指向项目之前的名称。
+This page tracks OpenClaw’s **formal security models** (TLA+/TLC today; more as needed).
 
-**目标（北极星）：** 在明确假设下，提供一个经机器检查的论证，证明 OpenClaw 能够在其预期的安全策略（授权、会话隔离、工具门控以及错误配置安全性）下运行。
+> Note: some older links may refer to the previous project name.
 
-**当前定位：** 一套可执行的、由攻击者驱动的**安全回归测试套件**：
-- 每个安全断言都对应一个在有限状态空间上运行的可执行模型检查。
-- 许多断言还配有对应的**反例模型**，用于针对某一类现实漏洞生成反例轨迹。
+**Goal (north star):** provide a machine-checked argument that OpenClaw enforces its
+intended security policy (authorization, session isolation, tool gating, and
+misconfiguration safety), under explicit assumptions.
 
-**尚不属于的内容：** 这些模型目前尚未构成“OpenClaw 在所有方面都是安全的”的证明，也未证明完整的 TypeScript 实现是正确的。
+**What this is (today):** an executable, attacker-driven **security regression suite**:
+- Each claim has a runnable model-check over a finite state space.
+- Many claims have a paired **negative model** that produces a counterexample trace for a realistic bug class.
 
-## 模型的存放位置
+**What this is not (yet):** a proof that “OpenClaw is secure in all respects” or that the full TypeScript implementation is correct.
 
-模型托管在一个独立的代码库中：[vignesh07/openclaw-formal-models](https://github.com/vignesh07/openclaw-formal-models)。
+## Where the models live
 
-## 重要注意事项
+Models are maintained in a separate repo: [vignesh07/openclaw-formal-models](https://github.com/vignesh07/openclaw-formal-models).
 
-- 这些只是**模型**，而非完整的 TypeScript 实现。模型与实际代码之间可能存在偏差。
-- 检查结果受限于 TLC 探索的状态空间；即使结果显示为“绿色”，也不意味着在超出建模假设和状态空间限制的情况下仍然安全。
-- 部分断言依赖于明确的环境假设（如正确部署、正确配置输入等）。
+## Important caveats
 
-## 复现结果的方法
+- These are **models**, not the full TypeScript implementation. Drift between model and code is possible.
+- Results are bounded by the state space explored by TLC; “green” does not imply security beyond the modeled assumptions and bounds.
+- Some claims rely on explicit environmental assumptions (e.g., correct deployment, correct configuration inputs).
 
-目前，可通过在本地克隆模型仓库并运行 TLC 来复现结果（见下文）。未来的迭代可能包括：
-- 在 CI 中运行模型，并公开相关工件（反例轨迹、运行日志）。
-- 提供一个托管的“运行此模型”工作流，用于小型且有界的安全检查。
+## Reproducing results
 
-快速入门：
+Today, results are reproduced by cloning the models repo locally and running TLC (see below). A future iteration could offer:
+- CI-run models with public artifacts (counterexample traces, run logs)
+- a hosted “run this model” workflow for small, bounded checks
+
+Getting started:
 
 ```bash
 git clone https://github.com/vignesh07/openclaw-formal-models
@@ -45,113 +48,113 @@ cd openclaw-formal-models
 make <target>
 ```
 
-### 网关暴露与开放网关错误配置
+### Gateway exposure and open gateway misconfiguration
 
-**断言：** 如果在无身份验证的情况下绑定到环回以外的地址，则可能导致远程入侵或增加暴露风险；根据模型假设，令牌/密码可阻止未认证攻击者。
+**Claim:** binding beyond loopback without auth can make remote compromise possible / increases exposure; token/password blocks unauth attackers (per the model assumptions).
 
-- 绿色运行：
+- Green runs:
   - `make gateway-exposure-v2`
   - `make gateway-exposure-v2-protected`
-- 红色（预期）：
+- Red (expected):
   - `make gateway-exposure-v2-negative`
 
-另请参阅模型仓库中的 `docs/gateway-exposure-matrix.md`。
+See also: `docs/gateway-exposure-matrix.md` in the models repo.
 
-### Nodes.run 管道（最高风险功能）
+### Nodes.run pipeline (highest-risk capability)
 
-**断言：** `nodes.run` 要求：(a) 节点命令白名单加上已声明的命令；(b) 在启用时需实时批准；批准过程通过令牌化防止重放攻击（在模型中体现）。
+**Claim:** `nodes.run` requires (a) node command allowlist plus declared commands and (b) live approval when configured; approvals are tokenized to prevent replay (in the model).
 
-- 绿色运行：
+- Green runs:
   - `make nodes-pipeline`
   - `make approvals-token`
-- 红色（预期）：
+- Red (expected):
   - `make nodes-pipeline-negative`
   - `make approvals-token-negative`
 
-### 配对存储（DM 门控）
+### Pairing store (DM gating)
 
-**断言：** 配对请求遵守 TTL 和待处理请求上限。
+**Claim:** pairing requests respect TTL and pending-request caps.
 
-- 绿色运行：
+- Green runs:
   - `make pairing`
   - `make pairing-cap`
-- 红色（预期）：
+- Red (expected):
   - `make pairing-negative`
   - `make pairing-cap-negative`
 
-### 入口门控（提及与控制命令绕过）
+### Ingress gating (mentions + control-command bypass)
 
-**断言：** 在需要提及的群组上下文中，未经授权的“控制命令”无法绕过提及门控。
+**Claim:** in group contexts requiring mention, an unauthorized “control command” cannot bypass mention gating.
 
-- 绿色：
+- Green:
   - `make ingress-gating`
-- 红色（预期）：
+- Red (expected):
   - `make ingress-gating-negative`
 
-### 路由/会话密钥隔离
+### Routing/session-key isolation
 
-**断言：** 不同对等方之间的 DM 不会在未显式关联或配置的情况下合并到同一会话中。
+**Claim:** DMs from distinct peers do not collapse into the same session unless explicitly linked/configured.
 
-- 绿色：
+- Green:
   - `make routing-isolation`
-- 红色（预期）：
+- Red (expected):
   - `make routing-isolation-negative`
 
 
-## v1++：额外的有界模型（并发、重试、轨迹正确性）
+## v1++: additional bounded models (concurrency, retries, trace correctness)
 
-这些是后续模型，旨在更精确地模拟现实世界中的故障模式（非原子更新、重试以及消息扇出）。
+These are follow-on models that tighten fidelity around real-world failure modes (non-atomic updates, retries, and message fan-out).
 
-### 配对存储的并发性与幂等性
+### Pairing store concurrency / idempotency
 
-**断言：** 配对存储应在交错操作下仍能强制实施 `MaxPending` 并保持幂等性（即“先检查后写入”必须是原子操作或加锁操作；刷新不应产生重复条目）。
+**Claim:** a pairing store should enforce `MaxPending` and idempotency even under interleavings (i.e., “check-then-write” must be atomic / locked; refresh shouldn’t create duplicates).
 
-含义：
-- 在并发请求下，某个通道的 `MaxPending` 数量不能超过上限。
-- 对同一 `(channel, sender)` 的重复请求或刷新不应导致创建重复的活动待处理行。
+What it means:
+- Under concurrent requests, you can’t exceed `MaxPending` for a channel.
+- Repeated requests/refreshes for the same `(channel, sender)` should not create duplicate live pending rows.
 
-- 绿色运行：
-  - `make pairing-race`（原子/加锁容量检查）
+- Green runs:
+  - `make pairing-race` (atomic/locked cap check)
   - `make pairing-idempotency`
   - `make pairing-refresh`
   - `make pairing-refresh-race`
-- 红色（预期）：
-  - `make pairing-race-negative`（非原子 begin/commit 容量竞争）
+- Red (expected):
+  - `make pairing-race-negative` (non-atomic begin/commit cap race)
   - `make pairing-idempotency-negative`
   - `make pairing-refresh-negative`
   - `make pairing-refresh-race-negative`
 
-### 入口轨迹相关性与幂等性
+### Ingress trace correlation / idempotency
 
-**断言：** 在扇出过程中，摄取应保持轨迹相关性，并且在提供商重试时应具有幂等性。
+**Claim:** ingestion should preserve trace correlation across fan-out and be idempotent under provider retries.
 
-含义：
-- 当一个外部事件分解为多个内部消息时，每个部分都保留相同的轨迹/事件标识。
-- 重试不会导致重复处理。
-- 如果缺少提供商事件 ID，去重机制将回退到一个安全键（如轨迹 ID），以避免丢失不同的事件。
+What it means:
+- When one external event becomes multiple internal messages, every part keeps the same trace/event identity.
+- Retries do not result in double-processing.
+- If provider event IDs are missing, dedupe falls back to a safe key (e.g., trace ID) to avoid dropping distinct events.
 
-- 绿色：
+- Green:
   - `make ingress-trace`
   - `make ingress-trace2`
   - `make ingress-idempotency`
   - `make ingress-dedupe-fallback`
-- 红色（预期）：
+- Red (expected):
   - `make ingress-trace-negative`
   - `make ingress-trace2-negative`
   - `make ingress-idempotency-negative`
   - `make ingress-dedupe-fallback-negative`
 
-### 路由 dmScope 优先级 + identityLinks
+### Routing dmScope precedence + identityLinks
 
-**断言：** 路由默认应保持 DM 会话隔离，仅在显式配置时才合并会话（通道优先级 + identityLinks）。
+**Claim:** routing must keep DM sessions isolated by default, and only collapse sessions when explicitly configured (channel precedence + identity links).
 
-含义：
-- 特定通道的 dmScope 重写必须优先于全局默认设置。
-- identityLinks 只应在显式关联的群组内合并会话，而不应在无关对等方之间合并。
+What it means:
+- Channel-specific dmScope overrides must win over global defaults.
+- identityLinks should collapse only within explicit linked groups, not across unrelated peers.
 
-- 绿色：
+- Green:
   - `make routing-precedence`
   - `make routing-identitylinks`
-- 红色（预期）：
+- Red (expected):
   - `make routing-precedence-negative`
   - `make routing-identitylinks-negative`

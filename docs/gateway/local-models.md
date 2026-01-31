@@ -1,17 +1,17 @@
 ---
-summary: 'Run OpenClaw on local LLMs (LM Studio, vLLM, LiteLLM, custom OpenAI endpoints)'
+summary: "Run OpenClaw on local LLMs (LM Studio, vLLM, LiteLLM, custom OpenAI endpoints)"
 read_when:
   - You want to serve models from your own GPU box
   - You are wiring LM Studio or an OpenAI-compatible proxy
   - You need the safest local model guidance
 ---
-# 本地模型
+# Local models
 
-在本地运行是可行的，但 OpenClaw 建议使用大上下文并配备强大的提示注入防御机制。小型模型会截断上下文并削弱安全性。目标要高：**至少配备两台满配 Mac Studio 或等效 GPU 集群（约 3 万美元以上）**。单块 **24 GB** 显卡仅适用于较轻量的提示，且延迟较高。请尽可能使用你能运行的**最大尺寸/全尺寸模型变体**；经过激进量化或“小型”检查点会显著增加提示注入风险（参见 [安全](/gateway/security))。
+Local is doable, but OpenClaw expects large context + strong defenses against prompt injection. Small cards truncate context and leak safety. Aim high: **≥2 maxed-out Mac Studios or equivalent GPU rig (~$30k+)**. A single **24 GB** GPU works only for lighter prompts with higher latency. Use the **largest / full-size model variant you can run**; aggressively quantized or “small” checkpoints raise prompt-injection risk (see [Security](/gateway/security)).
 
-## 推荐方案：LM Studio + MiniMax M2.1（Responses API，全尺寸）
+## Recommended: LM Studio + MiniMax M2.1 (Responses API, full-size)
 
-当前最佳的本地部署方案。在 LM Studio 中加载 MiniMax M2.1，启用本地服务器（默认 `http://127.0.0.1:1234`)，并通过 Responses API 将推理过程与最终文本生成分离。
+Best current local stack. Load MiniMax M2.1 in LM Studio, enable the local server (default `http://127.0.0.1:1234`), and use Responses API to keep reasoning separate from final text.
 
 ```json5
 {
@@ -48,16 +48,17 @@ read_when:
 }
 ```
 
-**设置检查清单**
-- 安装 LM Studio：https://lmstudio.ai
-- 在 LM Studio 中下载**可用的最大 MiniMax M2.1 构建版本**（避免“小”或高度量化的变体），启动服务器，并确认 `http://127.0.0.1:1234/v1/models` 中已列出该服务器。
-- 保持模型始终加载；冷加载会导致额外的启动延迟。
-- 如果你的 LM Studio 版本有所不同，请相应调整 `contextWindow`/`maxTokens`。
-- 对于 WhatsApp，务必使用 Responses API，以确保仅发送最终文本。
+**Setup checklist**
+- Install LM Studio: https://lmstudio.ai
+- In LM Studio, download the **largest MiniMax M2.1 build available** (avoid “small”/heavily quantized variants), start the server, confirm `http://127.0.0.1:1234/v1/models` lists it.
+- Keep the model loaded; cold-load adds startup latency.
+- Adjust `contextWindow`/`maxTokens` if your LM Studio build differs.
+- For WhatsApp, stick to Responses API so only final text is sent.
 
-即使在本地运行时，也应保持托管模型的配置；使用 `models.mode: "merge"` 确保备用方案始终可用。
+Keep hosted models configured even when running local; use `models.mode: "merge"` so fallbacks stay available.
 
-### 混合配置：托管为主、本地为备
+### Hybrid config: hosted primary, local fallback
+
 ```json5
 {
   agents: {
@@ -97,16 +98,18 @@ read_when:
 }
 ```
 
-### 本地优先，托管作为安全网
-将主用和备用顺序互换；保留相同的提供商配置块和 `models.mode: "merge"`，以便在本地系统宕机时能够无缝切换到 Sonnet 或 Opus。
+### Local-first with hosted safety net
 
-### 区域性托管与数据路由
-- OpenRouter 上也提供托管版 MiniMax、Kimi 和 GLM 变体，并配有按区域锁定的端点（例如美国托管）。选择相应的区域变体，可在你指定的司法管辖区内处理流量，同时仍可通过 `models.mode: "merge"` 使用 Anthropic 或 OpenAI 作为后备。
+Swap the primary and fallback order; keep the same providers block and `models.mode: "merge"` so you can fall back to Sonnet or Opus when the local box is down.
 
-本地运行仍然是保护隐私的最佳方式；当你需要提供商的功能特性，又希望对数据流动拥有控制权时，区域性托管则是一种折中方案。
+### Regional hosting / data routing
 
-## 其他兼容 OpenAI 的本地代理
-vLLM、LiteLLM、OAI-proxy 或自定义网关只要能暴露符合 OpenAI 标准的 `/v1` 端点，即可使用。只需将上述提供商配置块替换为你自己的端点和模型 ID：
+- Hosted MiniMax/Kimi/GLM variants also exist on OpenRouter with region-pinned endpoints (e.g., US-hosted). Pick the regional variant there to keep traffic in your chosen jurisdiction while still using `models.mode: "merge"` for Anthropic/OpenAI fallbacks.
+- Local-only remains the strongest privacy path; hosted regional routing is the middle ground when you need provider features but want control over data flow.
+
+## Other OpenAI-compatible local proxies
+
+vLLM, LiteLLM, OAI-proxy, or custom gateways work if they expose an OpenAI-style `/v1` endpoint. Replace the provider block above with your endpoint and model ID:
 
 ```json5
 {
@@ -134,10 +137,10 @@ vLLM、LiteLLM、OAI-proxy 或自定义网关只要能暴露符合 OpenAI 标准
 }
 ```
 
-保留 `models.mode: "merge"` 以确保托管模型仍可作为备用。
+Keep `models.mode: "merge"` so hosted models stay available as fallbacks.
 
-## 故障排除
-- 网关能否成功连接到代理？查看 `curl http://127.0.0.1:1234/v1/models`。
-- LM Studio 中的模型是否已卸载？重新加载模型；冷启动是导致“挂起”的常见原因。
-- 出现上下文错误？降低 `contextWindow` 设置，或提高服务器的上下文限制。
-- 安全注意事项：本地模型会跳过提供商侧的过滤机制，因此请尽量缩小智能体的作用范围，并启用压缩功能，以限制提示注入的影响范围。
+## Troubleshooting
+- Gateway can reach the proxy? `curl http://127.0.0.1:1234/v1/models`.
+- LM Studio model unloaded? Reload; cold start is a common “hanging” cause.
+- Context errors? Lower `contextWindow` or raise your server limit.
+- Safety: local models skip provider-side filters; keep agents narrow and compaction on to limit prompt injection blast radius.

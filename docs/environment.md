@@ -1,27 +1,27 @@
 ---
-summary: Where OpenClaw loads environment variables and the precedence order
+summary: "Where OpenClaw loads environment variables and the precedence order"
 read_when:
-  - 'You need to know which env vars are loaded, and in what order'
+  - You need to know which env vars are loaded, and in what order
   - You are debugging missing API keys in the Gateway
   - You are documenting provider auth or deployment environments
 ---
-# 环境变量
+# Environment variables
 
-OpenClaw 会从多个来源提取环境变量。规则是 **绝不覆盖现有值**。
+OpenClaw pulls environment variables from multiple sources. The rule is **never override existing values**.
 
-## 优先级（从高到低）
+## Precedence (highest → lowest)
 
-1) **进程环境**（网关进程从父 Shell 或守护进程继承的环境）。
-2) **当前工作目录中的 `.env`**（dotenv 的默认行为；不会覆盖）。
-3) **位于 `~/.openclaw/.env` 的全局 `.env`**（又称 `$OPENCLAW_STATE_DIR/.env`；不会覆盖）。
-4) **配置文件中 `~/.openclaw/openclaw.json` 的 `env` 块**（仅在缺失时应用）。
-5) **可选的登录 Shell 导入**（`env.shellEnv.enabled` 或 `OPENCLAW_LOAD_SHELL_ENV=1`），仅在缺少预期键时应用。
+1) **Process environment** (what the Gateway process already has from the parent shell/daemon).
+2) **`.env` in the current working directory** (dotenv default; does not override).
+3) **Global `.env`** at `~/.openclaw/.env` (aka `$OPENCLAW_STATE_DIR/.env`; does not override).
+4) **Config `env` block** in `~/.openclaw/openclaw.json` (applied only if missing).
+5) **Optional login-shell import** (`env.shellEnv.enabled` or `OPENCLAW_LOAD_SHELL_ENV=1`), applied only for missing expected keys.
 
-如果配置文件完全缺失，步骤 4 将被跳过；但如果已启用，则仍会运行 Shell 导入。
+If the config file is missing entirely, step 4 is skipped; shell import still runs if enabled.
 
-## 配置中的 `env` 块
+## Config `env` block
 
-设置内联环境变量有两种等效方式（两者均不会覆盖）：
+Two equivalent ways to set inline env vars (both are non-overriding):
 
 ```json5
 {
@@ -34,9 +34,9 @@ OpenClaw 会从多个来源提取环境变量。规则是 **绝不覆盖现有�
 }
 ```
 
-## Shell 环境导入
+## Shell env import
 
-`env.shellEnv` 会运行您的登录 Shell，并仅导入 **缺失** 的预期键：
+`env.shellEnv` runs your login shell and imports only **missing** expected keys:
 
 ```json5
 {
@@ -49,13 +49,13 @@ OpenClaw 会从多个来源提取环境变量。规则是 **绝不覆盖现有�
 }
 ```
 
-环境变量等效项：
+Env var equivalents:
 - `OPENCLAW_LOAD_SHELL_ENV=1`
 - `OPENCLAW_SHELL_ENV_TIMEOUT_MS=15000`
 
-## 配置中的环境变量替换
+## Env var substitution in config
 
-您可以在配置字符串值中直接使用 `${VAR_NAME}` 语法引用环境变量：
+You can reference env vars directly in config string values using `${VAR_NAME}` syntax:
 
 ```json5
 {
@@ -69,10 +69,10 @@ OpenClaw 会从多个来源提取环境变量。规则是 **绝不覆盖现有�
 }
 ```
 
-有关完整详情，请参阅 [配置：环境变量替换](/gateway/configuration#env-var-substitution-in-config)。
+See [Configuration: Env var substitution](/gateway/configuration#env-var-substitution-in-config) for full details.
 
-## 相关内容
+## Related
 
-- [网关配置](/gateway/configuration)
-- [常见问题解答：环境变量与 .env 加载](/help/faq#env-vars-and-env-loading)
-- [模型概览](/concepts/models)
+- [Gateway configuration](/gateway/configuration)
+- [FAQ: env vars and .env loading](/help/faq#env-vars-and-env-loading)
+- [Models overview](/concepts/models)

@@ -1,36 +1,36 @@
 ---
-summary: Retry policy for outbound provider calls
+summary: "Retry policy for outbound provider calls"
 read_when:
   - Updating provider retry behavior or defaults
   - Debugging provider send errors or rate limits
 ---
-# 重试策略
+# Retry policy
 
-## 目标
-- 按单个 HTTP 请求进行重试，而非按多步骤流程整体重试。
-- 仅重试当前步骤，以保持操作顺序。
-- 避免重复执行非幂等操作。
+## Goals
+- Retry per HTTP request, not per multi-step flow.
+- Preserve ordering by retrying only the current step.
+- Avoid duplicating non-idempotent operations.
 
-## 默认设置
-- 尝试次数：3
-- 最大延迟上限：30000 毫秒
-- 随机抖动：0.1（10%）
-- 各提供商默认值：
-  - Telegram 最小延迟：400 毫秒
-  - Discord 最小延迟：500 毫秒
+## Defaults
+- Attempts: 3
+- Max delay cap: 30000 ms
+- Jitter: 0.1 (10 percent)
+- Provider defaults:
+  - Telegram min delay: 400 ms
+  - Discord min delay: 500 ms
 
-## 行为
+## Behavior
 ### Discord
-- 仅在遇到限流错误（HTTP 429）时重试。
-- 在可用的情况下使用 Discord `retry_after`，否则采用指数退避策略。
+- Retries only on rate-limit errors (HTTP 429).
+- Uses Discord `retry_after` when available, otherwise exponential backoff.
 
 ### Telegram
-- 在出现瞬态错误（429、超时、连接/重置/关闭、暂时不可用）时重试。
-- 在可用的情况下使用 `retry_after`，否则采用指数退避策略。
-- Markdown 解析错误不会触发重试；此类错误会回退到纯文本模式。
+- Retries on transient errors (429, timeout, connect/reset/closed, temporarily unavailable).
+- Uses `retry_after` when available, otherwise exponential backoff.
+- Markdown parse errors are not retried; they fall back to plain text.
 
-## 配置
-在 `~/.openclaw/openclaw.json` 中为每个提供商单独设置重试策略：
+## Configuration
+Set retry policy per provider in `~/.openclaw/openclaw.json`:
 
 ```json5
 {
@@ -55,6 +55,6 @@ read_when:
 }
 ```
 
-## 备注
-- 重试是针对单个请求的（如发送消息、上传媒体、添加反应、创建投票、发送贴纸）。
-- 对于复合流程，已完成步骤不会被重试。
+## Notes
+- Retries apply per request (message send, media upload, reaction, poll, sticker).
+- Composite flows do not retry completed steps.

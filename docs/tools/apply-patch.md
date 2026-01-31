@@ -1,14 +1,16 @@
 ---
-summary: Apply multi-file patches with the apply_patch tool
+summary: "Apply multi-file patches with the apply_patch tool"
 read_when:
   - You need structured file edits across multiple files
   - You want to document or debug patch-based edits
 ---
-# apply_patch 工具
 
-使用结构化补丁格式应用文件更改。这非常适合多文件或多块编辑，其中单个 `edit` 调用会非常脆弱。
+# apply_patch tool
 
-该工具接受一个 `input` 字符串，其中封装了一个或多个文件操作：
+Apply file changes using a structured patch format. This is ideal for multi-file
+or multi-hunk edits where a single `edit` call would be brittle.
+
+The tool accepts a single `input` string that wraps one or more file operations:
 
 ```
 *** Begin Patch
@@ -23,20 +25,21 @@ read_when:
 *** End Patch
 ```
 
-## 参数
+## Parameters
 
-- `input`（必填）：完整的补丁内容，包括 `*** Begin Patch` 和 `*** End Patch`。
+- `input` (required): Full patch contents including `*** Begin Patch` and `*** End Patch`.
 
-## 注意事项
+## Notes
 
-- 路径是相对于工作区根目录解析的。
-- 在 `*** Update File:` 块中使用 `*** Move to:` 来重命名文件。
-- 必要时，`*** End of File` 标记仅在文件末尾插入内容。
-- 实验性功能，默认禁用。可通过 `tools.exec.applyPatch.enabled` 启用。
-- 仅适用于 OpenAI（包括 OpenAI Codex）。也可通过 `tools.exec.applyPatch.allowModels` 按模型有条件地启用。
-- 配置仅位于 `tools.exec` 下。
+- Paths are resolved relative to the workspace root.
+- Use `*** Move to:` within an `*** Update File:` hunk to rename files.
+- `*** End of File` marks an EOF-only insert when needed.
+- Experimental and disabled by default. Enable with `tools.exec.applyPatch.enabled`.
+- OpenAI-only (including OpenAI Codex). Optionally gate by model via
+  `tools.exec.applyPatch.allowModels`.
+- Config is only under `tools.exec`.
 
-## 示例
+## Example
 
 ```json
 {

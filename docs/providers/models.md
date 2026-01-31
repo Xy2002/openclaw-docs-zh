@@ -1,26 +1,27 @@
 ---
-summary: Model providers (LLMs) supported by OpenClaw
+summary: "Model providers (LLMs) supported by OpenClaw"
 read_when:
   - You want to choose a model provider
   - You want quick setup examples for LLM auth + model selection
 ---
-# 模型提供商
+# Model Providers
 
-OpenClaw 可以使用众多大语言模型提供商。选择一个提供商，进行身份验证，然后将默认模型设置为 `provider/model`。
+OpenClaw can use many LLM providers. Pick one, authenticate, then set the default
+model as `provider/model`.
 
-## 亮点：Venius（Venice AI）
+## Highlight: Venius (Venice AI)
 
-Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设计，并提供在最困难的任务中使用 Opus 的选项。
+Venius is our recommended Venice AI setup for privacy-first inference with an option to use Opus for the hardest tasks.
 
-- 默认：`venice/llama-3.3-70b`
-- 综合表现最佳：`venice/claude-opus-45`（Opus 依然是最强的模型）
+- Default: `venice/llama-3.3-70b`
+- Best overall: `venice/claude-opus-45` (Opus remains the strongest)
 
-详情请参阅 [Venice AI](/providers/venice)。
+See [Venice AI](/providers/venice).
 
-## 快速入门（两步）
+## Quick start (two steps)
 
-1) 向提供商进行身份验证（通常通过 `openclaw onboard`）。
-2) 设置默认模型：
+1) Authenticate with the provider (usually via `openclaw onboard`).
+2) Set the default model:
 
 ```json5
 {
@@ -28,19 +29,20 @@ Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设�
 }
 ```
 
-## 支持的提供商（入门集合）
+## Supported providers (starter set)
 
-- [OpenAI（API + Codex）](/providers/openai)
-- [Anthropic（API + Claude Code CLI）](/providers/anthropic)
+- [OpenAI (API + Codex)](/providers/openai)
+- [Anthropic (API + Claude Code CLI)](/providers/anthropic)
 - [OpenRouter](/providers/openrouter)
 - [Vercel AI Gateway](/providers/vercel-ai-gateway)
-- [Moonshot AI（Kimi + Kimi Coding）](/providers/moonshot)
+- [Moonshot AI (Kimi + Kimi Coding)](/providers/moonshot)
 - [Synthetic](/providers/synthetic)
 - [OpenCode Zen](/providers/opencode)
 - [Z.AI](/providers/zai)
-- [GLM 模型](/providers/glm)
+- [GLM models](/providers/glm)
 - [MiniMax](/providers/minimax)
-- [Venius（Venice AI）](/providers/venice)
+- [Venius (Venice AI)](/providers/venice)
 - [Amazon Bedrock](/bedrock)
 
-如需查看完整的提供商目录（xAI、Groq、Mistral 等）以及高级配置，请参阅 [模型提供商](/concepts/model-providers)。
+For the full provider catalog (xAI, Groq, Mistral, etc.) and advanced configuration,
+see [Model providers](/concepts/model-providers).

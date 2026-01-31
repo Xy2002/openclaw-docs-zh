@@ -1,25 +1,27 @@
 ---
-summary: macOS Skills settings UI and gateway-backed status
+summary: "macOS Skills settings UI and gateway-backed status"
 read_when:
   - Updating the macOS Skills settings UI
   - Changing skills gating or install behavior
 ---
-# 技能（macOS）
+# Skills (macOS)
 
-macOS 应用通过网关展示 OpenClaw 技能；它不会在本地解析技能。
+The macOS app surfaces OpenClaw skills via the gateway; it does not parse skills locally.
 
-## 数据源
-- `skills.status`（网关）返回所有技能，以及其资格状态和缺失的要求（包括针对捆绑技能的白名单限制）。
-- 要求是从每个 `SKILL.md` 中的 `metadata.openclaw.requires` 派生而来的。
+## Data source
+- `skills.status` (gateway) returns all skills plus eligibility and missing requirements
+  (including allowlist blocks for bundled skills).
+- Requirements are derived from `metadata.openclaw.requires` in each `SKILL.md`.
 
-## 安装操作
-- `metadata.openclaw.install` 定义了安装选项（brew/node/go/uv）。
-- 应用调用 `skills.install` 在网关主机上运行安装程序。
-- 当提供多个安装程序时，网关仅显示一个首选安装程序：如果有 brew，则优先使用 brew；否则使用来自 `skills.install` 的 node 管理器；默认为 npm。
+## Install actions
+- `metadata.openclaw.install` defines install options (brew/node/go/uv).
+- The app calls `skills.install` to run installers on the gateway host.
+- The gateway surfaces only one preferred installer when multiple are provided
+  (brew when available, otherwise node manager from `skills.install`, default npm).
 
-## 环境变量/API 密钥
-- 应用将密钥存储在 `~/.openclaw/openclaw.json` 下的 `skills.entries.<skillKey>` 中。
-- `skills.update` 会修补 `enabled`、`apiKey` 和 `env`。
+## Env/API keys
+- The app stores keys in `~/.openclaw/openclaw.json` under `skills.entries.<skillKey>`.
+- `skills.update` patches `enabled`, `apiKey`, and `env`.
 
-## 远程模式
-- 安装和配置更新在网关主机上执行（而非本地 Mac 上）。
+## Remote mode
+- Install + config updates happen on the gateway host (not the local Mac).

@@ -1,54 +1,54 @@
 ---
-summary: Strict config validation + doctor-only migrations
+summary: "Strict config validation + doctor-only migrations"
 read_when:
   - Designing or implementing config validation behavior
   - Working on config migrations or doctor workflows
   - Handling plugin config schemas or plugin load gating
 ---
-# 严格配置验证（仅通过 Doctor 运行迁移）
+# Strict config validation (doctor-only migrations)
 
-## 目标
-- **在任何位置拒绝未知配置键**（根级别和嵌套级别）。
-- **拒绝没有模式的插件配置**；不加载此类插件。
-- **移除加载时的旧版自动迁移**；迁移仅通过 Doctor 运行。
-- **在启动时自动运行 Doctor（干运行）**；如果配置无效，则阻止非诊断性命令执行。
+## Goals
+- **Reject unknown config keys everywhere** (root + nested).
+- **Reject plugin config without a schema**; don’t load that plugin.
+- **Remove legacy auto-migration on load**; migrations run via doctor only.
+- **Auto-run doctor (dry-run) on startup**; if invalid, block non-diagnostic commands.
 
-## 非目标
-- 加载时的向后兼容性（旧版键不会自动迁移）。
-- 对未识别键静默丢弃。
+## Non-goals
+- Backward compatibility on load (legacy keys do not auto-migrate).
+- Silent drops of unrecognized keys.
 
-## 严格验证规则
-- 配置在每一级都必须与模式完全匹配。
-- 未知键被视为验证错误（无论在根级别还是嵌套级别，均不允许透传）。
-- `plugins.entries.<id>.config` 必须由插件的模式进行验证。
-  - 如果插件缺少模式，**拒绝加载该插件**并显示明确的错误信息。
-- 未知的 `channels.<id>` 键被视为错误，除非插件清单声明了该通道 ID。
-- 所有插件都必须提供插件清单 (`openclaw.plugin.json`)。
+## Strict validation rules
+- Config must match the schema exactly at every level.
+- Unknown keys are validation errors (no passthrough at root or nested).
+- `plugins.entries.<id>.config` must be validated by the plugin’s schema.
+  - If a plugin lacks a schema, **reject plugin load** and surface a clear error.
+- Unknown `channels.<id>` keys are errors unless a plugin manifest declares the channel id.
+- Plugin manifests (`openclaw.plugin.json`) are required for all plugins.
 
-## 插件模式强制执行
-- 每个插件为其配置提供严格的 JSON 模式，并内联在清单中。
-- 插件加载流程：
-  1) 解析插件清单 + 模式 (`openclaw.plugin.json`)。
-  2) 使用模式验证配置。
-  3) 如果缺少模式或配置无效：阻止插件加载，并记录错误。
-- 错误信息包括：
-  - 插件 ID
-  - 原因（缺少模式 / 配置无效）
-  - 验证失败的路径
-- 已禁用的插件会保留其配置，但 Doctor 和日志会输出警告。
+## Plugin schema enforcement
+- Each plugin provides a strict JSON Schema for its config (inline in the manifest).
+- Plugin load flow:
+  1) Resolve plugin manifest + schema (`openclaw.plugin.json`).
+  2) Validate config against the schema.
+  3) If missing schema or invalid config: block plugin load, record error.
+- Error message includes:
+  - Plugin id
+  - Reason (missing schema / invalid config)
+  - Path(s) that failed validation
+- Disabled plugins keep their config, but Doctor + logs surface a warning.
 
-## Doctor 流程
-- 每次加载配置时都会运行 Doctor（默认为干运行）。
-- 如果配置无效：
-  - 输出摘要和可操作的错误信息。
-  - 提示用户：`openclaw doctor --fix`。
-- `openclaw doctor --fix`：
-  - 应用迁移。
-  - 移除未知键。
-  - 写入更新后的配置。
+## Doctor flow
+- Doctor runs **every time** config is loaded (dry-run by default).
+- If config invalid:
+  - Print a summary + actionable errors.
+  - Instruct: `openclaw doctor --fix`.
+- `openclaw doctor --fix`:
+  - Applies migrations.
+  - Removes unknown keys.
+  - Writes updated config.
 
-## 命令限制（当配置无效时）
-允许的（仅限诊断性命令）：
+## Command gating (when config is invalid)
+Allowed (diagnostic-only):
 - `openclaw doctor`
 - `openclaw logs`
 - `openclaw health`
@@ -56,26 +56,26 @@ read_when:
 - `openclaw status`
 - `openclaw gateway status`
 
-所有其他命令必须硬性失败，并显示消息：“配置无效。请运行 `openclaw doctor --fix`。”
+Everything else must hard-fail with: “Config invalid. Run `openclaw doctor --fix`.”
 
-## 错误 UX 格式
-- 单一摘要标题。
-- 分组部分：
-  - 未知键（完整路径）
-  - 需要迁移的旧版键
-  - 插件加载失败（插件 ID + 原因 + 路径）
+## Error UX format
+- Single summary header.
+- Grouped sections:
+  - Unknown keys (full paths)
+  - Legacy keys / migrations needed
+  - Plugin load failures (plugin id + reason + path)
 
-## 实现关键点
-- `src/config/zod-schema.ts`：移除根级别的透传；所有对象均采用严格模式。
-- `src/config/zod-schema.providers.ts`：确保通道模式严格。
-- `src/config/validation.ts`：遇到未知键即报错；不应用旧版迁移。
-- `src/config/io.ts`：移除旧版自动迁移；始终运行 Doctor 干运行。
-- `src/config/legacy*.ts`：将使用权限转移至仅限 Doctor。
-- `src/plugins/*`：添加模式注册表 + 命令限制机制。
-- CLI 命令限制在 `src/cli` 中实现。
+## Implementation touchpoints
+- `src/config/zod-schema.ts`: remove root passthrough; strict objects everywhere.
+- `src/config/zod-schema.providers.ts`: ensure strict channel schemas.
+- `src/config/validation.ts`: fail on unknown keys; do not apply legacy migrations.
+- `src/config/io.ts`: remove legacy auto-migrations; always run doctor dry-run.
+- `src/config/legacy*.ts`: move usage to doctor only.
+- `src/plugins/*`: add schema registry + gating.
+- CLI command gating in `src/cli`.
 
-## 测试
-- 未知键拒绝（根级别和嵌套级别）。
-- 插件缺少模式 → 插件加载被阻止，并显示明确的错误信息。
-- 配置无效 → 启动时除诊断性命令外的所有命令均被阻止。
-- Doctor 自动执行干运行；`doctor --fix` 写入已修正的配置。
+## Tests
+- Unknown key rejection (root + nested).
+- Plugin missing schema → plugin load blocked with clear error.
+- Invalid config → gateway startup blocked except diagnostic commands.
+- Doctor dry-run auto; `doctor --fix` writes corrected config.

@@ -1,30 +1,30 @@
 ---
-summary: Usage tracking surfaces and credential requirements
+summary: "Usage tracking surfaces and credential requirements"
 read_when:
   - You are wiring provider usage/quota surfaces
   - You need to explain usage tracking behavior or auth requirements
 ---
-# 使用情况跟踪
+# Usage tracking
 
-## 什么是使用情况跟踪
-- 直接从提供商的用量端点获取其使用量和配额数据。
-- 不提供预估费用；仅显示提供商报告的时间窗口。
+## What it is
+- Pulls provider usage/quota directly from their usage endpoints.
+- No estimated costs; only the provider-reported windows.
 
-## 使用情况的展示位置
-- 聊天中的`/status`：富含表情符号的状态卡片，显示会话令牌及预估费用（仅适用于 API 密钥）。在可用时，将显示**当前模型提供商**的用量信息。
-- 聊天中的`/usage off|tokens|full`：每条回复下方的用量页脚（OAuth 仅显示令牌）。
-- 聊天中的`/usage cost`：基于 OpenClaw 会话日志聚合的本地费用摘要。
-- CLI：`openclaw status --usage` 打印完整的按提供商细分的用量明细。
-- CLI：`openclaw channels list` 打印相同的用量快照，并附带提供商配置（可使用 `--no-usage` 跳过配置输出）。
-- macOS 菜单栏：上下文菜单下的“使用情况”部分（仅在可用时显示）。
+## Where it shows up
+- `/status` in chats: emoji‑rich status card with session tokens + estimated cost (API key only). Provider usage shows for the **current model provider** when available.
+- `/usage off|tokens|full` in chats: per-response usage footer (OAuth shows tokens only).
+- `/usage cost` in chats: local cost summary aggregated from OpenClaw session logs.
+- CLI: `openclaw status --usage` prints a full per-provider breakdown.
+- CLI: `openclaw channels list` prints the same usage snapshot alongside provider config (use `--no-usage` to skip).
+- macOS menu bar: “Usage” section under Context (only if available).
 
-## 支持的提供商与凭证
-- **Anthropic（Claude）**：认证配置文件中的 OAuth 令牌。
-- **GitHub Copilot**：认证配置文件中的 OAuth 令牌。
-- **Gemini CLI**：认证配置文件中的 OAuth 令牌。
-- **Antigravity**：认证配置文件中的 OAuth 令牌。
-- **OpenAI Codex**：认证配置文件中的 OAuth 令牌（如果存在，则使用 accountId）。
-- **MiniMax**：API 密钥（编码计划密钥；`MINIMAX_CODE_PLAN_KEY` 或 `MINIMAX_API_KEY`）；使用 5 小时编码计划时间窗口。
-- **z.ai**：通过环境变量/配置/认证存储提供的 API 密钥。
+## Providers + credentials
+- **Anthropic (Claude)**: OAuth tokens in auth profiles.
+- **GitHub Copilot**: OAuth tokens in auth profiles.
+- **Gemini CLI**: OAuth tokens in auth profiles.
+- **Antigravity**: OAuth tokens in auth profiles.
+- **OpenAI Codex**: OAuth tokens in auth profiles (accountId used when present).
+- **MiniMax**: API key (coding plan key; `MINIMAX_CODE_PLAN_KEY` or `MINIMAX_API_KEY`); uses the 5‑hour coding plan window.
+- **z.ai**: API key via env/config/auth store.
 
-如果没有匹配的 OAuth/API 凭证，使用情况将被隐藏。
+Usage is hidden if no matching OAuth/API credentials exist.

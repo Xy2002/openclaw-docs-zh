@@ -1,17 +1,17 @@
 ---
-summary: Schema-accurate configuration examples for common OpenClaw setups
+summary: "Schema-accurate configuration examples for common OpenClaw setups"
 read_when:
   - Learning how to configure OpenClaw
   - Looking for configuration examples
   - Setting up OpenClaw for the first time
 ---
-# 配置示例
+# Configuration Examples
 
-以下示例与当前配置模式保持一致。如需完整的参考信息和各字段的说明，请参阅[配置](/gateway/configuration)。
+Examples below are aligned with the current config schema. For the exhaustive reference and per-field notes, see [Configuration](/gateway/configuration).
 
-## 快速入门
+## Quick start
 
-### 绝对最低配置
+### Absolute minimum
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -19,9 +19,9 @@ read_when:
 }
 ```
 
-将其保存到`~/.openclaw/openclaw.json`，您即可通过该号码向机器人发送私信。
+Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 
-### 推荐的初始配置
+### Recommended starter
 ```json5
 {
   identity: {
@@ -42,9 +42,9 @@ read_when:
 }
 ```
 
-## 扩展示例（主要选项）
+## Expanded example (major options)
 
-> JSON5 支持使用注释和尾随逗号。标准 JSON 也同样适用。
+> JSON5 lets you use comments and trailing commas. Regular JSON works too.
 
 ```json5
 {
@@ -421,9 +421,9 @@ read_when:
 }
 ```
 
-## 常见模式
+## Common patterns
 
-### 多平台设置
+### Multi-platform setup
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -443,7 +443,7 @@ read_when:
 }
 ```
 
-### 使用 API 密钥作为 OAuth 备用
+### OAuth with API key failover
 ```json5
 {
   auth: {
@@ -472,7 +472,7 @@ read_when:
 }
 ```
 
-### Anthropic 订阅 + API 密钥，MiniMax 作为备用
+### Anthropic subscription + API key, MiniMax fallback
 ```json5
 {
   auth: {
@@ -510,7 +510,7 @@ read_when:
 }
 ```
 
-### 工作机器人（受限访问）
+### Work bot (restricted access)
 ```json5
 {
   identity: {
@@ -534,7 +534,7 @@ read_when:
 }
 ```
 
-### 仅使用本地模型
+### Local models only
 ```json5
 {
   agent: {
@@ -565,9 +565,9 @@ read_when:
 }
 ```
 
-## 小贴士
+## Tips
 
-- 如果您设置了`dmPolicy: "open"`，则匹配的`allowFrom`列表必须包含`"*"`。
-- 不同提供商的 ID 格式不同（例如电话号码、用户 ID、频道 ID）。请参考提供商文档以确认正确的格式。
-- 您可以稍后添加的可选部分包括：`web`、`browser`、`ui`、`discovery`、`canvasHost`、`talk`、`signal`、`imessage`。
-- 如需更深入的设置说明，请参阅[提供商](/channels/whatsapp)和[故障排除](/gateway/troubleshooting)。
+- If you set `dmPolicy: "open"`, the matching `allowFrom` list must include `"*"`.
+- Provider IDs differ (phone numbers, user IDs, channel IDs). Use the provider docs to confirm the format.
+- Optional sections to add later: `web`, `browser`, `ui`, `discovery`, `canvasHost`, `talk`, `signal`, `imessage`.
+- See [Providers](/channels/whatsapp) and [Troubleshooting](/gateway/troubleshooting) for deeper setup notes.

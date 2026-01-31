@@ -1,13 +1,15 @@
 ---
-summary: CLI reference for `openclaw config` (get/set/unset config values)
+summary: "CLI reference for `openclaw config` (get/set/unset config values)"
 read_when:
   - You want to read or edit config non-interactively
 ---
+
 # `openclaw config`
 
-配置助手：按路径获取、设置或取消设置值。不带子命令运行可打开配置向导（与 `openclaw configure` 相同）。
+Config helpers: get/set/unset values by path. Run without a subcommand to open
+the configure wizard (same as `openclaw configure`).
 
-## 示例
+## Examples
 
 ```bash
 openclaw config get browser.executablePath
@@ -17,25 +19,26 @@ openclaw config set agents.list[0].tools.exec.node "node-id-or-name"
 openclaw config unset tools.web.search.apiKey
 ```
 
-## 路径
+## Paths
 
-路径使用点号或方括号表示法：
+Paths use dot or bracket notation:
 
 ```bash
 openclaw config get agents.defaults.workspace
 openclaw config get agents.list[0].id
 ```
 
-使用代理列表索引来指定特定代理：
+Use the agent list index to target a specific agent:
 
 ```bash
 openclaw config get agents.list
 openclaw config set agents.list[1].tools.exec.node "node-id-or-name"
 ```
 
-## 值
+## Values
 
-值在可能的情况下会解析为 JSON5；否则被视为字符串。使用 `--json` 来强制要求 JSON5 解析。
+Values are parsed as JSON5 when possible; otherwise they are treated as strings.
+Use `--json` to require JSON5 parsing.
 
 ```bash
 openclaw config set agents.defaults.heartbeat.every "0m"
@@ -43,4 +46,4 @@ openclaw config set gateway.port 19001 --json
 openclaw config set channels.whatsapp.groups '["*"]' --json
 ```
 
-编辑后重启网关。
+Restart the gateway after edits.

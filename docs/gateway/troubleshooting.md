@@ -1,60 +1,61 @@
 ---
-summary: Quick troubleshooting guide for common OpenClaw failures
+summary: "Quick troubleshooting guide for common OpenClaw failures"
 read_when:
   - Investigating runtime issues or failures
 ---
-# 故障排除 🔧
+# Troubleshooting 🔧
 
-当 OpenClaw 行为异常时，以下是修复它的方法。
+When OpenClaw misbehaves, here's how to fix it.
 
-如果您只想快速排查问题，请先查看常见问题解答 [前60秒](/help/faq#first-60-seconds-if-somethings-broken)。本页面将深入探讨运行时故障和诊断。
+Start with the FAQ’s [First 60 seconds](/help/faq#first-60-seconds-if-somethings-broken) if you just want a quick triage recipe. This page goes deeper on runtime failures and diagnostics.
 
-特定提供商的快捷方式：[/channels/troubleshooting](/channels/troubleshooting)
+Provider-specific shortcuts: [/channels/troubleshooting](/channels/troubleshooting)
 
-## 状态与诊断
+## Status & Diagnostics
 
-快速排查命令（按顺序）：
+Quick triage commands (in order):
 
-| 命令 | 提供的信息 | 使用场景 |
+| Command | What it tells you | When to use it |
 |---|---|---|
-| `openclaw status` | 本地摘要：操作系统 + 更新、网关可达性/模式、服务、代理/会话、提供商配置状态 | 首次检查，快速概览 |
-| `openclaw status --all` | 完整本地诊断（只读、可粘贴、相对安全），包括日志尾部 | 当您需要分享调试报告时 |
-| `openclaw status --deep` | 运行网关健康检查（包括提供商探测；需要可访问的网关） | 当“已配置”并不意味着“正常工作”时 |
-| `openclaw gateway probe` | 网关发现 + 可达性（本地 + 远程目标） | 当您怀疑正在探测错误的网关时 |
-| `openclaw channels status --probe` | 向正在运行的网关请求通道状态（并可选择进行探测） | 当网关可访问但通道行为异常时 |
-| `openclaw gateway status` | 监控器状态（launchd/systemd/schtasks）、运行时PID/退出、最近的网关错误 | 当服务“看起来已加载”但未运行任何内容时 |
-| `openclaw logs --follow` | 实时日志（运行时问题的最佳信号） | 当您需要确切的失败原因时 |
+| `openclaw status` | Local summary: OS + update, gateway reachability/mode, service, agents/sessions, provider config state | First check, quick overview |
+| `openclaw status --all` | Full local diagnosis (read-only, pasteable, safe-ish) incl. log tail | When you need to share a debug report |
+| `openclaw status --deep` | Runs gateway health checks (incl. provider probes; requires reachable gateway) | When “configured” doesn’t mean “working” |
+| `openclaw gateway probe` | Gateway discovery + reachability (local + remote targets) | When you suspect you’re probing the wrong gateway |
+| `openclaw channels status --probe` | Asks the running gateway for channel status (and optionally probes) | When gateway is reachable but channels misbehave |
+| `openclaw gateway status` | Supervisor state (launchd/systemd/schtasks), runtime PID/exit, last gateway error | When the service “looks loaded” but nothing runs |
+| `openclaw logs --follow` | Live logs (best signal for runtime issues) | When you need the actual failure reason |
 
-**共享输出：** 优先使用 `openclaw status --all`（它会屏蔽令牌）。如果您粘贴 `openclaw status`，请先考虑设置 `OPENCLAW_SHOW_SECRETS=0`（令牌预览）。
+**Sharing output:** prefer `openclaw status --all` (it redacts tokens). If you paste `openclaw status`, consider setting `OPENCLAW_SHOW_SECRETS=0` first (token previews).
 
-另请参阅：[健康检查](/gateway/health) 和 [日志记录](/logging)。
+See also: [Health checks](/gateway/health) and [Logging](/logging).
 
-## 常见问题
+## Common Issues
 
-### 未找到提供商“anthropic”的API密钥
+### No API key found for provider "anthropic"
 
-这意味着 **代理的身份验证存储为空** 或缺少 Anthropic 凭证。
-身份验证是 **按代理划分** 的，因此新代理不会继承主代理的密钥。
+This means the **agent’s auth store is empty** or missing Anthropic credentials.
+Auth is **per agent**, so a new agent won’t inherit the main agent’s keys.
 
-修复选项：
-- 重新运行入门流程，并为该代理选择 **Anthropic**。
-- 或在 **网关主机** 上粘贴一个设置令牌：
+Fix options:
+- Re-run onboarding and choose **Anthropic** for that agent.
+- Or paste a setup-token on the **gateway host**:
   ```bash
   openclaw models auth setup-token --provider anthropic
   ```
-- 或从主代理目录复制 `auth-profiles.json` 到新代理目录。
+- Or copy `auth-profiles.json` from the main agent dir to the new agent dir.
 
-验证：
+Verify:
 ```bash
 openclaw models status
 ```
 
-### OAuth令牌刷新失败（Anthropic Claude订阅）
+### OAuth token refresh failed (Anthropic Claude subscription)
 
-这意味着存储的 Anthropic OAuth 令牌已过期且刷新失败。
-如果您使用的是 Claude 订阅（无API密钥），最可靠的修复方法是切换到 **Claude Code 设置令牌**，并在 **网关主机** 上粘贴。
+This means the stored Anthropic OAuth token expired and the refresh failed.
+If you’re on a Claude subscription (no API key), the most reliable fix is to
+switch to a **Claude Code setup-token** and paste it on the **gateway host**.
 
-**推荐（设置令牌）：**
+**Recommended (setup-token):**
 
 ```bash
 # Run on the gateway host (paste the setup-token)
@@ -62,205 +63,231 @@ openclaw models auth setup-token --provider anthropic
 openclaw models status
 ```
 
-如果您在其他地方生成了令牌：
+If you generated the token elsewhere:
 
 ```bash
 openclaw models auth paste-token --provider anthropic
 openclaw models status
 ```
 
-更多详情：[Anthropic](/providers/anthropic) 和 [OAuth](/concepts/oauth)。
+More detail: [Anthropic](/providers/anthropic) and [OAuth](/concepts/oauth).
 
-### 控制UI在HTTP上失败（“需要设备身份”/“连接失败”）
+### Control UI fails on HTTP ("device identity required" / "connect failed")
 
-如果您通过普通HTTP打开仪表板（例如 `http://<lan-ip>:18789/` 或 `http://<tailscale-ip>:18789/`），浏览器将在 **非安全上下文中运行**，并阻止WebCrypto，因此无法生成设备身份。
+If you open the dashboard over plain HTTP (e.g. `http://<lan-ip>:18789/` or
+`http://<tailscale-ip>:18789/`), the browser runs in a **non-secure context** and
+blocks WebCrypto, so device identity can’t be generated.
 
-**修复：**
-- 优先通过 [Tailscale Serve](/gateway/tailscale) 使用HTTPS。
-- 或在网关主机上本地打开：`http://127.0.0.1:18789/`。
-- 如果您必须使用HTTP，启用 `gateway.controlUi.allowInsecureAuth: true` 并使用网关令牌（仅令牌；无设备身份/配对）。请参阅 [控制UI](/web/control-ui#insecure-http)。
+**Fix:**
+- Prefer HTTPS via [Tailscale Serve](/gateway/tailscale).
+- Or open locally on the gateway host: `http://127.0.0.1:18789/`.
+- If you must stay on HTTP, enable `gateway.controlUi.allowInsecureAuth: true` and
+  use a gateway token (token-only; no device identity/pairing). See
+  [Control UI](/web/control-ui#insecure-http).
 
-### CI秘密扫描失败
+### CI Secrets Scan Failed
 
-这意味着 `detect-secrets` 发现了尚未纳入基线的新候选者。请遵循 [秘密扫描](/gateway/security#secret-scanning-detect-secrets)。
+This means `detect-secrets` found new candidates not yet in the baseline.
+Follow [Secret scanning](/gateway/security#secret-scanning-detect-secrets).
 
-### 服务已安装但未运行任何内容
+### Service Installed but Nothing is Running
 
-如果网关服务已安装，但进程立即退出，服务可能看似“已加载”，但实际上并未运行任何内容。
+If the gateway service is installed but the process exits immediately, the service
+can appear “loaded” while nothing is running.
 
-**检查：**
+**Check:**
 ```bash
 openclaw gateway status
 openclaw doctor
 ```
 
-医生/服务将显示运行时状态（PID/上次退出）和日志提示。
+Doctor/service will show runtime state (PID/last exit) and log hints.
 
-**日志：**
-- 推荐：`openclaw logs --follow`
-- 文件日志（始终）：`/tmp/openclaw/openclaw-YYYY-MM-DD.log`（或您配置的 `logging.file`）
-- macOS LaunchAgent（如果已安装）：`$OPENCLAW_STATE_DIR/logs/gateway.log` 和 `gateway.err.log`
-- Linux systemd（如果已安装）：`journalctl --user -u openclaw-gateway[-<profile>].service -n 200 --no-pager`
-- Windows：`schtasks /Query /TN "OpenClaw Gateway (<profile>)" /V /FO LIST`
+**Logs:**
+- Preferred: `openclaw logs --follow`
+- File logs (always): `/tmp/openclaw/openclaw-YYYY-MM-DD.log` (or your configured `logging.file`)
+- macOS LaunchAgent (if installed): `$OPENCLAW_STATE_DIR/logs/gateway.log` and `gateway.err.log`
+- Linux systemd (if installed): `journalctl --user -u openclaw-gateway[-<profile>].service -n 200 --no-pager`
+- Windows: `schtasks /Query /TN "OpenClaw Gateway (<profile>)" /V /FO LIST`
 
-**启用更多日志记录：**
-- 提高文件日志详细程度（持久化JSONL）：
+**Enable more logging:**
+- Bump file log detail (persisted JSONL):
   ```json
   { "logging": { "level": "debug" } }
   ```
-- 提高控制台冗余度（仅TTY输出）：
+- Bump console verbosity (TTY output only):
   ```json
   { "logging": { "consoleLevel": "debug", "consoleStyle": "pretty" } }
   ```
-- 快速提示：`--verbose` 仅影响 **控制台** 输出。文件日志仍由 `logging.level` 控制。
+- Quick tip: `--verbose` affects **console** output only. File logs remain controlled by `logging.level`.
 
-有关格式、配置和访问的完整概述，请参阅 [/logging](/logging)。
+See [/logging](/logging) for a full overview of formats, config, and access.
 
-### “网关启动被阻止：设置gateway.mode=local”
+### "Gateway start blocked: set gateway.mode=local"
 
-这意味着配置存在，但 `gateway.mode` 未设置（或不是 `local`），因此网关拒绝启动。
+This means the config exists but `gateway.mode` is unset (or not `local`), so the
+Gateway refuses to start.
 
-**修复（推荐）：**
-- 运行向导并将网关运行模式设置为 **本地**：
+**Fix (recommended):**
+- Run the wizard and set the Gateway run mode to **Local**:
   ```bash
   openclaw configure
   ```
-- 或直接设置：
+- Or set it directly:
   ```bash
   openclaw config set gateway.mode local
   ```
 
-**如果您原本打算运行远程网关：**
-- 设置远程URL并保持 `gateway.mode=remote`：
+**If you meant to run a remote Gateway instead:**
+- Set a remote URL and keep `gateway.mode=remote`:
   ```bash
   openclaw config set gateway.mode remote
   openclaw config set gateway.remote.url "wss://gateway.example.com"
   ```
 
-**仅限临时/开发用途：** 传递 `--allow-unconfigured` 以在没有 `gateway.mode=local` 的情况下启动网关。
+**Ad-hoc/dev only:** pass `--allow-unconfigured` to start the gateway without
+`gateway.mode=local`.
 
-**还没有配置文件？** 运行 `openclaw setup` 创建初始配置，然后重新运行网关。
+**No config file yet?** Run `openclaw setup` to create a starter config, then rerun
+the gateway.
 
-### 服务环境（PATH + 运行时）
+### Service Environment (PATH + runtime)
 
-网关服务以 **最小化PATH** 运行，以避免shell/管理器的杂乱：
-- macOS：`/opt/homebrew/bin`、`/usr/local/bin`、`/usr/bin`、`/bin`
-- Linux：`/usr/local/bin`、`/usr/bin`、`/bin`
+The gateway service runs with a **minimal PATH** to avoid shell/manager cruft:
+- macOS: `/opt/homebrew/bin`, `/usr/local/bin`, `/usr/bin`, `/bin`
+- Linux: `/usr/local/bin`, `/usr/bin`, `/bin`
 
-这有意排除了版本管理器（nvm/fnm/volta/asdf）和包管理器（pnpm/npm），因为服务不会加载您的shell初始化。像 `DISPLAY` 这样的运行时变量应位于 `~/.openclaw/.env` 中（由网关提前加载）。
-执行运行于 `host=gateway`，将您的登录shell `PATH` 合并到执行环境中，因此缺少工具通常意味着您的shell初始化未导出它们（或设置了 `tools.exec.pathPrepend`）。请参阅 [/tools/exec](/tools/exec)。
+This intentionally excludes version managers (nvm/fnm/volta/asdf) and package
+managers (pnpm/npm) because the service does not load your shell init. Runtime
+variables like `DISPLAY` should live in `~/.openclaw/.env` (loaded early by the
+gateway).
+Exec runs on `host=gateway` merge your login-shell `PATH` into the exec environment,
+so missing tools usually mean your shell init isn’t exporting them (or set
+`tools.exec.pathPrepend`). See [/tools/exec](/tools/exec).
 
-WhatsApp + Telegram频道需要 **Node**；不支持Bun。如果您使用Bun或版本管理的Node路径安装了服务，运行 `openclaw doctor` 将其迁移到系统Node安装。
+WhatsApp + Telegram channels require **Node**; Bun is unsupported. If your
+service was installed with Bun or a version-managed Node path, run `openclaw doctor`
+to migrate to a system Node install.
 
-### 技能在沙盒中缺少API密钥
+### Skill missing API key in sandbox
 
-**症状：** 技能在主机上运行，但在沙盒中因缺少API密钥而失败。
+**Symptom:** Skill works on host but fails in sandbox with missing API key.
 
-**原因：** 沙盒中的执行运行在Docker内部， **不** 继承主机 `process.env`。
+**Why:** sandboxed exec runs inside Docker and does **not** inherit host `process.env`.
 
-**修复：**
-- 设置 `agents.defaults.sandbox.docker.env`（或按代理设置 `agents.list[].sandbox.docker.env`）
-- 或将密钥烘焙到您的自定义沙盒镜像中
-- 然后运行 `openclaw sandbox recreate --agent <id>`（或 `--all`）
+**Fix:**
+- set `agents.defaults.sandbox.docker.env` (or per-agent `agents.list[].sandbox.docker.env`)
+- or bake the key into your custom sandbox image
+- then run `openclaw sandbox recreate --agent <id>` (or `--all`)
 
-### 服务正在运行但端口未监听
+### Service Running but Port Not Listening
 
-如果服务报告 **正在运行**，但网关端口没有任何监听，网关很可能拒绝绑定。
+If the service reports **running** but nothing is listening on the gateway port,
+the Gateway likely refused to bind.
 
-**此处“正在运行”的含义**
-- `Runtime: running` 表示您的监控器（launchd/systemd/schtasks）认为进程还活着。
-- `RPC probe` 表示CLI实际上可以连接到网关WebSocket并调用 `status`。
-- 始终信任 `Probe target:` + `Config (service):` 作为“我们实际尝试了什么？”的线索。
+**What "running" means here**
+- `Runtime: running` means your supervisor (launchd/systemd/schtasks) thinks the process is alive.
+- `RPC probe` means the CLI could actually connect to the gateway WebSocket and call `status`.
+- Always trust `Probe target:` + `Config (service):` as the “what did we actually try?” lines.
 
-**检查：**
-- `gateway.mode` 必须是 `local`，以便 `openclaw gateway` 和服务能够正常运行。
-- 如果您设置了 `gateway.mode=remote`，**CLI默认** 使用远程URL。服务可能仍在本地运行，但您的CLI可能正在探测错误的位置。使用 `openclaw gateway status` 查看服务解析后的端口 + 探测目标（或传递 `--url`）。
-- `openclaw gateway status` 和 `openclaw doctor` 从日志中显示 **最近的网关错误**，即使服务看似运行，但端口已关闭。
-- 非环回绑定（`lan`/`tailnet`/`custom`，或在无法使用环回时使用 `auto`）需要身份验证：
-  `gateway.auth.token`（或 `OPENCLAW_GATEWAY_TOKEN`）。
-- `gateway.remote.token` 仅用于远程CLI调用；它 **不** 启用本地身份验证。
-- `gateway.token` 被忽略；请使用 `gateway.auth.token`。
+**Check:**
+- `gateway.mode` must be `local` for `openclaw gateway` and the service.
+- If you set `gateway.mode=remote`, the **CLI defaults** to a remote URL. The service can still be running locally, but your CLI may be probing the wrong place. Use `openclaw gateway status` to see the service’s resolved port + probe target (or pass `--url`).
+- `openclaw gateway status` and `openclaw doctor` surface the **last gateway error** from logs when the service looks running but the port is closed.
+- Non-loopback binds (`lan`/`tailnet`/`custom`, or `auto` when loopback is unavailable) require auth:
+  `gateway.auth.token` (or `OPENCLAW_GATEWAY_TOKEN`).
+- `gateway.remote.token` is for remote CLI calls only; it does **not** enable local auth.
+- `gateway.token` is ignored; use `gateway.auth.token`.
 
-**如果 `openclaw gateway status` 显示配置不匹配**
-- `Config (cli): ...` 和 `Config (service): ...` 通常应该匹配。
-- 如果不匹配，您几乎肯定是在服务运行时编辑另一个配置。
-- 修复：从您希望服务使用的同一 `--profile` / `OPENCLAW_STATE_DIR` 重新运行 `openclaw gateway install --force`。
+**If `openclaw gateway status` shows a config mismatch**
+- `Config (cli): ...` and `Config (service): ...` should normally match.
+- If they don’t, you’re almost certainly editing one config while the service is running another.
+- Fix: rerun `openclaw gateway install --force` from the same `--profile` / `OPENCLAW_STATE_DIR` you want the service to use.
 
-**如果 `openclaw gateway status` 报告服务配置问题**
-- 监控器配置（launchd/systemd/schtasks）缺少当前默认值。
-- 修复：运行 `openclaw doctor` 更新配置（或 `openclaw gateway install --force` 进行完全重写）。
+**If `openclaw gateway status` reports service config issues**
+- The supervisor config (launchd/systemd/schtasks) is missing current defaults.
+- Fix: run `openclaw doctor` to update it (or `openclaw gateway install --force` for a full rewrite).
 
-**如果 `Last gateway error:` 提及“拒绝绑定……没有身份验证”**
-- 您将 `gateway.bind` 设置为非环回模式（`lan`/`tailnet`/`custom`，或在无法使用环回时使用 `auto`），但未配置身份验证。
-- 修复：设置 `gateway.auth.mode` + `gateway.auth.token`（或导出 `OPENCLAW_GATEWAY_TOKEN`）并重启服务。
+**If `Last gateway error:` mentions “refusing to bind … without auth”**
+- You set `gateway.bind` to a non-loopback mode (`lan`/`tailnet`/`custom`, or `auto` when loopback is unavailable) but didn’t configure auth.
+- Fix: set `gateway.auth.mode` + `gateway.auth.token` (or export `OPENCLAW_GATEWAY_TOKEN`) and restart the service.
 
-**如果 `openclaw gateway status` 说 `bind=tailnet` 但未找到尾网接口**
-- 网关试图绑定到Tailscale IP（100.64.0.0/10），但主机上未检测到任何IP。
-- 修复：在该机器上启用Tailscale（或将 `gateway.bind` 更改为 `loopback`/`lan`）。
+**If `openclaw gateway status` says `bind=tailnet` but no tailnet interface was found**
+- The gateway tried to bind to a Tailscale IP (100.64.0.0/10) but none were detected on the host.
+- Fix: bring up Tailscale on that machine (or change `gateway.bind` to `loopback`/`lan`).
 
-**如果 `Probe note:` 说探测使用环回**
-- 对于 `bind=lan` 来说这是预期的：网关在 `0.0.0.0`（所有接口）上监听，环回仍然可以在本地连接。
-- 对于远程客户端，使用真实的LAN IP（不是 `0.0.0.0`）加上端口，并确保已配置身份验证。
+**If `Probe note:` says the probe uses loopback**
+- That’s expected for `bind=lan`: the gateway listens on `0.0.0.0` (all interfaces), and loopback should still connect locally.
+- For remote clients, use a real LAN IP (not `0.0.0.0`) plus the port, and ensure auth is configured.
 
-### 地址已被占用（端口18789）
+### Address Already in Use (Port 18789)
 
-这意味着网关端口上已经有东西在监听。
+This means something is already listening on the gateway port.
 
-**检查：**
+**Check:**
 ```bash
 openclaw gateway status
 ```
 
-它将显示监听者及其可能的原因（网关已在运行、SSH隧道）。如有必要，停止服务或选择其他端口。
+It will show the listener(s) and likely causes (gateway already running, SSH tunnel).
+If needed, stop the service or pick a different port.
 
-### 检测到额外的工作区文件夹
+### Extra Workspace Folders Detected
 
-如果您从旧版本升级，磁盘上可能仍有 `~/openclaw`。多个工作区目录可能导致身份验证混乱或状态漂移，因为只有一个工作区处于活动状态。
+If you upgraded from older installs, you might still have `~/openclaw` on disk.
+Multiple workspace directories can cause confusing auth or state drift because
+only one workspace is active.
 
-**修复：** 保留一个活动的工作区，并归档或删除其余的工作区。请参阅 [代理工作区](/concepts/agent-workspace#extra-workspace-folders)。
+**Fix:** keep a single active workspace and archive/remove the rest. See
+[Agent workspace](/concepts/agent-workspace#extra-workspace-folders).
 
-### 主聊天在沙盒工作区中运行
+### Main chat running in a sandbox workspace
 
-症状：`pwd` 或文件工具显示 `~/.openclaw/sandboxes/...`，尽管您期望的是主机工作区。
+Symptoms: `pwd` or file tools show `~/.openclaw/sandboxes/...` even though you
+expected the host workspace.
 
-**原因：** `agents.defaults.sandbox.mode: "non-main"` 依赖于 `session.mainKey`（默认 `"main"`）。
-群组/频道会话使用自己的密钥，因此被视为非主会话，并获得沙盒工作区。
+**Why:** `agents.defaults.sandbox.mode: "non-main"` keys off `session.mainKey` (default `"main"`).
+Group/channel sessions use their own keys, so they are treated as non-main and
+get sandbox workspaces.
 
-**修复选项：**
-- 如果您希望代理使用主机工作区：设置 `agents.list[].sandbox.mode: "off"`。
-- 如果您希望在沙盒中获得主机工作区访问权限：设置 `workspaceAccess: "rw"` 为该代理。
+**Fix options:**
+- If you want host workspaces for an agent: set `agents.list[].sandbox.mode: "off"`.
+- If you want host workspace access inside sandbox: set `workspaceAccess: "rw"` for that agent.
 
-### “代理被中止”
+### "Agent was aborted"
 
-代理在回复过程中被中断。
+The agent was interrupted mid-response.
 
-**原因：**
-- 用户发送了 `stop`、`abort`、`esc`、`wait` 或 `exit`
-- 超时
-- 进程崩溃
+**Causes:**
+- User sent `stop`, `abort`, `esc`, `wait`, or `exit`
+- Timeout exceeded
+- Process crashed
 
-**修复：** 再发一条消息即可。会话将继续。
+**Fix:** Just send another message. The session continues.
 
-### “代理在回复前失败：未知模型：anthropic/claude-haiku-3-5”
+### "Agent failed before reply: Unknown model: anthropic/claude-haiku-3-5"
 
-OpenClaw故意拒绝 **较旧/不安全的模型**（尤其是那些更容易受到提示注入攻击的模型）。如果您看到此错误，该模型名称已不再受支持。
+OpenClaw intentionally rejects **older/insecure models** (especially those more
+vulnerable to prompt injection). If you see this error, the model name is no
+longer supported.
 
-**修复：**
-- 为提供商选择 **最新** 的模型，并更新您的配置或模型别名。
-- 如果您不确定哪些模型可用，运行 `openclaw models list` 或 `openclaw models scan`，并选择一个受支持的模型。
-- 查看网关日志以获取详细的失败原因。
+**Fix:**
+- Pick a **latest** model for the provider and update your config or model alias.
+- If you’re unsure which models are available, run `openclaw models list` or
+  `openclaw models scan` and choose a supported one.
+- Check gateway logs for the detailed failure reason.
 
-另请参阅：[模型CLI](/cli/models) 和 [模型提供商](/concepts/model-providers)。
+See also: [Models CLI](/cli/models) and [Model providers](/concepts/model-providers).
 
-### 消息未触发
+### Messages Not Triggering
 
-**检查1：** 发件人是否被列入白名单？
+**Check 1:** Is the sender allowlisted?
 ```bash
 openclaw status
 ```
-在输出中查找 `AllowFrom: ...`。
+Look for `AllowFrom: ...` in the output.
 
-**检查2：** 对于群聊，是否需要提及？
+**Check 2:** For group chats, is mention required?
 ```bash
 # The message must match mentionPatterns or explicit mentions; defaults live in channel groups/guilds.
 # Multi-agent: `agents.list[].groupChat.mentionPatterns` overrides global patterns.
@@ -268,47 +295,47 @@ grep -n "agents\\|groupChat\\|mentionPatterns\\|channels\\.whatsapp\\.groups\\|c
   "${OPENCLAW_CONFIG_PATH:-$HOME/.openclaw/openclaw.json}"
 ```
 
-**检查3：** 检查日志
+**Check 3:** Check the logs
 ```bash
 openclaw logs --follow
 # or if you want quick filters:
 tail -f "$(ls -t /tmp/openclaw/openclaw-*.log | head -1)" | grep "blocked\\|skip\\|unauthorized"
 ```
 
-### 配对代码未到达
+### Pairing Code Not Arriving
 
-如果 `dmPolicy` 是 `pairing`，未知发件人应收到代码，在批准之前其消息将被忽略。
+If `dmPolicy` is `pairing`, unknown senders should receive a code and their message is ignored until approved.
 
-**检查1：** 是否已有待处理的请求在等待？
+**Check 1:** Is a pending request already waiting?
 ```bash
 openclaw pairing list <channel>
 ```
 
-默认情况下，每个频道的待处理DM配对请求上限为 **3个**。如果列表已满，新的请求将不会生成代码，直到其中一个被批准或过期。
+Pending DM pairing requests are capped at **3 per channel** by default. If the list is full, new requests won’t generate a code until one is approved or expires.
 
-**检查2：** 请求是否已创建但未收到回复？
+**Check 2:** Did the request get created but no reply was sent?
 ```bash
 openclaw logs --follow | grep "pairing request"
 ```
 
-**检查3：** 确认 `dmPolicy` 不是 `open`/`allowlist` 对于该频道。
+**Check 3:** Confirm `dmPolicy` isn’t `open`/`allowlist` for that channel.
 
-### 图片+提及不起作用
+### Image + Mention Not Working
 
-已知问题：当您仅发送带有提及的图片（没有其他文本）时，WhatsApp有时不会包含提及元数据。
+Known issue: When you send an image with ONLY a mention (no other text), WhatsApp sometimes doesn't include the mention metadata.
 
-**解决方法：** 在提及中添加一些文本：
-- ❌ `@openclaw` + 图片
-- ✅ `@openclaw check this` + 图片
+**Workaround:** Add some text with the mention:
+- ❌ `@openclaw` + image
+- ✅ `@openclaw check this` + image
 
-### 会话无法恢复
+### Session Not Resuming
 
-**检查1：** 会话文件是否存在？
+**Check 1:** Is the session file there?
 ```bash
 ls -la ~/.openclaw/agents/<agentId>/sessions/
 ```
 
-**检查2：** 重置窗口是否太短？
+**Check 2:** Is the reset window too short?
 ```json
 {
   "session": {
@@ -321,11 +348,11 @@ ls -la ~/.openclaw/agents/<agentId>/sessions/
 }
 ```
 
-**检查3：** 是否有人发送了 `/new`、`/reset` 或重置触发器？
+**Check 3:** Did someone send `/new`, `/reset`, or a reset trigger?
 
-### 代理超时
+### Agent Timing Out
 
-默认超时为30分钟。对于长时间任务：
+Default timeout is 30 minutes. For long tasks:
 
 ```json
 {
@@ -335,9 +362,9 @@ ls -la ~/.openclaw/agents/<agentId>/sessions/
 }
 ```
 
-或者使用 `process` 工具将长时间命令置于后台。
+Or use the `process` tool to background long commands.
 
-### WhatsApp断开连接
+### WhatsApp Disconnected
 
 ```bash
 # Check local status (creds, sessions, queued events)
@@ -349,13 +376,13 @@ openclaw status --deep
 openclaw logs --limit 200 | grep "connection\\|disconnect\\|logout"
 ```
 
-**修复：** 通常一旦网关运行，就会自动重新连接。如果您卡住了，重启网关进程（无论您如何监督它），或以详细输出手动运行：
+**Fix:** Usually reconnects automatically once the Gateway is running. If you’re stuck, restart the Gateway process (however you supervise it), or run it manually with verbose output:
 
 ```bash
 openclaw gateway --verbose
 ```
 
-如果您已注销/取消链接：
+If you’re logged out / unlinked:
 
 ```bash
 openclaw channels logout
@@ -363,28 +390,28 @@ trash "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}/credentials" # if logout can't cle
 openclaw channels login --verbose       # re-scan QR
 ```
 
-### 媒体发送失败
+### Media Send Failing
 
-**检查1：** 文件路径是否有效？
+**Check 1:** Is the file path valid?
 ```bash
 ls -la /path/to/your/image.jpg
 ```
 
-**检查2：** 是否太大？
-- 图片：最大6MB
-- 音频/视频：最大16MB  
-- 文档：最大100MB
+**Check 2:** Is it too large?
+- Images: max 6MB
+- Audio/Video: max 16MB  
+- Documents: max 100MB
 
-**检查3：** 检查媒体日志
+**Check 3:** Check media logs
 ```bash
 grep "media\\|fetch\\|download" "$(ls -t /tmp/openclaw/openclaw-*.log | head -1)" | tail -20
 ```
 
-### 内存使用率高
+### High Memory Usage
 
-OpenClaw在内存中保存对话历史。
+OpenClaw keeps conversation history in memory.
 
-**修复：** 定期重启或设置会话限制：
+**Fix:** Restart periodically or set session limits:
 ```json
 {
   "session": {
@@ -393,33 +420,34 @@ OpenClaw在内存中保存对话历史。
 }
 ```
 
-## 常见故障排除
+## Common troubleshooting
 
-### “网关无法启动——配置无效”
+### “Gateway won’t start — configuration invalid”
 
-OpenClaw现在会在配置包含未知键、格式错误的值或无效类型时拒绝启动。这是出于安全考虑。
+OpenClaw now refuses to start when the config contains unknown keys, malformed values, or invalid types.
+This is intentional for safety.
 
-使用Doctor修复：
+Fix it with Doctor:
 ```bash
 openclaw doctor
 openclaw doctor --fix
 ```
 
-注意事项：
-- `openclaw doctor` 报告每个无效条目。
-- `openclaw doctor --fix` 应用迁移/修复并重写配置。
-- 即使配置无效，诊断命令如 `openclaw logs`、`openclaw health`、`openclaw status`、`openclaw gateway status` 和 `openclaw gateway probe` 仍然可以运行。
+Notes:
+- `openclaw doctor` reports every invalid entry.
+- `openclaw doctor --fix` applies migrations/repairs and rewrites the config.
+- Diagnostic commands like `openclaw logs`, `openclaw health`, `openclaw status`, `openclaw gateway status`, and `openclaw gateway probe` still run even if the config is invalid.
 
-### “所有模型都失败”——我首先应该检查什么？
+### “All models failed” — what should I check first?
 
-- **凭证** 是否适用于正在尝试的提供商（身份验证配置文件 + 环境变量）。
-- **模型路由**：确认 `agents.defaults.model.primary` 和后备模型是您可以访问的模型。
-- **网关日志** 在 `/tmp/openclaw/…` 中查看确切的提供商错误。
-- **模型状态**：使用 `/model status`（聊天）或 `openclaw models status`（CLI）。
+- **Credentials** present for the provider(s) being tried (auth profiles + env vars).
+- **Model routing**: confirm `agents.defaults.model.primary` and fallbacks are models you can access.
+- **Gateway logs** in `/tmp/openclaw/…` for the exact provider error.
+- **Model status**: use `/model status` (chat) or `openclaw models status` (CLI).
 
-### 我使用个人WhatsApp号码——为什么自我聊天很奇怪？
+### I’m running on my personal WhatsApp number — why is self-chat weird?
 
-启用自我聊天模式并把您自己的号码列入白名单：
+Enable self-chat mode and allowlist your own number:
 
 ```json5
 {
@@ -433,29 +461,29 @@ openclaw doctor --fix
 }
 ```
 
-请参阅 [WhatsApp设置](/channels/whatsapp)。
+See [WhatsApp setup](/channels/whatsapp).
 
-### WhatsApp让我注销了。我如何重新认证？
+### WhatsApp logged me out. How do I re‑auth?
 
-再次运行登录命令并扫描二维码：
+Run the login command again and scan the QR code:
 
 ```bash
 openclaw channels login
 ```
 
-### 在 `main` 上出现构建错误——标准修复路径是什么？
+### Build errors on `main` — what’s the standard fix path?
 
 1) `git pull origin main && pnpm install`
 2) `openclaw doctor`
-3) 检查GitHub问题或Discord
-4) 临时解决方案：检出较早的提交
+3) Check GitHub issues or Discord
+4) Temporary workaround: check out an older commit
 
-### npm install失败（允许构建脚本/缺少tar或yargs）。现在怎么办？
+### npm install fails (allow-build-scripts / missing tar or yargs). What now?
 
-如果您是从源代码运行，使用仓库的包管理器：**pnpm**（推荐）。
-仓库声明了 `packageManager: "pnpm@…"`。
+If you’re running from source, use the repo’s package manager: **pnpm** (preferred).
+The repo declares `packageManager: "pnpm@…"`.
 
-典型恢复：
+Typical recovery:
 ```bash
 git status   # ensure you’re in the repo root
 pnpm install
@@ -464,125 +492,130 @@ openclaw doctor
 openclaw gateway restart
 ```
 
-原因：pnpm是此仓库的配置包管理器。
+Why: pnpm is the configured package manager for this repo.
 
-### 如何在git安装和npm安装之间切换？
+### How do I switch between git installs and npm installs?
 
-使用 **网站安装程序** 并通过标志选择安装方法。它会就地升级，并将网关服务重定向到新的安装。
+Use the **website installer** and select the install method with a flag. It
+upgrades in place and rewrites the gateway service to point at the new install.
 
-切换 **到git安装**：
+Switch **to git install**:
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git --no-onboard
 ```
 
-切换 **到npm全局**：
+Switch **to npm global**:
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash
 ```
 
-注意：
-- git流程仅在仓库干净时才会变基。请先提交或暂存更改。
-- 切换后，运行：
+Notes:
+- The git flow only rebases if the repo is clean. Commit or stash changes first.
+- After switching, run:
   ```bash
   openclaw doctor
   openclaw gateway restart
   ```
 
-### Telegram块流未能在工具调用之间分割文本。为什么？
+### Telegram block streaming isn’t splitting text between tool calls. Why?
 
-块流仅发送 **已完成的文本块**。您看到单条消息的常见原因：
-- `agents.defaults.blockStreamingDefault` 仍然是 `"off"`。
-- `channels.telegram.blockStreaming` 设置为 `false`。
-- `channels.telegram.streamMode` 是 `partial` 或 `block` **并且草案流处于活动状态**
-  （私人聊天 + 主题）。在这种情况下，草案流会禁用块流。
-- 你的 `minChars` / 聚合设置太高，导致块被合并。
-- 模型发出一个大文本块（没有中间回复刷新点）。
+Block streaming only sends **completed text blocks**. Common reasons you see a single message:
+- `agents.defaults.blockStreamingDefault` is still `"off"`.
+- `channels.telegram.blockStreaming` is set to `false`.
+- `channels.telegram.streamMode` is `partial` or `block` **and draft streaming is active**
+  (private chat + topics). Draft streaming disables block streaming in that case.
+- Your `minChars` / coalesce settings are too high, so chunks get merged.
+- The model emits one large text block (no mid‑reply flush points).
 
-修复清单：
-1) 将块流设置放在 `agents.defaults` 下，而不是根下。
-2) 如果你想要真正的多消息块回复，设置 `channels.telegram.streamMode: "off"`。
-3) 在调试时使用更小的块/聚合阈值。
+Fix checklist:
+1) Put block streaming settings under `agents.defaults`, not the root.
+2) Set `channels.telegram.streamMode: "off"` if you want real multi‑message block replies.
+3) Use smaller chunk/coalesce thresholds while debugging.
 
-请参阅 [流式传输](/concepts/streaming)。
+See [Streaming](/concepts/streaming).
 
-### Discord在我的服务器中即使有 `requireMention: false` 也不回复。为什么？
+### Discord doesn’t reply in my server even with `requireMention: false`. Why?
 
-`requireMention` 仅在频道通过白名单后才控制提及** gating**。
-默认 `channels.discord.groupPolicy` 是 **白名单**，因此公会必须明确启用。
-如果您设置了 `channels.discord.guilds.<guildId>.channels`，只有列出的频道才被允许；省略它以允许公会中的所有频道。
+`requireMention` only controls mention‑gating **after** the channel passes allowlists.
+By default `channels.discord.groupPolicy` is **allowlist**, so guilds must be explicitly enabled.
+If you set `channels.discord.guilds.<guildId>.channels`, only the listed channels are allowed; omit it to allow all channels in the guild.
 
-修复清单：
-1) 设置 `channels.discord.groupPolicy: "open"` **或** 添加公会白名单条目（并可选添加频道白名单）。
-2) 在 `channels.discord.guilds.<guildId>.channels` 中使用 **数字频道ID**。
-3) 将 `requireMention: false` 放在 `channels.discord.guilds`（全局或每频道） **之下**。
-   顶级 `channels.discord.requireMention` 不是支持的密钥。
-4) 确保机器人具有 **消息内容意图** 和频道权限。
-5) 运行 `openclaw channels status --probe` 获取审计提示。
+Fix checklist:
+1) Set `channels.discord.groupPolicy: "open"` **or** add a guild allowlist entry (and optionally a channel allowlist).
+2) Use **numeric channel IDs** in `channels.discord.guilds.<guildId>.channels`.
+3) Put `requireMention: false` **under** `channels.discord.guilds` (global or per‑channel).
+   Top‑level `channels.discord.requireMention` is not a supported key.
+4) Ensure the bot has **Message Content Intent** and channel permissions.
+5) Run `openclaw channels status --probe` for audit hints.
 
-文档：[Discord](/channels/discord), [渠道故障排除](/channels/troubleshooting)。
+Docs: [Discord](/channels/discord), [Channels troubleshooting](/channels/troubleshooting).
 
-### Cloud Code Assist API错误：无效工具模式（400）。现在怎么办？
+### Cloud Code Assist API error: invalid tool schema (400). What now?
 
-这几乎总是 **工具模式兼容性** 问题。Cloud Code Assist端点接受JSON Schema的严格子集。OpenClaw在当前 `main` 中清理/规范化工具模式，但修复尚未在最新版本中实现（截至2026年1月13日）。
+This is almost always a **tool schema compatibility** issue. The Cloud Code Assist
+endpoint accepts a strict subset of JSON Schema. OpenClaw scrubs/normalizes tool
+schemas in current `main`, but the fix is not in the last release yet (as of
+January 13, 2026).
 
-修复清单：
-1) **更新OpenClaw**：
-   - 如果您可以从源代码运行，拉取 `main` 并重启网关。
-   - 否则，等待包含模式清理器的下一个版本。
-2) 避免使用不支持的关键字，如 `anyOf/oneOf/allOf`、`patternProperties`、
-   `additionalProperties`、`minLength`、`maxLength`、`format`等。
-3) 如果您定义自定义工具，保持顶级模式为 `type: "object"`，并使用 `properties` 和简单的枚举。
+Fix checklist:
+1) **Update OpenClaw**:
+   - If you can run from source, pull `main` and restart the gateway.
+   - Otherwise, wait for the next release that includes the schema scrubber.
+2) Avoid unsupported keywords like `anyOf/oneOf/allOf`, `patternProperties`,
+   `additionalProperties`, `minLength`, `maxLength`, `format`, etc.
+3) If you define custom tools, keep the top‑level schema as `type: "object"` with
+   `properties` and simple enums.
 
-请参阅 [工具](/tools) 和 [TypeBox模式](/concepts/typebox)。
+See [Tools](/tools) and [TypeBox schemas](/concepts/typebox).
 
-## macOS特有问题
+## macOS Specific Issues
 
-### 应用在授予权限时崩溃（语音/麦克风）
+### App Crashes when Granting Permissions (Speech/Mic)
 
-如果应用在您点击隐私提示中的“允许”时消失或显示“Abort trap 6”：
+If the app disappears or shows "Abort trap 6" when you click "Allow" on a privacy prompt:
 
-**修复1：重置TCC缓存**
+**Fix 1: Reset TCC Cache**
 ```bash
 tccutil reset All bot.molt.mac.debug
 ```
 
-**修复2：强制使用新的捆绑ID**
-如果重置无效，更改 [`scripts/package-mac-app.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-app.sh) 中的 `BUNDLE_ID`（例如，添加一个 `.test` 后缀）并重新构建。这迫使macOS将其视为新应用。
+**Fix 2: Force New Bundle ID**
+If resetting doesn't work, change the `BUNDLE_ID` in [`scripts/package-mac-app.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-app.sh) (e.g., add a `.test` suffix) and rebuild. This forces macOS to treat it as a new app.
 
-### 网关卡在“启动中...”
+### Gateway stuck on "Starting..."
 
-该应用连接到本地网关，端口为 `18789`。如果它一直卡住：
+The app connects to a local gateway on port `18789`. If it stays stuck:
 
-**修复1：停止监控器（推荐）**
-如果网关由launchd监控，杀死PID只会让它重新启动。先停止监控器：
+**Fix 1: Stop the supervisor (preferred)**
+If the gateway is supervised by launchd, killing the PID will just respawn it. Stop the supervisor first:
 ```bash
 openclaw gateway status
 openclaw gateway stop
 # Or: launchctl bootout gui/$UID/bot.molt.gateway (replace with bot.molt.<profile>; legacy com.openclaw.* still works)
 ```
 
-**修复2：端口繁忙（查找监听者）**
+**Fix 2: Port is busy (find the listener)**
 ```bash
 lsof -nP -iTCP:18789 -sTCP:LISTEN
 ```
 
-如果它是不受监督的进程，先尝试优雅地停止，然后采取更激进的措施：
+If it’s an unsupervised process, try a graceful stop first, then escalate:
 ```bash
 kill -TERM <PID>
 sleep 1
 kill -9 <PID> # last resort
 ```
 
-**修复3：检查CLI安装**
-确保全局 `openclaw` CLI已安装，并与应用版本匹配：
+**Fix 3: Check the CLI install**
+Ensure the global `openclaw` CLI is installed and matches the app version:
 ```bash
 openclaw --version
 npm install -g openclaw@<version>
 ```
 
-## 调试模式
+## Debug Mode
 
-获取详细日志：
+Get verbose logging:
 
 ```bash
 # Turn on trace logging in config:
@@ -593,17 +626,17 @@ openclaw gateway --verbose
 openclaw channels login --verbose
 ```
 
-## 日志位置
+## Log Locations
 
-| 日志 | 位置 |
+| Log | Location |
 |-----|----------|
-| 网关文件日志（结构化） | `/tmp/openclaw/openclaw-YYYY-MM-DD.log`（或 `logging.file`） |
-| 网关服务日志（监控器） | macOS：`$OPENCLAW_STATE_DIR/logs/gateway.log` + `gateway.err.log`（默认：`~/.openclaw/logs/...`；配置文件使用 `~/.openclaw-<profile>/logs/...`）<br />Linux：`journalctl --user -u openclaw-gateway[-<profile>].service -n 200 --no-pager`<br />Windows：`schtasks /Query /TN "OpenClaw Gateway (<profile>)" /V /FO LIST` |
-| 会话文件 | `$OPENCLAW_STATE_DIR/agents/<agentId>/sessions/` |
-| 媒体缓存 | `$OPENCLAW_STATE_DIR/media/` |
-| 凭证 | `$OPENCLAW_STATE_DIR/credentials/` |
+| Gateway file logs (structured) | `/tmp/openclaw/openclaw-YYYY-MM-DD.log` (or `logging.file`) |
+| Gateway service logs (supervisor) | macOS: `$OPENCLAW_STATE_DIR/logs/gateway.log` + `gateway.err.log` (default: `~/.openclaw/logs/...`; profiles use `~/.openclaw-<profile>/logs/...`)<br />Linux: `journalctl --user -u openclaw-gateway[-<profile>].service -n 200 --no-pager`<br />Windows: `schtasks /Query /TN "OpenClaw Gateway (<profile>)" /V /FO LIST` |
+| Session files | `$OPENCLAW_STATE_DIR/agents/<agentId>/sessions/` |
+| Media cache | `$OPENCLAW_STATE_DIR/media/` |
+| Credentials | `$OPENCLAW_STATE_DIR/credentials/` |
 
-## 健康检查
+## Health Check
 
 ```bash
 # Supervisor + probe target + config paths
@@ -625,9 +658,9 @@ openclaw logs --follow
 tail -20 /tmp/openclaw/openclaw-*.log
 ```
 
-## 重置一切
+## Reset Everything
 
-终极方案：
+Nuclear option:
 
 ```bash
 openclaw gateway stop
@@ -639,37 +672,37 @@ openclaw channels login         # re-pair WhatsApp
 openclaw gateway restart           # or: openclaw gateway
 ```
 
-⚠️ 这将丢失所有会话，并需要重新配对WhatsApp。
+⚠️ This loses all sessions and requires re-pairing WhatsApp.
 
-## 获取帮助
+## Getting Help
 
-1. 先查看日志：`/tmp/openclaw/`（默认：`openclaw-YYYY-MM-DD.log`，或您配置的 `logging.file`）
-2. 在GitHub上搜索现有问题
-3. 打开新问题，提供：
-   - OpenClaw版本
-   - 相关日志片段
-   - 复现步骤
-   - 您的配置（隐藏秘密！）
+1. Check logs first: `/tmp/openclaw/` (default: `openclaw-YYYY-MM-DD.log`, or your configured `logging.file`)
+2. Search existing issues on GitHub
+3. Open a new issue with:
+   - OpenClaw version
+   - Relevant log snippets
+   - Steps to reproduce
+   - Your config (redact secrets!)
 
 ---
 
-*“你试过关机再开机吗？”* — 每一位IT人员都会这么说
+*"Have you tried turning it off and on again?"* — Every IT person ever
 
 🦞🔧
 
-### 浏览器无法启动（Linux）
+### Browser Not Starting (Linux)
 
-如果您看到 `"Failed to start Chrome CDP on port 18800"`：
+If you see `"Failed to start Chrome CDP on port 18800"`:
 
-**最可能的原因：** Ubuntu上的Snap打包Chromium。
+**Most likely cause:** Snap-packaged Chromium on Ubuntu.
 
-**快速修复：** 安装Google Chrome代替：
+**Quick fix:** Install Google Chrome instead:
 ```bash
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 ```
 
-然后在配置中设置：
+Then set in config:
 ```json
 {
   "browser": {
@@ -678,4 +711,4 @@ sudo dpkg -i google-chrome-stable_current_amd64.deb
 }
 ```
 
-**完整指南：** 请参阅 [browser-linux-troubleshooting](/tools/browser-linux-troubleshooting)
+**Full guide:** See [browser-linux-troubleshooting](/tools/browser-linux-troubleshooting)

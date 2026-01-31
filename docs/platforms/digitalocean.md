@@ -1,59 +1,60 @@
 ---
-summary: OpenClaw on DigitalOcean (simple paid VPS option)
+summary: "OpenClaw on DigitalOcean (simple paid VPS option)"
 read_when:
   - Setting up OpenClaw on DigitalOcean
   - Looking for cheap VPS hosting for OpenClaw
 ---
-# 在 DigitalOcean 上部署 OpenClaw
 
-## 目标
+# OpenClaw on DigitalOcean
 
-在 DigitalOcean 上以 **每月 6 美元**（或使用预留定价时为每月 4 美元）运行一个持久的 OpenClaw 网关。
+## Goal
 
-如果你想要一个零成本选项，并且不介意使用 ARM 架构及特定云提供商的设置，可以参考 [Oracle Cloud 指南](/platforms/oracle)。
+Run a persistent OpenClaw Gateway on DigitalOcean for **$6/month** (or $4/mo with reserved pricing).
 
-## 成本对比（2026 年）
+If you want a $0/month option and don’t mind ARM + provider-specific setup, see the [Oracle Cloud guide](/platforms/oracle).
 
-| 云提供商 | 方案 | 规格 | 月费 | 备注 |
+## Cost Comparison (2026)
+
+| Provider | Plan | Specs | Price/mo | Notes |
 |----------|------|-------|----------|-------|
-| Oracle Cloud | Always Free ARM | 最高 4 OCPU，24GB RAM | $0 | ARM 架构，容量有限，注册流程较为复杂 |
-| Hetzner | CX22 | 2 vCPU，4GB RAM | €3.79（约 $4） | 最便宜的付费方案 |
-| DigitalOcean | Basic | 1 vCPU，1GB RAM | $6 | 界面简单易用，文档完善 |
-| Vultr | Cloud Compute | 1 vCPU，1GB RAM | $6 | 数据中心分布广泛 |
-| Linode | Nanode | 1 vCPU，1GB RAM | $5 | 现已并入 Akamai 生态系统 |
+| Oracle Cloud | Always Free ARM | up to 4 OCPU, 24GB RAM | $0 | ARM, limited capacity / signup quirks |
+| Hetzner | CX22 | 2 vCPU, 4GB RAM | €3.79 (~$4) | Cheapest paid option |
+| DigitalOcean | Basic | 1 vCPU, 1GB RAM | $6 | Easy UI, good docs |
+| Vultr | Cloud Compute | 1 vCPU, 1GB RAM | $6 | Many locations |
+| Linode | Nanode | 1 vCPU, 1GB RAM | $5 | Now part of Akamai |
 
-**选择云提供商：**
-- DigitalOcean：最简单的用户体验 + 可预测的部署流程（本指南）
-- Hetzner：性价比高（参见 [Hetzner 指南](/platforms/hetzner)）
-- Oracle Cloud：理论上可实现零成本，但配置更复杂且仅支持 ARM 架构（参见 [Oracle 指南](/platforms/oracle)）
+**Picking a provider:**
+- DigitalOcean: simplest UX + predictable setup (this guide)
+- Hetzner: good price/perf (see [Hetzner guide](/platforms/hetzner))
+- Oracle Cloud: can be $0/month, but is more finicky and ARM-only (see [Oracle guide](/platforms/oracle))
 
 ---
 
-## 前置条件
+## Prerequisites
 
-- DigitalOcean 账户（[注册即享 $200 免费额度](https://m.do.co/c/signup)）
-- SSH 密钥对（或愿意使用密码认证）
-- 大约 20 分钟时间
+- DigitalOcean account ([signup with $200 free credit](https://m.do.co/c/signup))
+- SSH key pair (or willingness to use password auth)
+- ~20 minutes
 
-## 1) 创建 Droplet
+## 1) Create a Droplet
 
-1. 登录 [DigitalOcean](https://cloud.digitalocean.com/)
-2. 点击 **创建 → Droplets**
-3. 选择：
-   - **区域：** 最靠近你（或你的用户）的区域
-   - **镜像：** Ubuntu 24.04 LTS
-   - **规格：** Basic → Regular → **$6/月**（1 vCPU，1GB RAM，25GB SSD）
-   - **认证方式：** 推荐使用 SSH 密钥，也可使用密码
-4. 点击 **创建 Droplet**
-5. 记下 IP 地址
+1. Log into [DigitalOcean](https://cloud.digitalocean.com/)
+2. Click **Create → Droplets**
+3. Choose:
+   - **Region:** Closest to you (or your users)
+   - **Image:** Ubuntu 24.04 LTS
+   - **Size:** Basic → Regular → **$6/mo** (1 vCPU, 1GB RAM, 25GB SSD)
+   - **Authentication:** SSH key (recommended) or password
+4. Click **Create Droplet**
+5. Note the IP address
 
-## 2) 通过 SSH 连接
+## 2) Connect via SSH
 
 ```bash
 ssh root@YOUR_DROPLET_IP
 ```
 
-## 3) 安装 OpenClaw
+## 3) Install OpenClaw
 
 ```bash
 # Update system
@@ -70,19 +71,19 @@ curl -fsSL https://openclaw.bot/install.sh | bash
 openclaw --version
 ```
 
-## 4) 运行初始化向导
+## 4) Run Onboarding
 
 ```bash
 openclaw onboard --install-daemon
 ```
 
-向导将引导你完成以下步骤：
-- 模型认证（API 密钥或 OAuth）
-- 渠道设置（Telegram、WhatsApp、Discord 等）
-- 网关令牌（自动生成）
-- 守护进程安装（systemd）
+The wizard will walk you through:
+- Model auth (API keys or OAuth)
+- Channel setup (Telegram, WhatsApp, Discord, etc.)
+- Gateway token (auto-generated)
+- Daemon installation (systemd)
 
-## 5) 验证网关
+## 5) Verify the Gateway
 
 ```bash
 # Check status
@@ -95,11 +96,11 @@ systemctl --user status openclaw-gateway.service
 journalctl --user -u openclaw-gateway.service -f
 ```
 
-## 6) 访问仪表板
+## 6) Access the Dashboard
 
-默认情况下，网关绑定到本地回环。要访问控制界面：
+The gateway binds to loopback by default. To access the Control UI:
 
-**选项 A：SSH 隧道（推荐）**
+**Option A: SSH Tunnel (recommended)**
 ```bash
 # From your local machine
 ssh -L 18789:localhost:18789 root@YOUR_DROPLET_IP
@@ -107,7 +108,7 @@ ssh -L 18789:localhost:18789 root@YOUR_DROPLET_IP
 # Then open: http://localhost:18789
 ```
 
-**选项 B：Tailscale Serve（HTTPS，仅限回环）**
+**Option B: Tailscale Serve (HTTPS, loopback-only)**
 ```bash
 # On the droplet
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -118,21 +119,21 @@ openclaw config set gateway.tailscale.mode serve
 openclaw gateway restart
 ```
 
-打开： `https://<magicdns>/`
+Open: `https://<magicdns>/`
 
-注意事项：
-- Serve 会将网关限制在本地回环内，并通过 Tailscale 身份头进行身份验证。
-- 如果需要使用令牌或密码进行验证，可设置 `gateway.auth.allowTailscale: false` 或使用 `gateway.auth.mode: "password"`。
+Notes:
+- Serve keeps the Gateway loopback-only and authenticates via Tailscale identity headers.
+- To require token/password instead, set `gateway.auth.allowTailscale: false` or use `gateway.auth.mode: "password"`.
 
-**选项 C：Tailnet 绑定（无需 Serve）**
+**Option C: Tailnet bind (no Serve)**
 ```bash
 openclaw config set gateway.bind tailnet
 openclaw gateway restart
 ```
 
-打开： `http://<tailscale-ip>:18789`（需要令牌）。
+Open: `http://<tailscale-ip>:18789` (token required).
 
-## 7) 连接你的渠道
+## 7) Connect Your Channels
 
 ### Telegram
 ```bash
@@ -146,15 +147,15 @@ openclaw channels login whatsapp
 # Scan QR code
 ```
 
-有关其他渠道的设置，请参阅 [渠道指南](/channels)。
+See [Channels](/channels) for other providers.
 
 ---
 
-## 针对 1GB RAM 的优化
+## Optimizations for 1GB RAM
 
-$6 的 Droplet 仅有 1GB RAM。为确保系统平稳运行：
+The $6 droplet only has 1GB RAM. To keep things running smoothly:
 
-### 添加交换空间（推荐）
+### Add swap (recommended)
 ```bash
 fallocate -l 2G /swapfile
 chmod 600 /swapfile
@@ -163,12 +164,12 @@ swapon /swapfile
 echo '/swapfile none swap sw 0 0' >> /etc/fstab
 ```
 
-### 使用轻量级模型
-如果遇到内存不足问题，可以考虑：
-- 使用基于 API 的模型（如 Claude、GPT），而非本地模型
-- 将 `agents.defaults.model.primary` 设置为较小的模型
+### Use a lighter model
+If you're hitting OOMs, consider:
+- Using API-based models (Claude, GPT) instead of local models
+- Setting `agents.defaults.model.primary` to a smaller model
 
-### 监控内存使用情况
+### Monitor memory
 ```bash
 free -h
 htop
@@ -176,54 +177,54 @@ htop
 
 ---
 
-## 数据持久性
+## Persistence
 
-所有状态存储于：
-- `~/.openclaw/` — 配置、凭据、会话数据
-- `~/.openclaw/workspace/` — 工作区（SOUL.md、记忆等）
+All state lives in:
+- `~/.openclaw/` — config, credentials, session data
+- `~/.openclaw/workspace/` — workspace (SOUL.md, memory, etc.)
 
-这些数据在重启后仍会保留。请定期备份：
+These survive reboots. Back them up periodically:
 ```bash
 tar -czvf openclaw-backup.tar.gz ~/.openclaw ~/.openclaw/workspace
 ```
 
 ---
 
-## Oracle Cloud 免费替代方案
+## Oracle Cloud Free Alternative
 
-Oracle Cloud 提供 **Always Free** ARM 实例，其性能远超此处任何付费方案——而且完全免费。
+Oracle Cloud offers **Always Free** ARM instances that are significantly more powerful than any paid option here — for $0/month.
 
-| 你能获得什么 | 规格 |
+| What you get | Specs |
 |--------------|-------|
 | **4 OCPUs** | ARM Ampere A1 |
-| **24GB RAM** | 足够使用 |
-| **200GB 存储** | 块存储卷 |
-| **永久免费** | 无需信用卡收费 |
+| **24GB RAM** | More than enough |
+| **200GB storage** | Block volume |
+| **Forever free** | No credit card charges |
 
-**注意事项：**
-- 注册过程可能比较复杂（失败时请重试）
-- ARM 架构——大多数软件都能正常运行，但部分二进制文件需要 ARM 版本
+**Caveats:**
+- Signup can be finicky (retry if it fails)
+- ARM architecture — most things work, but some binaries need ARM builds
 
-完整的部署指南请参阅 [Oracle Cloud](/platforms/oracle)。有关注册技巧和注册流程故障排除，请参阅这份 [社区指南](https://gist.github.com/rssnyder/51e3cfedd730e7dd5f4a816143b25dbd)。
+For the full setup guide, see [Oracle Cloud](/platforms/oracle). For signup tips and troubleshooting the enrollment process, see this [community guide](https://gist.github.com/rssnyder/51e3cfedd730e7dd5f4a816143b25dbd).
 
 ---
 
-## 故障排除
+## Troubleshooting
 
-### 网关无法启动
+### Gateway won't start
 ```bash
 openclaw gateway status
 openclaw doctor --non-interactive
 journalctl -u openclaw --no-pager -n 50
 ```
 
-### 端口已被占用
+### Port already in use
 ```bash
 lsof -i :18789
 kill <PID>
 ```
 
-### 内存不足
+### Out of memory
 ```bash
 # Check memory
 free -h
@@ -234,9 +235,9 @@ free -h
 
 ---
 
-## 更多信息
+## See Also
 
-- [Hetzner 指南](/platforms/hetzner) — 更便宜、性能更强
-- [Docker 安装](/install/docker) — 容器化部署
-- [Tailscale](/gateway/tailscale) — 安全的远程访问
-- [配置](/gateway/configuration) — 完整配置参考
+- [Hetzner guide](/platforms/hetzner) — cheaper, more powerful
+- [Docker install](/install/docker) — containerized setup
+- [Tailscale](/gateway/tailscale) — secure remote access
+- [Configuration](/gateway/configuration) — full config reference

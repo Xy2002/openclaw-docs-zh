@@ -1,41 +1,43 @@
 ---
-summary: 'Per-agent sandbox + tool restrictions, precedence, and examples'
+summary: "Per-agent sandbox + tool restrictions, precedence, and examples"
 title: Multi-Agent Sandbox & Tools
-read_when: >-
-  You want per-agent sandboxing or per-agent tool allow/deny policies in a
-  multi-agent gateway.
+read_when: "You want per-agent sandboxing or per-agent tool allow/deny policies in a multi-agent gateway."
 status: active
 ---
-# 多智能体沙盒与工具配置
 
-## 概述
+# Multi-Agent Sandbox & Tools Configuration
 
-在多智能体设置中，每个智能体现在可以拥有自己的：
-- **沙盒配置**（`agents.list[].sandbox` 优先于 `agents.defaults.sandbox`）
-- **工具限制**（`tools.allow` / `tools.deny`，以及 `agents.list[].tools`）
+## Overview
 
-这使您能够以不同的安全配置运行多个智能体：
-- 具有完全访问权限的个人助理
-- 工具受限的家庭或工作智能体
-- 运行在沙盒中的面向公众的智能体
+Each agent in a multi-agent setup can now have its own:
+- **Sandbox configuration** (`agents.list[].sandbox` overrides `agents.defaults.sandbox`)
+- **Tool restrictions** (`tools.allow` / `tools.deny`, plus `agents.list[].tools`)
 
-`setupCommand` 属于 `sandbox.docker`（全局或按智能体），并在容器创建时运行一次。
+This allows you to run multiple agents with different security profiles:
+- Personal assistant with full access
+- Family/work agents with restricted tools
+- Public-facing agents in sandboxes
 
-身份验证是按智能体进行的：每个智能体从其自身的 `agentDir` 身份验证存储中读取，路径为：
+`setupCommand` belongs under `sandbox.docker` (global or per-agent) and runs once
+when the container is created.
+
+Auth is per-agent: each agent reads from its own `agentDir` auth store at:
 
 ```
 ~/.openclaw/agents/<agentId>/agent/auth-profiles.json
 ```
 
-智能体之间**不共享**凭据。请勿在不同智能体之间重复使用 `agentDir`。如果需要共享凭据，请将 `auth-profiles.json` 复制到另一个智能体的 `agentDir` 中。
+Credentials are **not** shared between agents. Never reuse `agentDir` across agents.
+If you want to share creds, copy `auth-profiles.json` into the other agent's `agentDir`.
 
-有关沙盒在运行时的行为，请参阅 [沙盒](/gateway/sandboxing)。如需调试“为什么此操作被阻止？”，请参阅 [沙盒 vs 工具策略 vs 提升权限](/gateway/sandbox-vs-tool-policy-vs-elevated) 和 `openclaw sandbox explain`。
+For how sandboxing behaves at runtime, see [Sandboxing](/gateway/sandboxing).
+For debugging “why is this blocked?”, see [Sandbox vs Tool Policy vs Elevated](/gateway/sandbox-vs-tool-policy-vs-elevated) and `openclaw sandbox explain`.
 
 ---
 
-## 配置示例
+## Configuration Examples
 
-### 示例 1：个人助理 + 受限家庭智能体
+### Example 1: Personal + Restricted Family Agent
 
 ```json
 {
@@ -79,13 +81,13 @@ status: active
 }
 ```
 
-**结果：**
-- `main` 智能体：在主机上运行，可使用所有工具
-- `family` 智能体：在 Docker 中运行（每个智能体一个容器），仅可使用 `read` 工具
+**Result:**
+- `main` agent: Runs on host, full tool access
+- `family` agent: Runs in Docker (one container per agent), only `read` tool
 
 ---
 
-### 示例 2：共享沙盒的工作智能体
+### Example 2: Work Agent with Shared Sandbox
 
 ```json
 {
@@ -116,7 +118,7 @@ status: active
 
 ---
 
-### 示例 2b：全局编码配置 + 仅消息传递智能体
+### Example 2b: Global coding profile + messaging-only agent
 
 ```json
 {
@@ -132,13 +134,13 @@ status: active
 }
 ```
 
-**结果：**
-- 默认智能体获得编码工具
-- `support` 智能体仅用于消息传递（并包含 Slack 工具）
+**Result:**
+- default agents get coding tools
+- `support` agent is messaging-only (+ Slack tool)
 
 ---
 
-### 示例 3：按智能体使用不同的沙盒模式
+### Example 3: Different Sandbox Modes per Agent
 
 ```json
 {
@@ -176,12 +178,12 @@ status: active
 
 ---
 
-## 配置优先级
+## Configuration Precedence
 
-当同时存在全局 (`agents.defaults.*`) 和智能体特定 (`agents.list[].*`) 配置时：
+When both global (`agents.defaults.*`) and agent-specific (`agents.list[].*`) configs exist:
 
-### 沙盒配置
-智能体特定设置优先于全局设置：
+### Sandbox Config
+Agent-specific settings override global:
 ```
 agents.list[].sandbox.mode > agents.defaults.sandbox.mode
 agents.list[].sandbox.scope > agents.defaults.sandbox.scope
@@ -192,25 +194,28 @@ agents.list[].sandbox.browser.* > agents.defaults.sandbox.browser.*
 agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 ```
 
-**注意事项：**
-- `agents.list[].sandbox.{docker,browser,prune}.*` 优先于 `agents.defaults.sandbox.{docker,browser,prune}.*`，适用于该智能体（当沙盒范围解析为 `"shared"` 时则忽略）。
+**Notes:**
+- `agents.list[].sandbox.{docker,browser,prune}.*` overrides `agents.defaults.sandbox.{docker,browser,prune}.*` for that agent (ignored when sandbox scope resolves to `"shared"`).
 
-### 工具限制
-过滤顺序如下：
-1. **工具配置文件**（`tools.profile` 或 `agents.list[].tools.profile`）
-2. **提供商工具配置文件**（`tools.byProvider[provider].profile` 或 `agents.list[].tools.byProvider[provider].profile`）
-3. **全球工具政策**（`tools.allow` / `tools.deny`）
-4. **提供商工具政策**（`tools.byProvider[provider].allow/deny`）
-5. **智能体特定工具政策**（`agents.list[].tools.allow/deny`）
-6. **智能体提供商政策**（`agents.list[].tools.byProvider[provider].allow/deny`）
-7. **沙盒工具政策**（`tools.sandbox.tools` 或 `agents.list[].tools.sandbox.tools`）
-8. **子智能体工具政策**（`tools.subagents.tools`，如适用）
+### Tool Restrictions
+The filtering order is:
+1. **Tool profile** (`tools.profile` or `agents.list[].tools.profile`)
+2. **Provider tool profile** (`tools.byProvider[provider].profile` or `agents.list[].tools.byProvider[provider].profile`)
+3. **Global tool policy** (`tools.allow` / `tools.deny`)
+4. **Provider tool policy** (`tools.byProvider[provider].allow/deny`)
+5. **Agent-specific tool policy** (`agents.list[].tools.allow/deny`)
+6. **Agent provider policy** (`agents.list[].tools.byProvider[provider].allow/deny`)
+7. **Sandbox tool policy** (`tools.sandbox.tools` or `agents.list[].tools.sandbox.tools`)
+8. **Subagent tool policy** (`tools.subagents.tools`, if applicable)
 
-每一层级都可以进一步限制工具，但不能恢复先前层级已拒绝的工具。如果设置了 `agents.list[].tools.sandbox.tools`，它将取代该智能体的 `tools.sandbox.tools`。如果设置了 `agents.list[].tools.profile`，它将覆盖该智能体的 `tools.profile`。提供商工具密钥可接受 `provider`（如 `google-antigravity`）或 `provider/model`（如 `openai/gpt-5.2`）。
+Each level can further restrict tools, but cannot grant back denied tools from earlier levels.
+If `agents.list[].tools.sandbox.tools` is set, it replaces `tools.sandbox.tools` for that agent.
+If `agents.list[].tools.profile` is set, it overrides `tools.profile` for that agent.
+Provider tool keys accept either `provider` (e.g. `google-antigravity`) or `provider/model` (e.g. `openai/gpt-5.2`).
 
-### 工具组（简写）
+### Tool groups (shorthands)
 
-工具政策（全球、智能体、沙盒）支持 `group:*` 条目，这些条目会扩展为多个具体工具：
+Tool policies (global, agent, sandbox) support `group:*` entries that expand to multiple concrete tools:
 
 - `group:runtime`: `exec`, `bash`, `process`
 - `group:fs`: `read`, `write`, `edit`, `apply_patch`
@@ -220,22 +225,22 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 - `group:automation`: `cron`, `gateway`
 - `group:messaging`: `message`
 - `group:nodes`: `nodes`
-- `group:openclaw`: 所有内置 OpenClaw 工具（不包括提供商插件）
+- `group:openclaw`: all built-in OpenClaw tools (excludes provider plugins)
 
-### 提升模式
-`tools.elevated` 是全局基线（基于发送者的白名单）。`agents.list[].tools.elevated` 可以进一步限制特定智能体的提升权限（两者都必须允许）。
+### Elevated Mode
+`tools.elevated` is the global baseline (sender-based allowlist). `agents.list[].tools.elevated` can further restrict elevated for specific agents (both must allow).
 
-缓解模式：
-- 对不受信任的智能体拒绝 `exec`（`agents.list[].tools.deny: ["exec"]`）
-- 避免对路由至受限智能体的发送者进行白名单设置
-- 如果您只希望沙盒执行，请在全球范围内禁用提升权限（`tools.elevated.enabled: false`）
-- 对敏感配置的智能体禁用每智能体的提升权限（`agents.list[].tools.elevated.enabled: false`）
+Mitigation patterns:
+- Deny `exec` for untrusted agents (`agents.list[].tools.deny: ["exec"]`)
+- Avoid allowlisting senders that route to restricted agents
+- Disable elevated globally (`tools.elevated.enabled: false`) if you only want sandboxed execution
+- Disable elevated per agent (`agents.list[].tools.elevated.enabled: false`) for sensitive profiles
 
 ---
 
-## 从单智能体迁移
+## Migration from Single Agent
 
-**之前（单智能体）：**
+**Before (single agent):**
 ```json
 {
   "agents": {
@@ -257,7 +262,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 }
 ```
 
-**之后（多智能体，具有不同配置文件）：**
+**After (multi-agent with different profiles):**
 ```json
 {
   "agents": {
@@ -273,13 +278,13 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 }
 ```
 
-旧版 `agent.*` 配置由 `openclaw doctor` 迁移；今后应优先使用 `agents.defaults` + `agents.list`。
+Legacy `agent.*` configs are migrated by `openclaw doctor`; prefer `agents.defaults` + `agents.list` going forward.
 
 ---
 
-## 工具限制示例
+## Tool Restriction Examples
 
-### 只读智能体
+### Read-only Agent
 ```json
 {
   "tools": {
@@ -289,7 +294,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 }
 ```
 
-### 安全执行智能体（无文件修改）
+### Safe Execution Agent (no file modifications)
 ```json
 {
   "tools": {
@@ -299,7 +304,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 }
 ```
 
-### 仅通信智能体
+### Communication-only Agent
 ```json
 {
   "tools": {
@@ -311,56 +316,59 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 
 ---
 
-## 常见陷阱：“非主”
+## Common Pitfall: "non-main"
 
-`agents.defaults.sandbox.mode: "non-main"` 基于 `session.mainKey`（默认 `"main"`），而非智能体 ID。群组/频道会话始终拥有自己的密钥，因此被视为非主，并将被置于沙盒中。如果您希望某个智能体永不进入沙盒，请设置 `agents.list[].sandbox.mode: "off"`。
+`agents.defaults.sandbox.mode: "non-main"` is based on `session.mainKey` (default `"main"`),
+not the agent id. Group/channel sessions always get their own keys, so they
+are treated as non-main and will be sandboxed. If you want an agent to never
+sandbox, set `agents.list[].sandbox.mode: "off"`.
 
 ---
 
-## 测试
+## Testing
 
-在配置多智能体沙盒和工具后：
+After configuring multi-agent sandbox and tools:
 
-1. **检查智能体解析：**
+1. **Check agent resolution:**
    ```exec
    openclaw agents list --bindings
    ```
 
-2. **验证沙盒容器：**
+2. **Verify sandbox containers:**
    ```exec
    docker ps --filter "name=openclaw-sbx-"
    ```
 
-3. **测试工具限制：**
-   - 发送一条需要受限工具的消息
-   - 验证智能体无法使用被拒绝的工具
+3. **Test tool restrictions:**
+   - Send a message requiring restricted tools
+   - Verify the agent cannot use denied tools
 
-4. **监控日志：**
+4. **Monitor logs:**
    ```exec
    tail -f "${OPENCLAW_STATE_DIR:-$HOME/.openclaw}/logs/gateway.log" | grep -E "routing|sandbox|tools"
    ```
 
 ---
 
-## 故障排除
+## Troubleshooting
 
-### 智能体未被置于沙盒中，尽管设置了 `mode: "all"`
-- 检查是否存在覆盖它的全局 `agents.defaults.sandbox.mode`
-- 智能体特定配置优先，因此请设置 `agents.list[].sandbox.mode: "all"`
+### Agent not sandboxed despite `mode: "all"`
+- Check if there's a global `agents.defaults.sandbox.mode` that overrides it
+- Agent-specific config takes precedence, so set `agents.list[].sandbox.mode: "all"`
 
-### 工具仍可用，尽管已被列入拒用清单
-- 检查工具过滤顺序：全球 → 智能体 → 沙盒 → 子智能体
-- 每一层只能进一步限制，不能恢复
-- 通过日志进行验证：`[tools] filtering tools for agent:${agentId}`
+### Tools still available despite deny list
+- Check tool filtering order: global → agent → sandbox → subagent
+- Each level can only further restrict, not grant back
+- Verify with logs: `[tools] filtering tools for agent:${agentId}`
 
-### 容器未按智能体隔离
-- 在智能体特定的沙盒配置中设置 `scope: "agent"`
-- 默认设置为 `"session"`，即每个会话创建一个容器
+### Container not isolated per agent
+- Set `scope: "agent"` in agent-specific sandbox config
+- Default is `"session"` which creates one container per session
 
 ---
 
-## 参见
+## See Also
 
-- [多智能体路由](/concepts/multi-agent)
-- [沙盒配置](/gateway/configuration#agentsdefaults-sandbox)
-- [会话管理](/concepts/session)
+- [Multi-Agent Routing](/concepts/multi-agent)
+- [Sandbox Configuration](/gateway/configuration#agentsdefaults-sandbox)
+- [Session Management](/concepts/session)

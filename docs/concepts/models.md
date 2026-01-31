@@ -1,69 +1,78 @@
 ---
-summary: 'Models CLI: list, set, aliases, fallbacks, scan, status'
+summary: "Models CLI: list, set, aliases, fallbacks, scan, status"
 read_when:
   - Adding or modifying models CLI (models list/set/scan/aliases/fallbacks)
   - Changing model fallback behavior or selection UX
   - Updating model scan probes (tools/images)
 ---
-# 模型 CLI
+# Models CLI
 
-有关身份验证配置文件轮换、冷却时间和其与后备模型交互方式的详细信息，请参阅 [/concepts/model-failover](/concepts/model-failover)。
-快速提供者概览 + 示例：[/concepts/model-providers](/concepts/model-providers)。
+See [/concepts/model-failover](/concepts/model-failover) for auth profile
+rotation, cooldowns, and how that interacts with fallbacks.
+Quick provider overview + examples: [/concepts/model-providers](/concepts/model-providers).
 
-## 模型选择的工作原理
+## How model selection works
 
-OpenClaw 按照以下顺序选择模型：
+OpenClaw selects models in this order:
 
-1) **主**模型（`agents.defaults.model.primary` 或 `agents.defaults.model`）。
-2) `agents.defaults.model.fallbacks` 中的 **后备模型**（按顺序）。
-3) 在切换到下一个模型之前，提供者内部会进行 **提供者身份验证故障转移**。
+1) **Primary** model (`agents.defaults.model.primary` or `agents.defaults.model`).
+2) **Fallbacks** in `agents.defaults.model.fallbacks` (in order).
+3) **Provider auth failover** happens inside a provider before moving to the
+   next model.
 
-相关：
-- `agents.defaults.models` 是 OpenClaw 可以使用的模型白名单/目录（包括别名）。
-- `agents.defaults.imageModel` 仅在主模型无法接受图像时使用。
-- 每个代理的默认设置可以通过 `agents.list[].model` 加上绑定来覆盖 `agents.defaults.model`（请参阅 [/concepts/multi-agent](/concepts/multi-agent)）。
+Related:
+- `agents.defaults.models` is the allowlist/catalog of models OpenClaw can use (plus aliases).
+- `agents.defaults.imageModel` is used **only when** the primary model can’t accept images.
+- Per-agent defaults can override `agents.defaults.model` via `agents.list[].model` plus bindings (see [/concepts/multi-agent](/concepts/multi-agent)).
 
-## 快速模型推荐（经验之谈）
+## Quick model picks (anecdotal)
 
-- **GLM**：在编码和工具调用方面略胜一筹。
-- **MiniMax**：在写作和整体体验方面更优。
+- **GLM**: a bit better for coding/tool calling.
+- **MiniMax**: better for writing and vibes.
 
-## 设置向导（推荐）
+## Setup wizard (recommended)
 
-如果您不想手动编辑配置，可以运行入门向导：
+If you don’t want to hand-edit config, run the onboarding wizard:
 
 ```bash
 openclaw onboard
 ```
 
-它可以为常见提供者设置模型和身份验证，包括 **OpenAI Code (Codex) 订阅**（OAuth）和 **Anthropic**（建议使用 API 密钥；也支持 `claude setup-token`）。
+It can set up model + auth for common providers, including **OpenAI Code (Codex)
+subscription** (OAuth) and **Anthropic** (API key recommended; `claude
+setup-token` also supported).
 
-## 配置键（概览）
+## Config keys (overview)
 
-- `agents.defaults.model.primary` 和 `agents.defaults.model.fallbacks`
-- `agents.defaults.imageModel.primary` 和 `agents.defaults.imageModel.fallbacks`
-- `agents.defaults.models`（白名单 + 别名 + 提供者参数）
-- `models.providers`（写入 `models.json` 的自定义提供者）
+- `agents.defaults.model.primary` and `agents.defaults.model.fallbacks`
+- `agents.defaults.imageModel.primary` and `agents.defaults.imageModel.fallbacks`
+- `agents.defaults.models` (allowlist + aliases + provider params)
+- `models.providers` (custom providers written into `models.json`)
 
-模型引用会被规范化为小写。提供者别名如 `z.ai/*` 会被规范化为 `zai/*`。
+Model refs are normalized to lowercase. Provider aliases like `z.ai/*` normalize
+to `zai/*`.
 
-提供者配置示例（包括 OpenCode Zen）位于 [/gateway/configuration](/gateway/configuration#opencode-zen-multi-model-proxy)。
+Provider configuration examples (including OpenCode Zen) live in
+[/gateway/configuration](/gateway/configuration#opencode-zen-multi-model-proxy).
 
-## “模型不允许”（以及回复停止的原因）
+## “Model is not allowed” (and why replies stop)
 
-如果设置了 `agents.defaults.models`，它将成为 `/model` 以及会话覆盖的 **白名单**。当用户选择的模型不在该白名单中时，OpenClaw 会返回：
+If `agents.defaults.models` is set, it becomes the **allowlist** for `/model` and for
+session overrides. When a user selects a model that isn’t in that allowlist,
+OpenClaw returns:
 
 ```
 Model "provider/model" is not allowed. Use /model to list available models.
 ```
 
-这发生在生成正常回复 **之前**，因此消息可能会让人感觉“没有响应”。解决方法是：
+This happens **before** a normal reply is generated, so the message can feel
+like it “didn’t respond.” The fix is to either:
 
-- 将模型添加到 `agents.defaults.models`，
-- 清除白名单（移除 `agents.defaults.models`），或
-- 从 `/model list` 中选择一个模型。
+- Add the model to `agents.defaults.models`, or
+- Clear the allowlist (remove `agents.defaults.models`), or
+- Pick a model from `/model list`.
 
-白名单配置示例：
+Example allowlist config:
 
 ```json5
 {
@@ -77,9 +86,9 @@ Model "provider/model" is not allowed. Use /model to list available models.
 }
 ```
 
-## 在聊天中切换模型（`/model`）
+## Switching models in chat (`/model`)
 
-您可以在不重启的情况下为当前会话切换模型：
+You can switch models for the current session without restarting:
 
 ```
 /model
@@ -89,17 +98,17 @@ Model "provider/model" is not allowed. Use /model to list available models.
 /model status
 ```
 
-注意事项：
-- `/model`（和 `/model list`）是一个紧凑的编号选择器（模型系列 + 可用提供者）。
-- `/model <#>` 从该选择器中进行选择。
-- `/model status` 是详细视图（身份验证候选以及在配置时的提供者端点 `baseUrl` + `api` 模式）。
-- 模型引用通过分割 **第一个** `/` 来解析。输入 `/model <ref>` 时使用 `provider/model`。
-- 如果模型 ID 本身包含 `/`（OpenRouter 样式），则必须包含提供者前缀（例如：`/model openrouter/moonshotai/kimi-k2`）。
-- 如果省略提供者，OpenClaw 会将输入视为 **默认提供者** 的别名或模型（仅在模型 ID 中没有 `/` 时有效）。
+Notes:
+- `/model` (and `/model list`) is a compact, numbered picker (model family + available providers).
+- `/model <#>` selects from that picker.
+- `/model status` is the detailed view (auth candidates and, when configured, provider endpoint `baseUrl` + `api` mode).
+- Model refs are parsed by splitting on the **first** `/`. Use `provider/model` when typing `/model <ref>`.
+- If the model ID itself contains `/` (OpenRouter-style), you must include the provider prefix (example: `/model openrouter/moonshotai/kimi-k2`).
+- If you omit the provider, OpenClaw treats the input as an alias or a model for the **default provider** (only works when there is no `/` in the model ID).
 
-完整命令行为/配置：[Slash 命令](/tools/slash-commands)。
+Full command behavior/config: [Slash commands](/tools/slash-commands).
 
-## CLI 命令
+## CLI commands
 
 ```bash
 openclaw models list
@@ -122,62 +131,72 @@ openclaw models image-fallbacks remove <provider/model>
 openclaw models image-fallbacks clear
 ```
 
-`openclaw models`（无子命令）是 `models status` 的快捷方式。
+`openclaw models` (no subcommand) is a shortcut for `models status`.
 
 ### `models list`
 
-默认显示已配置的模型。有用标志：
+Shows configured models by default. Useful flags:
 
-- `--all`：完整目录
-- `--local`：仅本地提供者
-- `--provider <name>`：按提供者筛选
-- `--plain`：每行一个模型
-- `--json`：机器可读输出
+- `--all`: full catalog
+- `--local`: local providers only
+- `--provider <name>`: filter by provider
+- `--plain`: one model per line
+- `--json`: machine‑readable output
 
 ### `models status`
 
-显示解析后的主模型、后备模型、图像模型以及已配置提供者的身份验证概览。它还会显示身份验证存储中找到的配置文件的 OAuth 过期状态（默认在到期前 24 小时发出警告）。`--plain` 仅打印解析后的主模型。
-OAuth 状态始终显示（并包含在 `--json` 输出中）。如果已配置的提供者没有凭据，`models status` 会打印一个 **缺少身份验证** 部分。
-JSON 包括 `auth.oauth`（警告窗口 + 配置文件）和 `auth.providers`（每个提供者的有效身份验证）。
-使用 `--check` 进行自动化（当缺少或过期时退出 `1`，当即将到期时退出 `2`）。
+Shows the resolved primary model, fallbacks, image model, and an auth overview
+of configured providers. It also surfaces OAuth expiry status for profiles found
+in the auth store (warns within 24h by default). `--plain` prints only the
+resolved primary model.
+OAuth status is always shown (and included in `--json` output). If a configured
+provider has no credentials, `models status` prints a **Missing auth** section.
+JSON includes `auth.oauth` (warn window + profiles) and `auth.providers`
+(effective auth per provider).
+Use `--check` for automation (exit `1` when missing/expired, `2` when expiring).
 
-Anthropic 推荐的身份验证方式是 Claude Code CLI setup-token（可在任何地方运行；如有需要，可粘贴到网关主机上）：
+Preferred Anthropic auth is the Claude Code CLI setup-token (run anywhere; paste on the gateway host if needed):
 
 ```bash
 claude setup-token
 openclaw models status
 ```
 
-## 扫描（OpenRouter 免费模型）
+## Scanning (OpenRouter free models)
 
-`openclaw models scan` 检查 OpenRouter 的 **免费模型目录**，并可以选择性地探测模型是否支持工具和图像。
+`openclaw models scan` inspects OpenRouter’s **free model catalog** and can
+optionally probe models for tool and image support.
 
-关键标志：
+Key flags:
 
-- `--no-probe`：跳过实时探测（仅元数据）
-- `--min-params <b>`：最小参数规模（十亿级别）
-- `--max-age-days <days>`：跳过较旧的模型
-- `--provider <name>`：提供者前缀过滤
-- `--max-candidates <n>`：后备列表大小
-- `--set-default`：将 `agents.defaults.model.primary` 设置为首次选择
-- `--set-image`：将 `agents.defaults.imageModel.primary` 设置为首次图像选择
+- `--no-probe`: skip live probes (metadata only)
+- `--min-params <b>`: minimum parameter size (billions)
+- `--max-age-days <days>`: skip older models
+- `--provider <name>`: provider prefix filter
+- `--max-candidates <n>`: fallback list size
+- `--set-default`: set `agents.defaults.model.primary` to the first selection
+- `--set-image`: set `agents.defaults.imageModel.primary` to the first image selection
 
-探测需要 OpenRouter API 密钥（来自身份验证配置文件或 `OPENROUTER_API_KEY`）。如果没有密钥，可以使用 `--no-probe` 仅列出候选模型。
+Probing requires an OpenRouter API key (from auth profiles or
+`OPENROUTER_API_KEY`). Without a key, use `--no-probe` to list candidates only.
 
-扫描结果按以下顺序排名：
-1) 图像支持
-2) 工具延迟
-3) 上下文大小
-4) 参数数量
+Scan results are ranked by:
+1) Image support
+2) Tool latency
+3) Context size
+4) Parameter count
 
-输入
-- OpenRouter `/models` 列表（过滤 `:free`）
-- 需要来自身份验证配置文件或 `OPENROUTER_API_KEY` 的 OpenRouter API 密钥（请参阅 [/environment](/environment)）
-- 可选过滤器：`--max-age-days`、`--min-params`、`--provider`、`--max-candidates`
-- 探测控制：`--timeout`、`--concurrency`
+Input
+- OpenRouter `/models` list (filter `:free`)
+- Requires OpenRouter API key from auth profiles or `OPENROUTER_API_KEY` (see [/environment](/environment))
+- Optional filters: `--max-age-days`, `--min-params`, `--provider`, `--max-candidates`
+- Probe controls: `--timeout`, `--concurrency`
 
-在 TTY 中运行时，您可以交互式选择后备模型。在非交互模式下，传递 `--yes` 以接受默认设置。
+When run in a TTY, you can select fallbacks interactively. In non‑interactive
+mode, pass `--yes` to accept defaults.
 
-## 模型注册表（`models.json`）
+## Models registry (`models.json`)
 
-`models.providers` 中的自定义提供者会写入 `models.json`，位于代理目录下（默认 `~/.openclaw/agents/<agentId>/models.json`）。此文件默认会被合并，除非 `models.mode` 设置为 `replace`。
+Custom providers in `models.providers` are written into `models.json` under the
+agent directory (default `~/.openclaw/agents/<agentId>/models.json`). This file
+is merged by default unless `models.mode` is set to `replace`.

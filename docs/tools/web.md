@@ -1,39 +1,41 @@
 ---
-summary: 'Web search + fetch tools (Brave Search API, Perplexity direct/OpenRouter)'
+summary: "Web search + fetch tools (Brave Search API, Perplexity direct/OpenRouter)"
 read_when:
   - You want to enable web_search or web_fetch
   - You need Brave Search API key setup
   - You want to use Perplexity Sonar for web search
 ---
-# 网页工具
 
-OpenClaw 提供两款轻量级网页工具：
+# Web tools
 
-- `web_search` — 通过 Brave Search API（默认）或 Perplexity Sonar（直接调用或经由 OpenRouter）搜索网络。
-- `web_fetch` — 执行 HTTP 请求并提取可读内容（HTML → Markdown/文本）。
+OpenClaw ships two lightweight web tools:
 
-这些工具**并非**用于浏览器自动化。对于包含大量 JavaScript 的网站或需要登录的场景，请使用
-[浏览器工具](/tools/browser)。
+- `web_search` — Search the web via Brave Search API (default) or Perplexity Sonar (direct or via OpenRouter).
+- `web_fetch` — HTTP fetch + readable extraction (HTML → markdown/text).
 
-## 工作原理
+These are **not** browser automation. For JS-heavy sites or logins, use the
+[Browser tool](/tools/browser).
 
-- `web_search` 调用您配置的提供商并返回搜索结果。
-  - **Brave**（默认）：返回结构化结果（标题、URL、摘要）。
-  - **Perplexity**：返回基于实时网络搜索并附带引用的 AI 合成答案。
-- 搜索结果按查询缓存 15 分钟（可配置）。
-- `web_fetch` 执行普通的 HTTP GET 请求，并提取可读内容（HTML → Markdown/文本）。它**不**执行 JavaScript。
-- `web_fetch` 默认启用（除非显式禁用）。
+## How it works
 
-## 选择搜索提供商
+- `web_search` calls your configured provider and returns results.
+  - **Brave** (default): returns structured results (title, URL, snippet).
+  - **Perplexity**: returns AI-synthesized answers with citations from real-time web search.
+- Results are cached by query for 15 minutes (configurable).
+- `web_fetch` does a plain HTTP GET and extracts readable content
+  (HTML → markdown/text). It does **not** execute JavaScript.
+- `web_fetch` is enabled by default (unless explicitly disabled).
 
-| 提供商 | 优点 | 缺点 | API 密钥 |
+## Choosing a search provider
+
+| Provider | Pros | Cons | API Key |
 |----------|------|------|---------|
-| **Brave**（默认） | 速度快，结果结构化，提供免费层级 | 传统搜索结果 | `BRAVE_API_KEY` |
-| **Perplexity** | AI 合成答案，附带引用，实时性 | 需要 Perplexity 或 OpenRouter 访问权限 | `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY` |
+| **Brave** (default) | Fast, structured results, free tier | Traditional search results | `BRAVE_API_KEY` |
+| **Perplexity** | AI-synthesized answers, citations, real-time | Requires Perplexity or OpenRouter access | `OPENROUTER_API_KEY` or `PERPLEXITY_API_KEY` |
 
-有关特定提供商的详细信息，请参阅 [Brave Search 设置](/brave-search) 和 [Perplexity Sonar](/perplexity)。
+See [Brave Search setup](/brave-search) and [Perplexity Sonar](/perplexity) for provider-specific details.
 
-在配置中设置提供商：
+Set the provider in config:
 
 ```json5
 {
@@ -47,7 +49,7 @@ OpenClaw 提供两款轻量级网页工具：
 }
 ```
 
-示例：切换到 Perplexity Sonar（直接 API）：
+Example: switch to Perplexity Sonar (direct API):
 
 ```json5
 {
@@ -66,31 +68,37 @@ OpenClaw 提供两款轻量级网页工具：
 }
 ```
 
-## 获取 Brave API 密钥
+## Getting a Brave API key
 
-1) 在 https://brave.com/search/api/ 创建一个 Brave Search API 账户。
-2) 在仪表板中，选择 **Data for Search** 方案（而非“Data for AI”），并生成 API 密钥。
-3) 运行 `openclaw configure --section web` 将密钥存储在配置中（推荐），或在您的环境变量中设置 `BRAVE_API_KEY`。
+1) Create a Brave Search API account at https://brave.com/search/api/
+2) In the dashboard, choose the **Data for Search** plan (not “Data for AI”) and generate an API key.
+3) Run `openclaw configure --section web` to store the key in config (recommended), or set `BRAVE_API_KEY` in your environment.
 
-Brave 提供免费层级以及付费方案；请查看 Brave API 门户以了解当前的限制和定价。
+Brave provides a free tier plus paid plans; check the Brave API portal for the
+current limits and pricing.
 
-### 推荐的密钥设置位置
+### Where to set the key (recommended)
 
-**推荐方法：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 下的 `tools.web.search.apiKey` 中。
+**Recommended:** run `openclaw configure --section web`. It stores the key in
+`~/.openclaw/openclaw.json` under `tools.web.search.apiKey`.
 
-**环境变量替代方案：**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
+**Environment alternative:** set `BRAVE_API_KEY` in the Gateway process
+environment. For a gateway install, put it in `~/.openclaw/.env` (or your
+service environment). See [Env vars](/help/faq#how-does-openclaw-load-environment-variables).
 
-## 使用 Perplexity（直接调用或经由 OpenRouter）
+## Using Perplexity (direct or via OpenRouter)
 
-Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI 合成答案。您可以通过 OpenRouter 使用这些模型（无需信用卡——支持加密货币和预付支付）。
+Perplexity Sonar models have built-in web search capabilities and return AI-synthesized
+answers with citations. You can use them via OpenRouter (no credit card required - supports
+crypto/prepaid).
 
-### 获取 OpenRouter API 密钥
+### Getting an OpenRouter API key
 
-1) 在 https://openrouter.ai/ 创建一个账户。
-2) 添加余额（支持加密货币、预付卡或信用卡）。
-3) 在您的账户设置中生成 API 密钥。
+1) Create an account at https://openrouter.ai/
+2) Add credits (supports crypto, prepaid, or credit card)
+3) Generate an API key in your account settings
 
-### 设置 Perplexity 搜索
+### Setting up Perplexity search
 
 ```json5
 {
@@ -113,34 +121,35 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 }
 ```
 
-**环境变量替代方案：**在 Gateway 环境中设置 `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`。
+**Environment alternative:** set `OPENROUTER_API_KEY` or `PERPLEXITY_API_KEY` in the Gateway
+environment. For a gateway install, put it in `~/.openclaw/.env`.
 
-如果未设置基础 URL，OpenClaw 会根据 API 密钥来源选择默认值：
+If no base URL is set, OpenClaw chooses a default based on the API key source:
 
-- `PERPLEXITY_API_KEY` 或 `pplx-...` → `https://api.perplexity.ai`
-- `OPENROUTER_API_KEY` 或 `sk-or-...` → `https://openrouter.ai/api/v1`
-- 未知密钥格式 → OpenRouter（安全回退）
+- `PERPLEXITY_API_KEY` or `pplx-...` → `https://api.perplexity.ai`
+- `OPENROUTER_API_KEY` or `sk-or-...` → `https://openrouter.ai/api/v1`
+- Unknown key formats → OpenRouter (safe fallback)
 
-### 可用的 Perplexity 模型
+### Available Perplexity models
 
-| 模型 | 描述 | 适用场景 |
+| Model | Description | Best for |
 |-------|-------------|----------|
-| `perplexity/sonar` | 带有网络搜索的快速问答 | 快速查询 |
-| `perplexity/sonar-pro`（默认） | 带有网络搜索的多步推理 | 复杂问题 |
-| `perplexity/sonar-reasoning-pro` | 思考链分析 | 深度研究 |
+| `perplexity/sonar` | Fast Q&A with web search | Quick lookups |
+| `perplexity/sonar-pro` (default) | Multi-step reasoning with web search | Complex questions |
+| `perplexity/sonar-reasoning-pro` | Chain-of-thought analysis | Deep research |
 
 ## web_search
 
-使用您配置的提供商搜索网络。
+Search the web using your configured provider.
 
-### 要求
+### Requirements
 
-- `tools.web.search.enabled` 不得为 `false`（默认：启用）。
-- 所选提供商的 API 密钥：
-  - **Brave**：`BRAVE_API_KEY` 或 `tools.web.search.apiKey`。
-  - **Perplexity**：`OPENROUTER_API_KEY`、`PERPLEXITY_API_KEY` 或 `tools.web.search.perplexity.apiKey`。
+- `tools.web.search.enabled` must not be `false` (default: enabled)
+- API key for your chosen provider:
+  - **Brave**: `BRAVE_API_KEY` or `tools.web.search.apiKey`
+  - **Perplexity**: `OPENROUTER_API_KEY`, `PERPLEXITY_API_KEY`, or `tools.web.search.perplexity.apiKey`
 
-### 配置
+### Config
 
 ```json5
 {
@@ -158,16 +167,16 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 }
 ```
 
-### 工具参数
+### Tool parameters
 
-- `query`（必填）。
-- `count`（1–10；默认来自配置）。
-- `country`（可选）：2 位数国家代码，用于获取特定地区的搜索结果（例如，“DE”、“US”、“ALL”）。若省略，Brave 将选择其默认地区。
-- `search_lang`（可选）：ISO 语言代码，用于指定搜索结果的语言（例如，“de”、“en”、“fr”）。
-- `ui_lang`（可选）：ISO 语言代码，用于指定界面元素的语言。
-- `freshness`（可选，仅适用于 Brave）：按发现时间筛选（`pd`、`pw`、`pm`、`py` 或 `YYYY-MM-DDtoYYYY-MM-DD`）。
+- `query` (required)
+- `count` (1–10; default from config)
+- `country` (optional): 2-letter country code for region-specific results (e.g., "DE", "US", "ALL"). If omitted, Brave chooses its default region.
+- `search_lang` (optional): ISO language code for search results (e.g., "de", "en", "fr")
+- `ui_lang` (optional): ISO language code for UI elements
+- `freshness` (optional, Brave only): filter by discovery time (`pd`, `pw`, `pm`, `py`, or `YYYY-MM-DDtoYYYY-MM-DD`)
 
-**示例：**
+**Examples:**
 
 ```javascript
 // German-specific search
@@ -195,14 +204,14 @@ await web_search({
 
 ## web_fetch
 
-获取 URL 并提取可读内容。
+Fetch a URL and extract readable content.
 
-### 要求
+### Requirements
 
-- `tools.web.fetch.enabled` 不得为 `false`（默认：启用）。
-- 可选的 Firecrawl 回退：设置 `tools.web.fetch.firecrawl.apiKey` 或 `FIRECRAWL_API_KEY`。
+- `tools.web.fetch.enabled` must not be `false` (default: enabled)
+- Optional Firecrawl fallback: set `tools.web.fetch.firecrawl.apiKey` or `FIRECRAWL_API_KEY`.
 
-### 配置
+### Config
 
 ```json5
 {
@@ -230,19 +239,19 @@ await web_search({
 }
 ```
 
-### 工具参数
+### Tool parameters
 
-- `url`（必填，仅支持 http/https）。
-- `extractMode`（`markdown` | `text`）。
-- `maxChars`（截断长页面）。
+- `url` (required, http/https only)
+- `extractMode` (`markdown` | `text`)
+- `maxChars` (truncate long pages)
 
-注意事项：
-- `web_fetch` 首先使用 Readability 进行主要内容提取，然后在已配置的情况下使用 Firecrawl。如果两者都失败，工具将返回错误。
-- Firecrawl 请求默认使用规避机器人模式，并对结果进行缓存。
-- `web_fetch` 默认发送类似 Chrome 的 User-Agent，`Accept-Language` 也默认启用；如有需要，可覆盖 `userAgent`。
-- `web_fetch` 会阻止私有/内部主机名，并重新检查重定向（重定向次数上限由 `maxRedirects` 控制）。
-- `web_fetch` 是尽力而为的提取；某些网站可能仍需使用浏览器工具。
-- 有关密钥设置和服务详情，请参阅 [Firecrawl](/tools/firecrawl)。
-- 响应默认缓存 15 分钟，以减少重复请求。
-- 如果您使用工具配置文件或白名单，请添加 `web_search`/`web_fetch` 或 `group:web`。
-- 如果缺少 Brave 密钥，`web_search` 会返回一条简短的设置提示，并附上文档链接。
+Notes:
+- `web_fetch` uses Readability (main-content extraction) first, then Firecrawl (if configured). If both fail, the tool returns an error.
+- Firecrawl requests use bot-circumvention mode and cache results by default.
+- `web_fetch` sends a Chrome-like User-Agent and `Accept-Language` by default; override `userAgent` if needed.
+- `web_fetch` blocks private/internal hostnames and re-checks redirects (limit with `maxRedirects`).
+- `web_fetch` is best-effort extraction; some sites will need the browser tool.
+- See [Firecrawl](/tools/firecrawl) for key setup and service details.
+- Responses are cached (default 15 minutes) to reduce repeated fetches.
+- If you use tool profiles/allowlists, add `web_search`/`web_fetch` or `group:web`.
+- If the Brave key is missing, `web_search` returns a short setup hint with a docs link.

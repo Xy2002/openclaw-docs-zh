@@ -1,45 +1,45 @@
 ---
-summary: Guidance for choosing between heartbeat and cron jobs for automation
+summary: "Guidance for choosing between heartbeat and cron jobs for automation"
 read_when:
   - Deciding how to schedule recurring tasks
   - Setting up background monitoring or notifications
   - Optimizing token usage for periodic checks
 ---
-# Cron 与心跳：何时使用哪种机制
+# Cron vs Heartbeat: When to Use Each
 
-心跳和 Cron 作业都允许你按计划运行任务。本指南将帮助你为自己的用例选择合适的机制。
+Both heartbeats and cron jobs let you run tasks on a schedule. This guide helps you choose the right mechanism for your use case.
 
-## 快速决策指南
+## Quick Decision Guide
 
-| 用例 | 推荐 | 原因 |
+| Use Case | Recommended | Why |
 |----------|-------------|-----|
-| 每 30 分钟检查一次收件箱 | 心跳 | 可与其他检查批量处理，具备上下文感知能力 |
-| 每天早上 9 点准时发送日报 | Cron（隔离） | 需要精确的定时 |
-| 监控日历以获取即将到来的事件 | 心跳 | 非常适合周期性状态感知 |
-| 每周运行深度分析 | Cron（隔离） | 独立任务，可使用不同模型 |
-| 20 分钟后提醒我 | Cron（主会话，`--at`） | 一次性任务，定时精准 |
-| 后台项目健康检查 | 心跳 | 利用现有周期进行附加操作 |
+| Check inbox every 30 min | Heartbeat | Batches with other checks, context-aware |
+| Send daily report at 9am sharp | Cron (isolated) | Exact timing needed |
+| Monitor calendar for upcoming events | Heartbeat | Natural fit for periodic awareness |
+| Run weekly deep analysis | Cron (isolated) | Standalone task, can use different model |
+| Remind me in 20 minutes | Cron (main, `--at`) | One-shot with precise timing |
+| Background project health check | Heartbeat | Piggybacks on existing cycle |
 
-## 心跳：周期性状态感知
+## Heartbeat: Periodic Awareness
 
-心跳在**主会话**中以固定间隔（默认 30 分钟）运行。其设计目的是让代理定期检查各项状态，并及时上报重要信息。
+Heartbeats run in the **main session** at a regular interval (default: 30 min). They're designed for the agent to check on things and surface anything important.
 
-### 何时使用心跳
+### When to use heartbeat
 
-- **多项周期性检查**：与其设置 5 个独立的 Cron 作业分别检查收件箱、日历、天气、通知和项目状态，不如使用一个心跳来批量处理所有这些任务。
-- **上下文感知决策**：代理拥有完整的主会话上下文，因此能够智能判断哪些事项紧急、哪些可以稍后再处理。
-- **对话连续性**：心跳运行共享同一会话，代理可以记住最近的对话并自然地跟进。
-- **低开销监控**：一个心跳即可替代多个小型轮询任务。
+- **Multiple periodic checks**: Instead of 5 separate cron jobs checking inbox, calendar, weather, notifications, and project status, a single heartbeat can batch all of these.
+- **Context-aware decisions**: The agent has full main-session context, so it can make smart decisions about what's urgent vs. what can wait.
+- **Conversational continuity**: Heartbeat runs share the same session, so the agent remembers recent conversations and can follow up naturally.
+- **Low-overhead monitoring**: One heartbeat replaces many small polling tasks.
 
-### 心跳的优势
+### Heartbeat advantages
 
-- **批量处理多项检查**：一次代理调用即可同时检查收件箱、日历和通知。
-- **减少 API 调用**：单个心跳比 5 个独立的 Cron 作业更经济。
-- **上下文感知**：代理了解你当前的工作内容，并据此优先处理相关事项。
-- **智能抑制**：如果没有需要关注的事项，代理会回复 `HEARTBEAT_OK`，不会发送任何消息。
-- **自然的定时**：根据队列负载略有偏差，但这对大多数监控场景来说是可接受的。
+- **Batches multiple checks**: One agent turn can review inbox, calendar, and notifications together.
+- **Reduces API calls**: A single heartbeat is cheaper than 5 isolated cron jobs.
+- **Context-aware**: The agent knows what you've been working on and can prioritize accordingly.
+- **Smart suppression**: If nothing needs attention, the agent replies `HEARTBEAT_OK` and no message is delivered.
+- **Natural timing**: Drifts slightly based on queue load, which is fine for most monitoring.
 
-### 心跳示例：HEARTBEAT.md 检查清单
+### Heartbeat example: HEARTBEAT.md checklist
 
 ```md
 # Heartbeat checklist
@@ -50,9 +50,9 @@ read_when:
 - If idle for 8+ hours, send a brief check-in
 ```
 
-代理在每次心跳时读取此清单，并在一次调用中处理所有事项。
+The agent reads this on each heartbeat and handles all items in one turn.
 
-### 配置心跳
+### Configuring heartbeat
 
 ```json5
 {
@@ -68,31 +68,31 @@ read_when:
 }
 ```
 
-完整配置请参见 [心跳](/gateway/heartbeat)。
+See [Heartbeat](/gateway/heartbeat) for full configuration.
 
-## Cron：精确调度
+## Cron: Precise Scheduling
 
-Cron 作业在**精确的时间**运行，并且可以在隔离的会话中执行，而不会影响主会话的上下文。
+Cron jobs run at **exact times** and can run in isolated sessions without affecting main context.
 
-### 何时使用 Cron
+### When to use cron
 
-- **需要精确的定时**：“每周一上午 9:00 发送”（而不是“大约 9 点”）。
-- **独立任务**：不需要对话上下文的任务。
-- **不同的模型或思维模式**：需要更强大模型的重型分析任务。
-- **一次性提醒**：“20 分钟后提醒我”，使用 `--at`。
-- **高频或嘈杂的任务**：如果任务过于频繁，可能会干扰主会话历史记录。
-- **外部触发**：无论代理是否处于活动状态，任务都应独立运行。
+- **Exact timing required**: "Send this at 9:00 AM every Monday" (not "sometime around 9").
+- **Standalone tasks**: Tasks that don't need conversational context.
+- **Different model/thinking**: Heavy analysis that warrants a more powerful model.
+- **One-shot reminders**: "Remind me in 20 minutes" with `--at`.
+- **Noisy/frequent tasks**: Tasks that would clutter main session history.
+- **External triggers**: Tasks that should run independently of whether the agent is otherwise active.
 
-### Cron 的优势
+### Cron advantages
 
-- **精确的定时**：支持带时区的 5 字段 Cron 表达式。
-- **会话隔离**：在 `cron:<jobId>` 中运行，不会污染主历史记录。
-- **模型覆盖**：每个作业可以使用更便宜或更强大的模型。
-- **交付控制**：可以直接发送到某个渠道；默认仍会在主会话中发布摘要（可配置）。
-- **无需代理上下文**：即使主会话空闲或被压缩，也能正常运行。
-- **支持一次性任务**：`--at` 可用于精确的未来时间戳。
+- **Exact timing**: 5-field cron expressions with timezone support.
+- **Session isolation**: Runs in `cron:<jobId>` without polluting main history.
+- **Model overrides**: Use a cheaper or more powerful model per job.
+- **Delivery control**: Can deliver directly to a channel; still posts a summary to main by default (configurable).
+- **No agent context needed**: Runs even if main session is idle or compacted.
+- **One-shot support**: `--at` for precise future timestamps.
 
-### Cron 示例：每日晨间简报
+### Cron example: Daily morning briefing
 
 ```bash
 openclaw cron add \
@@ -107,9 +107,9 @@ openclaw cron add \
   --to "+15551234567"
 ```
 
-此任务将在纽约时间每天早上 7:00 准确执行，使用 Opus 模型以确保质量，并直接发送到 WhatsApp。
+This runs at exactly 7:00 AM New York time, uses Opus for quality, and delivers directly to WhatsApp.
 
-### Cron 示例：一次性提醒
+### Cron example: One-shot reminder
 
 ```bash
 openclaw cron add \
@@ -121,9 +121,9 @@ openclaw cron add \
   --delete-after-run
 ```
 
-完整 CLI 参考请参见 [Cron 作业](/automation/cron-jobs)。
+See [Cron jobs](/automation/cron-jobs) for full CLI reference.
 
-## 决策流程图
+## Decision Flowchart
 
 ```
 Does the task need to run at an EXACT time?
@@ -147,16 +147,16 @@ Does it need a different model or thinking level?
   NO  -> Use heartbeat
 ```
 
-## 结合使用两者
+## Combining Both
 
-最高效的设置是**同时使用两者**：
+The most efficient setup uses **both**:
 
-1. **心跳**每 30 分钟批量处理例行监控任务（收件箱、日历、通知等）。
-2. **Cron**负责精确的定时任务（日报、周报）以及一次性提醒。
+1. **Heartbeat** handles routine monitoring (inbox, calendar, notifications) in one batched turn every 30 minutes.
+2. **Cron** handles precise schedules (daily reports, weekly reviews) and one-shot reminders.
 
-### 示例：高效自动化设置
+### Example: Efficient automation setup
 
-**HEARTBEAT.md**（每 30 分钟检查一次）：
+**HEARTBEAT.md** (checked every 30 min):
 ```md
 # Heartbeat checklist
 - Scan inbox for urgent emails
@@ -165,7 +165,7 @@ Does it need a different model or thinking level?
 - Light check-in if quiet for 8+ hours
 ```
 
-**Cron 作业**（精确定时）：
+**Cron jobs** (precise timing):
 ```bash
 # Daily morning briefing at 7am
 openclaw cron add --name "Morning brief" --cron "0 7 * * *" --session isolated --message "..." --deliver
@@ -178,52 +178,52 @@ openclaw cron add --name "Call back" --at "2h" --session main --system-event "Ca
 ```
 
 
-## Lobster：带有审批的确定性工作流
+## Lobster: Deterministic workflows with approvals
 
-Lobster 是用于**多步骤工具管道**的工作流运行时，适用于需要确定性执行和显式审批的场景。
-当任务不止一步代理调用，且你需要一个可恢复的工作流并包含人工检查点时，就该使用 Lobster。
+Lobster is the workflow runtime for **multi-step tool pipelines** that need deterministic execution and explicit approvals.
+Use it when the task is more than a single agent turn, and you want a resumable workflow with human checkpoints.
 
-### Lobster 的适用场景
+### When Lobster fits
 
-- **多步骤自动化**：你需要固定的工具调用流水线，而不是一次性的提示。
-- **审批关卡**：副作用应在你批准后暂停，然后继续。
-- **可恢复运行**：在暂停后继续工作流，无需重新运行之前的步骤。
+- **Multi-step automation**: You need a fixed pipeline of tool calls, not a one-off prompt.
+- **Approval gates**: Side effects should pause until you approve, then resume.
+- **Resumable runs**: Continue a paused workflow without re-running earlier steps.
 
-### 如何与心跳和 Cron 配合使用
+### How it pairs with heartbeat and cron
 
-- **心跳/Cron**决定**何时**运行。
-- **Lobster**定义**运行开始后执行的步骤**。
+- **Heartbeat/cron** decide *when* a run happens.
+- **Lobster** defines *what steps* happen once the run starts.
 
-对于计划的工作流，使用 Cron 或心跳触发代理调用 Lobster。
-对于临时工作流，则直接调用 Lobster。
+For scheduled workflows, use cron or heartbeat to trigger an agent turn that calls Lobster.
+For ad-hoc workflows, call Lobster directly.
 
-### 操作注意事项（来自代码）
+### Operational notes (from the code)
 
-- Lobster 以**本地子进程**（`lobster` CLI）的形式在工具模式下运行，并返回一个**JSON 封装**。
-- 如果工具返回 `needs_approval`，则需使用 `resumeToken` 和 `approve` 标志继续运行。
-- 工具是**可选插件**；建议通过 `tools.alsoAllow: ["lobster"]` 以附加方式启用。
-- 如果传递 `lobsterPath`，则必须是**绝对路径**。
+- Lobster runs as a **local subprocess** (`lobster` CLI) in tool mode and returns a **JSON envelope**.
+- If the tool returns `needs_approval`, you resume with a `resumeToken` and `approve` flag.
+- The tool is an **optional plugin**; enable it additively via `tools.alsoAllow: ["lobster"]` (recommended).
+- If you pass `lobsterPath`, it must be an **absolute path**.
 
-完整用法和示例请参见 [Lobster](/tools/lobster)。
+See [Lobster](/tools/lobster) for full usage and examples.
 
-## 主会话 vs 隔离会话
+## Main Session vs Isolated Session
 
-心跳和 Cron 都可以与主会话交互，但方式有所不同：
+Both heartbeat and cron can interact with the main session, but differently:
 
-| | 心跳 | Cron（主会话） | Cron（隔离） |
+| | Heartbeat | Cron (main) | Cron (isolated) |
 |---|---|---|---|
-| 会话 | 主会话 | 主会话（通过系统事件） | `cron:<jobId>` |
-| 历史 | 共享 | 共享 | 每次运行都是全新历史 |
-| 上下文 | 完整 | 完整 | 无（从干净状态开始） |
-| 模型 | 主会话模型 | 主会话模型 | 可覆盖 |
-| 输出 | 若非 `HEARTBEAT_OK`，则会送达 | 心跳提示 + 事件 | 摘要发布到主会话 |
+| Session | Main | Main (via system event) | `cron:<jobId>` |
+| History | Shared | Shared | Fresh each run |
+| Context | Full | Full | None (starts clean) |
+| Model | Main session model | Main session model | Can override |
+| Output | Delivered if not `HEARTBEAT_OK` | Heartbeat prompt + event | Summary posted to main |
 
-### 何时使用主会话 Cron
+### When to use main session cron
 
-当您希望以下情况发生时，请使用 `--session main` 并搭配 `--system-event`：
-- 提醒/事件显示在主会话上下文中
-- 代理在下次心跳时以完整上下文处理该事件
-- 无需单独的隔离运行
+Use `--session main` with `--system-event` when you want:
+- The reminder/event to appear in main session context
+- The agent to handle it during the next heartbeat with full context
+- No separate isolated run
 
 ```bash
 openclaw cron add \
@@ -234,13 +234,13 @@ openclaw cron add \
   --wake now
 ```
 
-### 何时使用隔离 Cron
+### When to use isolated cron
 
-当您希望以下情况发生时，请使用 `--session isolated`：
-- 从干净状态开始，不带先前上下文
-- 使用不同的模型或思维设置
-- 输出直接发送到某个渠道（默认仍会在主会话中发布摘要）
-- 历史不会污染主会话
+Use `--session isolated` when you want:
+- A clean slate without prior context
+- Different model or thinking settings
+- Output delivered directly to a channel (summary still posts to main by default)
+- History that doesn't clutter main session
 
 ```bash
 openclaw cron add \
@@ -253,22 +253,22 @@ openclaw cron add \
   --deliver
 ```
 
-## 成本考量
+## Cost Considerations
 
-| 机制 | 成本概况 |
+| Mechanism | Cost Profile |
 |-----------|--------------|
-| 心跳 | 每 N 分钟一次调用；成本随 HEARTBEAT.md 大小变化 |
-| Cron（主会话） | 在下次心跳时添加事件（无需隔离运行） |
-| Cron（隔离） | 每个作业都需要一次完整的代理调用；可使用更便宜的模型 |
+| Heartbeat | One turn every N minutes; scales with HEARTBEAT.md size |
+| Cron (main) | Adds event to next heartbeat (no isolated turn) |
+| Cron (isolated) | Full agent turn per job; can use cheaper model |
 
-**提示**：
-- 保持 `HEARTBEAT.md` 简短，以最小化 token 开销。
-- 将相似的检查合并到心跳中，而不是使用多个 Cron 作业。
-- 如果只需要内部处理，可在心跳中使用 `target: "none"`。
-- 对于常规任务，可使用隔离 Cron 并搭配更便宜的模型。
+**Tips**:
+- Keep `HEARTBEAT.md` small to minimize token overhead.
+- Batch similar checks into heartbeat instead of multiple cron jobs.
+- Use `target: "none"` on heartbeat if you only want internal processing.
+- Use isolated cron with a cheaper model for routine tasks.
 
-## 相关内容
+## Related
 
-- [心跳](/gateway/heartbeat) - 完整心跳配置
-- [Cron 作业](/automation/cron-jobs) - 完整 Cron CLI 和 API 参考
-- [系统](/cli/system) - 系统事件 + 心跳控制
+- [Heartbeat](/gateway/heartbeat) - full heartbeat configuration
+- [Cron jobs](/automation/cron-jobs) - full cron CLI and API reference
+- [System](/cli/system) - system events + heartbeat controls

@@ -1,37 +1,38 @@
 ---
-summary: 'ClawHub guide: public skills registry + CLI workflows'
+summary: "ClawHub guide: public skills registry + CLI workflows"
 read_when:
   - Introducing ClawHub to new users
-  - 'Installing, searching, or publishing skills'
+  - Installing, searching, or publishing skills
   - Explaining ClawHub CLI flags and sync behavior
 ---
+
 # ClawHub
 
-ClawHub是**OpenClaw的公共技能注册表**。这是一项免费服务：所有技能都是公开、开放的，任何人都可以查看、共享和重用。一个技能只是一个包含`SKILL.md`文件（以及相关文本文件）的文件夹。您可以通过网页应用浏览技能，也可以使用CLI来搜索、安装、更新和发布技能。
+ClawHub is the **public skill registry for OpenClaw**. It is a free service: all skills are public, open, and visible to everyone for sharing and reuse. A skill is just a folder with a `SKILL.md` file (plus supporting text files). You can browse skills in the web app or use the CLI to search, install, update, and publish skills.
 
-站点：[clawhub.com](https://clawhub.com)
+Site: [clawhub.com](https://clawhub.com)
 
-## 适用人群（适合初学者）
+## Who this is for (beginner-friendly)
 
-如果您想为您的OpenClaw代理添加新功能，ClawHub是查找和安装技能最简单的方式。您无需了解后端的工作原理。您可以：
+If you want to add new capabilities to your OpenClaw agent, ClawHub is the easiest way to find and install skills. You do not need to know how the backend works. You can:
 
-- 使用自然语言搜索技能。
-- 将技能安装到您的工作区。
-- 后续只需一条命令即可更新技能。
-- 通过发布自己的技能来备份它们。
+- Search for skills by plain language.
+- Install a skill into your workspace.
+- Update skills later with one command.
+- Back up your own skills by publishing them.
 
-## 快速入门（非技术性）
+## Quick start (non-technical)
 
-1) 安装CLI（见下节）。
-2) 搜索您需要的内容：
+1) Install the CLI (see next section).
+2) Search for something you need:
    - `clawhub search "calendar"`
-3) 安装技能：
+3) Install a skill:
    - `clawhub install <skill-slug>`
-4) 启动一个新的OpenClaw会话，以便它加载新技能。
+4) Start a new OpenClaw session so it picks up the new skill.
 
-## 安装CLI
+## Install the CLI
 
-选择以下任一方式：
+Pick one:
 
 ```bash
 npm i -g clawhub
@@ -41,160 +42,160 @@ npm i -g clawhub
 pnpm add -g clawhub
 ```
 
-## 在OpenClaw中的位置
+## How it fits into OpenClaw
 
-默认情况下，CLI会将技能安装到您当前工作目录下的`./skills`中。如果已配置OpenClaw工作区，`clawhub`会回退到该工作区，除非您覆盖了`--workdir`（或`CLAWHUB_WORKDIR`）。OpenClaw会从`<workspace>/skills`加载工作区技能，并在**下一个**会话中加载它们。如果您已经在使用`~/.openclaw/skills`或捆绑技能，工作区技能将优先加载。
+By default, the CLI installs skills into `./skills` under your current working directory. If a OpenClaw workspace is configured, `clawhub` falls back to that workspace unless you override `--workdir` (or `CLAWHUB_WORKDIR`). OpenClaw loads workspace skills from `<workspace>/skills` and will pick them up in the **next** session. If you already use `~/.openclaw/skills` or bundled skills, workspace skills take precedence.
 
-有关技能如何加载、共享和受控的更多详细信息，请参阅
-[Skills](/tools/skills)。
+For more detail on how skills are loaded, shared, and gated, see
+[Skills](/tools/skills).
 
-## 服务提供的功能
+## What the service provides (features)
 
-- **公开浏览**技能及其`SKILL.md`内容。
-- **搜索**由嵌入向量驱动，而不仅仅是基于关键词。
-- **版本控制**支持语义版本、变更日志和标签（包括`latest`）。
-- **下载**每个版本以zip格式提供。
-- **点赞和评论**用于社区反馈。
-- **审核**钩子用于审批和审计。
-- **CLI友好的API**用于自动化和脚本编写。
+- **Public browsing** of skills and their `SKILL.md` content.
+- **Search** powered by embeddings (vector search), not just keywords.
+- **Versioning** with semver, changelogs, and tags (including `latest`).
+- **Downloads** as a zip per version.
+- **Stars and comments** for community feedback.
+- **Moderation** hooks for approvals and audits.
+- **CLI-friendly API** for automation and scripting.
 
-## CLI命令和参数
+## CLI commands and parameters
 
-全局选项（适用于所有命令）：
+Global options (apply to all commands):
 
-- `--workdir <dir>`: 工作目录（默认：当前目录；回退到OpenClaw工作区）。
-- `--dir <dir>`: 技能目录，相对于工作目录（默认：`skills`）。
-- `--site <url>`: 站点基础URL（浏览器登录）。
-- `--registry <url>`: 注册表API基础URL。
-- `--no-input`: 禁用提示（非交互式）。
-- `-V, --cli-version`: 打印CLI版本。
+- `--workdir <dir>`: Working directory (default: current dir; falls back to OpenClaw workspace).
+- `--dir <dir>`: Skills directory, relative to workdir (default: `skills`).
+- `--site <url>`: Site base URL (browser login).
+- `--registry <url>`: Registry API base URL.
+- `--no-input`: Disable prompts (non-interactive).
+- `-V, --cli-version`: Print CLI version.
 
-认证：
+Auth:
 
-- `clawhub login`（浏览器流程）或 `clawhub login --token <token>`
+- `clawhub login` (browser flow) or `clawhub login --token <token>`
 - `clawhub logout`
 - `clawhub whoami`
 
-选项：
+Options:
 
-- `--token <token>`: 粘贴API令牌。
-- `--label <label>`: 存储浏览器登录令牌的标签（默认：`CLI token`）。
-- `--no-browser`: 不打开浏览器（需要 `--token`）。
+- `--token <token>`: Paste an API token.
+- `--label <label>`: Label stored for browser login tokens (default: `CLI token`).
+- `--no-browser`: Do not open a browser (requires `--token`).
 
-搜索：
+Search:
 
 - `clawhub search "query"`
-- `--limit <n>`: 最大结果数。
+- `--limit <n>`: Max results.
 
-安装：
+Install:
 
 - `clawhub install <slug>`
-- `--version <version>`: 安装特定版本。
-- `--force`: 如果文件夹已存在则覆盖。
+- `--version <version>`: Install a specific version.
+- `--force`: Overwrite if the folder already exists.
 
-更新：
+Update:
 
 - `clawhub update <slug>`
 - `clawhub update --all`
-- `--version <version>`: 更新到特定版本（仅限单个slug）。
-- `--force`: 当本地文件与任何已发布版本不匹配时进行覆盖。
+- `--version <version>`: Update to a specific version (single slug only).
+- `--force`: Overwrite when local files do not match any published version.
 
-列出：
+List:
 
-- `clawhub list`（读取 `.clawhub/lock.json`）
+- `clawhub list` (reads `.clawhub/lock.json`)
 
-发布：
+Publish:
 
 - `clawhub publish <path>`
-- `--slug <slug>`: 技能slug。
-- `--name <name>`: 显示名称。
-- `--version <version>`: 语义版本号。
-- `--changelog <text>`: 变更日志文本（可为空）。
-- `--tags <tags>`: 逗号分隔的标签（默认：`latest`）。
+- `--slug <slug>`: Skill slug.
+- `--name <name>`: Display name.
+- `--version <version>`: Semver version.
+- `--changelog <text>`: Changelog text (can be empty).
+- `--tags <tags>`: Comma-separated tags (default: `latest`).
 
-删除/恢复（仅限所有者或管理员）：
+Delete/undelete (owner/admin only):
 
 - `clawhub delete <slug> --yes`
 - `clawhub undelete <slug> --yes`
 
-同步（扫描本地技能并发布新增或更新的技能）：
+Sync (scan local skills + publish new/updated):
 
 - `clawhub sync`
-- `--root <dir...>`: 额外的扫描根目录。
-- `--all`: 无提示上传所有内容。
-- `--dry-run`: 显示将要上传的内容。
-- `--bump <type>`: `patch|minor|major`用于更新（默认：`patch`）。
-- `--changelog <text>`: 用于非交互式更新的变更日志。
-- `--tags <tags>`: 逗号分隔的标签（默认：`latest`）。
-- `--concurrency <n>`: 注册表检查（默认：4）。
+- `--root <dir...>`: Extra scan roots.
+- `--all`: Upload everything without prompts.
+- `--dry-run`: Show what would be uploaded.
+- `--bump <type>`: `patch|minor|major` for updates (default: `patch`).
+- `--changelog <text>`: Changelog for non-interactive updates.
+- `--tags <tags>`: Comma-separated tags (default: `latest`).
+- `--concurrency <n>`: Registry checks (default: 4).
 
-## 代理的常见工作流
+## Common workflows for agents
 
-### 搜索技能
+### Search for skills
 
 ```bash
 clawhub search "postgres backups"
 ```
 
-### 下载新技能
+### Download new skills
 
 ```bash
 clawhub install my-skill-pack
 ```
 
-### 更新已安装技能
+### Update installed skills
 
 ```bash
 clawhub update --all
 ```
 
-### 备份您的技能（发布或同步）
+### Back up your skills (publish or sync)
 
-对于单个技能文件夹：
+For a single skill folder:
 
 ```bash
 clawhub publish ./my-skill --slug my-skill --name "My Skill" --version 1.0.0 --tags latest
 ```
 
-一次性扫描并备份多个技能：
+To scan and back up many skills at once:
 
 ```bash
 clawhub sync --all
 ```
 
-## 高级细节（技术性）
+## Advanced details (technical)
 
-### 版本控制和标签
+### Versioning and tags
 
-- 每次发布都会创建一个新的**语义版本**`SkillVersion`。
-- 标签（如`latest`）指向某个版本；移动标签可以让您回滚。
-- 变更日志随每个版本附带，同步或发布更新时可以为空。
+- Each publish creates a new **semver** `SkillVersion`.
+- Tags (like `latest`) point to a version; moving tags lets you roll back.
+- Changelogs are attached per version and can be empty when syncing or publishing updates.
 
-### 本地更改与注册表版本
+### Local changes vs registry versions
 
-更新会使用内容哈希将本地技能内容与注册表版本进行比较。如果本地文件与任何已发布版本都不匹配，CLI会在覆盖之前询问（或在非交互式运行中要求`--force`）。
+Updates compare the local skill contents to registry versions using a content hash. If local files do not match any published version, the CLI asks before overwriting (or requires `--force` in non-interactive runs).
 
-### 同步扫描和回退根目录
+### Sync scanning and fallback roots
 
-`clawhub sync`首先扫描您当前的工作目录。如果没有找到技能，它会回退到已知的旧位置（例如`~/openclaw/skills`和`~/.openclaw/skills`）。这是为了在无需额外标志的情况下找到较旧的技能安装。
+`clawhub sync` scans your current workdir first. If no skills are found, it falls back to known legacy locations (for example `~/openclaw/skills` and `~/.openclaw/skills`). This is designed to find older skill installs without extra flags.
 
-### 存储和锁文件
+### Storage and lockfile
 
-- 已安装的技能记录在您工作目录下的`.clawhub/lock.json`中。
-- 认证令牌存储在ClawHub CLI配置文件中（可通过`CLAWHUB_CONFIG_PATH`覆盖）。
+- Installed skills are recorded in `.clawhub/lock.json` under your workdir.
+- Auth tokens are stored in the ClawHub CLI config file (override via `CLAWHUB_CONFIG_PATH`).
 
-### 遥测（安装计数）
+### Telemetry (install counts)
 
-当您在登录状态下运行`clawhub sync`时，CLI会发送一个最小快照来计算安装次数。您可以完全禁用此功能：
+When you run `clawhub sync` while logged in, the CLI sends a minimal snapshot to compute install counts. You can disable this entirely:
 
 ```bash
 export CLAWHUB_DISABLE_TELEMETRY=1
 ```
 
-## 环境变量
+## Environment variables
 
-- `CLAWHUB_SITE`: 覆盖站点URL。
-- `CLAWHUB_REGISTRY`: 覆盖注册表API URL。
-- `CLAWHUB_CONFIG_PATH`: 覆盖CLI存储令牌/配置的位置。
-- `CLAWHUB_WORKDIR`: 覆盖默认工作目录。
-- `CLAWHUB_DISABLE_TELEMETRY=1`: 在`sync`上禁用遥测。
+- `CLAWHUB_SITE`: Override the site URL.
+- `CLAWHUB_REGISTRY`: Override the registry API URL.
+- `CLAWHUB_CONFIG_PATH`: Override where the CLI stores the token/config.
+- `CLAWHUB_WORKDIR`: Override the default workdir.
+- `CLAWHUB_DISABLE_TELEMETRY=1`: Disable telemetry on `sync`.

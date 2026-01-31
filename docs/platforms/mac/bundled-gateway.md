@@ -1,50 +1,56 @@
 ---
-summary: Gateway runtime on macOS (external launchd service)
+summary: "Gateway runtime on macOS (external launchd service)"
 read_when:
   - Packaging OpenClaw.app
   - Debugging the macOS gateway launchd service
   - Installing the gateway CLI for macOS
 ---
-# macOS 上的网关（外部 launchd）
 
-OpenClaw.app 不再捆绑 Node/Bun 或网关运行时。macOS 应用程序期望使用**外部**的 `openclaw` CLI 安装，不会以子进程方式启动网关，而是通过每个用户的 launchd 服务来保持网关持续运行（或在本地已运行网关的情况下附加到现有实例）。
+# Gateway on macOS (external launchd)
 
-## 安装 CLI（本地模式所需）
+OpenClaw.app no longer bundles Node/Bun or the Gateway runtime. The macOS app
+expects an **external** `openclaw` CLI install, does not spawn the Gateway as a
+child process, and manages a per‑user launchd service to keep the Gateway
+running (or attaches to an existing local Gateway if one is already running).
 
-Mac 上需要安装 Node 22 或更高版本，然后全局安装 `openclaw`：
+## Install the CLI (required for local mode)
+
+You need Node 22+ on the Mac, then install `openclaw` globally:
 
 ```bash
 npm install -g openclaw@<version>
 ```
 
-macOS 应用程序中的“安装 CLI”按钮会通过 npm/pnpm 执行相同的安装流程（不建议为网关运行时使用 Bun）。
+The macOS app’s **Install CLI** button runs the same flow via npm/pnpm (bun not recommended for Gateway runtime).
 
-## Launchd（作为 LaunchAgent 的网关）
+## Launchd (Gateway as LaunchAgent)
 
-标签：
-- `bot.molt.gateway`（或 `bot.molt.<profile>`；旧版 `com.openclaw.*` 可能仍存在）
+Label:
+- `bot.molt.gateway` (or `bot.molt.<profile>`; legacy `com.openclaw.*` may remain)
 
-Plist 位置（按用户）：
+Plist location (per‑user):
 - `~/Library/LaunchAgents/bot.molt.gateway.plist`
-  （或 `~/Library/LaunchAgents/bot.molt.<profile>.plist`）
+  (or `~/Library/LaunchAgents/bot.molt.<profile>.plist`)
 
-管理器：
-- 在本地模式下，macOS 应用程序负责 LaunchAgent 的安装和更新。
-- CLI 也可以安装它：`openclaw gateway install`。
+Manager:
+- The macOS app owns LaunchAgent install/update in Local mode.
+- The CLI can also install it: `openclaw gateway install`.
 
-行为：
-- “OpenClaw Active”用于启用或禁用 LaunchAgent。
-- 退出应用程序**不会**停止网关（launchd 会使其保持运行）。
-- 如果在配置的端口上已有网关正在运行，应用程序将附加到该网关，而不是启动一个新的网关。
+Behavior:
+- “OpenClaw Active” enables/disables the LaunchAgent.
+- App quit does **not** stop the gateway (launchd keeps it alive).
+- If a Gateway is already running on the configured port, the app attaches to
+  it instead of starting a new one.
 
-日志记录：
-- launchd 的 stdout/err：`/tmp/openclaw/openclaw-gateway.log`
+Logging:
+- launchd stdout/err: `/tmp/openclaw/openclaw-gateway.log`
 
-## 版本兼容性
+## Version compatibility
 
-macOS 应用程序会检查网关版本是否与其自身版本兼容。如果版本不兼容，请更新全局 CLI 以匹配应用程序版本。
+The macOS app checks the gateway version against its own version. If they’re
+incompatible, update the global CLI to match the app version.
 
-## 烟雾测试
+## Smoke check
 
 ```bash
 openclaw --version
@@ -54,7 +60,7 @@ OPENCLAW_SKIP_CANVAS_HOST=1 \
 openclaw gateway --port 18999 --bind loopback
 ```
 
-然后：
+Then:
 
 ```bash
 openclaw gateway call health --url ws://127.0.0.1:18999 --timeout 3000

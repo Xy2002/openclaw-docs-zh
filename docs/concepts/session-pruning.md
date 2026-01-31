@@ -1,77 +1,77 @@
 ---
-summary: 'Session pruning: tool-result trimming to reduce context bloat'
+summary: "Session pruning: tool-result trimming to reduce context bloat"
 read_when:
   - You want to reduce LLM context growth from tool outputs
   - You are tuning agents.defaults.contextPruning
 ---
-# 会话修剪
+# Session Pruning
 
-会话修剪会在每次调用 LLM 之前，从内存中的上下文中移除**旧的工具结果**。它**不会**重写磁盘上的会话历史记录（`*.jsonl`）。
+Session pruning trims **old tool results** from the in-memory context right before each LLM call. It does **not** rewrite the on-disk session history (`*.jsonl`).
 
-## 运行时机
-- 当 `mode: "cache-ttl"` 已启用，且该会话中最后一次 Anthropic 调用的时间超过 `ttl` 时。
-- 只影响发送给模型的该次请求的消息。
-- 仅适用于 Anthropic API 调用（以及 OpenRouter 的 Anthropic 模型）。
-- 为获得最佳效果，应将 `ttl` 设置为与您的模型 `cacheControlTtl` 相匹配。
-- 在修剪后，TTL 窗口会重置，因此后续请求可在 `ttl` 再次到期前继续使用缓存。
+## When it runs
+- When `mode: "cache-ttl"` is enabled and the last Anthropic call for the session is older than `ttl`.
+- Only affects the messages sent to the model for that request.
+ - Only active for Anthropic API calls (and OpenRouter Anthropic models).
+ - For best results, match `ttl` to your model `cacheControlTtl`.
+ - After a prune, the TTL window resets so subsequent requests keep cache until `ttl` expires again.
 
-## 智能默认设置（Anthropic）
-- **OAuth 或 setup-token** 配置文件：启用 `cache-ttl` 修剪，并将心跳间隔设置为 `1h`。
-- **API 密钥** 配置文件：启用 `cache-ttl` 修剪，将心跳间隔设置为 `30m`，并将 Anthropic 模型上的 `cacheControlTtl` 默认值设为 `1h`。
-- 如果您显式设置了这些值，OpenClaw**不会**覆盖它们。
+## Smart defaults (Anthropic)
+- **OAuth or setup-token** profiles: enable `cache-ttl` pruning and set heartbeat to `1h`.
+- **API key** profiles: enable `cache-ttl` pruning, set heartbeat to `30m`, and default `cacheControlTtl` to `1h` on Anthropic models.
+- If you set any of these values explicitly, OpenClaw does **not** override them.
 
-## 改进的内容（成本 + 缓存行为）
-- **为何要修剪：** Anthropic 提示词缓存仅在 TTL 范围内生效。如果会话在 TTL 过期后处于空闲状态，下一次请求将重新缓存整个提示词，除非您事先进行修剪。
-- **哪些成本降低：** 修剪可减少 TTL 过期后首次请求的 **cacheWrite** 大小。
-- **TTL 重置的重要性：** 修剪运行后，缓存窗口会重置，因此后续请求可以复用新缓存的提示词，而无需再次缓存完整的历史记录。
-- **修剪不会做什么：** 修剪不会增加令牌数量或导致“双重”成本；它只改变在 TTL 过期后的首次请求中被缓存的内容。
+## What this improves (cost + cache behavior)
+- **Why prune:** Anthropic prompt caching only applies within the TTL. If a session goes idle past the TTL, the next request re-caches the full prompt unless you trim it first.
+- **What gets cheaper:** pruning reduces the **cacheWrite** size for that first request after the TTL expires.
+- **Why the TTL reset matters:** once pruning runs, the cache window resets, so follow‑up requests can reuse the freshly cached prompt instead of re-caching the full history again.
+- **What it does not do:** pruning doesn’t add tokens or “double” costs; it only changes what gets cached on that first post‑TTL request.
 
-## 可修剪的内容
-- 仅 `toolResult` 消息。
-- 用户和助手消息**绝不会**被修改。
-- 最近 `keepLastAssistants` 条助手消息受到保护；在此截断点之后的工具结果不会被修剪。
-- 如果助手消息不足以确定截断点，则跳过修剪。
-- 包含**图像块**的工具结果会被跳过（绝不会被修剪或清除）。
+## What can be pruned
+- Only `toolResult` messages.
+- User + assistant messages are **never** modified.
+- The last `keepLastAssistants` assistant messages are protected; tool results after that cutoff are not pruned.
+- If there aren’t enough assistant messages to establish the cutoff, pruning is skipped.
+- Tool results containing **image blocks** are skipped (never trimmed/cleared).
 
-## 上下文窗口估算
-修剪使用估算的上下文窗口（字符数 ≈ 令牌数 × 4）。窗口大小按以下顺序确定：
-1) 模型定义 `contextWindow`（来自模型注册表）。
-2) `models.providers.*.models[].contextWindow` 优先级更高。
-3) `agents.defaults.contextTokens`。
-4) 默认 `200000` 令牌数。
+## Context window estimation
+Pruning uses an estimated context window (chars ≈ tokens × 4). The window size is resolved in this order:
+1) Model definition `contextWindow` (from the model registry).
+2) `models.providers.*.models[].contextWindow` override.
+3) `agents.defaults.contextTokens`.
+4) Default `200000` tokens.
 
-## 模式
+## Mode
 ### cache-ttl
-- 修剪仅在最后一次 Anthropic 调用时间超过 `ttl`（默认 `5m`）时运行。
-- 运行时的行为与之前的软修剪和硬清除行为相同。
+- Pruning only runs if the last Anthropic call is older than `ttl` (default `5m`).
+- When it runs: same soft-trim + hard-clear behavior as before.
 
-## 软修剪 vs 硬修剪
-- **软修剪：** 仅针对过大的工具结果。
-  - 保留头部和尾部，插入 `...`，并附上包含原始大小的备注。
-  - 跳过包含图像块的工具结果。
-- **硬清除：** 用 `hardClear.placeholder` 替换整个工具结果。
+## Soft vs hard pruning
+- **Soft-trim**: only for oversized tool results.
+  - Keeps head + tail, inserts `...`, and appends a note with the original size.
+  - Skips results with image blocks.
+- **Hard-clear**: replaces the entire tool result with `hardClear.placeholder`.
 
-## 工具选择
-- `tools.allow` / `tools.deny` 支持 `*` 通配符。
-- 拒绝优先。
-- 匹配不区分大小写。
-- 允许列表为空 => 所有工具均被允许。
+## Tool selection
+- `tools.allow` / `tools.deny` support `*` wildcards.
+- Deny wins.
+- Matching is case-insensitive.
+- Empty allow list => all tools allowed.
 
-## 与其他限制的交互
-- 内置工具已经会截断自己的输出；会话修剪是额外的一层，可防止长时间对话在模型上下文中积累过多的工具输出。
-- 压缩是独立的：压缩会总结并持久化，而修剪则是每次请求的临时操作。请参阅 [concepts/compaction](/concepts/compaction)。
+## Interaction with other limits
+- Built-in tools already truncate their own output; session pruning is an extra layer that prevents long-running chats from accumulating too much tool output in the model context.
+- Compaction is separate: compaction summarizes and persists, pruning is transient per request. See [/concepts/compaction](/concepts/compaction).
 
-## 默认设置（启用时）
-- `ttl`：`"5m"`
-- `keepLastAssistants`：`3`
-- `softTrimRatio`：`0.3`
-- `hardClearRatio`：`0.5`
-- `minPrunableToolChars`：`50000`
-- `softTrim`：`{ maxChars: 4000, headChars: 1500, tailChars: 1500 }`
-- `hardClear`：`{ enabled: true, placeholder: "[Old tool result content cleared]" }`
+## Defaults (when enabled)
+- `ttl`: `"5m"`
+- `keepLastAssistants`: `3`
+- `softTrimRatio`: `0.3`
+- `hardClearRatio`: `0.5`
+- `minPrunableToolChars`: `50000`
+- `softTrim`: `{ maxChars: 4000, headChars: 1500, tailChars: 1500 }`
+- `hardClear`: `{ enabled: true, placeholder: "[Old tool result content cleared]" }`
 
-## 示例
-默认设置（关闭）：
+## Examples
+Default (off):
 ```json5
 {
   agent: {
@@ -80,7 +80,7 @@ read_when:
 }
 ```
 
-启用 TTL 感知修剪：
+Enable TTL-aware pruning:
 ```json5
 {
   agent: {
@@ -89,7 +89,7 @@ read_when:
 }
 ```
 
-将修剪限制于特定工具：
+Restrict pruning to specific tools:
 ```json5
 {
   agent: {
@@ -101,4 +101,4 @@ read_when:
 }
 ```
 
-查看配置参考：[Gateway Configuration](/gateway/configuration)
+See config reference: [Gateway Configuration](/gateway/configuration)

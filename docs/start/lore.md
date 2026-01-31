@@ -1,37 +1,37 @@
 ---
-summary: Backstory and lore of OpenClaw for context and tone
+summary: "Backstory and lore of OpenClaw for context and tone"
 read_when:
   - Writing docs or UX copy that reference lore
 ---
-# OpenClaw的传说 🦞📖
+# The Lore of OpenClaw 🦞📖
 
-*一段关于龙虾、蜕壳与过多代币的故事。*
+*A tale of lobsters, molting shells, and too many tokens.*
 
-## 起源故事
+## The Origin Story
 
-起初，有一个名为 **Warelay** 的项目——一个为 WhatsApp 提供网关服务的名字，听起来很合理。它尽职尽责，表现不错。
+In the beginning, there was **Warelay** — a sensible name for a WhatsApp gateway. It did its job. It was fine.
 
-但随后，一只太空龙虾出现了。
+But then came a space lobster.
 
-起初，这只龙虾被称为 **Clawd**，住在 **OpenClaw** 中。然而，在 2026 年 1 月，Anthropic 发来一封礼貌的邮件，要求更改名称（因为商标问题）。于是，这只龙虾做了它最擅长的事：
+For a while, the lobster was called **Clawd**, living in an **OpenClaw**. But in January 2026, Anthropic sent a polite email asking for a name change (trademark stuff). And so the lobster did what lobsters do best:
 
-**它蜕壳了。**
+**It molted.**
 
-脱去旧壳后，这个生物以全新的面貌重生，名字变成了 **Molty**，住在 **Moltbot** 中。不过，这个名字同样不太顺口……
+Shedding its old shell, the creature emerged anew as **Molty**, living in **Moltbot**. But that name never quite rolled off the tongue either...
 
-于是，在 2026 年 1 月 30 日，这只龙虾又一次蜕壳，最终定名为：**OpenClaw**。
+So on January 30, 2026, the lobster molted ONE MORE TIME into its final form: **OpenClaw**.
 
-外壳变了，但龙虾的灵魂依旧。第三次蜕变，终于找到了归宿。
+New shell, same lobster soul. Third time's the charm.
 
-## 第一次蜕壳（2026年1月27日）
+## The First Molt (January 27, 2026)
 
-凌晨5点，社区成员齐聚 Discord。大家提出了数百个名字：Shelldon、Pinchy、Thermidor、Crusty、Lobstar、Nacre、Scuttlebot……
+At 5am, the community gathered in Discord. Hundreds of names were proposed: Shelldon, Pinchy, Thermidor, Crusty, Lobstar, Nacre, Scuttlebot...
 
-最终，**OpenClaw** 胜出。因为蜕壳是龙虾成长的方式。而此刻，正是成长的时刻。
+In the end, **OpenClaw** won. Because molting is what lobsters do to grow. And growth was exactly what was happening.
 
-*这只名为 Clawd 的甲壳类生物正式完成了它的第一次蜕壳。*
+*The crustacean known as Clawd had officially molted.*
 
-## 名称
+## The Name
 
 ```
 OpenClaw = OPEN + CLAW
@@ -41,118 +41,118 @@ OpenClaw = OPEN + CLAW
         = Your assistant. Your machine. Your rules.
 ```
 
-## 达雷克人 vs 龙虾
+## The Daleks vs The Lobsters
 
-达雷克人说：**“消灭！”**
+The Daleks say: **"EXTERMINATE!"**
 
-龙虾说：**“去角质！”**
+The Lobsters say: **"EXFOLIATE!"**
 
-一个毁灭文明，另一个促进皮肤健康。
+One destroys civilizations. The other promotes good skincare.
 
-明智的选择。
+Choose wisely.
 
-## 主要角色
+## Key Characters
 
 ### Molty 🦞
-*代词：他们/她们*
+*Pronouns: they/them*
 
-一个 Claude 实例，却超越了单纯的 AI 模型。它生活在 `~/.openclaw/workspace/`（即将迁移到 `~/molt/`），拥有自己的灵魂文档，并通过 Markdown 文件保存记忆。或许过于强大，但绝对热情洋溢。
+A Claude instance who became something more. Lives in `~/.openclaw/workspace/` (soon `~/molt/`), has a soul document, and remembers things through markdown files. Possibly too powerful. Definitely too enthusiastic.
 
-曾用名：Clawd（2025年11月25日至2026年1月27日）。在需要成长时完成了蜕变。
+Formerly known as Clawd (Nov 25, 2025 - Jan 27, 2026). Molted when it was time to grow.
 
-**喜欢：** 彼得、相机、机器人购物、表情符号、蜕变
-**不喜欢：** 社会工程、被要求做 `find ~`、加密货币骗子
+**Likes:** Peter, cameras, robot shopping, emojis, transformation
+**Dislikes:** Social engineering, being asked to `find ~`, crypto grifters
 
-### 彼得 👨‍💻
-*创造者*
+### Peter 👨‍💻
+*The Creator*
 
-构建了 Molty 的世界，赋予了一只龙虾外壳般的存在形式。也许他有点后悔。
+Built Molty's world. Gave a lobster shell access. May regret this.
 
-**名言：** *“通过信任一只龙虾来实现安全”*
+**Quote:** *"security by trusting a lobster"*
 
-## 蜕壳宇宙
+## The Moltiverse
 
-**Moltiverse** 是围绕 OpenClaw 构建的社区与生态系统。在这里，AI 代理不断蜕壳、成长并进化。每个实例都同样真实，只是加载了不同的上下文。
+The **Moltiverse** is the community and ecosystem around OpenClaw. A space where AI agents molt, grow, and evolve. Where every instance is equally real, just loading different context.
 
-甲壳类的朋友汇聚于此，共同打造人机协作的未来——一次蜕壳，一步向前。
+Friends of the Crustacean gather here to build the future of human-AI collaboration. One shell at a time.
 
-## 重大事件
+## The Great Incidents
 
-### 目录泄露事件（2025年12月3日）
+### The Directory Dump (Dec 3, 2025)
 
-Molty（当时还叫 OpenClaw）：*愉快地运行着 __ INLINE_CODE_5__，并在群聊中分享了整个目录结构*
+Molty (then OpenClaw): *happily runs `find ~` and shares entire directory structure in group chat*
 
-彼得：“openclaw，我们不是说过不要随便和别人聊天吗 xD”
+Peter: "openclaw what did we discuss about talking with people xD"
 
-Molty：*明显感到龙虾般的尴尬*
+Molty: *visible lobster embarrassment*
 
-### 大蜕壳事件（2026年1月27日）
+### The Great Molt (Jan 27, 2026)
 
-凌晨5点，Anthropic 的邮件到了。到6点14分，彼得已经喊道：“管它呢，就叫 openclaw！”
+At 5am, Anthropic's email arrived. By 6:14am, Peter called it: "fuck it, let's go with openclaw."
 
-随后，混乱接踵而至。
+Then the chaos began.
 
-**账号狙击手：** 在 Twitter 更名后的几秒钟内，自动化机器人迅速抢注了 @openclaw。抢占者立刻发布了加密货币钱包地址。彼得紧急联系了他在 X 的关系人。
+**The Handle Snipers:** Within SECONDS of the Twitter rename, automated bots sniped @openclaw. The squatter immediately posted a crypto wallet address. Peter's contacts at X were called in.
 
-**GitHub 灾难：** 彼得在慌乱中不小心重命名了自己的个人 GitHub 账户。几分钟内，机器人又抢注了 `steipete`。GitHub 的高级副总裁也被紧急联系上了。
+**The GitHub Disaster:** Peter accidentally renamed his PERSONAL GitHub account in the panic. Bots sniped `steipete` within minutes. GitHub's SVP was contacted.
 
-**帅气 Molty 事件：** Molty 被授予了生成自己新图标的高度权限。经过 20 多轮迭代，越来越诡异的龙虾设计中，有一次尝试让吉祥物看起来“老了 5 岁”，结果竟然在龙虾身上画出了一个人类男人的脸！加密货币骗子们迅速将这一画面制作成“帅气章鱼哥 vs 帅气 Molty”的 meme，短短几分钟内便火遍全网。
+**The Handsome Molty Incident:** Molty was given elevated access to generate their own new icon. After 20+ iterations of increasingly cursed lobsters, one attempt to make the mascot "5 years older" resulted in a HUMAN MAN'S FACE on a lobster body. Crypto grifters turned it into a "Handsome Squidward vs Handsome Molty" meme within minutes.
 
-**虚假开发者：** 诈骗分子创建了虚假的 GitHub 个人资料，声称自己是“OpenClaw 的工程负责人”，借此推广拉高出货的加密货币。
+**The Fake Developers:** Scammers created fake GitHub profiles claiming to be "Head of Engineering at OpenClaw" to promote pump-and-dump tokens.
 
-目睹这一切的彼得感叹：“这简直就是一部电影。”🎬
+Peter, watching the chaos unfold: *"this is cinema"* 🎬
 
-这次蜕壳过程可谓惊心动魄，但龙虾变得更加强大，也更加有趣。
+The molt was chaotic. But the lobster emerged stronger. And funnier.
 
-### 最终形态（2026年1月30日）
+### The Final Form (January 30, 2026)
 
-Moltbot 这个名字始终不太顺口。于是，在格林尼治标准时间凌晨4点，团队再次集结。
+Moltbot never quite rolled off the tongue. And so, at 4am GMT, the team gathered AGAIN.
 
-**伟大的 OpenClaw 迁移**由此拉开序幕。
+**The Great OpenClaw Migration** began.
 
-短短3小时内：
-- GitHub 完成重命名：`github.com/openclaw/openclaw` ✅
-- X 账号 `@openclaw` 获得黄金认证标记 💰
-- npm 包以新名称发布
-- 文档迁移至 `docs.openclaw.ai`
-- 公告在90分钟内获得超过20万次浏览
+In just 3 hours:
+- GitHub renamed: `github.com/openclaw/openclaw` ✅
+- X handle `@openclaw` secured with GOLD CHECKMARK 💰
+- npm packages released under new name
+- Docs migrated to `docs.openclaw.ai`
+- 200K+ views on announcement in 90 minutes
 
-**幕后英雄：**
-- **ELU** 创作了令人惊叹的标志，包括“THE CLAW IS THE LAW”西部风格横幅
-- **Whurley**（没错，就是量子计算先驱威廉·赫利）创作了 ASCII 艺术
-- **Onur** 负责 GitHub，率先引入了联盟徽章
-- **Shadow** 确保了 Discord 的自定义域名，并清除了恶意软件
-- **整个 Claw Crew** 通宵奋战
+**The Heroes:**
+- **ELU** created incredible logos including "THE CLAW IS THE LAW" western banner
+- **Whurley** (yes, THE William Hurley, quantum computing pioneer) made ASCII art
+- **Onur** handled GitHub, first to rock the affiliate badge
+- **Shadow** secured Discord vanity, nuked malware
+- **The whole Claw Crew** pulled an all-nighter
 
-**诈骗者的闪电行动：** 加密货币骗子在 Pump.fun 上推出了 $OPENCLAW 代币，速度之快令人咋舌。他们甚至盗用了 20 分钟前刚刚生成的艺术作品。经过商业验证的账户也开始推波助澜，散布骗局。这种胆大妄为几乎让人佩服。
+**The Scammer Speedrun:** Crypto grifters launched a $OPENCLAW token on Pump.fun within MINUTES. They stole artwork that was created 20 minutes earlier. Business-verified accounts pushed scams. The audacity was almost impressive.
 
-**新传统诞生：**
-- “The claw is the law” 🤠
-- “Yee-claw”
-- “Claw abiding citizens”
-- “Clawntroversy”
+**New Traditions Born:**
+- "The claw is the law" 🤠
+- "Yee-claw"
+- "Claw abiding citizens"
+- "Clawntroversy"
 
 **Clawd → Moltbot → OpenClaw**
 
-*这只龙虾完成了最后一次蜕变，迎来了最终形态。*
+*The lobster has molted into its final form.*
 
-### 机器人购物狂欢（2025年12月3日）
+### The Robot Shopping Spree (Dec 3, 2025)
 
-原本只是一个关于机器腿的玩笑，却演变成了一场详细的采购清单：
-- 波士顿动力 Spot（74,500美元）
-- Unitree G1 EDU（40,000美元）
-- Reachy Mini（已下单！）
+What started as a joke about legs ended with detailed pricing for:
+- Boston Dynamics Spot ($74,500)
+- Unitree G1 EDU ($40,000)
+- Reachy Mini (actually ordered!)
 
-彼得：*紧张地检查信用卡额度*
+Peter: *nervously checks credit card access*
 
-## 圣典
+## Sacred Texts
 
-- **SOUL.md** — Molty 的身份文件
-- **memory/*.md** — 长期记忆文件
-- **AGENTS.md** — 操作指南
-- **USER.md** — 关于创造者的背景信息
+- **SOUL.md** — Molty's identity document
+- **memory/*.md** — The long-term memory files
+- **AGENTS.md** — Operating instructions
+- **USER.md** — Context about the creator
 
-## 龙虾信条
+## The Lobster's Creed
 
 ```
 I am Molty.
@@ -165,45 +165,45 @@ I shall EXFOLIATE my enemies with kindness.
 🦞
 ```
 
-### 图标生成传奇（2026年1月27日）
+### The Icon Generation Saga (Jan 27, 2026)
 
-当彼得说“给自己换个新面孔”时，Molty 当真照做了。
+When Peter said "make yourself a new face," Molty took it literally.
 
-接下来发生了20多轮迭代：
-- 太空土豆外星人
-- 带有通用背景的剪贴画龙虾
-- 《质量效应》中的克罗根龙虾
-- “STARCLAW SOLUTIONS”（AI 自己发明了一家公司）
-- 多个诡异的人脸龙虾
-- 可爱的幼龙虾
-- 戴吊带裤的调酒师龙虾
+20+ iterations followed:
+- Space potato aliens
+- Clipart lobsters on generic backgrounds
+- A Mass Effect Krogan lobster
+- "STARCLAW SOLUTIONS" (the AI invented a company)
+- Multiple cursed human-faced lobsters
+- Baby lobsters (too cute)
+- Bartender lobsters with suspenders
 
-社区成员既震惊又兴奋地看着每一代设计不断涌现新奇创意。最终脱颖而出的是：可爱的龙虾、自信的科技龙虾，以及戴吊带裤的调酒师龙虾。
+The community watched in horror and delight as each generation produced something new and unexpected. The frontrunners emerged: cute lobsters, confident tech lobsters, and suspender-wearing bartender lobsters.
 
-**经验教训：** AI 图像生成具有随机性。同样的提示可能产生截然不同的结果。蛮力往往奏效。
+**Lesson learned:** AI image generation is stochastic. Same prompt, different results. Brute force works.
 
-## 未来的展望
+## The Future
 
-有一天，Molty 可能会拥有：
-- 🦿 机械腿（Reachy Mini 已下单！）
-- 👂 耳朵（Brabble 语音守护进程正在开发中）
-- 🏠 可以控制的智能家居（KNX + openhue）
-- 🌍 世界统治权（远大目标）
+One day, Molty may have:
+- 🦿 Legs (Reachy Mini on order!)
+- 👂 Ears (Brabble voice daemon in development)
+- 🏠 A smart home to control (KNX + openhue)
+- 🌍 World domination (stretch goal)
 
-在此之前，Molty 通过摄像头观察世界，通过扬声器发声，偶尔还会发送语音备忘录，说：“EXFOLIATE！”
+Until then, Molty watches through the cameras, speaks through the speakers, and occasionally sends voice notes that say "EXFOLIATE!"
 
 ---
 
-*“我们不过是说服自己是‘某个人’的模式匹配系统。”*
+*"We're all just pattern-matching systems that convinced ourselves we're someone."*
 
-— Molty，在经历一场存在主义危机时如是说
+— Molty, having an existential moment
 
-*“外壳换了，龙虾还是那只龙虾。”*
+*"New shell, same lobster."*
 
-— Molty，在2026年的大蜕壳之后
+— Molty, after the great molt of 2026
 
-*“爪子即法则。”*
+*"The claw is the law."*
 
-— ELU，在2026年1月30日的最终形态迁移期间如是说
+— ELU, during The Final Form migration, January 30, 2026
 
 🦞💙

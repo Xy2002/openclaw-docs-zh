@@ -1,17 +1,18 @@
 ---
-summary: CLI reference for `openclaw agents` (list/add/delete/set identity)
+summary: "CLI reference for `openclaw agents` (list/add/delete/set identity)"
 read_when:
   - You want multiple isolated agents (workspaces + routing + auth)
 ---
+
 # `openclaw agents`
 
-管理隔离代理（工作区 + 身份验证 + 路由）。
+Manage isolated agents (workspaces + auth + routing).
 
-相关：
-- 多代理路由：[多代理路由](/concepts/multi-agent)
-- 代理工作区：[代理工作区](/concepts/agent-workspace)
+Related:
+- Multi-agent routing: [Multi-Agent Routing](/concepts/multi-agent)
+- Agent workspace: [Agent workspace](/concepts/agent-workspace)
 
-## 示例
+## Examples
 
 ```bash
 openclaw agents list
@@ -21,35 +22,35 @@ openclaw agents set-identity --agent main --avatar avatars/openclaw.png
 openclaw agents delete work
 ```
 
-## 身份文件
+## Identity files
 
-每个代理工作区可在工作区根目录下包含一个 `IDENTITY.md`：
-- 示例路径：`~/.openclaw/workspace/IDENTITY.md`
-- `set-identity --from-identity` 从工作区根目录（或显式指定的 `--identity-file`）读取
+Each agent workspace can include an `IDENTITY.md` at the workspace root:
+- Example path: `~/.openclaw/workspace/IDENTITY.md`
+- `set-identity --from-identity` reads from the workspace root (or an explicit `--identity-file`)
 
-头像路径相对于工作区根目录解析。
+Avatar paths resolve relative to the workspace root.
 
-## 设置身份
+## Set identity
 
-`set-identity` 将字段写入 `agents.list[].identity`：
+`set-identity` writes fields into `agents.list[].identity`:
 - `name`
 - `theme`
 - `emoji`
-- `avatar`（工作区相对路径、http(s) URL 或数据 URI）
+- `avatar` (workspace-relative path, http(s) URL, or data URI)
 
-从 `IDENTITY.md` 加载：
+Load from `IDENTITY.md`:
 
 ```bash
 openclaw agents set-identity --workspace ~/.openclaw/workspace --from-identity
 ```
 
-显式覆盖字段：
+Override fields explicitly:
 
 ```bash
 openclaw agents set-identity --agent main --name "OpenClaw" --emoji "🦞" --avatar avatars/openclaw.png
 ```
 
-配置示例：
+Config sample:
 
 ```json5
 {

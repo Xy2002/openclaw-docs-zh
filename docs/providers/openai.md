@@ -1,19 +1,20 @@
 ---
-summary: Use OpenAI via API keys or Codex subscription in OpenClaw
+summary: "Use OpenAI via API keys or Codex subscription in OpenClaw"
 read_when:
   - You want to use OpenAI models in OpenClaw
   - You want Codex subscription auth instead of API keys
 ---
 # OpenAI
 
-OpenAI为GPT模型提供开发者API。Codex支持通过**ChatGPT登录**获取订阅访问权限，或通过**API密钥登录**实现按使用量计费的访问权限。Codex云需要使用ChatGPT登录。
+OpenAI provides developer APIs for GPT models. Codex supports **ChatGPT sign-in** for subscription
+access or **API key** sign-in for usage-based access. Codex cloud requires ChatGPT sign-in.
 
-## 选项A：OpenAI API密钥（OpenAI平台）
+## Option A: OpenAI API key (OpenAI Platform)
 
-**最适合：** 直接通过API访问并按使用量计费。
-您可从OpenAI仪表板获取API密钥。
+**Best for:** direct API access and usage-based billing.
+Get your API key from the OpenAI dashboard.
 
-### CLI设置
+### CLI setup
 
 ```bash
 openclaw onboard --auth-choice openai-api-key
@@ -21,7 +22,7 @@ openclaw onboard --auth-choice openai-api-key
 openclaw onboard --openai-api-key "$OPENAI_API_KEY"
 ```
 
-### 配置片段
+### Config snippet
 
 ```json5
 {
@@ -30,12 +31,12 @@ openclaw onboard --openai-api-key "$OPENAI_API_KEY"
 }
 ```
 
-## 选项B：OpenAI Code（Codex）订阅
+## Option B: OpenAI Code (Codex) subscription
 
-**最适合：** 使用ChatGPT/Codex订阅访问权限，而非API密钥。
-Codex云需要使用ChatGPT登录，而Codex命令行工具则同时支持ChatGPT登录和API密钥登录。
+**Best for:** using ChatGPT/Codex subscription access instead of an API key.
+Codex cloud requires ChatGPT sign-in, while the Codex CLI supports ChatGPT or API key sign-in.
 
-### CLI设置
+### CLI setup
 
 ```bash
 # Run Codex OAuth in the wizard
@@ -45,7 +46,7 @@ openclaw onboard --auth-choice openai-codex
 openclaw models auth login --provider openai-codex
 ```
 
-### 配置片段
+### Config snippet
 
 ```json5
 {
@@ -53,7 +54,7 @@ openclaw models auth login --provider openai-codex
 }
 ```
 
-## 注意事项
+## Notes
 
-- 模型引用始终使用`provider/model`（参见[/concepts/models](/concepts/models)）。
-- 身份验证详情及复用规则请参见[/concepts/oauth](/concepts/oauth)。
+- Model refs always use `provider/model` (see [/concepts/models](/concepts/models)).
+- Auth details + reuse rules are in [/concepts/oauth](/concepts/oauth).

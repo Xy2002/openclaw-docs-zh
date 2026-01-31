@@ -1,56 +1,59 @@
 ---
-summary: OpenClaw on Raspberry Pi (budget self-hosted setup)
+summary: "OpenClaw on Raspberry Pi (budget self-hosted setup)"
 read_when:
   - Setting up OpenClaw on a Raspberry Pi
   - Running OpenClaw on ARM devices
   - Building a cheap always-on personal AI
 ---
-# 在树莓派上运行 OpenClaw
 
-## 目标
+# OpenClaw on Raspberry Pi
 
-在树莓派上运行一个持久、始终在线的 OpenClaw 网关，一次性成本约为 **35–80 美元**（无月费）。非常适合：
-- 全天候个人 AI 助手
-- 家庭自动化中枢
-- 低功耗、随时可用的 Telegram/WhatsApp 机器人
+## Goal
 
-## 硬件要求
+Run a persistent, always-on OpenClaw Gateway on a Raspberry Pi for **~$35-80** one-time cost (no monthly fees).
 
-| 树莓派型号 | 内存 | 是否可行？ | 备注 |
-|------------|--------|----------|------|
-| **Pi 5**   | 4GB/8GB | ✅ 最佳 | 速度最快，推荐使用 |
-| **Pi 4**   | 4GB    | ✅ 良好 | 大多数用户的理想选择 |
-| **Pi 4**   | 2GB    | ✅ 可行 | 可用，需添加交换空间 |
-| **Pi 4**   | 1GB    | ⚠️ 吃力 | 可通过交换空间实现，配置需精简 |
-| **Pi 3B+** | 1GB    | ⚠️ 缓慢 | 可用，但运行较慢 |
-| **Pi Zero 2 W** | 512MB | ❌ | 不推荐 |
+Perfect for:
+- 24/7 personal AI assistant
+- Home automation hub
+- Low-power, always-available Telegram/WhatsApp bot
 
-**最低配置：** 1GB RAM、1 核、500MB 磁盘  
-**推荐配置：** 2GB+ RAM、64 位操作系统、16GB+ SD 卡（或 USB SSD）
+## Hardware Requirements
 
-## 所需物品
+| Pi Model | RAM | Works? | Notes |
+|----------|-----|--------|-------|
+| **Pi 5** | 4GB/8GB | ✅ Best | Fastest, recommended |
+| **Pi 4** | 4GB | ✅ Good | Sweet spot for most users |
+| **Pi 4** | 2GB | ✅ OK | Works, add swap |
+| **Pi 4** | 1GB | ⚠️ Tight | Possible with swap, minimal config |
+| **Pi 3B+** | 1GB | ⚠️ Slow | Works but sluggish |
+| **Pi Zero 2 W** | 512MB | ❌ | Not recommended |
 
-- 树莓派 4 或 5（推荐 2GB+）
-- MicroSD 卡（16GB+）或 USB SSD（性能更优）
-- 电源适配器（推荐官方 Pi PSU）
-- 网络连接（以太网或 WiFi）
-- 大约 30 分钟时间
+**Minimum specs:** 1GB RAM, 1 core, 500MB disk  
+**Recommended:** 2GB+ RAM, 64-bit OS, 16GB+ SD card (or USB SSD)
 
-## 1) 刷写操作系统
+## What You'll Need
 
-使用 **Raspberry Pi OS Lite（64 位）** — 无需桌面环境即可运行无头服务器。
+- Raspberry Pi 4 or 5 (2GB+ recommended)
+- MicroSD card (16GB+) or USB SSD (better performance)
+- Power supply (official Pi PSU recommended)
+- Network connection (Ethernet or WiFi)
+- ~30 minutes
 
-1. 下载 [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
-2. 选择操作系统：**Raspberry Pi OS Lite（64 位）**
-3. 点击齿轮图标（⚙️）进行预配置：
-   - 设置主机名：`gateway-host`
-   - 启用 SSH
-   - 设置用户名/密码
-   - 配置 WiFi（如果不使用以太网）
-4. 将镜像刷写到 SD 卡或 USB 驱动器
-5. 插入并启动树莓派
+## 1) Flash the OS
 
-## 2) 通过 SSH 连接
+Use **Raspberry Pi OS Lite (64-bit)** — no desktop needed for a headless server.
+
+1. Download [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+2. Choose OS: **Raspberry Pi OS Lite (64-bit)**
+3. Click the gear icon (⚙️) to pre-configure:
+   - Set hostname: `gateway-host`
+   - Enable SSH
+   - Set username/password
+   - Configure WiFi (if not using Ethernet)
+4. Flash to your SD card / USB drive
+5. Insert and boot the Pi
+
+## 2) Connect via SSH
 
 ```bash
 ssh user@gateway-host
@@ -58,7 +61,7 @@ ssh user@gateway-host
 ssh user@192.168.x.x
 ```
 
-## 3) 系统设置
+## 3) System Setup
 
 ```bash
 # Update system
@@ -71,7 +74,7 @@ sudo apt install -y git curl build-essential
 sudo timedatectl set-timezone America/Chicago  # Change to your timezone
 ```
 
-## 4) 安装 Node.js 22（ARM64）
+## 4) Install Node.js 22 (ARM64)
 
 ```bash
 # Install Node.js via NodeSource
@@ -83,9 +86,9 @@ node --version  # Should show v22.x.x
 npm --version
 ```
 
-## 5) 添加交换空间（对 2GB 或更少内存至关重要）
+## 5) Add Swap (Important for 2GB or less)
 
-交换空间可防止因内存不足而导致的崩溃：
+Swap prevents out-of-memory crashes:
 
 ```bash
 # Create 2GB swap file
@@ -102,15 +105,15 @@ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
-## 6) 安装 OpenClaw
+## 6) Install OpenClaw
 
-### 选项 A：标准安装（推荐）
+### Option A: Standard Install (Recommended)
 
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash
 ```
 
-### 选项 B：可 hack 安装（适合折腾）
+### Option B: Hackable Install (For tinkering)
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -120,21 +123,21 @@ npm run build
 npm link
 ```
 
-可 hack 安装允许您直接访问日志和代码，有助于调试 ARM 特定问题。
+The hackable install gives you direct access to logs and code — useful for debugging ARM-specific issues.
 
-## 7) 运行入门向导
+## 7) Run Onboarding
 
 ```bash
 openclaw onboard --install-daemon
 ```
 
-按照向导操作：
-1. **网关模式：** 本地
-2. **认证：** 推荐使用 API 密钥（OAuth 在无头树莓派上可能比较麻烦）
-3. **渠道：** 从 Telegram 开始最容易
-4. **守护进程：** 是（systemd）
+Follow the wizard:
+1. **Gateway mode:** Local
+2. **Auth:** API keys recommended (OAuth can be finicky on headless Pi)
+3. **Channels:** Telegram is easiest to start with
+4. **Daemon:** Yes (systemd)
 
-## 8) 验证安装
+## 8) Verify Installation
 
 ```bash
 # Check status
@@ -147,9 +150,9 @@ sudo systemctl status openclaw
 journalctl -u openclaw -f
 ```
 
-## 9) 访问仪表板
+## 9) Access the Dashboard
 
-由于树莓派是无头的，可通过 SSH 隧道访问：
+Since the Pi is headless, use an SSH tunnel:
 
 ```bash
 # From your laptop/desktop
@@ -159,7 +162,7 @@ ssh -L 18789:localhost:18789 user@gateway-host
 open http://localhost:18789
 ```
 
-或者使用 Tailscale 实现始终在线访问：
+Or use Tailscale for always-on access:
 
 ```bash
 # On the Pi
@@ -173,20 +176,20 @@ sudo systemctl restart openclaw
 
 ---
 
-## 性能优化
+## Performance Optimizations
 
-### 使用 USB SSD（大幅提升性能）
+### Use a USB SSD (Huge Improvement)
 
-SD 卡速度慢且易磨损。使用 USB SSD 可显著提升性能：
+SD cards are slow and wear out. A USB SSD dramatically improves performance:
 
 ```bash
 # Check if booting from USB
 lsblk
 ```
 
-有关设置，请参阅 [Pi USB 启动指南](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot)。
+See [Pi USB boot guide](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot) for setup.
 
-### 减少内存占用
+### Reduce Memory Usage
 
 ```bash
 # Disable GPU memory allocation (headless)
@@ -196,7 +199,7 @@ echo 'gpu_mem=16' | sudo tee -a /boot/config.txt
 sudo systemctl disable bluetooth
 ```
 
-### 监控资源
+### Monitor Resources
 
 ```bash
 # Check memory
@@ -211,25 +214,25 @@ htop
 
 ---
 
-## ARM 特定注意事项
+## ARM-Specific Notes
 
-### 二进制兼容性
+### Binary Compatibility
 
-大多数 OpenClaw 功能在 ARM64 上均可正常运行，但某些外部二进制文件可能需要 ARM 构建版本：
+Most OpenClaw features work on ARM64, but some external binaries may need ARM builds:
 
-| 工具       | ARM64 状态 | 备注 |
-|------------|------------|------|
-| Node.js    | ✅         | 运行良好 |
-| WhatsApp (Baileys) | ✅ | 纯 JS，无问题 |
-| Telegram   | ✅         | 纯 JS，无问题 |
-| gog（Gmail CLI） | ⚠️ | 检查是否有 ARM 版本 |
-| Chromium（浏览器） | ✅ | `sudo apt install chromium-browser`
+| Tool | ARM64 Status | Notes |
+|------|--------------|-------|
+| Node.js | ✅ | Works great |
+| WhatsApp (Baileys) | ✅ | Pure JS, no issues |
+| Telegram | ✅ | Pure JS, no issues |
+| gog (Gmail CLI) | ⚠️ | Check for ARM release |
+| Chromium (browser) | ✅ | `sudo apt install chromium-browser` |
 
-如果某个技能无法运行，请检查其二进制文件是否提供 ARM 构建版本。许多 Go/Rust 工具都支持；有些则不支持。
+If a skill fails, check if its binary has an ARM build. Many Go/Rust tools do; some don't.
 
-### 32 位 vs 64 位
+### 32-bit vs 64-bit
 
-**始终使用 64 位操作系统。** Node.js 和许多现代工具都需要 64 位系统。可通过以下命令检查：
+**Always use 64-bit OS.** Node.js and many modern tools require it. Check with:
 
 ```bash
 uname -m
@@ -238,9 +241,9 @@ uname -m
 
 ---
 
-## 推荐模型配置
+## Recommended Model Setup
 
-由于树莓派仅作为网关（模型在云端运行），请使用基于 API 的模型：
+Since the Pi is just the Gateway (models run in the cloud), use API-based models:
 
 ```json
 {
@@ -255,13 +258,13 @@ uname -m
 }
 ```
 
-**不要尝试在树莓派上运行本地 LLM** — 即使是小型模型也过于缓慢。让 Claude/GPT 承担繁重的计算任务。
+**Don't try to run local LLMs on a Pi** — even small models are too slow. Let Claude/GPT do the heavy lifting.
 
 ---
 
-## 开机自启动
+## Auto-Start on Boot
 
-入门向导会自动设置开机自启动，但您也可以通过以下命令进行验证：
+The onboarding wizard sets this up, but to verify:
 
 ```bash
 # Check service is enabled
@@ -276,9 +279,9 @@ sudo systemctl start openclaw
 
 ---
 
-## 故障排除
+## Troubleshooting
 
-### 内存不足（OOM）
+### Out of Memory (OOM)
 
 ```bash
 # Check memory
@@ -288,13 +291,13 @@ free -h
 # Or reduce services running on the Pi
 ```
 
-### 性能缓慢
+### Slow Performance
 
-- 使用 USB SSD 替代 SD 卡
-- 禁用未使用的服务：`sudo systemctl disable cups bluetooth avahi-daemon`
-- 检查 CPU 节流情况：`vcgencmd get_throttled`（应返回 `0x0`）
+- Use USB SSD instead of SD card
+- Disable unused services: `sudo systemctl disable cups bluetooth avahi-daemon`
+- Check CPU throttling: `vcgencmd get_throttled` (should return `0x0`)
 
-### 服务无法启动
+### Service Won't Start
 
 ```bash
 # Check logs
@@ -306,16 +309,16 @@ npm run build
 sudo systemctl restart openclaw
 ```
 
-### ARM 二进制问题
+### ARM Binary Issues
 
-如果某个技能因“exec 格式错误”而失败：
-1. 检查该二进制文件是否有 ARM64 构建版本
-2. 尝试从源代码构建
-3. 或使用支持 ARM 的 Docker 容器
+If a skill fails with "exec format error":
+1. Check if the binary has an ARM64 build
+2. Try building from source
+3. Or use a Docker container with ARM support
 
-### WiFi 断连
+### WiFi Drops
 
-对于使用 WiFi 的无头树莓派：
+For headless Pis on WiFi:
 
 ```bash
 # Disable WiFi power management
@@ -327,25 +330,25 @@ echo 'wireless-power off' | sudo tee -a /etc/network/interfaces
 
 ---
 
-## 成本对比
+## Cost Comparison
 
-| 设置           | 一次性成本 | 月费     | 备注 |
-|----------------|------------|----------|------|
-| **Pi 4（2GB）** | ~$45      | $0       | + 电源 (~$5/年) |
-| **Pi 4（4GB）** | ~$55      | $0       | 推荐 |
-| **Pi 5（4GB）** | ~$60      | $0       | 性能最佳 |
-| **Pi 5（8GB）** | ~$80      | $0       | 过于强大但更具未来性 |
-| DigitalOcean   | $0        | $6/月   | $72/年 |
-| Hetzner        | $0        | €3.79/月 | ~$50/年 |
+| Setup | One-Time Cost | Monthly Cost | Notes |
+|-------|---------------|--------------|-------|
+| **Pi 4 (2GB)** | ~$45 | $0 | + power (~$5/yr) |
+| **Pi 4 (4GB)** | ~$55 | $0 | Recommended |
+| **Pi 5 (4GB)** | ~$60 | $0 | Best performance |
+| **Pi 5 (8GB)** | ~$80 | $0 | Overkill but future-proof |
+| DigitalOcean | $0 | $6/mo | $72/year |
+| Hetzner | $0 | €3.79/mo | ~$50/year |
 
-**盈亏平衡点：** 树莓派在约 6–12 个月内即可收回成本，优于云 VPS。
+**Break-even:** A Pi pays for itself in ~6-12 months vs cloud VPS.
 
 ---
 
-## 更多信息
+## See Also
 
-- [Linux 指南](/platforms/linux) — 通用 Linux 设置
-- [DigitalOcean 指南](/platforms/digitalocean) — 云替代方案
-- [Hetzner 指南](/platforms/hetzner) — Docker 设置
-- [Tailscale](/gateway/tailscale) — 远程访问
-- [Nodes](/nodes) — 将您的笔记本电脑/手机与树莓派网关配对
+- [Linux guide](/platforms/linux) — general Linux setup
+- [DigitalOcean guide](/platforms/digitalocean) — cloud alternative
+- [Hetzner guide](/platforms/hetzner) — Docker setup
+- [Tailscale](/gateway/tailscale) — remote access
+- [Nodes](/nodes) — pair your laptop/phone with the Pi gateway

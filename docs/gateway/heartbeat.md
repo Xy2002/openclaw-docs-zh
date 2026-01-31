@@ -1,24 +1,25 @@
 ---
-summary: Heartbeat polling messages and notification rules
+summary: "Heartbeat polling messages and notification rules"
 read_when:
   - Adjusting heartbeat cadence or messaging
   - Deciding between heartbeat and cron for scheduled tasks
 ---
-# 心跳（网关）
+# Heartbeat (Gateway)
 
-> **心跳 vs Cron？** 请参阅 [Cron vs 心跳](/automation/cron-vs-heartbeat)，了解何时使用每种方法的指导。
+> **Heartbeat vs Cron?** See [Cron vs Heartbeat](/automation/cron-vs-heartbeat) for guidance on when to use each.
 
-心跳在主会话中运行**定期代理回合**，以便模型能够及时提醒您需要注意的事项，而不会频繁打扰您。
+Heartbeat runs **periodic agent turns** in the main session so the model can
+surface anything that needs attention without spamming you.
 
-## 快速入门（初学者）
+## Quick start (beginner)
 
-1. 保持心跳启用（默认为 `30m`，或对于 Anthropic OAuth/设置令牌为 `1h`），或自定义心跳频率。
-2. 在代理工作区创建一个极小的 `HEARTBEAT.md` 检查清单（可选但推荐）。
-3. 决定心跳消息应发送到何处（默认为 `target: "last"`）。
-4. 可选：启用心跳推理传递以提高透明度。
-5. 可选：将心跳限制在活跃时段（本地时间）。
+1. Leave heartbeats enabled (default is `30m`, or `1h` for Anthropic OAuth/setup-token) or set your own cadence.
+2. Create a tiny `HEARTBEAT.md` checklist in the agent workspace (optional but recommended).
+3. Decide where heartbeat messages should go (`target: "last"` is the default).
+4. Optional: enable heartbeat reasoning delivery for transparency.
+5. Optional: restrict heartbeats to active hours (local time).
 
-示例配置：
+Example config:
 
 ```json5
 {
@@ -35,32 +36,43 @@ read_when:
 }
 ```
 
-## 默认设置
+## Defaults
 
-- 间隔：`30m`（当检测到 Anthropic OAuth/设置令牌身份验证模式时为 `1h`）。设置 `agents.defaults.heartbeat.every` 或按代理设置 `agents.list[].heartbeat.every`；使用 `0m` 来禁用。
-- 提示正文（可通过 `agents.defaults.heartbeat.prompt` 配置）：
+- Interval: `30m` (or `1h` when Anthropic OAuth/setup-token is the detected auth mode). Set `agents.defaults.heartbeat.every` or per-agent `agents.list[].heartbeat.every`; use `0m` to disable.
+- Prompt body (configurable via `agents.defaults.heartbeat.prompt`):
   `Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`
-- 心跳提示会**原样**作为用户消息发送。系统提示包含“心跳”部分，并且运行会在内部被标记。
-- 活跃时段（`heartbeat.activeHours`）根据配置的时区进行检查。在窗口之外，心跳会被跳过，直到下一个窗口内的触发点。
+- The heartbeat prompt is sent **verbatim** as the user message. The system
+  prompt includes a “Heartbeat” section and the run is flagged internally.
+- Active hours (`heartbeat.activeHours`) are checked in the configured timezone.
+  Outside the window, heartbeats are skipped until the next tick inside the window.
 
-## 心跳提示的作用
+## What the heartbeat prompt is for
 
-默认提示有意设计得较为宽泛：
-- **后台任务**：“考虑未完成的任务”会促使代理检查后续事项（收件箱、日历、提醒、排队中的工作），并提醒任何紧急事项。
-- **人类检查**：“白天偶尔与您的主人进行检查”会促使代理发送一条轻量级的消息询问“您是否需要什么”，但通过使用您配置的本地时区来避免夜间骚扰（参见 [/concepts/timezone](/concepts/timezone))。
+The default prompt is intentionally broad:
+- **Background tasks**: “Consider outstanding tasks” nudges the agent to review
+  follow-ups (inbox, calendar, reminders, queued work) and surface anything urgent.
+- **Human check-in**: “Checkup sometimes on your human during day time” nudges an
+  occasional lightweight “anything you need?” message, but avoids night-time spam
+  by using your configured local timezone (see [/concepts/timezone](/concepts/timezone)).
 
-如果您希望心跳执行非常具体的任务（例如“检查 Gmail PubSub 统计数据”或“验证网关健康状况”），请将 `agents.defaults.heartbeat.prompt`（或 `agents.list[].heartbeat.prompt`）设置为自定义正文（原样发送）。
+If you want a heartbeat to do something very specific (e.g. “check Gmail PubSub
+stats” or “verify gateway health”), set `agents.defaults.heartbeat.prompt` (or
+`agents.list[].heartbeat.prompt`) to a custom body (sent verbatim).
 
-## 响应约定
+## Response contract
 
-- 如果没有需要注意的事项，回复 **`HEARTBEAT_OK`**。
-- 在心跳运行期间，如果回复的**开头或结尾**出现 `HEARTBEAT_OK`，OpenClaw 将其视为确认。如果剩余内容**≤ `ackMaxChars`**（默认：300），则会删除该标记并丢弃回复。
-- 如果 `HEARTBEAT_OK` 出现在回复的**中间**，则不会被特殊处理。
-- 对于警报，**不要**包含 `HEARTBEAT_OK`；仅返回警报文本。
+- If nothing needs attention, reply with **`HEARTBEAT_OK`**.
+- During heartbeat runs, OpenClaw treats `HEARTBEAT_OK` as an ack when it appears
+  at the **start or end** of the reply. The token is stripped and the reply is
+  dropped if the remaining content is **≤ `ackMaxChars`** (default: 300).
+- If `HEARTBEAT_OK` appears in the **middle** of a reply, it is not treated
+  specially.
+- For alerts, **do not** include `HEARTBEAT_OK`; return only the alert text.
 
-在非心跳期间，消息开头或结尾的随机 `HEARTBEAT_OK` 会被删除并记录；仅包含 `HEARTBEAT_OK` 的消息会被丢弃。
+Outside heartbeats, stray `HEARTBEAT_OK` at the start/end of a message is stripped
+and logged; a message that is only `HEARTBEAT_OK` is dropped.
 
-## 配置
+## Config
 
 ```json5
 {
@@ -80,19 +92,21 @@ read_when:
 }
 ```
 
-### 范围和优先级
+### Scope and precedence
 
-- `agents.defaults.heartbeat` 设置全局心跳行为。
-- `agents.list[].heartbeat` 会叠加；如果任何代理有 `heartbeat` 块，则**仅这些代理**会运行心跳。
-- `channels.defaults.heartbeat` 为所有渠道设置可见性默认值。
-- `channels.<channel>.heartbeat` 覆盖渠道默认值。
-- `channels.<channel>.accounts.<id>.heartbeat`（多账户渠道）覆盖每个渠道的设置。
+- `agents.defaults.heartbeat` sets global heartbeat behavior.
+- `agents.list[].heartbeat` merges on top; if any agent has a `heartbeat` block, **only those agents** run heartbeats.
+- `channels.defaults.heartbeat` sets visibility defaults for all channels.
+- `channels.<channel>.heartbeat` overrides channel defaults.
+- `channels.<channel>.accounts.<id>.heartbeat` (multi-account channels) overrides per-channel settings.
 
-### 按代理的心跳
+### Per-agent heartbeats
 
-如果任何 `agents.list[]` 条目包含 `heartbeat` 块，则**仅这些代理**会运行心跳。按代理块会叠加在 `agents.defaults.heartbeat` 上（因此您可以先设置共享默认值，然后按代理进行覆盖）。
+If any `agents.list[]` entry includes a `heartbeat` block, **only those agents**
+run heartbeats. The per-agent block merges on top of `agents.defaults.heartbeat`
+(so you can set shared defaults once and override per agent).
 
-示例：两个代理，只有第二个代理运行心跳。
+Example: two agents, only the second agent runs heartbeats.
 
 ```json5
 {
@@ -119,35 +133,41 @@ read_when:
 }
 ```
 
-### 字段注释
+### Field notes
 
-- `every`：心跳间隔（持续时间字符串；默认单位为分钟）。
-- `model`：心跳运行时的可选模型覆盖（`provider/model`）。
-- `includeReasoning`：启用后，还会在可用时传递单独的 `Reasoning:` 消息（与 `/reasoning on` 形状相同）。
-- `session`：心跳运行的可选会话密钥。
-  - `main`（默认）：代理主会话。
-  - 显式会话密钥（从 `openclaw sessions --json` 或 [sessions CLI](/cli/sessions) 复制）。
-  - 会话密钥格式：参见 [Sessions](/concepts/session) 和 [Groups](/concepts/groups)。
-- `target`：
-  - `last`（默认）：发送到最后使用的外部渠道。
-  - 显式渠道：`whatsapp` / `telegram` / `discord` / `googlechat` / `slack` / `msteams` / `signal` / `imessage`。
-  - `none`：运行心跳但**不对外传递**。
-- `to`：可选的接收者覆盖（特定于渠道的 ID，例如 WhatsApp 的 E.164 或 Telegram 聊天 ID）。
-- `prompt`：覆盖默认提示正文（不合并）。
-- `ackMaxChars`：在交付前允许的最大字符数，超过 `HEARTBEAT_OK` 后。
+- `every`: heartbeat interval (duration string; default unit = minutes).
+- `model`: optional model override for heartbeat runs (`provider/model`).
+- `includeReasoning`: when enabled, also deliver the separate `Reasoning:` message when available (same shape as `/reasoning on`).
+- `session`: optional session key for heartbeat runs.
+  - `main` (default): agent main session.
+  - Explicit session key (copy from `openclaw sessions --json` or the [sessions CLI](/cli/sessions)).
+  - Session key formats: see [Sessions](/concepts/session) and [Groups](/concepts/groups).
+- `target`:
+  - `last` (default): deliver to the last used external channel.
+  - explicit channel: `whatsapp` / `telegram` / `discord` / `googlechat` / `slack` / `msteams` / `signal` / `imessage`.
+  - `none`: run the heartbeat but **do not deliver** externally.
+- `to`: optional recipient override (channel-specific id, e.g. E.164 for WhatsApp or a Telegram chat id).
+- `prompt`: overrides the default prompt body (not merged).
+- `ackMaxChars`: max chars allowed after `HEARTBEAT_OK` before delivery.
 
-## 交付行为
+## Delivery behavior
 
-- 默认情况下，心跳在代理的主会话中运行（`agent:<id>:<mainKey>`），或者在 `session.scope = "global"` 时为 `global`。设置 `session` 可以将其覆盖为特定渠道会话（Discord/WhatsApp 等）。
-- `session` 仅影响运行上下文；交付由 `target` 和 `to` 控制。
-- 若要发送到特定渠道/接收者，设置 `target` + `to`。使用 `target: "last"`，交付将使用该会话的最后一个外部渠道。
-- 如果主队列繁忙，心跳会被跳过并在稍后重试。
-- 如果 `target` 解析为没有外部目的地，运行仍然会发生，但不会发送任何出站消息。
-- 仅心跳回复**不会保持会话存活**；最后的 `updatedAt` 会被恢复，因此空闲超时行为正常。
+- Heartbeats run in the agent’s main session by default (`agent:<id>:<mainKey>`),
+  or `global` when `session.scope = "global"`. Set `session` to override to a
+  specific channel session (Discord/WhatsApp/etc.).
+- `session` only affects the run context; delivery is controlled by `target` and `to`.
+- To deliver to a specific channel/recipient, set `target` + `to`. With
+  `target: "last"`, delivery uses the last external channel for that session.
+- If the main queue is busy, the heartbeat is skipped and retried later.
+- If `target` resolves to no external destination, the run still happens but no
+  outbound message is sent.
+- Heartbeat-only replies do **not** keep the session alive; the last `updatedAt`
+  is restored so idle expiry behaves normally.
 
-## 可见性控制
+## Visibility controls
 
-默认情况下，`HEARTBEAT_OK` 确认会被抑制，而警报内容会被传递。您可以按渠道或按账户调整此设置：
+By default, `HEARTBEAT_OK` acknowledgments are suppressed while alert content is
+delivered. You can adjust this per channel or per account:
 
 ```yaml
 channels:
@@ -166,17 +186,17 @@ channels:
           showAlerts: false # Suppress alert delivery for this account
 ```
 
-优先级：按账户 → 按渠道 → 渠道默认 → 内置默认。
+Precedence: per-account → per-channel → channel defaults → built-in defaults.
 
-### 各标志的作用
+### What each flag does
 
-- `showOk`：当模型返回仅包含 OK 的回复时，发送 `HEARTBEAT_OK` 确认。
-- `showAlerts`：当模型返回非 OK 回复时，发送警报内容。
-- `useIndicator`：为 UI 状态界面发出指示事件。
+- `showOk`: sends a `HEARTBEAT_OK` acknowledgment when the model returns an OK-only reply.
+- `showAlerts`: sends the alert content when the model returns a non-OK reply.
+- `useIndicator`: emits indicator events for UI status surfaces.
 
-如果**全部三个**均为假，OpenClaw 将完全跳过心跳运行（不调用模型）。
+If **all three** are false, OpenClaw skips the heartbeat run entirely (no model call).
 
-### 按渠道 vs 按账户示例
+### Per-channel vs per-account examples
 
 ```yaml
 channels:
@@ -197,24 +217,28 @@ channels:
       showOk: true
 ```
 
-### 常见模式
+### Common patterns
 
-| 目标 | 配置 |
+| Goal | Config |
 | --- | --- |
-| 默认行为（静默 OK，警报开启） | *(无需配置)* |
-| 完全静默（无消息，无指示器） | `channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: false }` |
-| 仅指示器（无消息） | `channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: true }` |
-| 仅在一个渠道中显示 OK | `channels.telegram.heartbeat: { showOk: true }` |
+| Default behavior (silent OKs, alerts on) | *(no config needed)* |
+| Fully silent (no messages, no indicator) | `channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: false }` |
+| Indicator-only (no messages) | `channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: true }` |
+| OKs in one channel only | `channels.telegram.heartbeat: { showOk: true }` |
 
-## HEARTBEAT.md（可选）
+## HEARTBEAT.md (optional)
 
-如果工作区中存在 `HEARTBEAT.md` 文件，默认提示会指示代理读取该文件。可以将其视为您的“心跳检查清单”：小巧、稳定，每 30 分钟安全地包含一次。
+If a `HEARTBEAT.md` file exists in the workspace, the default prompt tells the
+agent to read it. Think of it as your “heartbeat checklist”: small, stable, and
+safe to include every 30 minutes.
 
-如果 `HEARTBEAT.md` 存在但实际上是空的（只有空白行和如 `# Heading` 这样的 Markdown 标题），OpenClaw 会跳过心跳运行以节省 API 调用。如果文件缺失，心跳仍会运行，模型会决定如何处理。
+If `HEARTBEAT.md` exists but is effectively empty (only blank lines and markdown
+headers like `# Heading`), OpenClaw skips the heartbeat run to save API calls.
+If the file is missing, the heartbeat still runs and the model decides what to do.
 
-保持文件小巧（简短的检查清单或提醒），以避免提示膨胀。
+Keep it tiny (short checklist or reminders) to avoid prompt bloat.
 
-示例 `HEARTBEAT.md`：
+Example `HEARTBEAT.md`:
 
 ```md
 # Heartbeat checklist
@@ -224,39 +248,50 @@ channels:
 - If a task is blocked, write down *what is missing* and ask Peter next time.
 ```
 
-### 代理可以更新 HEARTBEAT.md 吗？
+### Can the agent update HEARTBEAT.md?
 
-可以——只要您要求它。
+Yes — if you ask it to.
 
-`HEARTBEAT.md` 只是代理工作区中的普通文件，因此您可以在常规聊天中告诉代理：
-- “更新 `HEARTBEAT.md` 以添加每日日历检查。”
-- “重写 `HEARTBEAT.md`，使其更短并专注于收件箱的后续事项。”
+`HEARTBEAT.md` is just a normal file in the agent workspace, so you can tell the
+agent (in a normal chat) something like:
+- “Update `HEARTBEAT.md` to add a daily calendar check.”
+- “Rewrite `HEARTBEAT.md` so it’s shorter and focused on inbox follow-ups.”
 
-如果您希望主动发生这种情况，也可以在心跳提示中加入一行明确说明：“如果检查清单过时，请用更好的版本更新 HEARTBEAT.md。”
+If you want this to happen proactively, you can also include an explicit line in
+your heartbeat prompt like: “If the checklist becomes stale, update HEARTBEAT.md
+with a better one.”
 
-安全提示：不要在 `HEARTBEAT.md` 中放入机密信息（API 密钥、电话号码、私有令牌）——它会成为提示上下文的一部分。
+Safety note: don’t put secrets (API keys, phone numbers, private tokens) into
+`HEARTBEAT.md` — it becomes part of the prompt context.
 
-## 手动唤醒（按需）
+## Manual wake (on-demand)
 
-您可以通过排队一个系统事件并触发立即心跳：
+You can enqueue a system event and trigger an immediate heartbeat with:
 
 ```bash
 openclaw system event --text "Check for urgent follow-ups" --mode now
 ```
 
-如果多个代理配置了 `heartbeat`，手动唤醒会立即运行每个代理的心跳。
+If multiple agents have `heartbeat` configured, a manual wake runs each of those
+agent heartbeats immediately.
 
-使用 `--mode next-heartbeat` 可以等待下一个计划的触发点。
+Use `--mode next-heartbeat` to wait for the next scheduled tick.
 
-## 推理传递（可选）
+## Reasoning delivery (optional)
 
-默认情况下，心跳只传递最终的“答案”有效载荷。
+By default, heartbeats deliver only the final “answer” payload.
 
-如果您希望提高透明度，可以启用：
+If you want transparency, enable:
 - `agents.defaults.heartbeat.includeReasoning: true`
 
-启用后，心跳还将传递一条带有前缀 `Reasoning:` 的单独消息（与 `/reasoning on` 形状相同）。这在代理管理多个会话/典籍时很有用，可以帮助您了解它为何决定提醒您——但这也可能泄露比您预期更多的内部细节。在群聊中最好保持关闭状态。
+When enabled, heartbeats will also deliver a separate message prefixed
+`Reasoning:` (same shape as `/reasoning on`). This can be useful when the agent
+is managing multiple sessions/codexes and you want to see why it decided to ping
+you — but it can also leak more internal detail than you want. Prefer keeping it
+off in group chats.
 
-## 成本意识
+## Cost awareness
 
-心跳运行完整的代理回合。较短的间隔会消耗更多令牌。保持 `HEARTBEAT.md` 小巧，如果您只需要内部状态更新，可以考虑使用更便宜的 `model` 或 `target: "none"`。
+Heartbeats run full agent turns. Shorter intervals burn more tokens. Keep
+`HEARTBEAT.md` small and consider a cheaper `model` or `target: "none"` if you
+only want internal state updates.

@@ -1,32 +1,35 @@
 ---
-summary: When OpenClaw shows typing indicators and how to tune them
+summary: "When OpenClaw shows typing indicators and how to tune them"
 read_when:
   - Changing typing indicator behavior or defaults
 ---
-# 键入指示器
+# Typing indicators
 
-在运行处于活动状态时，键入指示器会发送到聊天频道。使用
-`agents.defaults.typingMode` 控制**何时**开始键入，使用 `typingIntervalSeconds`
-控制其**刷新频率**。
+Typing indicators are sent to the chat channel while a run is active. Use
+`agents.defaults.typingMode` to control **when** typing starts and `typingIntervalSeconds`
+to control **how often** it refreshes.
 
-## 默认行为
-当 `agents.defaults.typingMode` **未设置**时，OpenClaw 会保持旧版行为：
-- **私聊**：一旦模型循环开始，立即启动键入。
-- **包含提及的群聊**：立即启动键入。
-- **不包含提及的群聊**：仅在消息文本开始流式传输时才启动键入。
-- **心跳运行**：禁用键入。
+## Defaults
+When `agents.defaults.typingMode` is **unset**, OpenClaw keeps the legacy behavior:
+- **Direct chats**: typing starts immediately once the model loop begins.
+- **Group chats with a mention**: typing starts immediately.
+- **Group chats without a mention**: typing starts only when message text begins streaming.
+- **Heartbeat runs**: typing is disabled.
 
-## 模式
-将 `agents.defaults.typingMode` 设置为以下之一：
-- `never` — 从不显示键入指示器。
-- `instant` — 在**模型循环开始时即刻**启动键入，即使运行随后仅返回静默回复标记。
-- `thinking` — 在**第一个推理增量**时启动键入（需要为运行启用 `reasoningLevel: "stream"`）。
-- `message` — 在**第一个非静默文本增量**时启动键入（忽略 `NO_REPLY` 静默标记）。
+## Modes
+Set `agents.defaults.typingMode` to one of:
+- `never` — no typing indicator, ever.
+- `instant` — start typing **as soon as the model loop begins**, even if the run
+  later returns only the silent reply token.
+- `thinking` — start typing on the **first reasoning delta** (requires
+  `reasoningLevel: "stream"` for the run).
+- `message` — start typing on the **first non-silent text delta** (ignores
+  the `NO_REPLY` silent token).
 
-“触发时机”的先后顺序：
+Order of “how early it fires”:
 `never` → `message` → `thinking` → `instant`
 
-## 配置
+## Configuration
 ```json5
 {
   agent: {
@@ -36,7 +39,7 @@ read_when:
 }
 ```
 
-您可以在每个会话中覆盖模式或刷新频率：
+You can override mode or cadence per session:
 ```json5
 {
   session: {
@@ -46,8 +49,11 @@ read_when:
 }
 ```
 
-## 注意事项
-- `message` 模式不会为仅包含静默回复的消息显示键入（例如用于抑制输出的 `NO_REPLY` 标记）。
-- `thinking` 仅在运行流式传输推理时才会触发（`reasoningLevel: "stream"`）。如果模型不发出推理增量，键入将不会启动。
-- 无论模式如何，心跳始终不会显示键入。
-- `typingIntervalSeconds` 控制的是**刷新频率**，而非启动时间。默认值为 6 秒。
+## Notes
+- `message` mode won’t show typing for silent-only replies (e.g. the `NO_REPLY`
+  token used to suppress output).
+- `thinking` only fires if the run streams reasoning (`reasoningLevel: "stream"`).
+  If the model doesn’t emit reasoning deltas, typing won’t start.
+- Heartbeats never show typing, regardless of mode.
+- `typingIntervalSeconds` controls the **refresh cadence**, not the start time.
+  The default is 6 seconds.

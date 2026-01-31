@@ -1,35 +1,33 @@
 ---
-summary: >-
-  Zalo personal account support via zca-cli (QR login), capabilities, and
-  configuration
+summary: "Zalo personal account support via zca-cli (QR login), capabilities, and configuration"
 read_when:
   - Setting up Zalo Personal for OpenClaw
   - Debugging Zalo Personal login or message flow
 ---
-# Zalo 个人版（非官方）
+# Zalo Personal (unofficial)
 
-状态：实验性。此集成通过 `zca-cli` 自动化一个 **个人 Zalo 账号**。
+Status: experimental. This integration automates a **personal Zalo account** via `zca-cli`.
 
-> **警告：** 这是一个非官方集成，可能导致账号被暂停或封禁。请自行承担使用风险。
+> **Warning:** This is an unofficial integration and may result in account suspension/ban. Use at your own risk.
 
-## 需要插件
-Zalo 个人版以插件形式提供，未随核心安装包一起打包。
-- 通过 CLI 安装：`openclaw plugins install @openclaw/zalouser`
-- 或从源代码检出安装：`openclaw plugins install ./extensions/zalouser`
-- 详情：[插件](/plugin)
+## Plugin required
+Zalo Personal ships as a plugin and is not bundled with the core install.
+- Install via CLI: `openclaw plugins install @openclaw/zalouser`
+- Or from a source checkout: `openclaw plugins install ./extensions/zalouser`
+- Details: [Plugins](/plugin)
 
-## 先决条件：zca-cli
-网关机器必须在 `PATH` 中提供 `zca` 二进制文件。
+## Prerequisite: zca-cli
+The Gateway machine must have the `zca` binary available in `PATH`.
 
-- 验证：`zca --version`
-- 如果缺失，请安装 zca-cli（参见 `extensions/zalouser/README.md` 或上游 zca-cli 文档）。
+- Verify: `zca --version`
+- If missing, install zca-cli (see `extensions/zalouser/README.md` or the upstream zca-cli docs).
 
-## 快速设置（初学者）
-1) 安装插件（见上文）。
-2) 登录（二维码，在网关机器上）：
+## Quick setup (beginner)
+1) Install the plugin (see above).
+2) Login (QR, on the Gateway machine):
    - `openclaw channels login --channel zalouser`
-   - 使用 Zalo 移动应用扫描终端中的二维码。
-3) 启用渠道：
+   - Scan the QR code in the terminal with the Zalo mobile app.
+3) Enable the channel:
 
 ```json5
 {
@@ -42,19 +40,19 @@ Zalo 个人版以插件形式提供，未随核心安装包一起打包。
 }
 ```
 
-4) 重启网关（或完成首次配置）。
-5) 私信访问默认为配对；首次联系时，请批准配对码。
+4) Restart the Gateway (or finish onboarding).
+5) DM access defaults to pairing; approve the pairing code on first contact.
 
-## 功能简介
-- 使用 `zca listen` 接收入站消息。
-- 使用 `zca msg ...` 发送回复（文本/媒体/链接）。
-- 专为无法使用 Zalo Bot API 的“个人账号”用例设计。
+## What it is
+- Uses `zca listen` to receive inbound messages.
+- Uses `zca msg ...` to send replies (text/media/link).
+- Designed for “personal account” use cases where Zalo Bot API is not available.
 
-## 命名
-渠道 ID 为 `zalouser`，以明确表示此集成自动化的是一个 **个人 Zalo 用户账号**（非官方）。我们保留 `zalo` 用于未来可能的官方 Zalo API 集成。
+## Naming
+Channel id is `zalouser` to make it explicit this automates a **personal Zalo user account** (unofficial). We keep `zalo` reserved for a potential future official Zalo API integration.
 
-## 查找 ID（目录）
-使用目录 CLI 发现对等节点/群组及其 ID：
+## Finding IDs (directory)
+Use the directory CLI to discover peers/groups and their IDs:
 
 ```bash
 openclaw directory self --channel zalouser
@@ -62,28 +60,28 @@ openclaw directory peers list --channel zalouser --query "name"
 openclaw directory groups list --channel zalouser --query "work"
 ```
 
-## 限制
-- 出站文本会被分块，每条约 2000 字符（受 Zalo 客户端限制）。
-- 默认情况下禁止流式传输。
+## Limits
+- Outbound text is chunked to ~2000 characters (Zalo client limits).
+- Streaming is blocked by default.
 
-## 访问控制（私信）
-`channels.zalouser.dmPolicy` 支持：`pairing | allowlist | open | disabled`（默认：`pairing`）。
-`channels.zalouser.allowFrom` 接受用户 ID 或名称。向导会在可用时通过 `zca friend find` 将名称解析为 ID。
+## Access control (DMs)
+`channels.zalouser.dmPolicy` supports: `pairing | allowlist | open | disabled` (default: `pairing`).
+`channels.zalouser.allowFrom` accepts user IDs or names. The wizard resolves names to IDs via `zca friend find` when available.
 
-批准方式：
+Approve via:
 - `openclaw pairing list zalouser`
 - `openclaw pairing approve zalouser <code>`
 
-## 群组访问（可选）
-- 默认：`channels.zalouser.groupPolicy = "open"`（允许群组）。未设置时，使用 `channels.defaults.groupPolicy` 覆盖默认设置。
-- 通过以下方式限制为白名单：
+## Group access (optional)
+- Default: `channels.zalouser.groupPolicy = "open"` (groups allowed). Use `channels.defaults.groupPolicy` to override the default when unset.
+- Restrict to an allowlist with:
   - `channels.zalouser.groupPolicy = "allowlist"`
-  - `channels.zalouser.groups`（键为群组 ID 或名称）
-- 阻止所有群组：`channels.zalouser.groupPolicy = "disabled"`。
-- 配置向导可以提示输入群组白名单。
-- 在启动时，OpenClaw 会将白名单中的群组/用户名称解析为 ID，并记录映射关系；未解析的条目将按原样保留。
+  - `channels.zalouser.groups` (keys are group IDs or names)
+- Block all groups: `channels.zalouser.groupPolicy = "disabled"`.
+- The configure wizard can prompt for group allowlists.
+- On startup, OpenClaw resolves group/user names in allowlists to IDs and logs the mapping; unresolved entries are kept as typed.
 
-示例：
+Example:
 ```json5
 {
   channels: {
@@ -98,8 +96,8 @@ openclaw directory groups list --channel zalouser --query "work"
 }
 ```
 
-## 多账号
-账号映射到 zca 配置文件。示例：
+## Multi-account
+Accounts map to zca profiles. Example:
 
 ```json5
 {
@@ -115,11 +113,11 @@ openclaw directory groups list --channel zalouser --query "work"
 }
 ```
 
-## 故障排除
+## Troubleshooting
 
-**未找到 `zca`：**
-- 安装 zca-cli，并确保它位于网关进程的 `PATH` 中。
+**`zca` not found:**
+- Install zca-cli and ensure it’s on `PATH` for the Gateway process.
 
-**登录不稳定：**
+**Login doesn’t stick:**
 - `openclaw channels status --probe`
-- 重新登录：`openclaw channels logout --channel zalouser && openclaw channels login --channel zalouser`
+- Re-login: `openclaw channels logout --channel zalouser && openclaw channels login --channel zalouser`

@@ -1,18 +1,17 @@
 ---
-summary: >-
-  CLI reference for `openclaw update` (safe-ish source update + gateway
-  auto-restart)
+summary: "CLI reference for `openclaw update` (safe-ish source update + gateway auto-restart)"
 read_when:
   - You want to update a source checkout safely
   - You need to understand `--update` shorthand behavior
 ---
+
 # `openclaw update`
 
-安全更新 OpenClaw，并在稳定/测试/开发通道之间切换。
+Safely update OpenClaw and switch between stable/beta/dev channels.
 
-如果您通过 **npm/pnpm** 安装（全局安装，无 Git 元数据），更新将通过包管理器流程进行，详情请参见 [更新](/install/updating)。
+If you installed via **npm/pnpm** (global install, no git metadata), updates happen via the package manager flow in [Updating](/install/updating).
 
-## 使用方法
+## Usage
 
 ```bash
 openclaw update
@@ -26,19 +25,19 @@ openclaw update --json
 openclaw --update
 ```
 
-## 选项
+## Options
 
-- `--no-restart`: 在成功更新后跳过重启 Gateway 服务。
-- __ INLINE_CODE_4__: 设置更新通道（Git + npm；持久化在配置中）。
-- `--tag <dist-tag|version>`: 仅针对本次更新覆盖 npm dist-tag 或版本。
-- `--json`: 输出机器可读的 `UpdateRunResult` JSON。
-- `--timeout <seconds>`: 每个步骤的超时时间（默认为 1200 秒）。
+- `--no-restart`: skip restarting the Gateway service after a successful update.
+- `--channel <stable|beta|dev>`: set the update channel (git + npm; persisted in config).
+- `--tag <dist-tag|version>`: override the npm dist-tag or version for this update only.
+- `--json`: print machine-readable `UpdateRunResult` JSON.
+- `--timeout <seconds>`: per-step timeout (default is 1200s).
 
-注意：降级需要确认，因为旧版本可能会破坏配置。
+Note: downgrades require confirmation because older versions can break configuration.
 
 ## `update status`
 
-显示当前活动的更新通道以及 Git 标签/分支/SHA（用于源码检出），并显示是否有可用更新。
+Show the active update channel + git tag/branch/SHA (for source checkouts), plus update availability.
 
 ```bash
 openclaw update status
@@ -46,46 +45,52 @@ openclaw update status --json
 openclaw update status --timeout 10
 ```
 
-选项：
-- `--json`: 输出机器可读的状态 JSON。
-- `--timeout <seconds>`: 检查的超时时间（默认为 3 秒）。
+Options:
+- `--json`: print machine-readable status JSON.
+- `--timeout <seconds>`: timeout for checks (default is 3s).
 
 ## `update wizard`
 
-交互式流程，用于选择更新通道，并确认是否在更新后重启 Gateway（默认为重启）。如果您在没有 Git 检出的情况下选择 `dev`，系统会提示您创建一个检出。
+Interactive flow to pick an update channel and confirm whether to restart the Gateway
+after updating (default is to restart). If you select `dev` without a git checkout, it
+offers to create one.
 
-## 功能说明
+## What it does
 
-当您显式切换通道时（`--channel ...`），OpenClaw 还会确保安装方式与之匹配：
+When you switch channels explicitly (`--channel ...`), OpenClaw also keeps the
+install method aligned:
 
-- `dev` → 确保使用 Git 检出（默认：`~/openclaw`，可通过 `OPENCLAW_GIT_DIR` 覆盖），更新检出代码，并从该检出中安装全局 CLI。
-- `stable`/`beta` → 使用匹配的 dist-tag 从 npm 安装。
+- `dev` → ensures a git checkout (default: `~/openclaw`, override with `OPENCLAW_GIT_DIR`),
+  updates it, and installs the global CLI from that checkout.
+- `stable`/`beta` → installs from npm using the matching dist-tag.
 
-## Git 检出流程
+## Git checkout flow
 
-通道：
-- `stable`: 检出最新的非测试版标签，然后执行构建和检查。
-- `beta`: 检出最新的 `-beta` 标签，然后执行构建和检查。
-- `dev`: 检出 `main`，然后执行获取和变基操作。
+Channels:
 
-高级流程：
-1. 要求工作树干净（无未提交的更改）。
-2. 切换到选定的通道（标签或分支）。
-3. 获取上游代码（仅限开发通道）。
-4. 仅限开发通道：在临时工作树中执行预检查的 lint 和 TypeScript 构建；如果最新提交失败，则回溯最多 10 个提交，以找到最近的干净构建。
-5. 基于选定的提交进行变基（仅限开发通道）。
-6. 安装依赖项（优先使用 pnpm，备用 npm）。
-7. 执行构建，并构建 Control UI。
-8. 运行 `openclaw doctor` 作为最后的“安全更新”检查。
-9. 将插件同步到当前活动通道（开发通道使用捆绑扩展；稳定/测试通道使用 npm 插件），并更新通过 npm 安装的插件。
+- `stable`: checkout the latest non-beta tag, then build + doctor.
+- `beta`: checkout the latest `-beta` tag, then build + doctor.
+- `dev`: checkout `main`, then fetch + rebase.
 
-## `--update` 简写
+High-level:
 
-`openclaw --update` 会被重写为 `openclaw update`（适用于 shell 和启动脚本）。
+1. Requires a clean worktree (no uncommitted changes).
+2. Switches to the selected channel (tag or branch).
+3. Fetches upstream (dev only).
+4. Dev only: preflight lint + TypeScript build in a temp worktree; if the tip fails, walks back up to 10 commits to find the newest clean build.
+5. Rebases onto the selected commit (dev only).
+6. Installs deps (pnpm preferred; npm fallback).
+7. Builds + builds the Control UI.
+8. Runs `openclaw doctor` as the final “safe update” check.
+9. Syncs plugins to the active channel (dev uses bundled extensions; stable/beta uses npm) and updates npm-installed plugins.
 
-## 参见
+## `--update` shorthand
 
-- `openclaw doctor`（在 Git 检出上优先运行更新）
-- [开发通道](/install/development-channels)
-- [更新](/install/updating)
-- [CLI 参考](/cli)
+`openclaw --update` rewrites to `openclaw update` (useful for shells and launcher scripts).
+
+## See also
+
+- `openclaw doctor` (offers to run update first on git checkouts)
+- [Development channels](/install/development-channels)
+- [Updating](/install/updating)
+- [CLI reference](/cli)
