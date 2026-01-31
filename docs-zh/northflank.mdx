@@ -1,0 +1,52 @@
+---
+title: Deploy on Northflank
+---
+使用一键式模板在 Northflank 上部署 OpenClaw，并在浏览器中完成设置。
+这是最简单的“无需在服务器上使用终端”路径：Northflank 会为您运行网关，
+而您只需通过 `/setup` Web 向导来配置所有内容。
+
+## 入门指南
+
+1. 点击 [部署 OpenClaw](https://northflank.com/stacks/deploy-openclaw) 以打开模板。  
+2. 如果您还没有账户，请创建一个 [Northflank 账户](https://app.northflank.com/signup)。  
+3. 点击 **立即部署 OpenClaw**。  
+4. 设置所需的环境变量：`SETUP_PASSWORD`。
+5. 点击 **部署堆栈** 来构建并运行 OpenClaw 模板。
+6. 等待部署完成，然后点击 **查看资源**。
+7. 打开 OpenClaw 服务。
+8. 打开公开的 OpenClaw URL，并在 `/setup` 完成设置。
+9. 打开控制 UI，网址为 `/openclaw`。
+
+## 您将获得的内容
+
+- 托管的 OpenClaw 网关 + 控制 UI
+- Web 设置向导位于 `/setup`（无需使用终端命令）
+- 通过 Northflank 卷提供持久化存储（`/data`），使配置/凭据/工作区在重新部署后仍能保留
+
+## 设置流程
+
+1) 访问 `https://<your-northflank-domain>/setup`，输入您的 `SETUP_PASSWORD`。
+2) 选择模型或身份验证提供商，并粘贴您的密钥。
+3) （可选）添加 Telegram/Discord/Slack 令牌。
+4) 点击 **运行设置**。
+5) 打开控制 UI，网址为 `https://<your-northflank-domain>/openclaw`。
+
+如果 Telegram 私信已设置为配对模式，设置向导可以自动批准配对代码。
+
+## 获取聊天令牌
+
+### Telegram 机器人令牌
+
+1) 在 Telegram 中发送消息给 `@BotFather`。
+2) 运行 `/newbot`。
+3) 复制令牌（格式类似于 `123456789:AA...`）。
+4) 将其粘贴到 `/setup`。
+
+### Discord 机器人令牌
+
+1) 访问 https://discord.com/developers/applications。
+2) **新建应用** → 选择一个名称。
+3) **机器人** → **添加机器人**。
+4) 在“机器人”→“特权网关意图”下启用 **MESSAGE CONTENT INTENT**（这是必需的，否则机器人启动时会崩溃）。
+5) 复制 **机器人令牌**，并将其粘贴到 `/setup`。
+6) 使用 OAuth2 URL 生成器邀请机器人加入您的服务器；作用域为 `bot` 和 `applications.commands`。
