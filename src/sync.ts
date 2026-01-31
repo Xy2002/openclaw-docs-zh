@@ -1,6 +1,7 @@
 /**
  * Sync Module
- * Downloads documentation from upstream GitHub repository
+ * Downloads entire documentation folder from upstream GitHub repository
+ * Supports Mintlify and other static doc generators that need complete folder structure
  */
 
 import { mkdir, writeFile, readFile } from 'fs/promises';
@@ -39,7 +40,8 @@ interface GitHubTreeResponse {
 }
 
 /**
- * Download documentation files from GitHub
+ * Download ALL files from docs folder (not just markdown)
+ * This preserves Mintlify config files, assets, images, etc.
  */
 export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncStats> {
     const stats: SyncStats = {
@@ -71,18 +73,30 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
 
     const treeData = await branchResponse.json() as GitHubTreeResponse;
 
-    // Filter for markdown files in the docs path
+    // Filter for ALL files in the docs path (not just markdown)
     const docsPrefix = config.docsPath.endsWith('/') ? config.docsPath : `${config.docsPath}/`;
-    const markdownFiles = treeData.tree.filter(item =>
+    const allFiles = treeData.tree.filter(item =>
         item.type === 'blob' &&
-        item.path.startsWith(docsPrefix) &&
-        (item.path.endsWith('.md') || item.path.endsWith('.mdx'))
+        item.path.startsWith(docsPrefix)
     );
 
-    console.log(`📁 Found ${markdownFiles.length} markdown files`);
+    console.log(`📁 Found ${allFiles.length} files in docs folder`);
+
+    // Categorize files for logging
+    const mdFiles = allFiles.filter(f => f.path.endsWith('.md') || f.path.endsWith('.mdx'));
+    const jsonFiles = allFiles.filter(f => f.path.endsWith('.json') || f.path.endsWith('.yml') || f.path.endsWith('.yaml'));
+    const assetFiles = allFiles.filter(f =>
+        f.path.endsWith('.png') || f.path.endsWith('.jpg') || f.path.endsWith('.svg') ||
+        f.path.endsWith('.gif') || f.path.endsWith('.webp') || f.path.endsWith('.ico')
+    );
+
+    console.log(`   📝 Markdown: ${mdFiles.length}`);
+    console.log(`   📄 Config: ${jsonFiles.length}`);
+    console.log(`   🖼️ Assets: ${assetFiles.length}`);
 
     // Download each file
-    for (const file of markdownFiles) {
+    for (let i = 0; i < allFiles.length; i++) {
+        const file = allFiles[i];
         const relativePath = file.path.replace(docsPrefix, '');
         const outputPath = join(config.outputDir, relativePath);
 
@@ -92,29 +106,42 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
             const contentResponse = await fetch(contentUrl, { headers });
 
             if (!contentResponse.ok) {
-                console.warn(`⚠️ Failed to download: ${file.path}`);
+                console.warn(`\n⚠️ Failed to download: ${file.path}`);
                 continue;
             }
 
-            const content = await contentResponse.text();
+            // Handle binary vs text files
+            const isBinary = isBinaryFile(file.path);
+            let needsUpdate = true;
 
-            // Check if file needs updating
-            const needsUpdate = await checkFileNeedsUpdate(outputPath, content);
+            if (isBinary) {
+                const buffer = Buffer.from(await contentResponse.arrayBuffer());
+                needsUpdate = await checkBinaryFileNeedsUpdate(outputPath, buffer);
 
-            if (needsUpdate) {
-                // Ensure directory exists
-                await mkdir(dirname(outputPath), { recursive: true });
-
-                // Write file
-                await writeFile(outputPath, content, 'utf-8');
-                stats.filesDownloaded++;
-                stats.totalSize += content.length;
+                if (needsUpdate) {
+                    await mkdir(dirname(outputPath), { recursive: true });
+                    await writeFile(outputPath, buffer);
+                    stats.filesDownloaded++;
+                    stats.totalSize += buffer.length;
+                } else {
+                    stats.filesSkipped++;
+                }
             } else {
-                stats.filesSkipped++;
+                const content = await contentResponse.text();
+                needsUpdate = await checkFileNeedsUpdate(outputPath, content);
+
+                if (needsUpdate) {
+                    await mkdir(dirname(outputPath), { recursive: true });
+                    await writeFile(outputPath, content, 'utf-8');
+                    stats.filesDownloaded++;
+                    stats.totalSize += content.length;
+                } else {
+                    stats.filesSkipped++;
+                }
             }
 
             // Progress indicator
-            process.stdout.write(`\r   Processed ${stats.filesDownloaded + stats.filesSkipped}/${markdownFiles.length}`);
+            process.stdout.write(`\r   Processed ${i + 1}/${allFiles.length}`);
 
         } catch (error) {
             console.warn(`\n⚠️ Error processing ${file.path}:`, error);
@@ -127,7 +154,21 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
 }
 
 /**
- * Check if local file needs to be updated
+ * Check if file is binary based on extension
+ */
+function isBinaryFile(path: string): boolean {
+    const binaryExtensions = [
+        '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.bmp',
+        '.pdf', '.zip', '.tar', '.gz',
+        '.woff', '.woff2', '.ttf', '.eot',
+        '.mp4', '.webm', '.mp3', '.wav'
+    ];
+    const lowerPath = path.toLowerCase();
+    return binaryExtensions.some(ext => lowerPath.endsWith(ext));
+}
+
+/**
+ * Check if local text file needs to be updated
  */
 async function checkFileNeedsUpdate(localPath: string, newContent: string): Promise<boolean> {
     try {
@@ -142,58 +183,17 @@ async function checkFileNeedsUpdate(localPath: string, newContent: string): Prom
 }
 
 /**
- * Also download non-markdown assets (images, etc.) if needed
+ * Check if local binary file needs to be updated
  */
-export async function downloadAssets(config: SyncConfig): Promise<number> {
-    const headers: Record<string, string> = {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'openclaw-docs-translator',
-    };
-
-    if (config.githubToken) {
-        headers['Authorization'] = `Bearer ${config.githubToken}`;
+async function checkBinaryFileNeedsUpdate(localPath: string, newContent: Buffer): Promise<boolean> {
+    try {
+        const existingContent = await readFile(localPath);
+        const existingHash = createHash('md5').update(existingContent).digest('hex');
+        const newHash = createHash('md5').update(newContent).digest('hex');
+        return existingHash !== newHash;
+    } catch {
+        // File doesn't exist, needs to be created
+        return true;
     }
-
-    const branchResponse = await fetch(
-        `https://api.github.com/repos/${config.owner}/${config.repo}/git/trees/${config.branch}?recursive=1`,
-        { headers }
-    );
-
-    if (!branchResponse.ok) {
-        throw new Error(`Failed to fetch repository tree: ${branchResponse.status}`);
-    }
-
-    const treeData = await branchResponse.json() as GitHubTreeResponse;
-
-    const docsPrefix = config.docsPath.endsWith('/') ? config.docsPath : `${config.docsPath}/`;
-    const assetExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
-
-    const assetFiles = treeData.tree.filter(item =>
-        item.type === 'blob' &&
-        item.path.startsWith(docsPrefix) &&
-        assetExtensions.some(ext => item.path.toLowerCase().endsWith(ext))
-    );
-
-    let downloaded = 0;
-
-    for (const file of assetFiles) {
-        const relativePath = file.path.replace(docsPrefix, '');
-        const outputPath = join(config.outputDir, relativePath);
-
-        try {
-            const contentUrl = `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${file.path}`;
-            const contentResponse = await fetch(contentUrl, { headers });
-
-            if (!contentResponse.ok) continue;
-
-            const buffer = Buffer.from(await contentResponse.arrayBuffer());
-            await mkdir(dirname(outputPath), { recursive: true });
-            await writeFile(outputPath, buffer);
-            downloaded++;
-        } catch {
-            // Skip failed assets
-        }
-    }
-
-    return downloaded;
 }
+
