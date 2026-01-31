@@ -6,6 +6,10 @@ dist/
 
 # Cache files
 .translation-cache.json
+.upstream-hashes.json
+
+# Act secrets (DO NOT COMMIT)
+.secrets
 # Environment files
 .env
 .env.local

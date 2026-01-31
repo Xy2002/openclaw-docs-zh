@@ -1,0 +1,6 @@
+# act 配置文件
+# 使用 medium 镜像（包含 Node.js 20，比较完整）
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# 自动绑定 secrets 文件
+--secret-file .secrets
