@@ -1,30 +1,28 @@
 ---
-summary: "Logging overview: file logs, console output, CLI tailing, and the Control UI"
+summary: 'Logging overview: file logs, console output, CLI tailing, and the Control UI'
 read_when:
   - You need a beginner-friendly overview of logging
   - You want to configure log levels or formats
   - You are troubleshooting and need to find logs quickly
 ---
+# 日志记录
 
-# Logging
+OpenClaw 在两个位置记录日志：
 
-OpenClaw logs in two places:
+- **文件日志**（JSON 行），由网关写入。
+- **控制台输出**，显示在终端和控制 UI 中。
 
-- **File logs** (JSON lines) written by the Gateway.
-- **Console output** shown in terminals and the Control UI.
+本页面将介绍日志的存储位置、如何读取日志，以及如何配置日志级别和格式。
 
-This page explains where logs live, how to read them, and how to configure log
-levels and formats.
+## 日志的存储位置
 
-## Where logs live
-
-By default, the Gateway writes a rolling log file under:
+默认情况下，网关会将滚动日志文件写入以下路径：
 
 `/tmp/openclaw/openclaw-YYYY-MM-DD.log`
 
-The date uses the gateway host's local timezone.
+日期使用网关主机的本地时区。
 
-You can override this in `~/.openclaw/openclaw.json`:
+您可以通过 `~/.openclaw/openclaw.json` 覆盖此设置：
 
 ```json
 {
@@ -34,70 +32,68 @@ You can override this in `~/.openclaw/openclaw.json`:
 }
 ```
 
-## How to read logs
+## 如何读取日志
 
-### CLI: live tail (recommended)
+### CLI：实时尾部跟踪（推荐）
 
-Use the CLI to tail the gateway log file via RPC:
+使用 CLI 通过 RPC 尾部跟踪网关日志文件：
 
 ```bash
 openclaw logs --follow
 ```
 
-Output modes:
+输出模式：
 
-- **TTY sessions**: pretty, colorized, structured log lines.
-- **Non-TTY sessions**: plain text.
-- `--json`: line-delimited JSON (one log event per line).
-- `--plain`: force plain text in TTY sessions.
-- `--no-color`: disable ANSI colors.
+- **TTY 会话**：美观、带颜色、结构化的日志行。
+- **非 TTY 会话**：纯文本。
+- `--json`：以换行符分隔的 JSON（每行一个日志事件）。
+- `--plain`：在 TTY 会话中强制使用纯文本。
+- `--no-color`：禁用 ANSI 颜色。
 
-In JSON mode, the CLI emits `type`-tagged objects:
+在 JSON 模式下，CLI 会发出带有 `type` 标签的对象：
 
-- `meta`: stream metadata (file, cursor, size)
-- `log`: parsed log entry
-- `notice`: truncation / rotation hints
-- `raw`: unparsed log line
+- `meta`：流元数据（文件、游标、大小）
+- `log`：解析后的日志条目
+- `notice`：截断/轮转提示
+- `raw`：未解析的日志行
 
-If the Gateway is unreachable, the CLI prints a short hint to run:
+如果网关无法访问，CLI 会打印一条简短提示，要求运行：
 
 ```bash
 openclaw doctor
 ```
 
-### Control UI (web)
+### 控制 UI（Web）
 
-The Control UI’s **Logs** tab tails the same file using `logs.tail`.
-See [/web/control-ui](/web/control-ui) for how to open it.
+控制 UI 的 **日志** 选项卡使用 `logs.tail` 尾部跟踪同一文件。有关如何打开它的信息，请参阅 [/web/control-ui](/web/control-ui)。
 
-### Channel-only logs
+### 仅通道日志
 
-To filter channel activity (WhatsApp/Telegram/etc), use:
+要过滤通道活动（WhatsApp/Telegram 等），请使用：
 
 ```bash
 openclaw channels logs --channel whatsapp
 ```
 
-## Log formats
+## 日志格式
 
-### File logs (JSONL)
+### 文件日志（JSONL）
 
-Each line in the log file is a JSON object. The CLI and Control UI parse these
-entries to render structured output (time, level, subsystem, message).
+日志文件中的每一行都是一个 JSON 对象。CLI 和控制 UI 会解析这些条目，以呈现结构化的输出（时间、级别、子系统、消息）。
 
-### Console output
+### 控制台输出
 
-Console logs are **TTY-aware** and formatted for readability:
+控制台日志具有 **TTY 感知性**，并经过格式化以提高可读性：
 
-- Subsystem prefixes (e.g. `gateway/channels/whatsapp`)
-- Level coloring (info/warn/error)
-- Optional compact or JSON mode
+- 子系统前缀（例如 `gateway/channels/whatsapp`）
+- 级别着色（信息/警告/错误）
+- 可选的紧凑或 JSON 模式
 
-Console formatting is controlled by `logging.consoleStyle`.
+控制台格式由 `logging.consoleStyle` 控制。
 
-## Configuring logging
+## 配置日志记录
 
-All logging configuration lives under `logging` in `~/.openclaw/openclaw.json`.
+所有日志配置都位于 `logging` 下的 `~/.openclaw/openclaw.json` 中。
 
 ```json
 {
@@ -114,75 +110,71 @@ All logging configuration lives under `logging` in `~/.openclaw/openclaw.json`.
 }
 ```
 
-### Log levels
+### 日志级别
 
-- `logging.level`: **file logs** (JSONL) level.
-- `logging.consoleLevel`: **console** verbosity level.
+- `logging.level`：**文件日志**（JSONL）级别。
+- `logging.consoleLevel`：**控制台**详细程度级别。
 
-`--verbose` only affects console output; it does not change file log levels.
+`--verbose` 仅影响控制台输出；它不会更改文件日志级别。
 
-### Console styles
+### 控制台样式
 
-`logging.consoleStyle`:
+`logging.consoleStyle`：
 
-- `pretty`: human-friendly, colored, with timestamps.
-- `compact`: tighter output (best for long sessions).
-- `json`: JSON per line (for log processors).
+- `pretty`：人性化、带颜色、附带时间戳。
+- `compact`：更紧凑的输出（最适合长时间会话）。
+- `json`：每行 JSON（适用于日志处理器）。
 
-### Redaction
+### 敏感信息屏蔽
 
-Tool summaries can redact sensitive tokens before they hit the console:
+工具摘要可以在敏感标记到达控制台之前对其进行屏蔽：
 
-- `logging.redactSensitive`: `off` | `tools` (default: `tools`)
-- `logging.redactPatterns`: list of regex strings to override the default set
+- `logging.redactSensitive`：`off` | `tools`（默认：`tools`）
+- `logging.redactPatterns`：用于覆盖默认集的正则表达式字符串列表
 
-Redaction affects **console output only** and does not alter file logs.
+屏蔽仅影响**控制台输出**，不会更改文件日志。
 
-## Diagnostics + OpenTelemetry
+## 诊断 + OpenTelemetry
 
-Diagnostics are structured, machine-readable events for model runs **and**
-message-flow telemetry (webhooks, queueing, session state). They do **not**
-replace logs; they exist to feed metrics, traces, and other exporters.
+诊断是结构化的、机器可读的事件，用于模型运行**和**消息流遥测（webhook、排队、会话状态）。它们**不**取代日志；它们的存在是为了为指标、跟踪和其他导出器提供数据。
 
-Diagnostics events are emitted in-process, but exporters only attach when
-diagnostics + the exporter plugin are enabled.
+诊断事件是在进程中发出的，但只有在启用诊断和导出器插件时，导出器才会附加。
 
 ### OpenTelemetry vs OTLP
 
-- **OpenTelemetry (OTel)**: the data model + SDKs for traces, metrics, and logs.
-- **OTLP**: the wire protocol used to export OTel data to a collector/backend.
-- OpenClaw exports via **OTLP/HTTP (protobuf)** today.
+- **OpenTelemetry（OTel）**：用于跟踪、指标和日志的数据模型 + SDK。
+- **OTLP**：用于将 OTel 数据导出到收集器/后端的传输协议。
+- OpenClaw 目前通过 **OTLP/HTTP（protobuf）** 导出数据。
 
-### Signals exported
+### 导出的信号
 
-- **Metrics**: counters + histograms (token usage, message flow, queueing).
-- **Traces**: spans for model usage + webhook/message processing.
-- **Logs**: exported over OTLP when `diagnostics.otel.logs` is enabled. Log
-  volume can be high; keep `logging.level` and exporter filters in mind.
+- **指标**：计数器 + 直方图（令牌使用、消息流、排队）。
+- **跟踪**：用于模型使用 + webhook/消息处理的跨度。
+- **日志**：当 `diagnostics.otel.logs` 启用时，通过 OTLP 导出。日志量可能很大；请记住 `logging.level` 和导出器筛选器。
 
-### Diagnostic event catalog
+### 诊断事件目录
 
-Model usage:
-- `model.usage`: tokens, cost, duration, context, provider/model/channel, session ids.
+模型使用：
+- `model.usage`：令牌、成本、持续时间、上下文、提供商/模型/通道、会话 ID。
 
-Message flow:
-- `webhook.received`: webhook ingress per channel.
-- `webhook.processed`: webhook handled + duration.
-- `webhook.error`: webhook handler errors.
-- `message.queued`: message enqueued for processing.
-- `message.processed`: outcome + duration + optional error.
+消息流：
+- `webhook.received`：按通道划分的 webhook 入站流量。
+- `webhook.processed`：已处理的 webhook 及其持续时间。
+- `webhook.error`：webhook 处理器错误。
+- `message.queued`：已排队等待处理的消息。
+- `message.processed`：结果 + 持续时间 + 可选错误。
 
-Queue + session:
-- `queue.lane.enqueue`: command queue lane enqueue + depth.
-- `queue.lane.dequeue`: command queue lane dequeue + wait time.
-- `session.state`: session state transition + reason.
-- `session.stuck`: session stuck warning + age.
-- `run.attempt`: run retry/attempt metadata.
-- `diagnostic.heartbeat`: aggregate counters (webhooks/queue/session).
+队列 + 会话：
+- `queue.lane.enqueue`：命令队列车道入队 + 深度。
+- `queue.lane.dequeue`：命令队列车道出队 + 等待时间。
+- `session.state`：会话状态转换 + 原因。
+- `session.stuck`：会话卡住警告 + 年龄。
+- `run.attempt`：运行重试/尝试元数据。
+- `diagnostic.heartbeat`：聚合计数器（webhooks/队列/会话）。
 
-### Enable diagnostics (no exporter)
+### 启用诊断（无导出器）
 
-Use this if you want diagnostics events available to plugins or custom sinks:
+如果您希望插件或自定义接收器可以使用诊断事件，请使用此方法：
 
 ```json
 {
@@ -192,10 +184,9 @@ Use this if you want diagnostics events available to plugins or custom sinks:
 }
 ```
 
-### Diagnostics flags (targeted logs)
+### 诊断标志（定向日志）
 
-Use flags to turn on extra, targeted debug logs without raising `logging.level`.
-Flags are case-insensitive and support wildcards (e.g. `telegram.*` or `*`).
+使用标志可在不提高 `logging.level` 的情况下开启额外的定向调试日志。标志不区分大小写，并支持通配符（如 `telegram.*` 或 `*`）。
 
 ```json
 {
@@ -205,21 +196,20 @@ Flags are case-insensitive and support wildcards (e.g. `telegram.*` or `*`).
 }
 ```
 
-Env override (one-off):
+环境覆盖（一次性）：
 
 ```
 OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 ```
 
-Notes:
-- Flag logs go to the standard log file (same as `logging.file`).
-- Output is still redacted according to `logging.redactSensitive`.
-- Full guide: [/diagnostics/flags](/diagnostics/flags).
+注意事项：
+- 标志日志会写入标准日志文件（与 `logging.file` 相同）。
+- 输出仍根据 `logging.redactSensitive` 进行屏蔽。
+- 完整指南：[/diagnostics/flags](/diagnostics/flags)。
 
-### Export to OpenTelemetry
+### 导出到 OpenTelemetry
 
-Diagnostics can be exported via the `diagnostics-otel` plugin (OTLP/HTTP). This
-works with any OpenTelemetry collector/backend that accepts OTLP/HTTP.
+可通过 `diagnostics-otel` 插件（OTLP/HTTP）导出诊断。这适用于任何接受 OTLP/HTTP 的 OpenTelemetry 收集器/后端。
 
 ```json
 {
@@ -248,96 +238,92 @@ works with any OpenTelemetry collector/backend that accepts OTLP/HTTP.
 }
 ```
 
-Notes:
-- You can also enable the plugin with `openclaw plugins enable diagnostics-otel`.
-- `protocol` currently supports `http/protobuf` only. `grpc` is ignored.
-- Metrics include token usage, cost, context size, run duration, and message-flow
-  counters/histograms (webhooks, queueing, session state, queue depth/wait).
-- Traces/metrics can be toggled with `traces` / `metrics` (default: on). Traces
-  include model usage spans plus webhook/message processing spans when enabled.
-- Set `headers` when your collector requires auth.
-- Environment variables supported: `OTEL_EXPORTER_OTLP_ENDPOINT`,
-  `OTEL_SERVICE_NAME`, `OTEL_EXPORTER_OTLP_PROTOCOL`.
+注意事项：
+- 您也可以通过 `openclaw plugins enable diagnostics-otel` 启用插件。
+- `protocol` 目前仅支持 `http/protobuf`。`grpc` 被忽略。
+- 指标包括令牌使用、成本、上下文大小、运行持续时间以及消息流计数器/直方图（webhooks、排队、会话状态、队列深度/等待）。
+- 可通过 `traces` / `metrics` 切换跟踪/指标（默认为开启）。启用后，跟踪包括模型使用跨度以及 webhook/消息处理跨度。
+- 当您的收集器需要身份验证时，请设置 `headers`。
+- 支持的环境变量：`OTEL_EXPORTER_OTLP_ENDPOINT`，
+  `OTEL_SERVICE_NAME`，`OTEL_EXPORTER_OTLP_PROTOCOL`。
 
-### Exported metrics (names + types)
+### 导出的指标（名称 + 类型）
 
-Model usage:
-- `openclaw.tokens` (counter, attrs: `openclaw.token`, `openclaw.channel`,
-  `openclaw.provider`, `openclaw.model`)
-- `openclaw.cost.usd` (counter, attrs: `openclaw.channel`, `openclaw.provider`,
-  `openclaw.model`)
-- `openclaw.run.duration_ms` (histogram, attrs: `openclaw.channel`,
-  `openclaw.provider`, `openclaw.model`)
-- `openclaw.context.tokens` (histogram, attrs: `openclaw.context`,
-  `openclaw.channel`, `openclaw.provider`, `openclaw.model`)
+模型使用：
+- `openclaw.tokens`（计数器，属性：`openclaw.token`，`openclaw.channel`，
+  `openclaw.provider`，`openclaw.model`）
+- `openclaw.cost.usd`（计数器，属性：`openclaw.channel`，`openclaw.provider`，
+  `openclaw.model`）
+- `openclaw.run.duration_ms`（直方图，属性：`openclaw.channel`，
+  `openclaw.provider`，`openclaw.model`）
+- `openclaw.context.tokens`（直方图，属性：`openclaw.context`，
+  `openclaw.channel`，`openclaw.provider`，`openclaw.model`）
 
-Message flow:
-- `openclaw.webhook.received` (counter, attrs: `openclaw.channel`,
-  `openclaw.webhook`)
-- `openclaw.webhook.error` (counter, attrs: `openclaw.channel`,
-  `openclaw.webhook`)
-- `openclaw.webhook.duration_ms` (histogram, attrs: `openclaw.channel`,
-  `openclaw.webhook`)
-- `openclaw.message.queued` (counter, attrs: `openclaw.channel`,
-  `openclaw.source`)
-- `openclaw.message.processed` (counter, attrs: `openclaw.channel`,
-  `openclaw.outcome`)
-- `openclaw.message.duration_ms` (histogram, attrs: `openclaw.channel`,
-  `openclaw.outcome`)
+消息流：
+- `openclaw.webhook.received`（计数器，属性：`openclaw.channel`，
+  `openclaw.webhook`）
+- `openclaw.webhook.error`（计数器，属性：`openclaw.channel`，
+  `openclaw.webhook`）
+- `openclaw.webhook.duration_ms`（直方图，属性：`openclaw.channel`，
+  `openclaw.webhook`）
+- `openclaw.message.queued`（计数器，属性：`openclaw.channel`，
+  `openclaw.source`）
+- `openclaw.message.processed`（计数器，属性：`openclaw.channel`，
+  `openclaw.outcome`）
+- `openclaw.message.duration_ms`（直方图，属性：`openclaw.channel`，
+  `openclaw.outcome`）
 
-Queues + sessions:
-- `openclaw.queue.lane.enqueue` (counter, attrs: `openclaw.lane`)
-- `openclaw.queue.lane.dequeue` (counter, attrs: `openclaw.lane`)
-- `openclaw.queue.depth` (histogram, attrs: `openclaw.lane` or
-  `openclaw.channel=heartbeat`)
-- `openclaw.queue.wait_ms` (histogram, attrs: `openclaw.lane`)
-- `openclaw.session.state` (counter, attrs: `openclaw.state`, `openclaw.reason`)
-- `openclaw.session.stuck` (counter, attrs: `openclaw.state`)
-- `openclaw.session.stuck_age_ms` (histogram, attrs: `openclaw.state`)
-- `openclaw.run.attempt` (counter, attrs: `openclaw.attempt`)
+队列 + 会话：
+- `openclaw.queue.lane.enqueue`（计数器，属性：`openclaw.lane`）
+- `openclaw.queue.lane.dequeue`（计数器，属性：`openclaw.lane`）
+- `openclaw.queue.depth`（直方图，属性：`openclaw.lane` 或
+  `openclaw.channel=heartbeat`）
+- `openclaw.queue.wait_ms`（直方图，属性：`openclaw.lane`）
+- `openclaw.session.state`（计数器，属性：`openclaw.state`，`openclaw.reason`）
+- `openclaw.session.stuck`（计数器，属性：`openclaw.state`）
+- `openclaw.session.stuck_age_ms`（直方图，属性：`openclaw.state`）
+- `openclaw.run.attempt`（计数器，属性：`openclaw.attempt`）
 
-### Exported spans (names + key attributes)
+### 导出的跨度（名称 + 关键属性）
 
 - `openclaw.model.usage`
-  - `openclaw.channel`, `openclaw.provider`, `openclaw.model`
-  - `openclaw.sessionKey`, `openclaw.sessionId`
-  - `openclaw.tokens.*` (input/output/cache_read/cache_write/total)
+  - `openclaw.channel`，`openclaw.provider`，`openclaw.model`
+  - `openclaw.sessionKey`，`openclaw.sessionId`
+  - `openclaw.tokens.*`（输入/输出/缓存读取/缓存写入/总计）
 - `openclaw.webhook.processed`
-  - `openclaw.channel`, `openclaw.webhook`, `openclaw.chatId`
+  - `openclaw.channel`，`openclaw.webhook`，`openclaw.chatId`
 - `openclaw.webhook.error`
-  - `openclaw.channel`, `openclaw.webhook`, `openclaw.chatId`,
+  - `openclaw.channel`，`openclaw.webhook`，`openclaw.chatId`，
     `openclaw.error`
 - `openclaw.message.processed`
-  - `openclaw.channel`, `openclaw.outcome`, `openclaw.chatId`,
-    `openclaw.messageId`, `openclaw.sessionKey`, `openclaw.sessionId`,
+  - `openclaw.channel`，`openclaw.outcome`，`openclaw.chatId`，
+    `openclaw.messageId`，`openclaw.sessionKey`，`openclaw.sessionId`，
     `openclaw.reason`
 - `openclaw.session.stuck`
-  - `openclaw.state`, `openclaw.ageMs`, `openclaw.queueDepth`,
-    `openclaw.sessionKey`, `openclaw.sessionId`
+  - `openclaw.state`，`openclaw.ageMs`，`openclaw.queueDepth`，
+    `openclaw.sessionKey`，`openclaw.sessionId`
 
-### Sampling + flushing
+### 抽样 + 刷新
 
-- Trace sampling: `diagnostics.otel.sampleRate` (0.0–1.0, root spans only).
-- Metric export interval: `diagnostics.otel.flushIntervalMs` (min 1000ms).
+- 跟踪抽样：`diagnostics.otel.sampleRate`（0.0–1.0，仅根跨度）。
+- 指标导出间隔：`diagnostics.otel.flushIntervalMs`（最小 1000 毫秒）。
 
-### Protocol notes
+### 协议说明
 
-- OTLP/HTTP endpoints can be set via `diagnostics.otel.endpoint` or
-  `OTEL_EXPORTER_OTLP_ENDPOINT`.
-- If the endpoint already contains `/v1/traces` or `/v1/metrics`, it is used as-is.
-- If the endpoint already contains `/v1/logs`, it is used as-is for logs.
-- `diagnostics.otel.logs` enables OTLP log export for the main logger output.
+- OTLP/HTTP 端点可通过 `diagnostics.otel.endpoint` 或
+  `OTEL_EXPORTER_OTLP_ENDPOINT` 设置。
+- 如果端点已经包含 `/v1/traces` 或 `/v1/metrics`，将按原样使用。
+- 如果端点已经包含 `/v1/logs`，将按原样用于日志。
+- `diagnostics.otel.logs` 启用主日志器输出的 OTLP 日志导出。
 
-### Log export behavior
+### 日志导出行为
 
-- OTLP logs use the same structured records written to `logging.file`.
-- Respect `logging.level` (file log level). Console redaction does **not** apply
-  to OTLP logs.
-- High-volume installs should prefer OTLP collector sampling/filtering.
+- OTLP 日志使用与写入 `logging.file` 的相同结构化记录。
+- 请遵守 `logging.level`（文件日志级别）。控制台屏蔽**不**适用于 OTLP 日志。
+- 大规模安装应优先考虑 OTLP 收集器的抽样/筛选。
 
-## Troubleshooting tips
+## 故障排除提示
 
-- **Gateway not reachable?** Run `openclaw doctor` first.
-- **Logs empty?** Check that the Gateway is running and writing to the file path
-  in `logging.file`.
-- **Need more detail?** Set `logging.level` to `debug` or `trace` and retry.
+- **网关无法访问？** 请先运行 `openclaw doctor`。
+- **日志为空？** 请检查网关是否正在运行，并且是否正在写入 `logging.file` 中指定的文件路径。
+- **需要更多细节？** 将 `logging.level` 设置为 `debug` 或 `trace`，然后重试。

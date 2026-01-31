@@ -1,53 +1,50 @@
 ---
-summary: "Agent-controlled Canvas panel embedded via WKWebView + custom URL scheme"
+summary: Agent-controlled Canvas panel embedded via WKWebView + custom URL scheme
 read_when:
   - Implementing the macOS Canvas panel
   - Adding agent controls for visual workspace
   - Debugging WKWebView canvas loads
 ---
-# Canvas (macOS app)
+# Canvas（macOS 应用）
 
-The macOS app embeds an agent‑controlled **Canvas panel** using `WKWebView`. It
-is a lightweight visual workspace for HTML/CSS/JS, A2UI, and small interactive
-UI surfaces.
+macOS 应用使用 `WKWebView` 嵌入了一个由代理控制的 **Canvas 面板**。这是一个轻量级的可视化工作区，适用于 HTML/CSS/JS、A2UI 以及小型交互式 UI 表面。
 
-## Where Canvas lives
+## Canvas 的存储位置
 
-Canvas state is stored under Application Support:
+Canvas 状态存储在 Application Support 目录下：
 
 - `~/Library/Application Support/OpenClaw/canvas/<session>/...`
 
-The Canvas panel serves those files via a **custom URL scheme**:
+Canvas 面板通过一个 **自定义 URL 方案** 提供这些文件：
 
 - `openclaw-canvas://<session>/<path>`
 
-Examples:
+示例：
 - `openclaw-canvas://main/` → `<canvasRoot>/main/index.html`
 - `openclaw-canvas://main/assets/app.css` → `<canvasRoot>/main/assets/app.css`
 - `openclaw-canvas://main/widgets/todo/` → `<canvasRoot>/main/widgets/todo/index.html`
 
-If no `index.html` exists at the root, the app shows a **built‑in scaffold page**.
+如果根目录中不存在 `index.html`，应用将显示一个 **内置的脚手架页面**。
 
-## Panel behavior
+## 面板行为
 
-- Borderless, resizable panel anchored near the menu bar (or mouse cursor).
-- Remembers size/position per session.
-- Auto‑reloads when local canvas files change.
-- Only one Canvas panel is visible at a time (session is switched as needed).
+- 无边框、可调整大小的面板，固定在菜单栏附近（或鼠标光标处）。
+- 每个会话都会记住面板的大小和位置。
+- 当本地 Canvas 文件发生更改时，面板会自动重新加载。
+- 同一时间仅显示一个 Canvas 面板（必要时切换会话）。
 
-Canvas can be disabled from Settings → **Allow Canvas**. When disabled, canvas
-node commands return `CANVAS_DISABLED`.
+您可以在设置中关闭 Canvas：**允许 Canvas**。当 Canvas 被禁用时，Canvas 节点命令将返回 `CANVAS_DISABLED`。
 
-## Agent API surface
+## 代理 API 接口
 
-Canvas is exposed via the **Gateway WebSocket**, so the agent can:
+Canvas 通过 **Gateway WebSocket** 公开，因此代理可以：
 
-- show/hide the panel
-- navigate to a path or URL
-- evaluate JavaScript
-- capture a snapshot image
+- 显示或隐藏面板
+- 导航到某个路径或 URL
+- 执行 JavaScript
+- 捕获快照图像
 
-CLI examples:
+CLI 示例：
 
 ```bash
 openclaw nodes canvas present --node <id>
@@ -56,34 +53,32 @@ openclaw nodes canvas eval --node <id> --js "document.title"
 openclaw nodes canvas snapshot --node <id>
 ```
 
-Notes:
-- `canvas.navigate` accepts **local canvas paths**, `http(s)` URLs, and `file://` URLs.
-- If you pass `"/"`, the Canvas shows the local scaffold or `index.html`.
+注意事项：
+- `canvas.navigate` 接受 **本地 Canvas 路径**，`http(s)` 接受 URL，`file://` 也接受 URL。
+- 如果您传递 `"/"`，Canvas 将显示本地脚手架或 `index.html`。
 
-## A2UI in Canvas
+## A2UI 在 Canvas 中
 
-A2UI is hosted by the Gateway canvas host and rendered inside the Canvas panel.
-When the Gateway advertises a Canvas host, the macOS app auto‑navigates to the
-A2UI host page on first open.
+A2UI 由 Gateway Canvas 主机托管，并在 Canvas 面板中渲染。当 Gateway 宣布一个 Canvas 主机时，macOS 应用会在首次打开时自动导航到 A2UI 主机页面。
 
-Default A2UI host URL:
+默认 A2UI 主机 URL：
 
 ```
 http://<gateway-host>:18793/__openclaw__/a2ui/
 ```
 
-### A2UI commands (v0.8)
+### A2UI 命令（v0.8）
 
-Canvas currently accepts **A2UI v0.8** server→client messages:
+Canvas 目前接受 **A2UI v0.8** 服务器到客户端的消息：
 
 - `beginRendering`
 - `surfaceUpdate`
 - `dataModelUpdate`
 - `deleteSurface`
 
-`createSurface` (v0.9) is not supported.
+`createSurface`（v0.9）不受支持。
 
-CLI example:
+CLI 示例：
 
 ```bash
 cat > /tmp/a2ui-v0.8.jsonl <<'EOFA2'
@@ -94,28 +89,28 @@ EOFA2
 openclaw nodes canvas a2ui push --jsonl /tmp/a2ui-v0.8.jsonl --node <id>
 ```
 
-Quick smoke:
+快速测试：
 
 ```bash
 openclaw nodes canvas a2ui push --node <id> --text "Hello from A2UI"
 ```
 
-## Triggering agent runs from Canvas
+## 从 Canvas 触发代理运行
 
-Canvas can trigger new agent runs via deep links:
+Canvas 可以通过深度链接触发新的代理运行：
 
 - `openclaw://agent?...`
 
-Example (in JS):
+示例（使用 JS）：
 
 ```js
 window.location.href = "openclaw://agent?message=Review%20this%20design";
 ```
 
-The app prompts for confirmation unless a valid key is provided.
+除非提供有效密钥，否则应用会提示确认。
 
-## Security notes
+## 安全注意事项
 
-- Canvas scheme blocks directory traversal; files must live under the session root.
-- Local Canvas content uses a custom scheme (no loopback server required).
-- External `http(s)` URLs are allowed only when explicitly navigated.
+- Canvas 方案阻止目录遍历；文件必须位于会话根目录下。
+- 本地 Canvas 内容使用自定义方案，无需回环服务器。
+- 外部 `http(s)` URL 仅在显式导航时才被允许。

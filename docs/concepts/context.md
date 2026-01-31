@@ -1,34 +1,34 @@
 ---
-summary: "Context: what the model sees, how it is built, and how to inspect it"
+summary: 'Context: what the model sees, how it is built, and how to inspect it'
 read_when:
   - You want to understand what “context” means in OpenClaw
   - You are debugging why the model “knows” something (or forgot it)
-  - You want to reduce context overhead (/context, /status, /compact)
+  - 'You want to reduce context overhead (/context, /status, /compact)'
 ---
-# Context
+# 上下文
 
-“Context” is **everything OpenClaw sends to the model for a run**. It is bounded by the model’s **context window** (token limit).
+“上下文”是 **OpenClaw 在每次运行时发送给模型的所有内容**。它受模型的 **上下文窗口**（token 限制）约束。
 
-Beginner mental model:
-- **System prompt** (OpenClaw-built): rules, tools, skills list, time/runtime, and injected workspace files.
-- **Conversation history**: your messages + the assistant’s messages for this session.
-- **Tool calls/results + attachments**: command output, file reads, images/audio, etc.
+初学者的心理模型：
+- **系统提示**（由OpenClaw构建）：规则、工具、技能列表、时间/运行时，以及注入的工作空间文件。
+- **对话历史**：您在此会话中的消息加上助手的消息。
+- **工具调用/结果 + 附件**：命令输出、文件读取、图像/音频等。
 
-Context is *not the same thing* as “memory”: memory can be stored on disk and reloaded later; context is what’s inside the model’s current window.
+上下文 *不同于*“内存”：内存可以存储在磁盘上并在以后重新加载；而上下文则是当前模型窗口内的内容。
 
-## Quick start (inspect context)
+## 快速入门（检查上下文）
 
-- `/status` → quick “how full is my window?” view + session settings.
-- `/context list` → what’s injected + rough sizes (per file + totals).
-- `/context detail` → deeper breakdown: per-file, per-tool schema sizes, per-skill entry sizes, and system prompt size.
-- `/usage tokens` → append per-reply usage footer to normal replies.
-- `/compact` → summarize older history into a compact entry to free window space.
+- `/status` → 快速查看“我的窗口有多满？”并获取会话设置。
+- `/context list` → 查看已注入的内容及大致大小（按文件和总计）。
+- `/context detail` → 更深入的细分：按文件、按工具模式的大小，按技能条目的大小，以及系统提示的大小。
+- `/usage tokens` → 在普通回复中附加每条回复的用量脚注。
+- `/compact` → 将较旧的历史汇总为一条简洁条目，以释放窗口空间。
 
-See also: [Slash commands](/tools/slash-commands), [Token use & costs](/token-use), [Compaction](/concepts/compaction).
+另请参阅：[斜杠命令](/tools/slash-commands)，[Token 使用与成本](/token-use)，[压缩](/concepts/compaction)。
 
-## Example output
+## 示例输出
 
-Values vary by model, provider, tool policy, and what’s in your workspace.
+数值因模型、提供商、工具策略以及工作空间中的内容而异。
 
 ### `/context list`
 
@@ -73,79 +73,79 @@ Top tools (schema size):
 … (+N more tools)
 ```
 
-## What counts toward the context window
+## 哪些内容计入上下文窗口
 
-Everything the model receives counts, including:
-- System prompt (all sections).
-- Conversation history.
-- Tool calls + tool results.
-- Attachments/transcripts (images/audio/files).
-- Compaction summaries and pruning artifacts.
-- Provider “wrappers” or hidden headers (not visible, still counted).
+模型接收到的一切内容都会计入，包括：
+- 系统提示（所有部分）。
+- 对话历史。
+- 工具调用 + 工具结果。
+- 附件/记录（图像/音频/文件）。
+- 压缩摘要和修剪产物。
+- 提供商的“包装器”或隐藏标头（不可见，但仍计入）。
 
-## How OpenClaw builds the system prompt
+## OpenClaw 如何构建系统提示
 
-The system prompt is **OpenClaw-owned** and rebuilt each run. It includes:
-- Tool list + short descriptions.
-- Skills list (metadata only; see below).
-- Workspace location.
-- Time (UTC + converted user time if configured).
-- Runtime metadata (host/OS/model/thinking).
-- Injected workspace bootstrap files under **Project Context**.
+系统提示由 **OpenClaw 所有**，并在每次运行时重新构建。它包括：
+- 工具列表 + 简短描述。
+- 技能列表（仅元数据；见下文）。
+- 工作空间位置。
+- 时间（UTC + 如果配置了，则转换为用户时间）。
+- 运行时元数据（主机/操作系统/模型/思考过程）。
+- 在 **项目上下文** 下注入的工作空间引导文件。
 
-Full breakdown: [System Prompt](/concepts/system-prompt).
+完整分解：[系统提示](/concepts/system-prompt)。
 
-## Injected workspace files (Project Context)
+## 注入的工作空间文件（项目上下文）
 
-By default, OpenClaw injects a fixed set of workspace files (if present):
+默认情况下，OpenClaw 会注入一组固定的工作空间文件（如果存在）：
 - `AGENTS.md`
 - `SOUL.md`
 - `TOOLS.md`
 - `IDENTITY.md`
 - `USER.md`
 - `HEARTBEAT.md`
-- `BOOTSTRAP.md` (first-run only)
+- `BOOTSTRAP.md`（仅首次运行）
 
-Large files are truncated per-file using `agents.defaults.bootstrapMaxChars` (default `20000` chars). `/context` shows **raw vs injected** sizes and whether truncation happened.
+大文件会按文件进行截断，使用 `agents.defaults.bootstrapMaxChars`（默认 `20000` 字符）。`/context` 显示 **原始 vs 注入** 的大小，并标明是否发生了截断。
 
-## Skills: what’s injected vs loaded on-demand
+## 技能：哪些内容被注入，哪些按需加载
 
-The system prompt includes a compact **skills list** (name + description + location). This list has real overhead.
+系统提示包含一个精简的 **技能列表**（名称 + 描述 + 位置）。此列表本身具有实际开销。
 
-Skill instructions are *not* included by default. The model is expected to `read` the skill’s `SKILL.md` **only when needed**.
+技能说明默认 *不* 包含在内。模型预计会在 **需要时** `read` 技能的 `SKILL.md`。
 
-## Tools: there are two costs
+## 工具：存在两种成本
 
-Tools affect context in two ways:
-1) **Tool list text** in the system prompt (what you see as “Tooling”).
-2) **Tool schemas** (JSON). These are sent to the model so it can call tools. They count toward context even though you don’t see them as plain text.
+工具以两种方式影响上下文：
+1) **工具列表文本** 出现在系统提示中（您看到的“工具”部分）。
+2) **工具模式**（JSON）。这些模式会被发送给模型，以便模型能够调用工具。即使您看不到它们的纯文本形式，它们仍然会计入上下文。
 
-`/context detail` breaks down the biggest tool schemas so you can see what dominates.
+`/context detail` 细分了最大的工具模式，以便您了解哪些占主导地位。
 
-## Commands, directives, and “inline shortcuts”
+## 命令、指令和“内联快捷方式”
 
-Slash commands are handled by the Gateway. There are a few different behaviors:
-- **Standalone commands**: a message that is only `/...` runs as a command.
-- **Directives**: `/think`, `/verbose`, `/reasoning`, `/elevated`, `/model`, `/queue` are stripped before the model sees the message.
-  - Directive-only messages persist session settings.
-  - Inline directives in a normal message act as per-message hints.
-- **Inline shortcuts** (allowlisted senders only): certain `/...` tokens inside a normal message can run immediately (example: “hey /status”), and are stripped before the model sees the remaining text.
+斜杠命令由网关处理。行为有几种不同形式：
+- **独立命令**：仅作为命令运行的消息。
+- **指令**：`/think`、`/verbose`、`/reasoning`、`/elevated`、`/model`、`/queue` 在模型看到消息之前被剥离。
+  - 仅指令消息会保留会话设置。
+  - 普通消息中的内联指令则作为每条消息的提示发挥作用。
+- **内联快捷方式**（仅限白名单发件人）：普通消息中的某些 `/...` 标记可以立即执行（例如，“hey /status”），并在模型看到剩余文本之前被剥离。
 
-Details: [Slash commands](/tools/slash-commands).
+详情：[斜杠命令](/tools/slash-commands)。
 
-## Sessions, compaction, and pruning (what persists)
+## 会话、压缩和修剪（哪些内容持久化）
 
-What persists across messages depends on the mechanism:
-- **Normal history** persists in the session transcript until compacted/pruned by policy.
-- **Compaction** persists a summary into the transcript and keeps recent messages intact.
-- **Pruning** removes old tool results from the *in-memory* prompt for a run, but does not rewrite the transcript.
+跨消息持久化的内容取决于机制：
+- **常规历史** 在会话记录中持续保存，直到根据策略被压缩或修剪。
+- **压缩** 会将摘要保留在记录中，并保持最近的消息完好无损。
+- **修剪** 会从一次运行的 *内存中* 提示中移除旧的工具结果，但不会重写记录。
 
-Docs: [Session](/concepts/session), [Compaction](/concepts/compaction), [Session pruning](/concepts/session-pruning).
+文档：[会话](/concepts/session)，[压缩](/concepts/compaction)，[会话修剪](/concepts/session-pruning)。
 
-## What `/context` actually reports
+## `/context` 实际报告的内容
 
-`/context` prefers the latest **run-built** system prompt report when available:
-- `System prompt (run)` = captured from the last embedded (tool-capable) run and persisted in the session store.
-- `System prompt (estimate)` = computed on the fly when no run report exists (or when running via a CLI backend that doesn’t generate the report).
+`/context` 在可用时优先使用最新的 **运行构建** 系统提示报告：
+- `System prompt (run)` = 从上次嵌入式（具备工具能力）运行中捕获，并保存在会话存储中。
+- `System prompt (estimate)` = 在没有运行报告时（或通过不生成报告的 CLI 后端运行时）即时计算。
 
-Either way, it reports sizes and top contributors; it does **not** dump the full system prompt or tool schemas.
+无论哪种情况，它都会报告大小和主要贡献者；但它 **不会** 转储完整的系统提示或工具模式。

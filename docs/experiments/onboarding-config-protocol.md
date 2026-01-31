@@ -1,34 +1,33 @@
 ---
-summary: "RPC protocol notes for onboarding wizard and config schema"
-read_when: "Changing onboarding wizard steps or config schema endpoints"
+summary: RPC protocol notes for onboarding wizard and config schema
+read_when: Changing onboarding wizard steps or config schema endpoints
 ---
+# 入门与配置协议
 
-# Onboarding + Config Protocol
+目的：在 CLI、macOS 应用和 Web UI 之间共享入门与配置界面。
 
-Purpose: shared onboarding + config surfaces across CLI, macOS app, and Web UI.
+## 组件
+- 向导引擎（共享会话 + 提示 + 入门状态）。
+- CLI 入门使用与 UI 客户端相同的向导流程。
+- 网关 RPC 暴露向导 + 配置模式端点。
+- macOS 入门使用向导步骤模型。
+- Web UI 根据 JSON Schema 和 UI 提示渲染配置表单。
 
-## Components
-- Wizard engine (shared session + prompts + onboarding state).
-- CLI onboarding uses the same wizard flow as the UI clients.
-- Gateway RPC exposes wizard + config schema endpoints.
-- macOS onboarding uses the wizard step model.
-- Web UI renders config forms from JSON Schema + UI hints.
+## 网关 RPC
+- `wizard.start` 参数：`{ mode?: "local"|"remote", workspace?: string }`
+- `wizard.next` 参数：`{ sessionId, answer?: { stepId, value? } }`
+- `wizard.cancel` 参数：`{ sessionId }`
+- `wizard.status` 参数：`{ sessionId }`
+- `config.schema` 参数：`{}`
 
-## Gateway RPC
-- `wizard.start` params: `{ mode?: "local"|"remote", workspace?: string }`
-- `wizard.next` params: `{ sessionId, answer?: { stepId, value? } }`
-- `wizard.cancel` params: `{ sessionId }`
-- `wizard.status` params: `{ sessionId }`
-- `config.schema` params: `{}`
+响应（形状）
+- 向导：`{ sessionId, done, step?, status?, error? }`
+- 配置模式：`{ schema, uiHints, version, generatedAt }`
 
-Responses (shape)
-- Wizard: `{ sessionId, done, step?, status?, error? }`
-- Config schema: `{ schema, uiHints, version, generatedAt }`
+## UI 提示
+- `uiHints` 按路径键入；可选元数据（标签/帮助/分组/顺序/高级/敏感/占位符）。
+- 敏感字段显示为密码输入框；不提供遮蔽层。
+- 不支持的模式节点回退到原始 JSON 编辑器。
 
-## UI Hints
-- `uiHints` keyed by path; optional metadata (label/help/group/order/advanced/sensitive/placeholder).
-- Sensitive fields render as password inputs; no redaction layer.
-- Unsupported schema nodes fall back to the raw JSON editor.
-
-## Notes
-- This doc is the single place to track protocol refactors for onboarding/config.
+## 备注
+- 本文档是跟踪入门/配置协议重构的唯一位置。

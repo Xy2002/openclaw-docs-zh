@@ -1,23 +1,27 @@
 ---
-summary: "Deep dive: session store + transcripts, lifecycle, and (auto)compaction internals"
+summary: >-
+  Deep dive: session store + transcripts, lifecycle, and (auto)compaction
+  internals
 read_when:
-  - You need to debug session ids, transcript JSONL, or sessions.json fields
-  - You are changing auto-compaction behavior or adding “pre-compaction” housekeeping
+  - 'You need to debug session ids, transcript JSONL, or sessions.json fields'
+  - >-
+    You are changing auto-compaction behavior or adding “pre-compaction”
+    housekeeping
   - You want to implement memory flushes or silent system turns
 ---
-# Session Management & Compaction (Deep Dive)
+# 会话管理与压缩（深度解析）
 
-This document explains how OpenClaw manages sessions end-to-end:
+本文档详细说明了 OpenClaw 如何端到端地管理会话：
 
-- **Session routing** (how inbound messages map to a `sessionKey`)
-- **Session store** (`sessions.json`) and what it tracks
-- **Transcript persistence** (`*.jsonl`) and its structure
-- **Transcript hygiene** (provider-specific fixups before runs)
-- **Context limits** (context window vs tracked tokens)
-- **Compaction** (manual + auto-compaction) and where to hook pre-compaction work
-- **Silent housekeeping** (e.g. memory writes that shouldn’t produce user-visible output)
+- **会话路由**（入站消息如何映射到 `sessionKey`）
+- **会话存储**（`sessions.json`）及其跟踪的内容
+- **对话记录持久化**（`*.jsonl`）及其结构
+- **对话记录清理**（在运行前针对特定提供商的修复操作）
+- **上下文限制**（上下文窗口与已跟踪标记之间的关系）
+- **压缩**（手动压缩 + 自动压缩）以及在压缩前可插入自定义逻辑的位置
+- **静默后台维护**（例如，不应产生用户可见输出的内存写入操作）
 
-If you want a higher-level overview first, start with:
+如果您希望先了解更高层次的概览，请从以下内容开始：
 - [/concepts/session](/concepts/session)
 - [/concepts/compaction](/concepts/compaction)
 - [/concepts/session-pruning](/concepts/session-pruning)
@@ -25,164 +29,164 @@ If you want a higher-level overview first, start with:
 
 ---
 
-## Source of truth: the Gateway
+## 真实数据来源：网关
 
-OpenClaw is designed around a single **Gateway process** that owns session state.
+OpenClaw 的设计以单个 **网关进程** 为核心，该进程负责管理会话状态。
 
-- UIs (macOS app, web Control UI, TUI) should query the Gateway for session lists and token counts.
-- In remote mode, session files are on the remote host; “checking your local Mac files” won’t reflect what the Gateway is using.
-
----
-
-## Two persistence layers
-
-OpenClaw persists sessions in two layers:
-
-1) **Session store (`sessions.json`)**
-   - Key/value map: `sessionKey -> SessionEntry`
-   - Small, mutable, safe to edit (or delete entries)
-   - Tracks session metadata (current session id, last activity, toggles, token counters, etc.)
-
-2) **Transcript (`<sessionId>.jsonl`)**
-   - Append-only transcript with tree structure (entries have `id` + `parentId`)
-   - Stores the actual conversation + tool calls + compaction summaries
-   - Used to rebuild the model context for future turns
+- UI（macOS 应用、Web 控制界面、TUI）应向网关查询会话列表和标记计数。
+- 在远程模式下，会话文件位于远程主机上；“检查本地 Mac 文件”并不能反映网关正在使用的会话状态。
 
 ---
 
-## On-disk locations
+## 两层持久化机制
 
-Per agent, on the Gateway host:
+OpenClaw 使用两层机制来持久化会话：
 
-- Store: `~/.openclaw/agents/<agentId>/sessions/sessions.json`
-- Transcripts: `~/.openclaw/agents/<agentId>/sessions/<sessionId>.jsonl`
-  - Telegram topic sessions: `.../<sessionId>-topic-<threadId>.jsonl`
+1) **会话存储（`sessions.json`）**
+   - 键值映射：`sessionKey -> SessionEntry`
+   - 数据量小、可修改、安全编辑（或删除条目）
+   - 跟踪会话元数据（当前会话 ID、上次活动时间、开关设置、标记计数等）
 
-OpenClaw resolves these via `src/config/sessions.ts`.
-
----
-
-## Session keys (`sessionKey`)
-
-A `sessionKey` identifies *which conversation bucket* you’re in (routing + isolation).
-
-Common patterns:
-
-- Main/direct chat (per agent): `agent:<agentId>:<mainKey>` (default `main`)
-- Group: `agent:<agentId>:<channel>:group:<id>`
-- Room/channel (Discord/Slack): `agent:<agentId>:<channel>:channel:<id>` or `...:room:<id>`
-- Cron: `cron:<job.id>`
-- Webhook: `hook:<uuid>` (unless overridden)
-
-The canonical rules are documented at [/concepts/session](/concepts/session).
+2) **对话记录（`<sessionId>.jsonl`）**
+   - 只能追加的树形结构对话记录（条目包含 `id` 和 `parentId`）
+   - 存储实际对话内容、工具调用以及压缩摘要
+   - 用于在后续回合中重建模型上下文
 
 ---
 
-## Session ids (`sessionId`)
+## 磁盘上的存储位置
 
-Each `sessionKey` points at a current `sessionId` (the transcript file that continues the conversation).
+对于每个代理，在网关主机上：
 
-Rules of thumb:
-- **Reset** (`/new`, `/reset`) creates a new `sessionId` for that `sessionKey`.
-- **Daily reset** (default 4:00 AM local time on the gateway host) creates a new `sessionId` on the next message after the reset boundary.
-- **Idle expiry** (`session.reset.idleMinutes` or legacy `session.idleMinutes`) creates a new `sessionId` when a message arrives after the idle window. When daily + idle are both configured, whichever expires first wins.
+- 存储：`~/.openclaw/agents/<agentId>/sessions/sessions.json`
+- 对话记录：`~/.openclaw/agents/<agentId>/sessions/<sessionId>.jsonl`
+  - Telegram 主题会话：`.../<sessionId>-topic-<threadId>.jsonl`
 
-Implementation detail: the decision happens in `initSessionState()` in `src/auto-reply/reply/session.ts`.
-
----
-
-## Session store schema (`sessions.json`)
-
-The store’s value type is `SessionEntry` in `src/config/sessions.ts`.
-
-Key fields (not exhaustive):
-
-- `sessionId`: current transcript id (filename is derived from this unless `sessionFile` is set)
-- `updatedAt`: last activity timestamp
-- `sessionFile`: optional explicit transcript path override
-- `chatType`: `direct | group | room` (helps UIs and send policy)
-- `provider`, `subject`, `room`, `space`, `displayName`: metadata for group/channel labeling
-- Toggles:
-  - `thinkingLevel`, `verboseLevel`, `reasoningLevel`, `elevatedLevel`
-  - `sendPolicy` (per-session override)
-- Model selection:
-  - `providerOverride`, `modelOverride`, `authProfileOverride`
-- Token counters (best-effort / provider-dependent):
-  - `inputTokens`, `outputTokens`, `totalTokens`, `contextTokens`
-- `compactionCount`: how often auto-compaction completed for this session key
-- `memoryFlushAt`: timestamp for the last pre-compaction memory flush
-- `memoryFlushCompactionCount`: compaction count when the last flush ran
-
-The store is safe to edit, but the Gateway is the authority: it may rewrite or rehydrate entries as sessions run.
+OpenClaw 通过 `src/config/sessions.ts` 解析这些路径。
 
 ---
 
-## Transcript structure (`*.jsonl`)
+## 会话键（`sessionKey`）
 
-Transcripts are managed by `@mariozechner/pi-coding-agent`’s `SessionManager`.
+一个 `sessionKey` 用于标识您处于 *哪个对话桶* 中（路由 + 隔离）。
 
-The file is JSONL:
-- First line: session header (`type: "session"`, includes `id`, `cwd`, `timestamp`, optional `parentSession`)
-- Then: session entries with `id` + `parentId` (tree)
+常见模式：
 
-Notable entry types:
-- `message`: user/assistant/toolResult messages
-- `custom_message`: extension-injected messages that *do* enter model context (can be hidden from UI)
-- `custom`: extension state that does *not* enter model context
-- `compaction`: persisted compaction summary with `firstKeptEntryId` and `tokensBefore`
-- `branch_summary`: persisted summary when navigating a tree branch
+- 主聊天/直接聊天（按代理划分）：`agent:<agentId>:<mainKey>`（默认 `main`）
+- 群组：`agent:<agentId>:<channel>:group:<id>`
+- 房间/频道（Discord/Slack）：`agent:<agentId>:<channel>:channel:<id>` 或 `...:room:<id>`
+- 定时任务：`cron:<job.id>`
+- Webhook：`hook:<uuid>`（除非被覆盖）
 
-OpenClaw intentionally does **not** “fix up” transcripts; the Gateway uses `SessionManager` to read/write them.
+规范规则记录在 [/concepts/session](/concepts/session) 中。
 
 ---
 
-## Context windows vs tracked tokens
+## 会话 ID（`sessionId`）
 
-Two different concepts matter:
+每个 `sessionKey` 指向当前的 `sessionId`（继续对话的对话记录文件）。
 
-1) **Model context window**: hard cap per model (tokens visible to the model)
-2) **Session store counters**: rolling stats written into `sessions.json` (used for /status and dashboards)
+经验法则：
+- **重置**（`/new`、`/reset`）为该 `sessionKey` 创建一个新的 `sessionId`。
+- **每日重置**（网关主机当地时间凌晨 4:00 默认设置）在重置边界之后的下一条消息时创建一个新的 `sessionId`。
+- **空闲超时**（`session.reset.idleMinutes` 或旧版 `session.idleMinutes`）在空闲窗口过后有新消息到达时创建一个新的 `sessionId`。当同时配置了每日重置和空闲超时时，先到期者优先。
 
-If you’re tuning limits:
-- The context window comes from the model catalog (and can be overridden via config).
-- `contextTokens` in the store is a runtime estimate/reporting value; don’t treat it as a strict guarantee.
-
-For more, see [/token-use](/token-use).
+实现细节：决策发生在 `initSessionState()` 中的 `src/auto-reply/reply/session.ts`。
 
 ---
 
-## Compaction: what it is
+## 会话存储模式（`sessions.json`）
 
-Compaction summarizes older conversation into a persisted `compaction` entry in the transcript and keeps recent messages intact.
+存储的值类型是 `SessionEntry` 在 `src/config/sessions.ts` 中。
 
-After compaction, future turns see:
-- The compaction summary
-- Messages after `firstKeptEntryId`
+关键字段（不完全列举）：
 
-Compaction is **persistent** (unlike session pruning). See [/concepts/session-pruning](/concepts/session-pruning).
+- `sessionId`：当前对话记录 ID（文件名由此派生，除非设置了 `sessionFile`）
+- `updatedAt`：上次活动时间戳
+- `sessionFile`：可选的显式对话记录路径覆盖
+- `chatType`：`direct | group | room`（帮助 UI 和发送策略）
+- `provider`、`subject`、`room`、`space`、`displayName`：用于群组/频道标记的元数据
+- 开关设置：
+  - `thinkingLevel`、`verboseLevel`、`reasoningLevel`、`elevatedLevel`
+  - `sendPolicy`（会话级覆盖）
+- 模型选择：
+  - `providerOverride`、`modelOverride`、`authProfileOverride`
+- 标记计数（尽力而为，取决于提供商）：
+  - `inputTokens`、`outputTokens`、`totalTokens`、`contextTokens`
+- `compactionCount`：此会话键已完成自动压缩的频率
+- `memoryFlushAt`：最后一次压缩前内存刷新的时间戳
+- `memoryFlushCompactionCount`：上次刷新时的压缩次数
+
+存储可以安全编辑，但网关拥有最终决定权：在会话运行过程中，网关可能会重写或重新填充条目。
 
 ---
 
-## When auto-compaction happens (Pi runtime)
+## 对话记录结构（`*.jsonl`）
 
-In the embedded Pi agent, auto-compaction triggers in two cases:
+对话记录由 `@mariozechner/pi-coding-agent` 的 `SessionManager` 管理。
 
-1) **Overflow recovery**: the model returns a context overflow error → compact → retry.
-2) **Threshold maintenance**: after a successful turn, when:
+文件格式为 JSONL：
+- 第一行：会话头（`type: "session"`，包括 `id`、`cwd`、`timestamp`，可选 `parentSession`）
+- 接下来：带有 `id` + `parentId`（树形结构）的会话条目
+
+值得注意的条目类型：
+- `message`：用户/助手/工具结果消息
+- `custom_message`：注入的扩展消息，会进入模型上下文（可在 UI 中隐藏）
+- `custom`：不会进入模型上下文的扩展状态
+- `compaction`：持久化的压缩摘要，包含 `firstKeptEntryId` 和 `tokensBefore`
+- `branch_summary`：导航树分支时的持久化摘要
+
+OpenClaw 故意 **不** 对对话记录进行“修复”；网关使用 `SessionManager` 来读取和写入对话记录。
+
+---
+
+## 上下文窗口与已跟踪标记
+
+有两个不同的概念需要关注：
+
+1) **模型上下文窗口**：每种模型的硬性上限（模型可见的标记数）
+2) **会话存储计数器**：写入 `sessions.json` 的滚动统计信息（用于 /status 和仪表板）
+
+如果您正在调整限制：
+- 上下文窗口来自模型目录（可通过配置覆盖）。
+- 存储中的 `contextTokens` 是运行时估算值/报告值；请勿将其视为严格保证。
+
+更多信息请参见 [/token-use](/token-use)。
+
+---
+
+## 压缩：其本质
+
+压缩将较旧的对话总结为对话记录中的一条持久化 `compaction` 条目，并保留最近的消息不变。
+
+压缩后，未来的回合将看到：
+- 压缩摘要
+- `firstKeptEntryId` 之后的消息
+
+压缩是 **持久的**（不同于会话修剪）。更多信息请参见 [/concepts/session-pruning](/concepts/session-pruning)。
+
+---
+
+## 自动压缩何时发生（Pi 运行时）
+
+在嵌入式 Pi 代理中，自动压缩在两种情况下触发：
+
+1) **溢出恢复**：当模型返回上下文溢出错误时 → 压缩 → 重试。
+2) **阈值维护**：在成功完成一轮后，当：
 
 `contextTokens > contextWindow - reserveTokens`
 
-Where:
-- `contextWindow` is the model’s context window
-- `reserveTokens` is headroom reserved for prompts + the next model output
+其中：
+- `contextWindow` 是模型的上下文窗口
+- `reserveTokens` 是为提示和下一个模型输出预留的余量
 
-These are Pi runtime semantics (OpenClaw consumes the events, but Pi decides when to compact).
+这些是 Pi 运行时语义（OpenClaw 消费事件，但 Pi 决定何时压缩）。
 
 ---
 
-## Compaction settings (`reserveTokens`, `keepRecentTokens`)
+## 压缩设置（`reserveTokens`、`keepRecentTokens`）
 
-Pi’s compaction settings live in Pi settings:
+Pi 的压缩设置位于 Pi 设置中：
 
 ```json5
 {
@@ -194,80 +198,76 @@ Pi’s compaction settings live in Pi settings:
 }
 ```
 
-OpenClaw also enforces a safety floor for embedded runs:
+OpenClaw 还为嵌入式运行强制实施安全下限：
 
-- If `compaction.reserveTokens < reserveTokensFloor`, OpenClaw bumps it.
-- Default floor is `20000` tokens.
-- Set `agents.defaults.compaction.reserveTokensFloor: 0` to disable the floor.
-- If it’s already higher, OpenClaw leaves it alone.
+- 如果 `compaction.reserveTokens < reserveTokensFloor`，OpenClaw 会将其提高。
+- 默认下限为 `20000` 个标记。
+- 将 `agents.defaults.compaction.reserveTokensFloor: 0` 设置为禁用下限。
+- 如果已经高于此值，OpenClaw 不会再做调整。
 
-Why: leave enough headroom for multi-turn “housekeeping” (like memory writes) before compaction becomes unavoidable.
+原因：在压缩变得不可避免之前，为多轮“后台维护”（如内存写入）留出足够的余量。
 
-Implementation: `ensurePiCompactionReserveTokens()` in `src/agents/pi-settings.ts`
-(called from `src/agents/pi-embedded-runner.ts`).
+实现：`ensurePiCompactionReserveTokens()` 在 `src/agents/pi-settings.ts` 中
+（从 `src/agents/pi-embedded-runner.ts` 调用）。
 
 ---
 
-## User-visible surfaces
+## 用户可见的界面
 
-You can observe compaction and session state via:
+您可以通过以下方式观察压缩和会话状态：
 
-- `/status` (in any chat session)
-- `openclaw status` (CLI)
+- `/status`（在任何聊天会话中）
+- `openclaw status`（CLI）
 - `openclaw sessions` / `sessions --json`
-- Verbose mode: `🧹 Auto-compaction complete` + compaction count
+- 详细模式：`🧹 Auto-compaction complete` + 压缩次数
 
 ---
 
-## Silent housekeeping (`NO_REPLY`)
+## 空白后台维护（`NO_REPLY`）
 
-OpenClaw supports “silent” turns for background tasks where the user should not see intermediate output.
+OpenClaw 支持“静默”回合，用于后台任务，且用户不应看到中间输出。
 
-Convention:
-- The assistant starts its output with `NO_REPLY` to indicate “do not deliver a reply to the user”.
-- OpenClaw strips/suppresses this in the delivery layer.
+约定：
+- 助手在其输出开头使用 `NO_REPLY` 来表示“不要向用户发送回复”。
+- OpenClaw 在交付层剥离/抑制此类输出。
 
-As of `2026.1.10`, OpenClaw also suppresses **draft/typing streaming** when a partial chunk begins with `NO_REPLY`, so silent operations don’t leak partial output mid-turn.
-
----
-
-## Pre-compaction “memory flush” (implemented)
-
-Goal: before auto-compaction happens, run a silent agentic turn that writes durable
-state to disk (e.g. `memory/YYYY-MM-DD.md` in the agent workspace) so compaction can’t
-erase critical context.
-
-OpenClaw uses the **pre-threshold flush** approach:
-
-1) Monitor session context usage.
-2) When it crosses a “soft threshold” (below Pi’s compaction threshold), run a silent
-   “write memory now” directive to the agent.
-3) Use `NO_REPLY` so the user sees nothing.
-
-Config (`agents.defaults.compaction.memoryFlush`):
-- `enabled` (default: `true`)
-- `softThresholdTokens` (default: `4000`)
-- `prompt` (user message for the flush turn)
-- `systemPrompt` (extra system prompt appended for the flush turn)
-
-Notes:
-- The default prompt/system prompt include a `NO_REPLY` hint to suppress delivery.
-- The flush runs once per compaction cycle (tracked in `sessions.json`).
-- The flush runs only for embedded Pi sessions (CLI backends skip it).
-- The flush is skipped when the session workspace is read-only (`workspaceAccess: "ro"` or `"none"`).
-- See [Memory](/concepts/memory) for the workspace file layout and write patterns.
-
-Pi also exposes a `session_before_compact` hook in the extension API, but OpenClaw’s
-flush logic lives on the Gateway side today.
+截至 `2026.1.10`，OpenClaw 还会在部分块以 `NO_REPLY` 开头时抑制 **草稿/打字流式传输**，从而防止静默操作在回合中途泄露部分输出。
 
 ---
 
-## Troubleshooting checklist
+## 压缩前的“内存刷新”（已实现）
 
-- Session key wrong? Start with [/concepts/session](/concepts/session) and confirm the `sessionKey` in `/status`.
-- Store vs transcript mismatch? Confirm the Gateway host and the store path from `openclaw status`.
-- Compaction spam? Check:
-  - model context window (too small)
-  - compaction settings (`reserveTokens` too high for the model window can cause earlier compaction)
-  - tool-result bloat: enable/tune session pruning
-- Silent turns leaking? Confirm the reply starts with `NO_REPLY` (exact token) and you’re on a build that includes the streaming suppression fix.
+目标：在自动压缩发生之前，运行一个静默的代理回合，将持久状态写入磁盘（例如代理工作区中的 `memory/YYYY-MM-DD.md`），以确保压缩不会擦除关键上下文。
+
+OpenClaw 使用 **预阈值刷新** 方法：
+
+1) 监控会话上下文使用情况。
+2) 当使用量超过“软阈值”（低于 Pi 的压缩阈值）时，向代理发出一个静默的“立即写入内存”指令。
+3) 使用 `NO_REPLY`，使用户看不到任何内容。
+
+配置（`agents.defaults.compaction.memoryFlush`）：
+- `enabled`（默认：`true`）
+- `softThresholdTokens`（默认：`4000`）
+- `prompt`（用于刷新回合的用户消息）
+- `systemPrompt`（为刷新回合附加的额外系统提示）
+
+注意事项：
+- 默认提示/系统提示包含一个 `NO_REPLY` 提示，用于抑制交付。
+- 每次压缩周期都会运行一次刷新（在 `sessions.json` 中跟踪）。
+- 刷新仅适用于嵌入式 Pi 会话（CLI 后端会跳过）。
+- 当会话工作区为只读时（`workspaceAccess: "ro"` 或 `"none"`），会跳过刷新。
+- 工作区文件布局和写入模式请参见 [Memory](/concepts/memory)。
+
+Pi 还在扩展 API 中提供了一个 `session_before_compact` 钩子，但目前 OpenClaw 的刷新逻辑仍位于网关侧。
+
+---
+
+## 故障排除清单
+
+- 会话键是否错误？请从 [/concepts/session](/concepts/session) 开始，确认 `sessionKey` 在 `/status` 中。
+- 存储与对话记录是否不匹配？请确认网关主机和存储路径来自 `openclaw status`。
+- 压缩过于频繁？请检查：
+  - 模型上下文窗口（太小）
+  - 压缩设置（`reserveTokens` 高于模型窗口可能导致更早压缩）
+  - 工具结果膨胀：启用/调整会话修剪
+- 静默回合是否泄漏？请确认回复以 `NO_REPLY`（确切标记）开头，并且您使用的是包含流式传输抑制修复的版本。

@@ -1,16 +1,16 @@
 ---
-summary: "Poll sending via gateway + CLI"
+summary: Poll sending via gateway + CLI
 read_when:
   - Adding or modifying poll support
   - Debugging poll sends from the CLI or gateway
 ---
-# Polls
+# 投票
 
 
-## Supported channels
-- WhatsApp (web channel)
+## 支持的渠道
+- WhatsApp（网页渠道）
 - Discord
-- MS Teams (Adaptive Cards)
+- MS Teams（自适应卡片）
 
 ## CLI
 
@@ -32,32 +32,30 @@ openclaw message poll --channel msteams --target conversation:19:abc@thread.tacv
   --poll-question "Lunch?" --poll-option "Pizza" --poll-option "Sushi"
 ```
 
-Options:
-- `--channel`: `whatsapp` (default), `discord`, or `msteams`
-- `--poll-multi`: allow selecting multiple options
-- `--poll-duration-hours`: Discord-only (defaults to 24 when omitted)
+选项：
+- `--channel`: `whatsapp`（默认）、`discord` 或 `msteams`
+- `--poll-multi`: 允许选择多个选项
+- `--poll-duration-hours`: 仅限 Discord（省略时默认为 24）
 
-## Gateway RPC
+## 网关 RPC
 
-Method: `poll`
+方法： `poll`
 
-Params:
-- `to` (string, required)
-- `question` (string, required)
-- `options` (string[], required)
-- `maxSelections` (number, optional)
-- `durationHours` (number, optional)
-- `channel` (string, optional, default: `whatsapp`)
-- `idempotencyKey` (string, required)
+参数：
+- `to`（字符串，必填）
+- `question`（字符串，必填）
+- `options`（字符串数组，必填）
+- `maxSelections`（数字，可选）
+- `durationHours`（数字，可选）
+- `channel`（字符串，可选，默认为 `whatsapp`）
+- `idempotencyKey`（字符串，必填）
 
-## Channel differences
-- WhatsApp: 2-12 options, `maxSelections` must be within option count, ignores `durationHours`.
-- Discord: 2-10 options, `durationHours` clamped to 1-768 hours (default 24). `maxSelections > 1` enables multi-select; Discord does not support a strict selection count.
-- MS Teams: Adaptive Card polls (OpenClaw-managed). No native poll API; `durationHours` is ignored.
+## 各渠道差异
+- WhatsApp：支持 2–12 个选项，`maxSelections` 必须在选项数量范围内，忽略 `durationHours`。
+- Discord：支持 2–10 个选项，`durationHours` 被限制在 1–768 小时之间（默认值为 24）。`maxSelections > 1` 启用多选；Discord 不支持严格限定选项数量。
+- MS Teams：使用由 OpenClaw 管理的自适应卡片投票。无原生投票 API；`durationHours` 被忽略。
 
-## Agent tool (Message)
-Use the `message` tool with `poll` action (`to`, `pollQuestion`, `pollOption`, optional `pollMulti`, `pollDurationHours`, `channel`).
+## 代理工具（消息）
+使用 `message` 工具，并指定 `poll` 操作（`to`、`pollQuestion`、`pollOption`，以及可选的 `pollMulti`、`pollDurationHours`、`channel`）。
 
-Note: Discord has no “pick exactly N” mode; `pollMulti` maps to multi-select.
-Teams polls are rendered as Adaptive Cards and require the gateway to stay online
-to record votes in `~/.openclaw/msteams-polls.json`.
+注意：Discord 没有“精确选择 N 个”的模式；`pollMulti` 对应多选模式。Teams 投票以自适应卡片形式呈现，且需要网关保持在线，以便在 `~/.openclaw/msteams-polls.json` 中记录投票结果。

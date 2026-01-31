@@ -1,22 +1,22 @@
 ---
-summary: "Diagnostics flags for targeted debug logs"
+summary: Diagnostics flags for targeted debug logs
 read_when:
   - You need targeted debug logs without raising global logging levels
   - You need to capture subsystem-specific logs for support
 ---
-# Diagnostics Flags
+# 诊断标志
 
-Diagnostics flags let you enable targeted debug logs without turning on verbose logging everywhere. Flags are opt-in and have no effect unless a subsystem checks them.
+诊断标志使您能够在不全局启用详细日志记录的情况下，有针对性地启用调试日志。标志需要显式启用，且只有在子系统检查这些标志时才会生效。
 
-## How it works
+## 工作原理
 
-- Flags are strings (case-insensitive).
-- You can enable flags in config or via an env override.
-- Wildcards are supported:
-  - `telegram.*` matches `telegram.http`
-  - `*` enables all flags
+- 标志是字符串（不区分大小写）。
+- 您可以通过配置或环境变量覆盖来启用标志。
+- 支持通配符：
+  - `telegram.*` 匹配 `telegram.http`
+  - `*` 会启用所有标志
 
-## Enable via config
+## 通过配置启用
 
 ```json
 {
@@ -26,7 +26,7 @@ Diagnostics flags let you enable targeted debug logs without turning on verbose 
 }
 ```
 
-Multiple flags:
+多个标志：
 
 ```json
 {
@@ -36,54 +36,54 @@ Multiple flags:
 }
 ```
 
-Restart the gateway after changing flags.
+更改标志后，请重启网关。
 
-## Env override (one-off)
+## 环境变量覆盖（一次性设置）
 
 ```bash
 OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 ```
 
-Disable all flags:
+禁用所有标志：
 
 ```bash
 OPENCLAW_DIAGNOSTICS=0
 ```
 
-## Where logs go
+## 日志的输出位置
 
-Flags emit logs into the standard diagnostics log file. By default:
+标志会将日志输出到标准诊断日志文件中。默认情况下：
 
 ```
 /tmp/openclaw/openclaw-YYYY-MM-DD.log
 ```
 
-If you set `logging.file`, use that path instead. Logs are JSONL (one JSON object per line). Redaction still applies based on `logging.redactSensitive`.
+如果您设置了 `logging.file`，则使用该路径作为日志输出位置。日志采用 JSONL 格式（每行一个 JSON 对象）。根据 `logging.redactSensitive`，日志仍会应用脱敏处理。
 
-## Extract logs
+## 提取日志
 
-Pick the latest log file:
+选择最新的日志文件：
 
 ```bash
 ls -t /tmp/openclaw/openclaw-*.log | head -n 1
 ```
 
-Filter for Telegram HTTP diagnostics:
+筛选 Telegram HTTP 诊断日志：
 
 ```bash
 rg "telegram http error" /tmp/openclaw/openclaw-*.log
 ```
 
-Or tail while reproducing:
+或者在重现问题时实时尾部查看日志：
 
 ```bash
 tail -f /tmp/openclaw/openclaw-$(date +%F).log | rg "telegram http error"
 ```
 
-For remote gateways, you can also use `openclaw logs --follow` (see [/cli/logs](/cli/logs)).
+对于远程网关，您还可以使用 `openclaw logs --follow`（参见 [/cli/logs](/cli/logs)）。
 
-## Notes
+## 注意事项
 
-- If `logging.level` is set higher than `warn`, these logs may be suppressed. Default `info` is fine.
-- Flags are safe to leave enabled; they only affect log volume for the specific subsystem.
-- Use [/logging](/logging) to change log destinations, levels, and redaction.
+- 如果 `logging.level` 设置得高于 `warn`，这些日志可能会被抑制。默认的 `info` 是合适的。
+- 标志可以一直保持启用状态；它们只会影响特定子系统的日志量。
+- 使用 [/logging](/logging) 可以更改日志目标、日志级别和脱敏设置。

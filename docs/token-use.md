@@ -1,92 +1,77 @@
 ---
-summary: "How OpenClaw builds prompt context and reports token usage + costs"
+summary: How OpenClaw builds prompt context and reports token usage + costs
 read_when:
-  - Explaining token usage, costs, or context windows
+  - 'Explaining token usage, costs, or context windows'
   - Debugging context growth or compaction behavior
 ---
-# Token use & costs
+# 令牌使用与成本
 
-OpenClaw tracks **tokens**, not characters. Tokens are model-specific, but most
-OpenAI-style models average ~4 characters per token for English text.
+OpenClaw 追踪的是**令牌**，而非字符。令牌是特定于模型的，但对于大多数 OpenAI 风格的模型而言，英文文本平均每 4 个字符对应 1 个令牌。
 
-## How the system prompt is built
+## 系统提示的构建方式
 
-OpenClaw assembles its own system prompt on every run. It includes:
+OpenClaw 在每次运行时都会组装自己的系统提示。它包含以下内容：
 
-- Tool list + short descriptions
-- Skills list (only metadata; instructions are loaded on demand with `read`)
-- Self-update instructions
-- Workspace + bootstrap files (`AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`, `HEARTBEAT.md`, `BOOTSTRAP.md` when new). Large files are truncated by `agents.defaults.bootstrapMaxChars` (default: 20000).
-- Time (UTC + user timezone)
-- Reply tags + heartbeat behavior
-- Runtime metadata (host/OS/model/thinking)
+- 工具列表 + 简短描述
+- 技能列表（仅包含元数据；指令按需通过 `read` 加载）
+- 自我更新指令
+- 工作空间 + 引导文件（`AGENTS.md`、`SOUL.md`、`TOOLS.md`、`IDENTITY.md`、`USER.md`、`HEARTBEAT.md`、`BOOTSTRAP.md`，在新建会话时加载）。大文件会通过 `agents.defaults.bootstrapMaxChars` 截断（默认截断长度为 20000）。
+- 时间（UTC + 用户时区）
+- 回复标签 + 心跳行为
+- 运行时元数据（主机/操作系统/模型/思考状态）
 
-See the full breakdown in [System Prompt](/concepts/system-prompt).
+完整细分请参见 [系统提示](/concepts/system-prompt)。
 
-## What counts in the context window
+## 哪些内容计入上下文窗口
 
-Everything the model receives counts toward the context limit:
+模型接收到的所有内容都会计入上下文限制：
 
-- System prompt (all sections listed above)
-- Conversation history (user + assistant messages)
-- Tool calls and tool results
-- Attachments/transcripts (images, audio, files)
-- Compaction summaries and pruning artifacts
-- Provider wrappers or safety headers (not visible, but still counted)
+- 系统提示（上述所有部分）
+- 对话历史（用户和助手消息）
+- 工具调用及工具结果
+- 附件/转录文件（图像、音频、文件）
+- 压缩摘要和修剪生成的内容
+- 提供商封装器或安全标头（不可见，但仍计入）
 
-For a practical breakdown (per injected file, tools, skills, and system prompt size), use `/context list` or `/context detail`. See [Context](/concepts/context).
+如需按注入文件、工具、技能和系统提示大小进行实际细分，请使用 `/context list` 或 `/context detail`。更多信息请参见 [上下文](/concepts/context)。
 
-## How to see current token usage
+## 如何查看当前令牌使用情况
 
-Use these in chat:
+在聊天中可使用以下命令：
 
-- `/status` → **emoji‑rich status card** with the session model, context usage,
-  last response input/output tokens, and **estimated cost** (API key only).
-- `/usage off|tokens|full` → appends a **per-response usage footer** to every reply.
-  - Persists per session (stored as `responseUsage`).
-  - OAuth auth **hides cost** (tokens only).
-- `/usage cost` → shows a local cost summary from OpenClaw session logs.
+- `/status` → 显示带有会话模型、上下文使用情况、上次回复的输入/输出令牌以及**预估成本**的**丰富表情符号状态卡**（仅适用于提供 API 密钥的用户）。
+- `/usage off|tokens|full` → 在每条回复后附加一个**每条回复的使用量页脚**。
+  - 持久保存在会话中（存储为 `responseUsage`）。
+  - OAuth 身份验证会**隐藏成本**（仅显示令牌数量）。
+- `/usage cost` → 从 OpenClaw 会话日志中显示本地成本汇总。
 
-Other surfaces:
+其他界面支持：
 
-- **TUI/Web TUI:** `/status` + `/usage` are supported.
-- **CLI:** `openclaw status --usage` and `openclaw channels list` show
-  provider quota windows (not per-response costs).
+- **TUI/Web TUI：** 支持 `/status` 和 `/usage`。
+- **CLI：** `openclaw status --usage` 和 `openclaw channels list` 显示提供商配额窗口（不显示每条回复的成本）。
 
-## Cost estimation (when shown)
+## 成本估算（何时显示）
 
-Costs are estimated from your model pricing config:
+成本根据您的模型定价配置估算：
 
 ```
 models.providers.<provider>.models[].cost
 ```
 
-These are **USD per 1M tokens** for `input`, `output`, `cacheRead`, and
-`cacheWrite`. If pricing is missing, OpenClaw shows tokens only. OAuth tokens
-never show dollar cost.
+这些是针对 `input`、`output`、`cacheRead` 和 `cacheWrite` 的**每 100 万令牌的美元价格**。如果缺少定价信息，OpenClaw 将仅显示令牌数量。OAuth 令牌始终不显示美元成本。
 
-## Cache TTL and pruning impact
+## 缓存 TTL 和修剪的影响
 
-Provider prompt caching only applies within the cache TTL window. OpenClaw can
-optionally run **cache-ttl pruning**: it prunes the session once the cache TTL
-has expired, then resets the cache window so subsequent requests can re-use the
-freshly cached context instead of re-caching the full history. This keeps cache
-write costs lower when a session goes idle past the TTL.
+提供商的提示缓存仅在缓存 TTL 窗期内有效。OpenClaw 可选择启用**缓存 TTL 修剪**：当缓存 TTL 到期后，会修剪会话，并重置缓存窗口，以便后续请求可以重新使用新缓存的上下文，而无需重新缓存整个历史记录。这使得在会话空闲时间超过 TTL 时，缓存写入成本更低。
 
-Configure it in [Gateway configuration](/gateway/configuration) and see the
-behavior details in [Session pruning](/concepts/session-pruning).
+您可以在 [网关配置](/gateway/configuration) 中进行相关设置，并在 [会话修剪](/concepts/session-pruning) 中查看详细行为。
 
-Heartbeat can keep the cache **warm** across idle gaps. If your model cache TTL
-is `1h`, setting the heartbeat interval just under that (e.g., `55m`) can avoid
-re-caching the full prompt, reducing cache write costs.
+心跳功能可在空闲期间使缓存保持**“温暖”**。如果您的模型缓存 TTL 是 `1h`，将心跳间隔设置为略低于 TTL（例如 `55m`），即可避免重新缓存完整提示，从而降低缓存写入成本。
 
-For Anthropic API pricing, cache reads are significantly cheaper than input
-tokens, while cache writes are billed at a higher multiplier. See Anthropic’s
-prompt caching pricing for the latest rates and TTL multipliers:
+对于 Anthropic API 的定价，缓存读取的成本显著低于输入令牌的成本，而缓存写入则按更高的倍数计费。有关最新费率和 TTL 倍数，请参阅 Anthropic 的提示缓存定价：
 https://docs.anthropic.com/docs/build-with-claude/prompt-caching
 
-### Example: keep 1h cache warm with heartbeat
-
+### 示例：通过心跳保持 1 小时缓存“温暖”
 ```yaml
 agents:
   defaults:
@@ -100,11 +85,11 @@ agents:
       every: "55m"
 ```
 
-## Tips for reducing token pressure
+## 减少令牌压力的技巧
 
-- Use `/compact` to summarize long sessions.
-- Trim large tool outputs in your workflows.
-- Keep skill descriptions short (skill list is injected into the prompt).
-- Prefer smaller models for verbose, exploratory work.
+- 使用 `/compact` 来总结长时间会话。
+- 在工作流中裁剪大型工具输出。
+- 保持技能描述简短（技能列表会被注入到提示中）。
+- 在需要大量文本的探索性任务中优先选择较小的模型。
 
-See [Skills](/tools/skills) for the exact skill list overhead formula.
+有关确切的技能列表开销公式，请参见 [技能](/tools/skills)。

@@ -1,17 +1,17 @@
 ---
-summary: "Schema-accurate configuration examples for common OpenClaw setups"
+summary: Schema-accurate configuration examples for common OpenClaw setups
 read_when:
   - Learning how to configure OpenClaw
   - Looking for configuration examples
   - Setting up OpenClaw for the first time
 ---
-# Configuration Examples
+# 配置示例
 
-Examples below are aligned with the current config schema. For the exhaustive reference and per-field notes, see [Configuration](/gateway/configuration).
+以下示例与当前配置模式保持一致。如需完整的参考信息和各字段的说明，请参阅[配置](/gateway/configuration)。
 
-## Quick start
+## 快速入门
 
-### Absolute minimum
+### 绝对最低配置
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -19,9 +19,9 @@ Examples below are aligned with the current config schema. For the exhaustive re
 }
 ```
 
-Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
+将其保存到`~/.openclaw/openclaw.json`，您即可通过该号码向机器人发送私信。
 
-### Recommended starter
+### 推荐的初始配置
 ```json5
 {
   identity: {
@@ -42,9 +42,9 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-## Expanded example (major options)
+## 扩展示例（主要选项）
 
-> JSON5 lets you use comments and trailing commas. Regular JSON works too.
+> JSON5 支持使用注释和尾随逗号。标准 JSON 也同样适用。
 
 ```json5
 {
@@ -421,9 +421,9 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-## Common patterns
+## 常见模式
 
-### Multi-platform setup
+### 多平台设置
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -443,7 +443,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-### OAuth with API key failover
+### 使用 API 密钥作为 OAuth 备用
 ```json5
 {
   auth: {
@@ -472,7 +472,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-### Anthropic subscription + API key, MiniMax fallback
+### Anthropic 订阅 + API 密钥，MiniMax 作为备用
 ```json5
 {
   auth: {
@@ -510,7 +510,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-### Work bot (restricted access)
+### 工作机器人（受限访问）
 ```json5
 {
   identity: {
@@ -534,7 +534,7 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-### Local models only
+### 仅使用本地模型
 ```json5
 {
   agent: {
@@ -565,9 +565,9 @@ Save to `~/.openclaw/openclaw.json` and you can DM the bot from that number.
 }
 ```
 
-## Tips
+## 小贴士
 
-- If you set `dmPolicy: "open"`, the matching `allowFrom` list must include `"*"`.
-- Provider IDs differ (phone numbers, user IDs, channel IDs). Use the provider docs to confirm the format.
-- Optional sections to add later: `web`, `browser`, `ui`, `discovery`, `canvasHost`, `talk`, `signal`, `imessage`.
-- See [Providers](/channels/whatsapp) and [Troubleshooting](/gateway/troubleshooting) for deeper setup notes.
+- 如果您设置了`dmPolicy: "open"`，则匹配的`allowFrom`列表必须包含`"*"`。
+- 不同提供商的 ID 格式不同（例如电话号码、用户 ID、频道 ID）。请参考提供商文档以确认正确的格式。
+- 您可以稍后添加的可选部分包括：`web`、`browser`、`ui`、`discovery`、`canvasHost`、`talk`、`signal`、`imessage`。
+- 如需更深入的设置说明，请参阅[提供商](/channels/whatsapp)和[故障排除](/gateway/troubleshooting)。

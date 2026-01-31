@@ -1,96 +1,94 @@
 ---
 title: Deploy on Railway
 ---
+使用一键模板在Railway上部署OpenClaw，并在浏览器中完成设置。
+这是最简单的“无需在服务器上使用终端”路径：Railway会为你运行网关，而你可通过`/setup`网络向导配置所有内容。
 
-Deploy OpenClaw on Railway with a one-click template and finish setup in your browser.
-This is the easiest “no terminal on the server” path: Railway runs the Gateway for you,
-and you configure everything via the `/setup` web wizard.
+## 新用户快速检查清单
 
-## Quick checklist (new users)
+1) 点击下方的**在Railway上部署**。
+2) 添加一个挂载在`/data`的**卷**。
+3) 设置所需的**变量**（至少包括`SETUP_PASSWORD`）。
+4) 在端口`8080`上启用**HTTP代理**。
+5) 打开`https://<your-railway-domain>/setup`并完成向导。
 
-1) Click **Deploy on Railway** (below).
-2) Add a **Volume** mounted at `/data`.
-3) Set the required **Variables** (at least `SETUP_PASSWORD`).
-4) Enable **HTTP Proxy** on port `8080`.
-5) Open `https://<your-railway-domain>/setup` and finish the wizard.
+## 一键部署
 
-## One-click deploy
+<a href="__URL_28__" target="_blank" rel="noreferrer">在Railway上部署</a>
 
-<a href="https://railway.com/deploy/clawdbot-railway-template" target="_blank" rel="noreferrer">Deploy on Railway</a>
+部署完成后，你可在**Railway → 你的服务 → 设置 → 域名**中找到你的公共URL。
 
-After deploy, find your public URL in **Railway → your service → Settings → Domains**.
+Railway将：
+- 为你提供一个自动生成的域名（通常是`https://<something>.up.railway.app`），或
+- 如果你已绑定自定义域名，则使用该自定义域名。
 
-Railway will either:
-- give you a generated domain (often `https://<something>.up.railway.app`), or
-- use your custom domain if you attached one.
+然后打开：
 
-Then open:
+- `https://<your-railway-domain>/setup` — 设置向导（受密码保护）
+- `https://<your-railway-domain>/openclaw` — 控制UI
 
-- `https://<your-railway-domain>/setup` — setup wizard (password protected)
-- `https://<your-railway-domain>/openclaw` — Control UI
+## 您将获得的内容
 
-## What you get
+- 托管的OpenClaw网关 + 控制UI
+- 网络设置向导位于`/setup`（无需终端命令）
+- 通过Railway卷实现持久化存储(`/data`)，使配置/凭据/工作区在重新部署后仍能保留
+- 备份导出位于`/setup/export`，以便日后从Railway迁移
 
-- Hosted OpenClaw Gateway + Control UI
-- Web setup wizard at `/setup` (no terminal commands)
-- Persistent storage via Railway Volume (`/data`) so config/credentials/workspace survive redeploys
-- Backup export at `/setup/export` to migrate off Railway later
+## 必要的Railway设置
 
-## Required Railway settings
+### 公共网络
 
-### Public Networking
+为服务启用**HTTP代理**。
 
-Enable **HTTP Proxy** for the service.
+- 端口：`8080`
 
-- Port: `8080`
+### 卷（必填）
 
-### Volume (required)
-
-Attach a volume mounted at:
+附加一个挂载在以下路径的卷：
 
 - `/data`
 
-### Variables
+### 变量
 
-Set these variables on the service:
+在服务上设置以下变量：
 
-- `SETUP_PASSWORD` (required)
-- `PORT=8080` (required — must match the port in Public Networking)
-- `OPENCLAW_STATE_DIR=/data/.openclaw` (recommended)
-- `OPENCLAW_WORKSPACE_DIR=/data/workspace` (recommended)
-- `OPENCLAW_GATEWAY_TOKEN` (recommended; treat as an admin secret)
+- `SETUP_PASSWORD`（必填）
+- `PORT=8080`（必填；必须与公共网络中的端口一致）
+- `OPENCLAW_STATE_DIR=/data/.openclaw`（推荐）
+- `OPENCLAW_WORKSPACE_DIR=/data/workspace`（推荐）
+- `OPENCLAW_GATEWAY_TOKEN`（推荐；请将其视为管理员密钥）
 
-## Setup flow
+## 设置流程
 
-1) Visit `https://<your-railway-domain>/setup` and enter your `SETUP_PASSWORD`.
-2) Choose a model/auth provider and paste your key.
-3) (Optional) Add Telegram/Discord/Slack tokens.
-4) Click **Run setup**.
+1) 访问`https://<your-railway-domain>/setup`并输入您的`SETUP_PASSWORD`。
+2) 选择模型/身份验证提供商并粘贴您的密钥。
+3) （可选）添加Telegram/Discord/Slack令牌。
+4) 点击**运行设置**。
 
-If Telegram DMs are set to pairing, the setup wizard can approve the pairing code.
+如果Telegram DM设置为配对模式，设置向导可以批准配对代码。
 
-## Getting chat tokens
+## 获取聊天令牌
 
-### Telegram bot token
+### Telegram机器人令牌
 
-1) Message `@BotFather` in Telegram
-2) Run `/newbot`
-3) Copy the token (looks like `123456789:AA...`)
-4) Paste it into `/setup`
+1) 在Telegram中发送消息给`@BotFather`
+2) 运行`/newbot`
+3) 复制令牌（看起来像`123456789:AA...`）
+4) 将其粘贴到`/setup`
 
-### Discord bot token
+### Discord机器人令牌
 
-1) Go to https://discord.com/developers/applications
-2) **New Application** → choose a name
-3) **Bot** → **Add Bot**
-4) **Enable MESSAGE CONTENT INTENT** under Bot → Privileged Gateway Intents (required or the bot will crash on startup)
-5) Copy the **Bot Token** and paste into `/setup`
-6) Invite the bot to your server (OAuth2 URL Generator; scopes: `bot`, `applications.commands`)
+1) 访问https://discord.com/developers/applications
+2) **新建应用** → 选择一个名称
+3) **机器人** → **添加机器人**
+4) 在“机器人 → 高级网关意图”下启用**MESSAGE CONTENT INTENT**（必需，否则机器人启动时会崩溃）
+5) 复制**机器人令牌**并粘贴到`/setup`
+6) 使用OAuth2 URL生成器邀请机器人加入您的服务器（作用域：`bot`, `applications.commands`）
 
-## Backups & migration
+## 备份与迁移
 
-Download a backup at:
+您可在以下地址下载备份：
 
 - `https://<your-railway-domain>/setup/export`
 
-This exports your OpenClaw state + workspace so you can migrate to another host without losing config or memory.
+此备份会导出您的OpenClaw状态和工作区，使您能够迁移到其他主机，而不会丢失配置或数据。

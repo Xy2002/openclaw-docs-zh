@@ -1,29 +1,26 @@
 ---
-summary: "Deepgram transcription for inbound voice notes"
+summary: Deepgram transcription for inbound voice notes
 read_when:
   - You want Deepgram speech-to-text for audio attachments
   - You need a quick Deepgram config example
 ---
-# Deepgram (Audio Transcription)
+# Deepgram（音频转录）
 
-Deepgram is a speech-to-text API. In OpenClaw it is used for **inbound audio/voice note
-transcription** via `tools.media.audio`.
+Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tools.media.audio` 对**传入音频/语音备忘录进行转录**。
 
-When enabled, OpenClaw uploads the audio file to Deepgram and injects the transcript
-into the reply pipeline (`{{Transcript}}` + `[Audio]` block). This is **not streaming**;
-it uses the pre-recorded transcription endpoint.
+启用后，OpenClaw 会将音频文件上传至 Deepgram，并将转录结果注入回复管道（`{{Transcript}}` + `[Audio]` 块）。这**不是流式处理**；它使用预先录制的转录端点。
 
-Website: https://deepgram.com  
-Docs: https://developers.deepgram.com
+网站：https://deepgram.com  
+文档：https://developers.deepgram.com
 
-## Quick start
+## 快速入门
 
-1) Set your API key:
+1) 设置您的 API 密钥：
 ```
 DEEPGRAM_API_KEY=dg_...
 ```
 
-2) Enable the provider:
+2) 启用该提供商：
 ```json5
 {
   tools: {
@@ -37,15 +34,15 @@ DEEPGRAM_API_KEY=dg_...
 }
 ```
 
-## Options
+## 选项
 
-- `model`: Deepgram model id (default: `nova-3`)
-- `language`: language hint (optional)
-- `tools.media.audio.providerOptions.deepgram.detect_language`: enable language detection (optional)
-- `tools.media.audio.providerOptions.deepgram.punctuate`: enable punctuation (optional)
-- `tools.media.audio.providerOptions.deepgram.smart_format`: enable smart formatting (optional)
+- `model`：Deepgram 模型 ID（默认：`nova-3`）
+- `language`：语言提示（可选）
+- `tools.media.audio.providerOptions.deepgram.detect_language`：启用语言检测（可选）
+- `tools.media.audio.providerOptions.deepgram.punctuate`：启用标点符号（可选）
+- `tools.media.audio.providerOptions.deepgram.smart_format`：启用智能格式化（可选）
 
-Example with language:
+包含语言设置的示例：
 ```json5
 {
   tools: {
@@ -61,7 +58,7 @@ Example with language:
 }
 ```
 
-Example with Deepgram options:
+包含 Deepgram 选项的示例：
 ```json5
 {
   tools: {
@@ -82,8 +79,8 @@ Example with Deepgram options:
 }
 ```
 
-## Notes
+## 注意事项
 
-- Authentication follows the standard provider auth order; `DEEPGRAM_API_KEY` is the simplest path.
-- Override endpoints or headers with `tools.media.audio.baseUrl` and `tools.media.audio.headers` when using a proxy.
-- Output follows the same audio rules as other providers (size caps, timeouts, transcript injection).
+- 身份验证遵循标准提供商身份验证顺序；`DEEPGRAM_API_KEY` 是最简单的路径。
+- 使用代理时，可通过 `tools.media.audio.baseUrl` 和 `tools.media.audio.headers` 覆盖端点或标头。
+- 输出遵循与其他提供商相同的音频规则（大小限制、超时、转录注入）。

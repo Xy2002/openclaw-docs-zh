@@ -1,5 +1,5 @@
 ---
-summary: "Signal support via signal-cli (JSON-RPC + SSE), setup, and number model"
+summary: 'Signal support via signal-cli (JSON-RPC + SSE), setup, and number model'
 read_when:
   - Setting up Signal support
   - Debugging Signal send/receive
@@ -7,16 +7,16 @@ read_when:
 # Signal (signal-cli)
 
 
-Status: external CLI integration. Gateway talks to `signal-cli` over HTTP JSON-RPC + SSE.
+状态：外部 CLI 集成。网关通过 HTTP JSON-RPC + SSE 与 `signal-cli` 通信。
 
-## Quick setup (beginner)
-1) Use a **separate Signal number** for the bot (recommended).
-2) Install `signal-cli` (Java required).
-3) Link the bot device and start the daemon:
+## 快速设置（初学者）
+1) 为机器人使用一个**独立的 Signal 号码**（推荐）。
+2) 安装 `signal-cli`（需要 Java）。
+3) 链接机器人设备并启动守护进程：
    - `signal-cli link -n "OpenClaw"`
-4) Configure OpenClaw and start the gateway.
+4) 配置 OpenClaw 并启动网关。
 
-Minimal config:
+最小配置：
 ```json5
 {
   channels: {
@@ -31,33 +31,33 @@ Minimal config:
 }
 ```
 
-## What it is
-- Signal channel via `signal-cli` (not embedded libsignal).
-- Deterministic routing: replies always go back to Signal.
-- DMs share the agent's main session; groups are isolated (`agent:<agentId>:signal:group:<groupId>`).
+## 是什么
+- 通过 `signal-cli` 提供 Signal 通道（非嵌入式 libsignal）。
+- 确定性路由：回复始终返回到 Signal。
+- 私信共享代理的主要会话；群组是隔离的 (`agent:<agentId>:signal:group:<groupId>`)。
 
-## Config writes
-By default, Signal is allowed to write config updates triggered by `/config set|unset` (requires `commands.config: true`).
+## 配置写入
+默认情况下，Signal 被允许在 `/config set|unset` 触发时写入配置更新（需要 `commands.config: true`）。
 
-Disable with:
+可通过以下方式禁用：
 ```json5
 {
   channels: { signal: { configWrites: false } }
 }
 ```
 
-## The number model (important)
-- The gateway connects to a **Signal device** (the `signal-cli` account).
-- If you run the bot on **your personal Signal account**, it will ignore your own messages (loop protection).
-- For "I text the bot and it replies," use a **separate bot number**.
+## 号码模型（重要）
+- 网关连接到一个**Signal 设备**（即 `signal-cli` 账号）。
+- 如果你在**自己的个人 Signal 账号**上运行机器人，它会忽略你自己的消息（防止循环）。
+- 若要实现“我给机器人发消息，它回复”，请使用一个**独立的机器人号码**。
 
-## Setup (fast path)
-1) Install `signal-cli` (Java required).
-2) Link a bot account:
-   - `signal-cli link -n "OpenClaw"` then scan the QR in Signal.
-3) Configure Signal and start the gateway.
+## 设置（快速路径）
+1) 安装 `signal-cli`（需要 Java）。
+2) 链接一个机器人账号：
+   - `signal-cli link -n "OpenClaw"`，然后在 Signal 中扫描二维码。
+3) 配置 Signal 并启动网关。
 
-Example:
+示例：
 ```json5
 {
   channels: {
@@ -72,10 +72,10 @@ Example:
 }
 ```
 
-Multi-account support: use `channels.signal.accounts` with per-account config and optional `name`. See [`gateway/configuration`](/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts) for the shared pattern.
+多账号支持：使用 `channels.signal.accounts` 结合每账号配置，并可选使用 `name`。共享模式详见 [`gateway/configuration`](/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts)。
 
-## External daemon mode (httpUrl)
-If you want to manage `signal-cli` yourself (slow JVM cold starts, container init, or shared CPUs), run the daemon separately and point OpenClaw at it:
+## 外部守护进程模式（httpUrl）
+如果你想自行管理 `signal-cli`（例如 JVM 冷启动较慢、容器初始化或共享 CPU），可以单独运行守护进程，并让 OpenClaw 指向该守护进程：
 
 ```json5
 {
@@ -88,92 +88,92 @@ If you want to manage `signal-cli` yourself (slow JVM cold starts, container ini
 }
 ```
 
-This skips auto-spawn and the startup wait inside OpenClaw. For slow starts when auto-spawning, set `channels.signal.startupTimeoutMs`.
+这将跳过 OpenClaw 内的自动启动和启动等待。对于自动启动时的缓慢启动，可设置 `channels.signal.startupTimeoutMs`。
 
-## Access control (DMs + groups)
-DMs:
-- Default: `channels.signal.dmPolicy = "pairing"`.
-- Unknown senders receive a pairing code; messages are ignored until approved (codes expire after 1 hour).
-- Approve via:
+## 访问控制（私信 + 群组）
+私信：
+- 默认：`channels.signal.dmPolicy = "pairing"`。
+- 未知发件人会收到配对码；消息在批准前会被忽略（配对码 1 小时后失效）。
+- 可通过以下方式批准：
   - `openclaw pairing list signal`
   - `openclaw pairing approve signal <CODE>`
-- Pairing is the default token exchange for Signal DMs. Details: [Pairing](/start/pairing)
-- UUID-only senders (from `sourceUuid`) are stored as `uuid:<id>` in `channels.signal.allowFrom`.
+- 配对是 Signal 私信的默认令牌交换方式。详情参见 [Pairing](/start/pairing)。
+- 仅包含 UUID 的发件人（来自 `sourceUuid`）会以 `uuid:<id>` 的形式存储在 `channels.signal.allowFrom` 中。
 
-Groups:
-- `channels.signal.groupPolicy = open | allowlist | disabled`.
-- `channels.signal.groupAllowFrom` controls who can trigger in groups when `allowlist` is set.
+群组：
+- `channels.signal.groupPolicy = open | allowlist | disabled`。
+- 当 `allowlist` 设置时，`channels.signal.groupAllowFrom` 控制谁可以在群组中触发。
 
-## How it works (behavior)
-- `signal-cli` runs as a daemon; the gateway reads events via SSE.
-- Inbound messages are normalized into the shared channel envelope.
-- Replies always route back to the same number or group.
+## 工作原理（行为）
+- `signal-cli` 以守护进程形式运行；网关通过 SSE 读取事件。
+- 入站消息被归一化为共享通道信封。
+- 回复始终路由回同一号码或群组。
 
-## Media + limits
-- Outbound text is chunked to `channels.signal.textChunkLimit` (default 4000).
-- Optional newline chunking: set `channels.signal.chunkMode="newline"` to split on blank lines (paragraph boundaries) before length chunking.
-- Attachments supported (base64 fetched from `signal-cli`).
-- Default media cap: `channels.signal.mediaMaxMb` (default 8).
-- Use `channels.signal.ignoreAttachments` to skip downloading media.
-- Group history context uses `channels.signal.historyLimit` (or `channels.signal.accounts.*.historyLimit`), falling back to `messages.groupChat.historyLimit`. Set `0` to disable (default 50).
+## 媒体 + 限制
+- 出站文本按 `channels.signal.textChunkLimit` 分块（默认 4000 字符）。
+- 可选换行分块：设置 `channels.signal.chunkMode="newline"` 以在长度分块之前按空行（段落边界）分割。
+- 支持附件（从 `signal-cli` 获取 base64 编码）。
+- 默认媒体上限：`channels.signal.mediaMaxMb`（默认 8 MB）。
+- 使用 `channels.signal.ignoreAttachments` 可跳过下载媒体。
+- 群组历史上下文使用 `channels.signal.historyLimit`（或 `channels.signal.accounts.*.historyLimit`），退回到 `messages.groupChat.historyLimit`。设置 `0` 可禁用（默认 50 条）。
 
-## Typing + read receipts
-- **Typing indicators**: OpenClaw sends typing signals via `signal-cli sendTyping` and refreshes them while a reply is running.
-- **Read receipts**: when `channels.signal.sendReadReceipts` is true, OpenClaw forwards read receipts for allowed DMs.
-- Signal-cli does not expose read receipts for groups.
+## 键入指示 + 已读回执
+- **键入指示**：OpenClaw 通过 `signal-cli sendTyping` 发送键入信号，并在回复进行时持续刷新。
+- **已读回执**：当 `channels.signal.sendReadReceipts` 为真时，OpenClaw 会转发允许的私信的已读回执。
+- Signal-cli 不公开群组的已读回执。
 
-## Reactions (message tool)
-- Use `message action=react` with `channel=signal`.
-- Targets: sender E.164 or UUID (use `uuid:<id>` from pairing output; bare UUID works too).
-- `messageId` is the Signal timestamp for the message you’re reacting to.
-- Group reactions require `targetAuthor` or `targetAuthorUuid`.
+## 反应（消息工具）
+- 使用 `message action=react` 结合 `channel=signal`。
+- 目标：发件人的 E.164 或 UUID（使用配对输出中的 `uuid:<id>`；裸 UUID 也可）。
+- `messageId` 是你要对其作出反应的消息的 Signal 时间戳。
+- 群组反应需要 `targetAuthor` 或 `targetAuthorUuid`。
 
-Examples:
+示例：
 ```
 message action=react channel=signal target=uuid:123e4567-e89b-12d3-a456-426614174000 messageId=1737630212345 emoji=🔥
 message action=react channel=signal target=+15551234567 messageId=1737630212345 emoji=🔥 remove=true
 message action=react channel=signal target=signal:group:<groupId> targetAuthor=uuid:<sender-uuid> messageId=1737630212345 emoji=✅
 ```
 
-Config:
-- `channels.signal.actions.reactions`: enable/disable reaction actions (default true).
-- `channels.signal.reactionLevel`: `off | ack | minimal | extensive`.
-  - `off`/`ack` disables agent reactions (message tool `react` will error).
-  - `minimal`/`extensive` enables agent reactions and sets the guidance level.
-- Per-account overrides: `channels.signal.accounts.<id>.actions.reactions`, `channels.signal.accounts.<id>.reactionLevel`.
+配置：
+- `channels.signal.actions.reactions`：启用/禁用反应操作（默认为真）。
+- `channels.signal.reactionLevel`：`off | ack | minimal | extensive`。
+  - `off`/`ack` 禁用代理反应（消息工具 `react` 会报错）。
+  - `minimal`/`extensive` 启用代理反应，并设置指导级别。
+- 每账号覆盖：`channels.signal.accounts.<id>.actions.reactions`、`channels.signal.accounts.<id>.reactionLevel`。
 
-## Delivery targets (CLI/cron)
-- DMs: `signal:+15551234567` (or plain E.164).
-- UUID DMs: `uuid:<id>` (or bare UUID).
-- Groups: `signal:group:<groupId>`.
-- Usernames: `username:<name>` (if supported by your Signal account).
+## 投递目标（CLI/cron）
+- 私信：`signal:+15551234567`（或纯 E.164）。
+- UUID 私信：`uuid:<id>`（或裸 UUID）。
+- 群组：`signal:group:<groupId>`。
+- 用户名：`username:<name>`（如果您的 Signal 账号支持）。
 
-## Configuration reference (Signal)
-Full configuration: [Configuration](/gateway/configuration)
+## 配置参考（Signal）
+完整配置：[Configuration](/gateway/configuration)
 
-Provider options:
-- `channels.signal.enabled`: enable/disable channel startup.
-- `channels.signal.account`: E.164 for the bot account.
-- `channels.signal.cliPath`: path to `signal-cli`.
-- `channels.signal.httpUrl`: full daemon URL (overrides host/port).
-- `channels.signal.httpHost`, `channels.signal.httpPort`: daemon bind (default 127.0.0.1:8080).
-- `channels.signal.autoStart`: auto-spawn daemon (default true if `httpUrl` unset).
-- `channels.signal.startupTimeoutMs`: startup wait timeout in ms (cap 120000).
-- `channels.signal.receiveMode`: `on-start | manual`.
-- `channels.signal.ignoreAttachments`: skip attachment downloads.
-- `channels.signal.ignoreStories`: ignore stories from the daemon.
-- `channels.signal.sendReadReceipts`: forward read receipts.
-- `channels.signal.dmPolicy`: `pairing | allowlist | open | disabled` (default: pairing).
-- `channels.signal.allowFrom`: DM allowlist (E.164 or `uuid:<id>`). `open` requires `"*"`. Signal has no usernames; use phone/UUID ids.
-- `channels.signal.groupPolicy`: `open | allowlist | disabled` (default: allowlist).
-- `channels.signal.groupAllowFrom`: group sender allowlist.
-- `channels.signal.historyLimit`: max group messages to include as context (0 disables).
-- `channels.signal.dmHistoryLimit`: DM history limit in user turns. Per-user overrides: `channels.signal.dms["<phone_or_uuid>"].historyLimit`.
-- `channels.signal.textChunkLimit`: outbound chunk size (chars).
-- `channels.signal.chunkMode`: `length` (default) or `newline` to split on blank lines (paragraph boundaries) before length chunking.
-- `channels.signal.mediaMaxMb`: inbound/outbound media cap (MB).
+提供商选项：
+- `channels.signal.enabled`：启用/禁用通道启动。
+- `channels.signal.account`：机器人账号的 E.164。
+- `channels.signal.cliPath`：指向 `signal-cli` 的路径。
+- `channels.signal.httpUrl`：完整的守护进程 URL（覆盖主机/端口）。
+- `channels.signal.httpHost`、`channels.signal.httpPort`：守护进程绑定地址（默认 127.0.0.1:8080）。
+- `channels.signal.autoStart`：自动启动守护进程（若未设置 `httpUrl`，默认为真）。
+- `channels.signal.startupTimeoutMs`：启动等待超时时间（毫秒；上限 120000）。
+- `channels.signal.receiveMode`：`on-start | manual`。
+- `channels.signal.ignoreAttachments`：跳过附件下载。
+- `channels.signal.ignoreStories`：忽略来自守护进程的故事。
+- `channels.signal.sendReadReceipts`：转发已读回执。
+- `channels.signal.dmPolicy`：`pairing | allowlist | open | disabled`（默认：配对）。
+- `channels.signal.allowFrom`：私信白名单（E.164 或 `uuid:<id>`）。`open` 需要 `"*"`。Signal 没有用户名；使用电话/UUID ID。
+- `channels.signal.groupPolicy`：`open | allowlist | disabled`（默认：白名单）。
+- `channels.signal.groupAllowFrom`：群组发件人白名单。
+- `channels.signal.historyLimit`：作为上下文包含的最大群组消息数（0 表示禁用）。
+- `channels.signal.dmHistoryLimit`：私信历史限制（用户回合数）。每用户覆盖：`channels.signal.dms["<phone_or_uuid>"].historyLimit`。
+- `channels.signal.textChunkLimit`：出站分块大小（字符）。
+- `channels.signal.chunkMode`：`length`（默认）或 `newline`，用于在长度分块前按空行（段落边界）分割。
+- `channels.signal.mediaMaxMb`：入站/出站媒体上限（MB）。
 
-Related global options:
-- `agents.list[].groupChat.mentionPatterns` (Signal does not support native mentions).
-- `messages.groupChat.mentionPatterns` (global fallback).
-- `messages.responsePrefix`.
+相关全局选项：
+- `agents.list[].groupChat.mentionPatterns`（Signal 不支持原生提及）。
+- `messages.groupChat.mentionPatterns`（全局回退）。
+- `messages.responsePrefix`。

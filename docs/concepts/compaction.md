@@ -1,49 +1,48 @@
 ---
-summary: "Context window + compaction: how OpenClaw keeps sessions under model limits"
+summary: 'Context window + compaction: how OpenClaw keeps sessions under model limits'
 read_when:
   - You want to understand auto-compaction and /compact
   - You are debugging long sessions hitting context limits
 ---
-# Context Window & Compaction
+# 上下文窗口与压缩
 
-Every model has a **context window** (max tokens it can see). Long-running chats accumulate messages and tool results; once the window is tight, OpenClaw **compacts** older history to stay within limits.
+每种模型都有一个**上下文窗口**（即它能处理的最大标记数）。长时间进行的对话会不断累积消息和工具结果；一旦上下文窗口接近满载，OpenClaw就会对较早的历史记录进行**压缩**，以确保始终在限制范围内。
 
-## What compaction is
-Compaction **summarizes older conversation** into a compact summary entry and keeps recent messages intact. The summary is stored in the session history, so future requests use:
-- The compaction summary
-- Recent messages after the compaction point
+## 什么是压缩
+压缩会将较早的对话内容**总结为一条紧凑的摘要条目**，同时保留最新的消息不变。该摘要会存储在会话历史中，因此在后续请求中会使用：
+- 压缩摘要
+- 压缩点之后的最新消息
 
-Compaction **persists** in the session’s JSONL history.
+压缩结果会**持久化**保存在会话的 JSONL 历史中。
 
-## Configuration
-See [Compaction config & modes](/concepts/compaction) for the `agents.defaults.compaction` settings.
+## 配置
+有关`agents.defaults.compaction` 设置，请参阅 [压缩配置与模式](/concepts/compaction)。
 
-## Auto-compaction (default on)
-When a session nears or exceeds the model’s context window, OpenClaw triggers auto-compaction and may retry the original request using the compacted context.
+## 自动压缩（默认启用）
+当会话接近或超出模型的上下文窗口时，OpenClaw 会触发自动压缩，并可能使用压缩后的上下文重试原始请求。
 
-You’ll see:
-- `🧹 Auto-compaction complete` in verbose mode
-- `/status` showing `🧹 Compactions: <count>`
+在详细模式下，您会看到：
+- `🧹 Auto-compaction complete`
+- `/status` 显示 `🧹 Compactions: <count>`
 
-Before compaction, OpenClaw can run a **silent memory flush** turn to store
-durable notes to disk. See [Memory](/concepts/memory) for details and config.
+在压缩之前，OpenClaw 可以执行一轮**静默内存刷新**，将持久性笔记存储到磁盘上。有关详情和配置，请参阅 [内存](/concepts/memory)。
 
-## Manual compaction
-Use `/compact` (optionally with instructions) to force a compaction pass:
+## 手动压缩
+使用 `/compact`（可选地附带指令）来强制执行一次压缩操作：
 ```
 /compact Focus on decisions and open questions
 ```
 
-## Context window source
-Context window is model-specific. OpenClaw uses the model definition from the configured provider catalog to determine limits.
+## 上下文窗口来源
+上下文窗口由具体模型决定。OpenClaw 使用已配置提供商目录中的模型定义来确定这些限制。
 
-## Compaction vs pruning
-- **Compaction**: summarises and **persists** in JSONL.
-- **Session pruning**: trims old **tool results** only, **in-memory**, per request.
+## 压缩与修剪的区别
+- **压缩**：对历史进行总结并**持久化**存储在 JSONL 中。
+- **会话修剪**：仅在内存中按请求修剪旧的**工具结果**。
 
-See [/concepts/session-pruning](/concepts/session-pruning) for pruning details.
+有关修剪的详细信息，请参阅 [/concepts/session-pruning](/concepts/session-pruning)。
 
-## Tips
-- Use `/compact` when sessions feel stale or context is bloated.
-- Large tool outputs are already truncated; pruning can further reduce tool-result buildup.
-- If you need a fresh slate, `/new` or `/reset` starts a new session id.
+## 小贴士
+- 当会话感觉陈旧或上下文过于臃肿时，使用 `/compact`。
+- 大型工具输出本身已被截断；修剪可以进一步减少工具结果的堆积。
+- 如果您需要一个全新的会话环境，使用 `/new` 或 `/reset` 来启动一个新的会话 ID。

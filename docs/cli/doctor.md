@@ -1,19 +1,18 @@
 ---
-summary: "CLI reference for `openclaw doctor` (health checks + guided repairs)"
+summary: CLI reference for `openclaw doctor` (health checks + guided repairs)
 read_when:
   - You have connectivity/auth issues and want guided fixes
   - You updated and want a sanity check
 ---
-
 # `openclaw doctor`
 
-Health checks + quick fixes for the gateway and channels.
+网关和通道的健康检查与快速修复。
 
-Related:
-- Troubleshooting: [Troubleshooting](/gateway/troubleshooting)
-- Security audit: [Security](/gateway/security)
+相关：
+- 故障排除：[故障排除](/gateway/troubleshooting)
+- 安全审计：[安全](/gateway/security)
 
-## Examples
+## 示例
 
 ```bash
 openclaw doctor
@@ -21,13 +20,13 @@ openclaw doctor --repair
 openclaw doctor --deep
 ```
 
-Notes:
-- Interactive prompts (like keychain/OAuth fixes) only run when stdin is a TTY and `--non-interactive` is **not** set. Headless runs (cron, Telegram, no terminal) will skip prompts.
-- `--fix` (alias for `--repair`) writes a backup to `~/.openclaw/openclaw.json.bak` and drops unknown config keys, listing each removal.
+注意事项：
+- 交互式提示（如钥匙串/OAuth 修复）仅在标准输入为 TTY 且未设置 `--non-interactive` 时运行。无头运行（cron、Telegram、无终端）将跳过提示。
+- `--fix`（`--repair` 的别名）会将备份写入 `~/.openclaw/openclaw.json.bak`，并丢弃未知的配置键，同时列出每次移除的键。
 
-## macOS: `launchctl` env overrides
+## macOS：`launchctl` 环境变量覆盖
 
-If you previously ran `launchctl setenv OPENCLAW_GATEWAY_TOKEN ...` (or `...PASSWORD`), that value overrides your config file and can cause persistent “unauthorized” errors.
+如果您之前运行过 `launchctl setenv OPENCLAW_GATEWAY_TOKEN ...`（或 `...PASSWORD`），该值会覆盖您的配置文件，并可能导致持续出现“未授权”错误。
 
 ```bash
 launchctl getenv OPENCLAW_GATEWAY_TOKEN

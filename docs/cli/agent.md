@@ -1,18 +1,17 @@
 ---
-summary: "CLI reference for `openclaw agent` (send one agent turn via the Gateway)"
+summary: CLI reference for `openclaw agent` (send one agent turn via the Gateway)
 read_when:
   - You want to run one agent turn from scripts (optionally deliver reply)
 ---
-
 # `openclaw agent`
 
-Run an agent turn via the Gateway (use `--local` for embedded).
-Use `--agent <id>` to target a configured agent directly.
+通过网关运行代理回合（嵌入式使用__ INLINE_CODE_2__）。
+使用__ INLINE_CODE_3__直接定位已配置的代理。
 
-Related:
-- Agent send tool: [Agent send](/tools/agent-send)
+相关：
+- 代理发送工具：[代理发送](/tools/agent-send)
 
-## Examples
+## 示例
 
 ```bash
 openclaw agent --to +15555550123 --message "status update" --deliver
