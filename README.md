@@ -1,6 +1,6 @@
 # OpenClaw 中文文档
 
-[![Daily Translation](https://github.com/YOUR_USERNAME/openclaw-docs-zh/actions/workflows/translate.yml/badge.svg)](https://github.com/YOUR_USERNAME/openclaw-docs-zh/actions/workflows/translate.yml)
+[![Daily Translation](https://github.com/Xy2002/openclaw-docs-zh/actions/workflows/translate.yml/badge.svg)](https://github.com/Xy2002/openclaw-docs-zh/actions/workflows/translate.yml)
 
 [OpenClaw](https://github.com/openclaw/openclaw) 官方文档的自动中文翻译。
 
