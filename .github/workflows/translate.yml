@@ -29,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'  # 自动缓存 npm 依赖
 
       - name: Install dependencies
         run: npm ci
@@ -36,9 +37,17 @@ jobs:
       - name: Build translator
         run: npm run build
 
+      # 恢复翻译缓存
+      - name: Restore translation cache
+        if: github.event.inputs.full_rebuild != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .translation-cache.json
+          key: translation-cache-${{ github.run_id }}
+          restore-keys: |
+            translation-cache-
+
       - name: Sync upstream documentation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "🔄 Syncing documentation from upstream..."
           node dist/index.js sync \
@@ -59,12 +68,19 @@ jobs:
           fi
           node dist/index.js translate \
             --source ./docs \
-            --output ./docs-zh \
+            --output ./docs \
             --config ./config.json \
             $INCREMENTAL_FLAG
 
+      # 保存翻译缓存
+      - name: Save translation cache
+        uses: actions/cache/save@v4
+        with:
+          path: .translation-cache.json
+          key: translation-cache-${{ github.run_id }}
+
       - name: Generate translation status
-        run: node dist/index.js status --source ./docs --output ./docs-zh > TRANSLATION_STATUS.md
+        run: node dist/index.js status --source ./docs --output ./docs > TRANSLATION_STATUS.md
 
       - name: Check for changes
         id: check_changes
@@ -90,3 +106,4 @@ jobs:
           echo "## 📊 Translation Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           cat TRANSLATION_STATUS.md >> $GITHUB_STEP_SUMMARY || echo "No status file generated" >> $GITHUB_STEP_SUMMARY
+
