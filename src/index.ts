@@ -227,4 +227,32 @@ program
         }
     });
 
+program
+    .command('fix')
+    .description('Fix syntax errors in translated markdown files')
+    .option('-s, --source <dir>', 'Directory containing translated markdown files', './docs')
+    .option('--dry-run', 'Show what would be fixed without making changes', false)
+    .option('-v, --verbose', 'Show detailed fix information', false)
+    .action(async (options) => {
+        try {
+            const sourceDir = resolve(process.cwd(), options.source);
+
+            const { fixDirectory } = await import('./syntax-fixer.js');
+            const result = await fixDirectory(sourceDir, {
+                dryRun: options.dryRun,
+                verbose: options.verbose,
+            });
+
+            if (result.totalFixes === 0) {
+                console.log('\n✅ No syntax errors found!');
+            } else if (!options.dryRun) {
+                console.log(`\n✅ Fixed ${result.totalFixes} syntax errors in ${result.fixedFiles} files`);
+            }
+
+        } catch (error) {
+            console.error('❌ Error:', error instanceof Error ? error.message : error);
+            process.exit(1);
+        }
+    });
+
 program.parse();

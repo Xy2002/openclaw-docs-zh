@@ -10,8 +10,8 @@ read_when:
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: light)" srcset="__URL_73__ />
-        <img src="__URL_74__ alt="OpenClaw" width="500" />
+        <source media="(prefers-color-scheme: light)" srcset="__URL_73__" />
+        <img src="__URL_74__" alt="OpenClaw" width="500" />
     </picture>
 </p>
 
@@ -22,8 +22,8 @@ read_when:
   发送一条消息，即可在口袋里获得代理的响应。</p>
 
 <p align="center">
-  <a href="__URL_75__>GitHub</a> ·
-  <a href="__URL_76__>发布</a> ·
+  <a href="__URL_75__">GitHub</a> ·
+  <a href="__URL_76__">发布</a> ·
   <a href="/">文档</a> ·
   <a href="/start/openclaw">OpenClaw 助手设置</a>
 </p>

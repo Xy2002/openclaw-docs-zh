@@ -72,6 +72,11 @@ jobs:
             --config ./config.json \
             $INCREMENTAL_FLAG
 
+      - name: Fix syntax errors
+        run: |
+          echo "🔧 Fixing syntax errors..."
+          node dist/index.js fix --source ./docs
+
       # 保存翻译缓存
       - name: Save translation cache
         uses: actions/cache/save@v4
