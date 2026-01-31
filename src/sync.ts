@@ -21,6 +21,8 @@ export interface SyncStats {
     filesDownloaded: number;
     filesSkipped: number;
     totalSize: number;
+    /** Upstream file hashes for incremental translation detection */
+    upstreamHashes: Map<string, string>;
 }
 
 interface GitHubTreeItem {
@@ -48,6 +50,7 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
         filesDownloaded: 0,
         filesSkipped: 0,
         totalSize: 0,
+        upstreamHashes: new Map<string, string>(),
     };
 
     const headers: Record<string, string> = {
@@ -84,24 +87,43 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
 
     // Categorize files for logging
     const mdFiles = allFiles.filter(f => f.path.endsWith('.md') || f.path.endsWith('.mdx'));
-    const jsonFiles = allFiles.filter(f => f.path.endsWith('.json') || f.path.endsWith('.yml') || f.path.endsWith('.yaml'));
-    const assetFiles = allFiles.filter(f =>
-        f.path.endsWith('.png') || f.path.endsWith('.jpg') || f.path.endsWith('.svg') ||
-        f.path.endsWith('.gif') || f.path.endsWith('.webp') || f.path.endsWith('.ico')
-    );
+    const nonMdFiles = allFiles.filter(f => !f.path.endsWith('.md') && !f.path.endsWith('.mdx'));
 
-    console.log(`   📝 Markdown: ${mdFiles.length}`);
-    console.log(`   📄 Config: ${jsonFiles.length}`);
-    console.log(`   🖼️ Assets: ${assetFiles.length}`);
+    console.log(`   📝 Markdown: ${mdFiles.length} (will track hashes only, NOT overwrite)`);
+    console.log(`   📄 Other: ${nonMdFiles.length} (will sync)`);
 
-    // Download each file
-    for (let i = 0; i < allFiles.length; i++) {
-        const file = allFiles[i];
+    // For markdown files: fetch content and record upstream hash for translation detection
+    // We do NOT write these to disk - that would overwrite translations!
+    console.log('\n📊 Recording upstream markdown hashes...');
+    for (let i = 0; i < mdFiles.length; i++) {
+        const file = mdFiles[i];
+        const relativePath = file.path.replace(docsPrefix, '');
+
+        try {
+            const contentUrl = `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${file.path}`;
+            const contentResponse = await fetch(contentUrl, { headers });
+
+            if (contentResponse.ok) {
+                const content = await contentResponse.text();
+                const hash = createHash('md5').update(content).digest('hex');
+                stats.upstreamHashes.set(relativePath, hash);
+            }
+
+            process.stdout.write(`\r   Processed ${i + 1}/${mdFiles.length} markdown files`);
+        } catch (error) {
+            console.warn(`\n⚠️ Error fetching ${file.path}:`, error);
+        }
+    }
+    console.log('');
+
+    // For non-markdown files: download/update as before (assets, configs, etc.)
+    console.log('\n📥 Syncing non-markdown files (assets, configs)...');
+    for (let i = 0; i < nonMdFiles.length; i++) {
+        const file = nonMdFiles[i];
         const relativePath = file.path.replace(docsPrefix, '');
         const outputPath = join(config.outputDir, relativePath);
 
         try {
-            // Fetch file content
             const contentUrl = `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${config.branch}/${file.path}`;
             const contentResponse = await fetch(contentUrl, { headers });
 
@@ -110,7 +132,6 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
                 continue;
             }
 
-            // Handle binary vs text files
             const isBinary = isBinaryFile(file.path);
             let needsUpdate = true;
 
@@ -140,8 +161,7 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
                 }
             }
 
-            // Progress indicator
-            process.stdout.write(`\r   Processed ${i + 1}/${allFiles.length}`);
+            process.stdout.write(`\r   Processed ${i + 1}/${nonMdFiles.length} non-markdown files`);
 
         } catch (error) {
             console.warn(`\n⚠️ Error processing ${file.path}:`, error);
@@ -151,6 +171,7 @@ export async function downloadDocsFromGitHub(config: SyncConfig): Promise<SyncSt
     console.log(''); // New line after progress
 
     return stats;
+
 }
 
 /**

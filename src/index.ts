@@ -72,12 +72,31 @@ program
             console.log(`   Found ${stats.totalFiles} files (${(stats.totalSize / 1024).toFixed(1)} KB total)`);
 
             // Filter changed files if incremental
+            // This compares: current upstream hash vs last-translated upstream hash
+            // NOT: local file hash (which would be the translated content)
             let filesToTranslate = scanResult.files;
             if (options.incremental) {
-                console.log('\n📋 Checking for changes...');
-                const cache = await loadHashCache(cacheFile);
-                filesToTranslate = detectChangedFiles(scanResult.files, cache);
-                console.log(`   ${filesToTranslate.length} files changed since last run`);
+                console.log('\n📋 Checking for upstream changes...');
+
+                // Load the translation cache (records which upstream hash was last translated)
+                const translationCache = await loadHashCache(cacheFile);
+
+                // Load current upstream hashes (set by sync command)
+                const upstreamCacheFile = resolve(process.cwd(), '.upstream-hashes.json');
+                const upstreamHashes = await loadHashCache(upstreamCacheFile);
+
+                if (upstreamHashes.size === 0) {
+                    console.log('   ⚠️ No upstream hashes found. Run "sync" first or translate all files.');
+                } else {
+                    // Find files where upstream hash changed since last translation
+                    filesToTranslate = scanResult.files.filter(file => {
+                        const upstreamHash = upstreamHashes.get(file.relativePath);
+                        const lastTranslatedHash = translationCache.get(file.relativePath);
+                        // Translate if: no upstream hash (new file) OR upstream changed
+                        return !upstreamHash || upstreamHash !== lastTranslatedHash;
+                    });
+                    console.log(`   ${filesToTranslate.length} files need translation (upstream changed)`);
+                }
             }
 
             if (filesToTranslate.length === 0) {
@@ -133,8 +152,31 @@ program
             }
 
             // Save cache for incremental builds
+            // We save the UPSTREAM hash (not local file hash) for files we successfully translated
             if (options.incremental) {
-                await saveHashCache(cacheFile, scanResult.files);
+                const upstreamCacheFile = resolve(process.cwd(), '.upstream-hashes.json');
+                const upstreamHashes = await loadHashCache(upstreamCacheFile);
+
+                // Build new cache: for each successfully translated file, record its upstream hash
+                const successfulFiles = results.filter(r => r.success).map(r => r.file);
+                const cacheData: Record<string, string> = {};
+
+                // Load existing cache first (keep hashes for files we didn't touch)
+                const existingCache = await loadHashCache(cacheFile);
+                for (const [path, hash] of existingCache) {
+                    cacheData[path] = hash;
+                }
+
+                // Update with upstream hashes for files we translated
+                for (const file of successfulFiles) {
+                    const upstreamHash = upstreamHashes.get(file.relativePath);
+                    if (upstreamHash) {
+                        cacheData[file.relativePath] = upstreamHash;
+                    }
+                }
+
+                const { writeFile } = await import('fs/promises');
+                await writeFile(cacheFile, JSON.stringify(cacheData, null, 2), 'utf-8');
             }
 
             // Print summary
@@ -176,10 +218,23 @@ program
                 githubToken: process.env.GITHUB_TOKEN,
             });
 
-            console.log(`\n✅ Synced ${stats.filesDownloaded} files`);
+            console.log(`\n✅ Synced ${stats.filesDownloaded} non-markdown files`);
             if (stats.filesSkipped > 0) {
                 console.log(`⏭️  Skipped ${stats.filesSkipped} unchanged files`);
             }
+            console.log(`📊 Tracked ${stats.upstreamHashes.size} upstream markdown hashes`);
+
+            // Save upstream hashes to cache file for incremental translation
+            const upstreamCacheFile = join(outputDir, '..', '.upstream-hashes.json');
+            const { writeFile, mkdir } = await import('fs/promises');
+            const { dirname } = await import('path');
+            const hashData: Record<string, string> = {};
+            for (const [path, hash] of stats.upstreamHashes.entries()) {
+                hashData[path] = hash;
+            }
+            await mkdir(dirname(upstreamCacheFile), { recursive: true });
+            await writeFile(upstreamCacheFile, JSON.stringify(hashData, null, 2), 'utf-8');
+            console.log(`💾 Saved upstream hashes to ${upstreamCacheFile}`);
 
         } catch (error) {
             console.error('❌ Error:', error instanceof Error ? error.message : error);
