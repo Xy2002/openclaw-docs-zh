@@ -119,6 +119,77 @@ export class Translator {
     }
 
     /**
+     * Maximum tokens per chunk for API requests (conservative limit)
+     * qwen-mt-plus has 8192 limit, we use 6000 to leave room for system prompt and response
+     */
+    private readonly maxTokensPerChunk = 6000;
+
+    /**
+     * Split content into chunks that fit within token limits
+     * Splits at paragraph boundaries to maintain coherence
+     */
+    private splitIntoChunks(content: string): string[] {
+        const estimatedTokens = estimateTokens(content);
+
+        // If content fits in one chunk, return as-is
+        if (estimatedTokens <= this.maxTokensPerChunk) {
+            return [content];
+        }
+
+        // Split by paragraphs (double newlines)
+        const paragraphs = content.split(/\n\n+/);
+        const chunks: string[] = [];
+        let currentChunk = '';
+        let currentTokens = 0;
+
+        for (const paragraph of paragraphs) {
+            const paragraphTokens = estimateTokens(paragraph);
+
+            // If single paragraph exceeds limit, split by lines
+            if (paragraphTokens > this.maxTokensPerChunk) {
+                // Flush current chunk first
+                if (currentChunk) {
+                    chunks.push(currentChunk.trim());
+                    currentChunk = '';
+                    currentTokens = 0;
+                }
+
+                // Split large paragraph by lines
+                const lines = paragraph.split('\n');
+                for (const line of lines) {
+                    const lineTokens = estimateTokens(line);
+                    if (currentTokens + lineTokens > this.maxTokensPerChunk && currentChunk) {
+                        chunks.push(currentChunk.trim());
+                        currentChunk = '';
+                        currentTokens = 0;
+                    }
+                    currentChunk += (currentChunk ? '\n' : '') + line;
+                    currentTokens += lineTokens;
+                }
+                continue;
+            }
+
+            // Check if adding this paragraph would exceed limit
+            if (currentTokens + paragraphTokens > this.maxTokensPerChunk && currentChunk) {
+                chunks.push(currentChunk.trim());
+                currentChunk = '';
+                currentTokens = 0;
+            }
+
+            // Add paragraph to current chunk
+            currentChunk += (currentChunk ? '\n\n' : '') + paragraph;
+            currentTokens += paragraphTokens;
+        }
+
+        // Don't forget the last chunk
+        if (currentChunk.trim()) {
+            chunks.push(currentChunk.trim());
+        }
+
+        return chunks;
+    }
+
+    /**
      * Translate a markdown file content
      */
     async translateMarkdown(rawContent: string): Promise<TranslationResult> {
@@ -135,31 +206,54 @@ export class Translator {
             };
         }
 
-        // Estimate tokens for rate limiting
-        const estimatedInputTokens = estimateTokens(textToTranslate) + estimateTokens(TRANSLATION_SYSTEM_PROMPT);
-        const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5);
-        const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
+        // Split content into chunks if needed
+        const chunks = this.splitIntoChunks(textToTranslate);
 
-        // Execute translation with rate limiting
-        const result = await this.rateLimiter.execute(estimatedTotalTokens, async () => {
-            const apiResult = await this.makeRequest(textToTranslate);
+        let totalInputTokens = 0;
+        let totalOutputTokens = 0;
+        const translatedChunks: string[] = [];
 
-            return {
-                result: apiResult,
-                actualTokens: apiResult.inputTokens + apiResult.outputTokens,
-            };
-        });
+        // Translate each chunk
+        for (let i = 0; i < chunks.length; i++) {
+            const chunk = chunks[i];
+
+            if (chunks.length > 1) {
+                console.log(`\n      📦 Translating chunk ${i + 1}/${chunks.length} (${estimateTokens(chunk)} tokens)`);
+            }
+
+            // Estimate tokens for rate limiting
+            const estimatedInputTokens = estimateTokens(chunk) + estimateTokens(TRANSLATION_SYSTEM_PROMPT);
+            const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5);
+            const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
+
+            // Execute translation with rate limiting
+            const result = await this.rateLimiter.execute(estimatedTotalTokens, async () => {
+                const apiResult = await this.makeRequest(chunk);
+
+                return {
+                    result: apiResult,
+                    actualTokens: apiResult.inputTokens + apiResult.outputTokens,
+                };
+            });
+
+            translatedChunks.push(result.translatedText);
+            totalInputTokens += result.inputTokens;
+            totalOutputTokens += result.outputTokens;
+        }
+
+        // Merge translated chunks
+        const translatedContent = translatedChunks.join('\n\n');
 
         // Restore protected blocks
-        const restoredContent = restoreProtectedBlocks(result.translatedText, parsed.protectedBlocks);
+        const restoredContent = restoreProtectedBlocks(translatedContent, parsed.protectedBlocks);
 
         // Reconstruct with frontmatter
         const finalContent = reconstructMarkdown(parsed.frontmatter, restoredContent);
 
         return {
             translatedContent: finalContent,
-            inputTokens: result.inputTokens,
-            outputTokens: result.outputTokens,
+            inputTokens: totalInputTokens,
+            outputTokens: totalOutputTokens,
         };
     }
 
