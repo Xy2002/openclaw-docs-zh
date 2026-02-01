@@ -203,19 +203,19 @@ export class ParagraphOrchestrator {
             }
 
             // Skip very large files (> 100KB)
-            if (content.length > 100 * 1024) {
-                console.log(`\n   ⏭️ Skipping large file (${(content.length / 1024).toFixed(1)}KB): ${file.relativePath}`);
-                // Write original content to output
-                const outputPath = join(this.config.outputDir, file.relativePath);
-                await mkdir(dirname(outputPath), { recursive: true });
-                await writeFile(outputPath, content, 'utf-8');
-                return {
-                    file,
-                    success: true,
-                    inputTokens: 0,
-                    outputTokens: 0,
-                };
-            }
+            // if (content.length > 100 * 1024) {
+            //     console.log(`\n   ⏭️ Skipping large file (${(content.length / 1024).toFixed(1)}KB): ${file.relativePath}`);
+            //     // Write original content to output
+            //     const outputPath = join(this.config.outputDir, file.relativePath);
+            //     await mkdir(dirname(outputPath), { recursive: true });
+            //     await writeFile(outputPath, content, 'utf-8');
+            //     return {
+            //         file,
+            //         success: true,
+            //         inputTokens: 0,
+            //         outputTokens: 0,
+            //     };
+            // }
 
             // Parse into paragraphs
             const parsed = parseDocumentIntoParagraphs(content);

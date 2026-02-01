@@ -116,18 +116,18 @@ export class Orchestrator {
             const content = await readFile(file.path, 'utf-8');
 
             // Skip very large files (> 100KB) to avoid API issues
-            if (content.length > 100 * 1024) {
-                console.log(`\n   ⏭️ Skipping large file (${(content.length / 1024).toFixed(1)}KB): ${file.relativePath}`);
-                return {
-                    file,
-                    success: true,
-                    result: {
-                        translatedContent: content,
-                        inputTokens: 0,
-                        outputTokens: 0,
-                    },
-                };
-            }
+            // if (content.length > 100 * 1024) {
+            //     console.log(`\n   ⏭️ Skipping large file (${(content.length / 1024).toFixed(1)}KB): ${file.relativePath}`);
+            //     return {
+            //         file,
+            //         success: true,
+            //         result: {
+            //             translatedContent: content,
+            //             inputTokens: 0,
+            //             outputTokens: 0,
+            //         },
+            //     };
+            // }
 
             // Translate
             const result = await this.translator.translateMarkdown(content);
