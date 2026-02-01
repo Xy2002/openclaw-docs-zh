@@ -227,7 +227,7 @@ export default myHandler;
 
 ### 代理事件
 
-- **`agent:bootstrap`**：在工作区引导文件注入之前（钩子可能会改变 `context.bootstrapFiles`）
+- **`agent:bootstrap`**：在工作区引导文件注入之前（钩子可能会改变 `context.bootstrapFiles`)
 
 ### 网关事件
 
@@ -265,7 +265,7 @@ mkdir -p ~/.openclaw/hooks/my-hook
 cd ~/.openclaw/hooks/my-hook
 ```
 
-### 3. 创建 HOOK.md
+### 3. Create HOOK.md
 
 ```markdown
 ---
@@ -847,7 +847,7 @@ node -e "import('./path/to/handler.ts').then(console.log)"
    mv ./hooks/handlers/my-handler.ts ~/.openclaw/hooks/my-hook/handler.ts
    ```
 
-2. 创建 HOOK.md：
+2. Create HOOK.md：
    ```markdown
    ---
    name: my-hook

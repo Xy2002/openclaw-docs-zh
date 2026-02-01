@@ -64,15 +64,6 @@ macOS 应用支持 Anthropic OAuth（Claude Pro/Max）。流程如下：
 
 设置完成后，应用会打开一个专用的入门聊天会话，以便代理能够自我介绍并指导后续步骤。这样可以将首次运行的引导信息与您的正常对话区分开来。
 
-## 代理引导仪式
-
-在代理首次运行时，OpenClaw 会引导一个工作空间（默认 `~/.openclaw/workspace`）：
-
-- 初始化 `AGENTS.md`、`BOOTSTRAP.md`、`IDENTITY.md`、`USER.md`
-- 运行简短的问答仪式（一次一个问题）
-- 将身份和偏好写入 `IDENTITY.md`、`USER.md`、`SOUL.md`
-- 在完成时移除 `BOOTSTRAP.md`，确保其仅运行一次
-
 ## 可选：Gmail 钩子（手动）
 
 Gmail Pub/Sub 的设置目前仍需手动完成。使用以下内容：

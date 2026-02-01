@@ -33,7 +33,7 @@ OpenClaw 对时间戳进行标准化，使模型看到一个**单一的参考时
 ```
 
 - `envelopeTimezone: "utc"` 使用 UTC 时间。
-- `envelopeTimezone: "user"` 使用 `agents.defaults.userTimezone`（回退到主机所在时区）。
+- __ INLINE_CODE_7__ 使用 `agents.defaults.userTimezone`（回退到主机所在时区）。
 - 使用明确的 IANA 时区（例如 `"Europe/Vienna"`），以固定偏移量为准。
 - `envelopeTimestamp: "off"` 从信封头中移除绝对时间戳。
 - `envelopeElapsed: "off"` 移除经过时间后缀（如 `+2m` 样式）。

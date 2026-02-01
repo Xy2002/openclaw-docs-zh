@@ -95,7 +95,7 @@ openclaw gateway --port 18789
 
 OpenClaw 从其工作空间目录中读取操作指令和“记忆”。
 
-默认情况下，OpenClaw 使用 `~/.openclaw/workspace` 作为代理的工作空间，并会在设置或首次运行代理时自动创建该目录（同时创建初始的 `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`）。只有在工作空间是全新的情况下才会创建 `BOOTSTRAP.md`（删除后不应再次自动生成）。
+默认情况下，OpenClaw 使用 `~/.openclaw/workspace` 作为代理的工作空间，并会在设置或首次运行代理时自动创建该目录（同时创建初始的 `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `IDENTITY.md`, `USER.md`)。只有在工作空间是全新的情况下才会创建 `BOOTSTRAP.md`（删除后不应再次自动生成）。
 
 提示：将此文件夹视为 OpenClaw 的“记忆”，并将其设为 Git 仓库（最好是私有），以便备份你的 `AGENTS.md` 和记忆文件。如果已安装 Git，全新工作空间会自动初始化。
 
@@ -106,7 +106,7 @@ openclaw setup
 完整工作空间布局及备份指南：[代理工作空间](/concepts/agent-workspace)
 记忆工作流：[记忆](/concepts/memory)
 
-可选：使用 `agents.defaults.workspace` 指定不同的工作空间（支持 `~`）。
+可选：使用 `agents.defaults.workspace` 指定不同的工作空间（支持 `~`)。
 
 ```json5
 {
@@ -174,7 +174,7 @@ OpenClaw 默认提供良好的助理设置，但你通常需要调整以下内�
 ## 会话与记忆
 
 - 会话文件： `~/.openclaw/agents/<agentId>/sessions/{{SessionId}}.jsonl`
-- 会话元数据（token 使用情况、上次路由等）：`~/.openclaw/agents/<agentId>/sessions/sessions.json`（旧版：`~/.openclaw/sessions/sessions.json`）
+- 会话元数据（token 使用情况、上次路由等）：`~/.openclaw/agents/<agentId>/sessions/sessions.json`（旧版：`~/.openclaw/sessions/sessions.json`)
 - `/new` 或 `/reset` 为该聊天启动一个新的会话（可通过 `resetTriggers` 进行配置）。如果单独发送，代理会回复简短的问候语以确认重置。
 - `/compact [instructions]` 会压缩会话上下文，并报告剩余的上下文预算。
 
@@ -184,9 +184,9 @@ OpenClaw 默认提供良好的助理设置，但你通常需要调整以下内�
 `Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`
 设置 `agents.defaults.heartbeat.every: "0m"` 可禁用心跳功能。
 
-- 如果 `HEARTBEAT.md` 存在但实际上是空的（仅包含空行和 Markdown 标题，如 `# Heading`），OpenClaw 会跳过心跳运行以节省 API 调用。
+- 如果 `HEARTBEAT.md` 存在但实际上是空的（仅包含空行和 Markdown 标题，如 `# Heading`)，OpenClaw 会跳过心跳运行以节省 API 调用。
 - 如果该文件缺失，心跳仍会运行，由模型决定如何处理。
-- 如果代理回复 `HEARTBEAT_OK`（可选择附带简短填充文本；参见 `agents.defaults.heartbeat.ackMaxChars`），OpenClaw 会抑制该次心跳的对外消息发送。
+- 如果代理回复 `HEARTBEAT_OK`（可选择附带简短填充文本；参见 `agents.defaults.heartbeat.ackMaxChars`)，OpenClaw 会抑制该次心跳的对外消息发送。
 - 心跳会触发完整的代理回合——间隔越短，消耗的 token 越多。
 
 ```json5
@@ -222,7 +222,7 @@ openclaw status --deep   # adds gateway health probes (Telegram + Discord)
 openclaw health --json   # gateway health snapshot (WS)
 ```
 
-日志存储在 `/tmp/openclaw/` 下（默认：`openclaw-YYYY-MM-DD.log`）。
+日志存储在 `/tmp/openclaw/` 下（默认：`openclaw-YYYY-MM-DD.log`)。
 
 ## 后续步骤
 

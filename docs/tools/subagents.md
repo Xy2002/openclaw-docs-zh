@@ -12,7 +12,7 @@ read_when:
 
 ## 斜杠命令
 
-使用 `/subagents` 来检查或控制**当前会话**的子代理运行：
+使用 `/subagents` 来检查或控制**当前会贯**的子代理运行：
 - `/subagents list`
 - `/subagents stop <id|#|all>`
 - `/subagents log <id|#> [limit] [tools]`

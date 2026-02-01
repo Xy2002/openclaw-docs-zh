@@ -114,7 +114,7 @@ lume create openclaw --os macos --ipsw latest
 lume get openclaw
 ```
 
-查找 IP 地址（通常是 `192.168.64.x`）。
+查找 IP 地址（通常是 `192.168.64.x`)。
 
 ---
 
@@ -200,7 +200,7 @@ ssh youruser@192.168.64.X "openclaw status"
 1. 从 bluebubbles.app 下载 BlueBubbles
 2. 使用您的 Apple ID 登录
 3. 启用 Web API 并设置密码
-4. 将 BlueBubbles 的 Webhook 指向您的网关（示例：`https://your-gateway-host:3000/bluebubbles-webhook?password=<password>`）
+4. 将 BlueBubbles 的 Webhook 指向您的网关（示例：`https://your-gateway-host:3000/bluebubbles-webhook?password=<password>`)
 
 将其添加到 OpenClaw 配置中：
 

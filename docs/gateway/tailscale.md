@@ -95,7 +95,7 @@ openclaw gateway --tailscale funnel --auth password
 
 ## Tailscale 前提条件与限制
 
-- Serve 要求您的尾网已启用 HTTPS；如果缺失，CLI 会提示您。
+- Serve 要求您的尾网已启用 HTTPS；如果缺失， CLI 会提示您。
 - Serve 会注入 Tailscale 身份标头；Funnel 不会。
 - Funnel 要求 Tailscale 版本 1.38.3 或更高，支持 MagicDNS，已启用 HTTPS，并具有漏斗节点属性。
 - Funnel 仅支持通过 TLS 的 `443`、`8443` 和 `10000` 端口。

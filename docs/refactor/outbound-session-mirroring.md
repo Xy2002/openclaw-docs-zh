@@ -23,7 +23,7 @@ description: >-
 ## 实施摘要
 - 新的出站会话路由辅助函数：
   - `src/infra/outbound/outbound-session.ts`
-  - `resolveOutboundSessionRoute` 使用 `buildAgentSessionKey`（dmScope + identityLinks）构建目标 sessionKey。
+  - __ INLINE_CODE_1__ 使用 `buildAgentSessionKey`（dmScope + identityLinks）构建目标 sessionKey。
   - `ensureOutboundSessionEntry` 通过 `recordSessionMetaFromInbound` 写入最小化的 `MsgContext`。
 - `runMessageAction`（发送）推导目标 sessionKey，并将其传递给 `executeSendAction` 进行镜像。
 - `message-tool` 不再直接进行镜像；它仅从当前会话密钥解析 agentId。

@@ -46,8 +46,8 @@ OpenClaw通过`exec`工具运行Shell命令，并将长时间运行的任务保�
 操作：
 - `list`：正在运行和已完成的会话
 - `poll`：为会话提取新输出（同时报告退出状态）
-- `log`：读取聚合输出（支持`offset` + `limit`）
-- `write`：发送stdin（`data`，可选`eof`）
+- `log`：读取聚合输出（支持`offset` + `limit`)
+- `write`：发送stdin（`data`，可选`eof`)
 - `kill`：终止后台会话
 - `clear`：从内存中移除已完成会话
 - `remove`：如果正在运行则终止，否则如果已完成则清除

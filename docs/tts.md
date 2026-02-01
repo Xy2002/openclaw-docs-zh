@@ -42,7 +42,7 @@ Edge TTS **不需要** API 密钥。如果未找到任何 API 密钥，OpenClaw 
 
 ## 是否默认启用？
 
-否。自动 TTS 默认是关闭的。您可以通过 `messages.tts.auto` 在配置中启用它，或通过 `/tts always`（别名： `/tts on`）为每个会话单独启用。
+否。自动 TTS 默认是关闭的。您可以通过 `messages.tts.auto` 在配置中启用它，或通过 `/tts always`（别名： `/tts on`) 为每个会话单独启用。
 
 一旦 TTS 功能开启，Edge TTS 就会默认启用，并在没有可用的 OpenAI 或 ElevenLabs API 密钥时自动使用。
 
@@ -183,34 +183,34 @@ TTS 配置位于 `openclaw.json` 下的 `messages.tts` 中。完整模式可在 
 
 ### 字段说明
 
-- `auto`: 自动 TTS 模式（`off`、`always`、`inbound`、`tagged`）。
+- `auto`: 自动 TTS 模式（`off`、`always`、`inbound`、`tagged`)。
   - `inbound` 仅在收到入站语音消息后发送音频。
   - `tagged` 仅在回复包含 `[[tts]]` 标签时发送音频。
-- `enabled`: 旧版切换开关（医生会将其迁移到 `auto`）。
+- `enabled`: 旧版切换开关（医生会将其迁移到 `auto`)。
 - `mode`: `"final"`（默认）或 `"all"`（包括工具/屏蔽回复）。
 - `provider`: `"elevenlabs"`、`"openai"` 或 `"edge"`（备用选项自动生效）。
 - 如果 `provider` 未设置，OpenClaw 优先使用 `openai`（如果有密钥），然后是 `elevenlabs`（如果有密钥），否则使用 `edge`。
 - `summaryModel`: 自动摘要的可选廉价模型；默认为 `agents.defaults.model.primary`。
   - 接受 `provider/model` 或已配置的模型别名。
-- `modelOverrides`: 允许模型发出 TTS 指令（默认开启）。
+- `modelOverrides`: 全局允许模型发出 TTS 指令（默认开启）。
 - `maxTextLength`: TTS 输入的硬性上限（字符数）。超过此限制将导致失败。
 - `timeoutMs`: 请求超时（毫秒）。
 - `prefsPath`: 覆盖本地偏好 JSON 路径（提供商/限制/摘要）。
-- `apiKey` 的值会回退到环境变量（`ELEVENLABS_API_KEY`/`XI_API_KEY`、`OPENAI_API_KEY`）。
+- `apiKey` 的值会回退到环境变量（`ELEVENLABS_API_KEY`/`XI_API_KEY`、`OPENAI_API_KEY`)。
 - `elevenlabs.baseUrl`: 覆盖 ElevenLabs API 的基础 URL。
 - `elevenlabs.voiceSettings`:
   - `stability`、`similarityBoost`、`style`: `0..1`
   - `useSpeakerBoost`: `true|false`
   - `speed`: `0.5..2.0`（1.0 = 正常）
 - `elevenlabs.applyTextNormalization`: `auto|on|off`
-- `elevenlabs.languageCode`: 2 位 ISO 639-1 语言代码（例如 `en`、 `de`）
+- `elevenlabs.languageCode`: 2 位 ISO 639-1 语言代码（例如 `en`、 `de`)
 - `elevenlabs.seed`: 整数 `0..4294967295`（尽力而为的确定性）
 - `edge.enabled`: 允许使用 Edge TTS（默认 `true`；无需 API 密钥）。
-- `edge.voice`: Edge 神经网络语音名称（例如 `en-US-MichelleNeural`）。
-- `edge.lang`: 语言代码（例如 `en-US`）。
-- `edge.outputFormat`: Edge 输出格式（例如 `audio-24khz-48kbitrate-mono-mp3`）。
+- `edge.voice`: Edge 神经网络语音名称（例如 `en-US-MichelleNeural`)
+- `edge.lang`: 语言代码（例如 `en-US`)
+- `edge.outputFormat`: Edge 输出格式（例如 `audio-24khz-48kbitrate-mono-mp3`)
   - 请参阅 Microsoft 语音输出格式以获取有效值；并非所有格式都受 Edge 支持。
-- `edge.rate` / `edge.pitch` / `edge.volume`: 百分比字符串（例如 `+10%`、 `-5%`）。
+- `edge.rate` / `edge.pitch` / `edge.volume`: 百分比字符串（例如 `+10%`、 `-5%`)
 - `edge.saveSubtitles`: 在音频文件旁边写入 JSON 字幕。
 - `edge.proxy`: Edge TTS 请求的代理 URL。
 - `edge.timeoutMs`: 请求超时覆盖（毫秒）。
@@ -231,7 +231,7 @@ Here you go.
 ```
 
 可用的指令键（启用时）：
-- `provider`（`openai` | `elevenlabs` | `edge`）
+- `provider`（`openai` | `elevenlabs` | `edge`)
 - `voice`（OpenAI 语音）或 `voiceId`（ElevenLabs）
 - `model`（OpenAI TTS 模型或 ElevenLabs 模型 ID）
 - `stability`、 `similarityBoost`、 `style`、 `speed`、 `useSpeakerBoost`
@@ -283,14 +283,14 @@ Here you go.
 
 ## 输出格式（固定）
 
-- **Telegram**: Opus 语音消息（来自 ElevenLabs 的 `opus_48000_64`，来自 OpenAI 的 `opus`）。
+- **Telegram**: Opus 语音消息（来自 ElevenLabs 的 `opus_48000_64`，来自 OpenAI 的 `opus`)
   - 48kHz / 64kbps 是语音消息的良好折衷方案，也是实现圆形气泡所必需的。
-- **其他渠道**: MP3（来自 ElevenLabs 的 `mp3_44100_128`，来自 OpenAI 的 `mp3`）。
+- **其他渠道**: MP3（来自 ElevenLabs 的 `mp3_44100_128`，来自 OpenAI 的 `mp3`)
   - 44.1kHz / 128kbps 是语音清晰度的默认平衡。
-- **Edge TTS**: 使用 `edge.outputFormat`（默认 `audio-24khz-48kbitrate-mono-mp3`）。
+- **Edge TTS**: 使用 `edge.outputFormat`（默认 `audio-24khz-48kbitrate-mono-mp3`)
   - `node-edge-tts` 接受 `outputFormat`，但并非所有格式都可从 Edge 服务获得。citeturn2search0
   - 输出格式值遵循 Microsoft 语音输出格式（包括 Ogg/WebM Opus）。citeturn1search0
-  - Telegram `sendVoice` 接受 OGG/MP3/M4A；如果您需要有保障的 Opus 语音消息，请使用 OpenAI/ElevenLabs。citeturn1search1
+  - Telegram `sendVoice` 接cept OGG/MP3/M4A；如果您需要有保障的 Opus 语音消息，请使用 OpenAI/ElevenLabs。citeturn1search1
   - 如果配置的 Edge 输出格式无效，OpenClaw 会尝试使用 MP3 作为替代。
 
 OpenAI/ElevenLabs 的格式是固定的；Telegram 对于语音消息的用户体验要求使用 Opus。
@@ -322,7 +322,7 @@ Reply -> TTS enabled?
 
 ## 斜杠命令使用
 
-只有一个命令： `/tts`。有关启用详情，请参阅 [斜杠命令](/tools/slash-commands)。
+只有一个命令： `/tts`. 有关启用详情，请参阅 [斜杠命令](/tools/slash-commands)。
 
 Discord 注意事项：`/tts` 是 Discord 内置命令，因此 OpenClaw 在那里注册了 `/voice` 作为原生命令。文本 `/tts ...` 仍然有效。
 

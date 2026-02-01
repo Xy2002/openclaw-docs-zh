@@ -76,7 +76,7 @@ openclaw agents add <name>
    - **Anthropic API 密钥（推荐）**：如果存在 `ANTHROPIC_API_KEY`，则使用它；否则提示您输入密钥，并将其保存以供守护进程使用。
    - **Anthropic OAuth（Claude Code CLI）**：在 macOS 上，向导会检查钥匙串中的“Claude Code-credentials”条目（选择“始终允许”，以避免 launchd 启动被阻止）；在 Linux/Windows 上，如果存在 `~/.claude/.credentials.json`，则重复使用。
    - **Anthropic token（粘贴 setup-token）**：在任何机器上运行 `claude setup-token`，然后粘贴令牌（您可以为其命名；留空则使用默认值）。
-   - **OpenAI Code (Codex) 订阅（Codex CLI）**：如果 `~/.codex/auth.json` 存在，向导可以重复使用。
+   - **OpenAI Code (Codex) 订阅（Codex CLI）**：如果 `~/.codex/auth.json` 存在，向导可以重复用。
    - **OpenAI Code (Codex) 订阅（OAuth）**：浏览器流程；粘贴 `code#state`。
      - 当未设置模型或 `openai/*` 时，将 `agents.defaults.model` 设置为 `openai-codex/gpt-5.2`。
    - **OpenAI API 密钥**：如果存在 `OPENAI_API_KEY`，则使用；否则提示您输入密钥，并将其保存到 `~/.openclaw/.env`，以便 launchd 可以读取。

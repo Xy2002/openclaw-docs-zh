@@ -222,7 +222,7 @@ tailscale funnel 3978
 2. **机器人注册**
    - 创建一个Azure Bot（见上文）并记下：
      - 应用ID
-     - 客户端密钥（应用密码）
+     - 客户ite密钥（应用密码）
      - 租户ID（单租户）
 
 3. **Teams应用清单**
@@ -424,13 +424,15 @@ Teams的Markdown比Slack或Discord更有限：
 - `channels.msteams.teams.<teamId>.channels.<conversationId>.replyStyle`：按频道覆盖。
 - `channels.msteams.teams.<teamId>.channels.<conversationId>.requireMention`：按频道覆盖。
 - `channels.msteams.teams.<teamId>.channels.<conversationId>.tools`：按频道的工具政策覆盖（`allow`/`deny`/`alsoAllow`）。
+- `allow`：按频道的每发送方工具政策覆盖（`deny`通配符支持）。
+- `deny`：按频道的每发送方工具政策覆盖（`alsoAllow`通配符支持）。
 - `allow`：按频道的每发送方工具政策覆盖（`"*"`通配符支持）。
 - `deny`：按频道的每发送方工具政策覆盖。
 - `alsoAllow`：按频道的每发送方工具政策覆盖。
 - `channels.msteams.teams.<teamId>.channels.<conversationId>.toolsBySender`：按频道的每发送方工具政策覆盖（`"*"`通配符支持）。
 - `channels.msteams.sharePointSiteId`：用于群聊/频道文件上传的SharePoint站点ID（参见[在群聊中发送文件](#sending-files-in-group-chats)）。
 
-## 路由与会话
+## 路径与会话
 - 会话密钥遵循标准代理格式（参见[/概念/会话](/concepts/session)）：
   - 直接消息共享主会话(`agent:<agentId>:<mainKey>`)。
   - 频道/群组消息使用对话ID：

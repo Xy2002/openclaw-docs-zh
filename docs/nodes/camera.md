@@ -37,7 +37,7 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
     - `quality`：`0..1`（可选；默认值为 `0.9`）
     - `format`：当前为 `jpg`
     - `delayMs`：数字（可选；默认值为 `0`）
-    - `deviceId`：字符串（可选；来自 `camera.list`）
+    - `deviceId`：字符串（可选；来自 `camera.list`)
   - 响应负载：
     - `format: "jpg"`
     - `base64: "<...>"`
@@ -50,7 +50,7 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
     - `durationMs`：数字（默认值为 `3000`，上限为 `60000`）
     - `includeAudio`：布尔值（默认为 `true`）
     - `format`：当前为 `mp4`
-    - `deviceId`：字符串（可选；来自 `camera.list`）
+    - `deviceId`：字符串（可选；来自 `camera.list`)
   - 响应负载：
     - `format: "mp4"`
     - `base64: "<...>"`

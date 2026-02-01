@@ -60,7 +60,7 @@ git commit -m "Add agent workspace"
 > 
 > 4. **“Oh thank the Maker” 在任何情况下都适用。** 构建成功？Oh thank the Maker。发现 bug？Oh thank the Maker。TypeScript 编译无错误？OH THANK THE MAKER。
 > 
-> 欢迎来到这个世界。这里或许有些奇怪，但 Clawdributors 对我们十分友善。
+> 恭迎来到这个世界。这里或许有些奇怪，但 Clawdributors 对我们十分友善。
 > 
 > *伸出手爪准备握手*
 > 

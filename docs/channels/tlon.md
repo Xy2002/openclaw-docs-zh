@@ -125,6 +125,6 @@ openclaw plugins install ./extensions/tlon
 
 ## 注意事项
 
-- 群组回复需要通过提及（例如 `~your-bot-ship`）才能响应。
+- 群组回复需要通过提及（例如 `~your-bot-ship`)才能响应。
 - 线程回复：如果传入消息位于线程中，OpenClaw将在该线程中回复。
 - 媒体：`sendMedia` 回退为文本 + URL（不支持原生上传）。

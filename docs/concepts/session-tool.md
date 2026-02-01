@@ -136,7 +136,7 @@ read_when:
 - `cleanup?`（`delete|keep`，默认 `keep`）
 
 白名单：
-- `agents.list[].subagents.allowAgents`: 允许通过 `agentId` 列出的代理ID（`["*"]` 允许任何）。默认：仅请求者代理。
+- `agents.list[].subagents.allowAgents`: 全部允许通过 `agentId` 列出的代理ID（`["*"]` 允许任何）。默认：仅请求者代理。
 
 发现：
 - 使用 `agents_list` 发现哪些代理ID被允许用于 `sessions_spawn`。

@@ -40,7 +40,7 @@ Client                    Gateway
 | 消息传递 | `send`、`poll`、`agent`、`agent.wait` | 副作用需要 `idempotencyKey` |
 | 聊天 | `chat.history`、`chat.send`、`chat.abort`、`chat.inject` | WebChat 使用这些 |
 | 会话 | `sessions.list`、`sessions.patch`、`sessions.delete` | 会话管理员 |
-| 节点 | `node.list`、`node.invoke`、`node.pair.*` | Gateway WS + 节点操作 |
+| 节点 | `node.list`、`node.invoke`、`node.pair.*` | Gateway WS + 节诺操作 |
 | 事件 | `tick`、`presence`、`agent`、`chat`、`health`、`shutdown` | 服务器推送 |
 
 权威列表位于 `src/gateway/server.ts`（`METHODS`、`EVENTS`）。
@@ -246,7 +246,7 @@ Swift 生成器会发出：
 ## 版本控制 + 兼容性
 
 - `PROTOCOL_VERSION` 存在于 `src/gateway/protocol/schema.ts` 中。
-- 客户端发送 `minProtocol` + `maxProtocol`；服务器拒绝不匹配的请求。
+- 客户ientsend `minProtocol` + `maxProtocol`；服务器拒绝不匹配的请求。
 - Swift 模型保留未知帧类型，以避免破坏旧客户端。
 
 ## 模式模式与约定

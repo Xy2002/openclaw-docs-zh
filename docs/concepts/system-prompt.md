@@ -64,7 +64,7 @@ OpenClaw 可以为子代理渲染更小的系统提示。运行时为每次运�
 可通过以下配置进行设置：
 
 - `agents.defaults.userTimezone`
-- `agents.defaults.timeFormat`（`auto` | `12` | `24`）
+- `agents.defaults.timeFormat`（`auto` | `12` | `24`)
 
 完整行为详情请参见 [日期与时间](/date-time)。
 

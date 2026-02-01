@@ -82,7 +82,7 @@ netsh interface portproxy add v4tov4 listenport=$ListenPort listenaddress=0.0.0.
 
 注意事项：
 - 从另一台机器通过 SSH 连接到的是 **Windows 主机的 IP**（例如：`ssh user@windows-host -p 2222`）。
-- 远程节点必须指向一个 **可访问** 的网关 URL（而非 `127.0.0.1`）；使用 `openclaw status --all` 可进行确认。
+- 驻留在远程节点上的网关 URL 必须是 **可访问** 的；使用 `openclaw status --all` 可进行确认。
 - 使用 `listenaddress=0.0.0.0` 可实现局域网访问；使用 `127.0.0.1` 则仅限于本地访问。
 - 如果希望自动执行此操作，可以注册一个计划任务，在登录时自动运行刷新步骤。
 

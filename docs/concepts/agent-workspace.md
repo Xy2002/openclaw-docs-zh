@@ -28,7 +28,7 @@ read_when:
 }
 ```
 
-如果工作区缺失必要的文件，`openclaw onboard`、`openclaw configure` 或 `openclaw setup` 将创建工作区并填充引导文件。
+如果工作区缺失必要的文件， `openclaw onboard`、`openclaw configure` 或 `openclaw setup` 将创建工作区并填充引导文件。
 
 如果您已自行管理工作区文件，则可以禁用引导文件的自动创建：
 
@@ -50,7 +50,7 @@ read_when:
 
 - `AGENTS.md`
   - 代理的操作指南及其使用记忆的方式。
-  - 在每个会话开始时加载。
+  - 在每个会案开始时加载。
   - 适合存放规则、优先级以及“行为准则”等详细信息。
 
 - `SOUL.md`

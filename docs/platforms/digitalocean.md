@@ -25,7 +25,7 @@ read_when:
 **选择云提供商：**
 - DigitalOcean：最简单的用户体验 + 可预测的部署流程（本指南）
 - Hetzner：性价比高（参见 [Hetzner 指南](/platforms/hetzner)）
-- Oracle Cloud：理论上可实现零成本，但配置更复杂且仅支持 ARM 架构（参见 [Oracle 指南](/platforms/oracle)）
+- Oracle Cloud：理论上可实现零成本，但配置更复杂且仅支持 ARM 架构（参见 [Oracle 指南](/platforms/oracle))
 
 ---
 
@@ -95,7 +95,7 @@ systemctl --user status openclaw-gateway.service
 journalctl --user -u openclaw-gateway.service -f
 ```
 
-## 6) 访问仪表板
+## 6) 验收仪表板
 
 默认情况下，网关绑定到本地回环。要访问控制界面：
 

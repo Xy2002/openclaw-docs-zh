@@ -61,7 +61,7 @@ openclaw channels add bluebubbles --http-url http://192.168.1.100:1234 --passwor
 ## 访问控制（DM + 群组）
 DM：
 - 默认：`channels.bluebubbles.dmPolicy = "pairing"`。
-- 未知发件人会收到配对码；消息在批准前会被忽略（配对码在一小时内过期）。
+- 未知发件人会收到配对码；消息在批准前会被忽略（配着码在一小时内过期）。
 - 可通过以下方式批准：
   - `openclaw pairing list bluebubbles`
   - `openclaw pairing approve bluebubbles <CODE>`
@@ -73,7 +73,7 @@ DM：
 
 ### 提及门控（群组）
 BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
-- 使用 `agents.list[].groupChat.mentionPatterns`（或 `messages.groupChat.mentionPatterns`）检测提及。
+- 使用 `agents.list[].groupChat.mentionPatterns`（或 `messages.groupChat.mentionPatterns`) 检测提及。
 - 当 `requireMention` 为某个群组启用时，代理仅在被提及时才响应。
 - 来自授权发件人的控制命令会绕过提及门控。
 
@@ -94,7 +94,7 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 ```
 
 ### 命令门控
-- 控制命令（例如，`/config`、`/model`）需要授权。
+- 控制命令（例如，`/config`、`/model`)需要授权。
 - 使用 `allowFrom` 和 `groupAllowFrom` 来确定命令授权。
 - 授权发件人即使在群组中未被提及，也可以运行控制命令。
 
@@ -139,17 +139,17 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 ```
 
 可用操作：
-- **react**：添加或移除 Tapback 反应（`messageId`、`emoji`、`remove`）
-- **edit**：编辑已发送的消息（`messageId`、`text`）
-- **unsend**：撤回消息（`messageId`）
-- **reply**：回复特定消息（`messageId`、`text`、`to`）
-- **sendWithEffect**：使用 iMessage 效果发送（`text`、`to`、`effectId`）
-- **renameGroup**：重命名群聊（`chatGuid`、`displayName`）
+- **react**：添加或移除 Tapback 反应（`messageId`、`emoji`、`remove`)
+- **edit**：编辑已发送的消息（`messageId`、`text`)
+- **unsend**：撤回消息（`messageId`)
+- **reply**：回复特定消息（`messageId`、`text`、`to`)
+- **sendWithEffect**：使用 iMessage 效果发送（`text`、`to`、`effectId`)
+- **renameGroup**：重命名群聊（`chatGuid`、`displayName`)
 - **setGroupIcon**：设置群聊的图标/照片（`chatGuid`、`media`）——在 macOS 26 Tahoe 上表现不稳定（API 可能返回成功，但图标不会同步）。
-- **addParticipant**：将某人添加到群组（`chatGuid`、`address`）
-- **removeParticipant**：从群组中移除某人（`chatGuid`、`address`）
-- **leaveGroup**：退出群聊（`chatGuid`）
-- **sendAttachment**：发送媒体/文件（`to`、`buffer`、`filename`、`asVoice`）
+- **addParticipant**：将某人添加到群组（`chatGuid`、`address`)
+- **removeParticipant**：从群组中移除某人（`chatGuid`、`address`)
+- **leaveGroup**：退出群聊（`chatGuid`)
+- **sendAttachment**：发送媒体/文件（`to`、`buffer`、`filename`、`asVoice`)
   - 语音备忘录：设置 `asVoice: true`，使用 **MP3** 或 **CAF** 音频作为 iMessage 语音消息发送。BlueBubbles 在发送语音备忘录时会将 MP3 转换为 CAF。
 
 ### 消息 ID（短 ID vs 全 ID）

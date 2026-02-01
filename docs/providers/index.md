@@ -21,7 +21,7 @@ Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设�
 
 ## 快速入门
 
-1) 使用提供商的身份验证方式（通常通过 `openclaw onboard`）进行认证。
+1) 使用提供商的身份验证方式（通常通过 `openclaw onboard`)进行认证。
 2) 设置默认模型：
 
 ```json5

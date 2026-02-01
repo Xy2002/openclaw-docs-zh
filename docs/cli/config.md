@@ -17,22 +17,6 @@ openclaw config set agents.list[0].tools.exec.node "node-id-or-name"
 openclaw config unset tools.web.search.apiKey
 ```
 
-## 路径
-
-路径使用点号或方括号表示法：
-
-```bash
-openclaw config get agents.defaults.workspace
-openclaw config get agents.list[0].id
-```
-
-使用代理列表索引来指定特定代理：
-
-```bash
-openclaw config get agents.list
-openclaw config set agents.list[1].tools.exec.node "node-id-or-name"
-```
-
 ## 值
 
 值在可能的情况下会解析为 JSON5；否则被视为字符串。使用 `--json` 来强制要求 JSON5 解析。

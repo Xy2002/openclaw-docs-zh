@@ -379,7 +379,7 @@ openclaw browser create-profile \
   - `--format aria`：返回无障碍树（无引用；仅用于检查）。
   - `--efficient`（或 `--mode efficient`）：紧凑的角色快照预设（交互式 + 紧凑 + 深度 + 较低的最大字符数）。
   - 配置默认值（仅工具/CLI）：设置 `browser.snapshotDefaults.mode: "efficient"`，以便在调用者未指定模式时使用高效快照（请参阅 [网关配置](/gateway/configuration#browser-openclaw-managed-browser)）。
-  - 角色快照选项（`--interactive`、`--compact`、`--depth`、`--selector`）强制使用基于角色的快照，并带有类似 `ref=e12` 的引用。
+  - 角色快照选项（`--interactive`、`--compact`、`--depth`、`--selector`)强制使用基于角色的快照，并带有类似 `ref=e12` 的引用。
   - `--frame "<iframe selector>"` 将角色快照限制在 iframe 内（与角色引用一起使用，如 `e12`）。
   - `--interactive` 输出一个扁平、易于选择的交互元素列表（最适合驱动操作）。
   - `--labels` 添加了一个仅视口的屏幕截图，并叠加了引用标签（打印 `MEDIA:<path>`）。
@@ -389,12 +389,12 @@ openclaw browser create-profile \
 
 OpenClaw 支持两种“快照”风格：
 
-- **AI 快照（数字引用）**：`openclaw browser snapshot`（默认；`--format ai`）
+- **AI 快照（数字引用）**：`openclaw browser snapshot`（默认；`--format ai`)
   - 输出：包含数字引用的文本快照。
   - 操作：`openclaw browser click 12`、`openclaw browser type 23 "hello"`。
   - 在内部，引用通过 Playwright 的 `aria-ref` 解析。
 
-- **角色快照（角色引用，如 `e12`）**：`openclaw browser snapshot --interactive`（或 `--compact`、`--depth`、`--selector`、`--frame`）
+- **角色快照（角色引用，如 `e12`)**：`openclaw browser snapshot --interactive`（或 `--compact`、`--depth`、`--selector`、`--frame`)
   - 输出：基于角色的列表/树，带有 `[ref=e12]`（并可选 `[nth=1]`）。
   - 操作：`openclaw browser click e12`、`openclaw browser highlight e12`。
   - 在内部，引用通过 `getByRole(...)` 解析（加上 `nth()` 用于处理重复引用）。
@@ -462,10 +462,10 @@ JSON 中的角色快照包括 `refs` 加上一个小的 `stats` 块（行数/字
 这些在“让网站表现得像 X”工作流中非常有用：
 
 - Cookies：`cookies`、`cookies set`、`cookies clear`
-- 存储：`storage local|session get|set|clear`
+- Storage：`storage local|session get|set|clear`
 - 离线：`set offline on|off`
 - 头部：`set headers --json '{"X-Debug":"1"}'`（或 `--clear`）
-- HTTP 基本身份验证： `set credentials user pass`（或 `--clear`）
+- HTTP 基本人份验证： `set credentials user pass`（或 `--clear`）
 - 地理位置：`set geo <lat> <lon> --origin "https://example.com"`（或 `--clear`）
 - 媒体：`set media dark|light|no-preference|none`
 - 时区/语言：`set timezone ...`、`set locale ...`

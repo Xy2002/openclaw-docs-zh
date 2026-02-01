@@ -40,7 +40,7 @@ Zalo以插件形式提供，不包含在核心安装中。
 ## 功能简介
 Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运行一个用于一对一对话的机器人。
 它非常适合需要确定性路由回 Zalo 的支持或通知场景。
-- 由网关拥有的 Zalo Bot API 渠道。
+- 由网关拥有的 Zalo Bot API 游戏渠道。
 - 确定性路由：回复会返回到 Zalo；模型不会自行选择渠道。
 - 私信共享代理的主要会话。
 - 群组功能尚未支持（Zalo 文档指出“即将推出”）。
@@ -83,26 +83,6 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 - 出站文本按 2000 字符分块发送（Zalo API 限制）。
 - 媒体下载/上传受 `channels.zalo.mediaMaxMb` 限制（默认为 5）。
 - 由于 2000 字符限制使流式传输效果不佳，因此默认禁用流式传输。
-
-## 访问控制（私信）
-
-### 私信访问
-- 默认：`channels.zalo.dmPolicy = "pairing"`。未知发件人会收到配对码；消息在批准前会被忽略（配对码 1 小时后失效）。
-- 批准方式：
-  - `openclaw pairing list zalo`
-  - `openclaw pairing approve zalo <CODE>`
-- 配对是默认的令牌交换方式。详情：[配对](/start/pairing)
-- `channels.zalo.allowFrom` 接受数字用户 ID（无法查找用户名）。
-
-## 长轮询 vs Webhook
-- 默认：长轮询（无需公开 URL）。
-- Webhook 模式：设置 `channels.zalo.webhookUrl` 和 `channels.zalo.webhookSecret`。
-  - Webhook 密钥必须为 8–256 个字符。
-  - Webhook URL 必须使用 HTTPS。
-  - Zalo 使用 `X-Bot-Api-Secret-Token` 头部发送事件以进行验证。
-  - 网关 HTTP 在 `channels.zalo.webhookPath` 处处理 Webhook 请求（默认为 Webhook URL 路径）。
-
-**注意：** 根据 Zalo API 文档，getUpdates（轮询）和 Webhook 互斥。
 
 ## 支持的消息类型
 - **文本消息**：完全支持，按 2000 字符分块。

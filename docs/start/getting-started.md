@@ -74,7 +74,7 @@ openclaw onboard --install-daemon
 ```
 
 您将选择的内容包括：
-- **本地 vs 远程** 网关
+- **本地 vs 运程** 网关
 - **身份验证**：OpenAI Code（Codex）订阅（OAuth）或 API 密钥。对于 Anthropic，我们推荐使用 API 密钥；也支持 `claude setup-token`。
 - **提供商**：WhatsApp QR 登录、Telegram/Discord 机器人令牌、Mattermost 插件令牌等。
 - **守护进程**：后台安装（launchd/systemd；WSL2 使用 systemd）
@@ -188,5 +188,5 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 - macOS 菜单栏应用 + 语音唤醒：[macOS 应用](/platforms/macos)
 - iOS/Android 节点（画布/相机/语音）：[节点](/nodes)
-- 远程访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
-- 常开 / VPN 设置：[远程访问](/gateway/remote)、[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[macOS 远程](/platforms/mac/remote)
+- 遥远访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
+- 常开 / VPN 设置：[远程访问](/gateway/remote)、[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[macOS 遥远](/platforms/mac/remote)

@@ -601,7 +601,7 @@ openclaw channels login --verbose
 | 网关服务日志（监控器） | macOS：`$OPENCLAW_STATE_DIR/logs/gateway.log` + `gateway.err.log`（默认：`~/.openclaw/logs/...`；配置文件使用 `~/.openclaw-<profile>/logs/...`）<br />Linux：`journalctl --user -u openclaw-gateway[-<profile>].service -n 200 --no-pager`<br />Windows：`schtasks /Query /TN "OpenClaw Gateway (<profile>)" /V /FO LIST` |
 | 会话文件 | `$OPENCLAW_STATE_DIR/agents/<agentId>/sessions/` |
 | 媒体缓存 | `$OPENCLAW_STATE_DIR/media/` |
-| 凭证 | `$OPENCLAW_STATE_DIR/credentials/` |
+| 基准测试结果 | `$OPENCLAW_STATE_DIR/credentials/` |
 
 ## 健康检查
 

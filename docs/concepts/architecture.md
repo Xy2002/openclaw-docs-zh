@@ -72,7 +72,7 @@ Client                    Gateway
 
 ## 配对 + 本地信任
 
-- 所有 WS 客户端（操作员和节点）在 `connect` 中包含 **设备身份**。
+- 所有 WS 客户ients（操作员和节点）在 `connect` 中包含 **设备身份**。
 - 新设备 ID 需要配对批准；Gateway 会为后续连接颁发 **设备令牌**。
 - **本地**连接（环回地址或网关主机自身的 tailnet 地址）可以自动批准，以保持同主机用户体验的流畅性。
 - **非本地**连接必须签署 `connect.challenge` 随机数，并需明确批准。
@@ -86,7 +86,7 @@ Client                    Gateway
 - 从这些模式生成 JSON Schema。
 - 从 JSON Schema 生成 Swift 模型。
 
-## 远程访问
+## 遠程アクセス
 
 - 推荐方式：Tailscale 或 VPN。
 - 替代方式：SSH 隧道

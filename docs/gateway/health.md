@@ -10,7 +10,7 @@ read_when:
 ## 快速检查
 - `openclaw status` — 本地摘要：网关可达性/模式、更新提示、关联通道认证时效、会话及近期活动。
 - `openclaw status --all` — 完整本地诊断（只读，彩色显示，可安全粘贴以进行调试）。
-- `openclaw status --deep` — 还会探测正在运行的网关（在支持的情况下按通道分别进行探测）。
+- __ INLINE_CODE_2__ — 还会探测正在运行的网关（在支持的情况下按通道分别进行探测）。
 - `openclaw health --json` — 向正在运行的网关请求完整的健康快照（仅限 WebSocket；不直接使用 Baileys 套接字）。
 - 在 WhatsApp/WebChat 中发送 `/status` 作为独立消息，即可在不调用代理的情况下获取状态回复。
 - 日志：使用 tail `/tmp/openclaw/openclaw-*.log` 并过滤 `web-heartbeat`、`web-reconnect`、`web-auto-reply`、`web-inbound`。

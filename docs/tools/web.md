@@ -78,7 +78,7 @@ Brave 提供免费层级以及付费方案；请查看 Brave API 门户以了解
 
 **推荐方法：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 下的 `tools.web.search.apiKey` 中。
 
-**环境变量替代方案：**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
+**环境变量替代方案：:**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
 
 ## 使用 Perplexity（直接调用或经由 OpenRouter）
 

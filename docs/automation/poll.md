@@ -47,7 +47,7 @@ openclaw message poll --channel msteams --target conversation:19:abc@thread.tacv
 - `options`（字符串数组，必填）
 - `maxSelections`（数字，可选）
 - `durationHours`（数字，可选）
-- `channel`（字符串，可选，默认为 `whatsapp`）
+- `channel`（字符串，可选，默认为 `whatsapp`)
 - `idempotencyKey`（字符串，必填）
 
 ## 各渠道差异

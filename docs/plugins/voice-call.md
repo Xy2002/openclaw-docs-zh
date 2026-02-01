@@ -12,7 +12,7 @@ read_when:
 
 当前提供商：
 - `twilio`（可编程语音 + 媒体流）
-- `telnyx`（呼叫控制 v2）
+- __ INLINE_CODE_10__（呼叫控制 v2）
 - `plivo`（语音 API + XML 转移 + GetInput 语音）
 - `mock`（开发/无网络）
 

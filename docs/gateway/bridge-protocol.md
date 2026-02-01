@@ -32,7 +32,7 @@ read_when:
 
 1) 客户端发送`hello`，携带节点元数据和令牌（如果已配对）。  
 2) 如果未配对，网关回复`error`（`NOT_PAIRED`/`UNAUTHORIZED`）。  
-3) 客户端发送`pair-request`。  
+3) 客户ient发送`pair-request`。  
 4) 网关等待批准，然后发送`pair-ok`和`hello-ok`。
 
 `hello-ok`返回`serverName`，并可能包含`canvasHostUrl`。
@@ -65,7 +65,7 @@ read_when:
 ## Tailnet 使用
 
 - 将桥接绑定到 Tailnet IP：在`~/.openclaw/openclaw.json`中设置`bridge.bind: "tailnet"`。
-- 客户端通过 MagicDNS 名称或 Tailnet IP 进行连接。
+- 客户ient通过 MagicDNS 名称或 Tailnet IP 进行连接。
 - Bonjour**不**跨网络工作；必要时请使用手动主机/端口或广域 DNS‑SD。
 
 ## 版本控制

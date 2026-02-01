@@ -28,7 +28,7 @@ read_when:
 - **运行器：** 无头系统服务；UI 应用托管 Unix 套接字以处理批准请求。
 - **节点身份：** 使用现有的 `nodeId`。
 - **套接字认证：** Unix 套接字 + 令牌（跨平台）；如有需要，后续再拆分。
-- **节点主机状态：** `~/.openclaw/node.json`（节点 ID + 配对令牌）。
+- **节点主机状态：** `~/.openclaw/node.json`（节点 ID + 配合令牌）。
 - **macOS 执行主机：** 在 macOS 应用内运行 `system.run`；节点主机服务通过本地 IPC 转发请求。
 - **无需 XPC 助手：** 继续使用 Unix 套接字 + 令牌 + 对等检查。
 
@@ -202,7 +202,7 @@ Agent -> Gateway -> Bridge -> Node Service (TS)
 - 网关进程在其自己的机器上执行。
 - 强制执行本地 `exec-approvals.json`（安全/询问/白名单）。
 
-### 节点主机
+### 节诺主机
 - 网关使用 `node.invoke` 和 `system.run` 调用。
 - 运行器强制执行本地批准。
 - 运行器返回聚合的 stdout/stderr。

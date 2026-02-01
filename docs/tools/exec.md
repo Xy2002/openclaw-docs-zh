@@ -27,13 +27,13 @@ read_when:
 
 备注：
 - `host` 默认为 `sandbox`。
-- 当沙箱关闭时，`elevated` 被忽略（exec 已在主机上运行）。
+- 当沙箱关闭时， `elevated` 被忽略（exec 已在主机上运行）。
 - `gateway`/`node` 审批由 `~/.openclaw/exec-approvals.json` 控制。
 - `node` 需要配对节点（配套应用或无头节点主机）。
 - 如果有多个节点可用，设置 `exec.node` 或 `tools.exec.node` 来选择一个。
 - 在非 Windows 主机上，如果设置了 `SHELL`，exec 将使用它；如果 `SHELL` 是 `fish`，则优先使用 `bash`（或 `sh`）
   来自 `PATH`，以避免与 fish 不兼容的脚本，如果两者都不存在，则回退到 `SHELL`。
-- 重要提示：沙箱 **默认关闭**。如果沙箱关闭，`host=sandbox` 直接在网关主机上运行（无需容器），并且 **不需要审批**。若需审批，请使用 `host=gateway` 运行，并配置 exec 审批（或启用沙箱）。
+- 重要提示：沙箱 **默认关闭**。如果沙箱关闭， `host=sandbox` 直接在网关主机上运行（无需容器），并且 **不需要审批**。若需审批，请使用 `host=gateway` 运行，并配置 exec 审批（或启用沙箱）。
 
 ## 配置
 
@@ -65,7 +65,7 @@ read_when:
 - `host=sandbox`：在容器内运行 `sh -lc`（登录 shell），因此 `/etc/profile` 可能会重置 `PATH`。
   OpenClaw 通过内部环境变量在加载配置文件后预先添加 `env.PATH`（无需 shell 插值）；
   `tools.exec.pathPrepend` 在此处同样适用。
-- `host=node`：只有您传递的环境变量覆盖会被发送到节点。`tools.exec.pathPrepend` 仅在 exec 调用已设置 `env.PATH` 时生效。无头节点主机仅在 `PATH` 预先添加节点主机 PATH 时接受（不替换）。macOS 节点完全忽略 `PATH` 覆盖。
+- `host=node`：只有您传递的环境变量覆盖会被发送到节点。 `tools.exec.pathPrepend` 仅在 exec 调用已设置 `env.PATH` 时生效。无头节点主机仅在 `PATH` 预先添加节点主机 PATH 时接受（不替换）。macOS 节点完全忽略 `PATH` 覆盖。
 
 按代理的节点绑定（在配置中使用代理列表索引）：
 
@@ -91,7 +91,7 @@ openclaw config set agents.list[0].tools.exec.node "node-id-or-name"
 `/exec` 仅对 **授权发件人** 有效（渠道白名单/配对加上 `commands.useAccessGroups`）。
 它仅更新 **会话状态**，不会写入配置。要硬性禁用 exec，请通过工具策略（`tools.deny: ["exec"]` 或按代理）拒绝它。主机审批仍然适用，除非您明确设置 `security=full` 和 `ask=off`。
 
-## Exec 审批（配套应用 / 节点主机）
+## Exec 审批（配套应用 / 节诺主机）
 
 沙箱代理可在 `exec` 在网关或节点主机上运行前要求逐次审批。
 有关政策、白名单和 UI 流程，请参阅 [Exec 审批](/tools/exec-approvals)。
@@ -153,5 +153,5 @@ shell 命令仅在每个管道段都列入白名单或为安全二进制文件�
 
 备注：
 - 仅适用于 OpenAI/OpenAI Codex 模型。
-- 工具策略仍然适用；`allow: ["exec"]` 默默允许 `apply_patch`。
+- 工具策略仍然适用； `allow: ["exec"]` 默默允许 `apply_patch`。
 - 配置位于 `tools.exec.applyPatch` 下。

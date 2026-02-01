@@ -21,10 +21,10 @@ read_when:
 ## 工作原理（行为）
 - UI 连接到网关 WebSocket，并使用 `chat.history`、`chat.send` 和 `chat.inject`。
 - `chat.inject` 会将助手备注直接附加到对话记录中，并将其广播到 UI（无需代理运行）。
-- 历史记录始终从网关获取（无需监听本地文件）。
+- 历史记始终从网关获取（无需监听本地文件）。
 - 如果网关无法访问，WebChat 将变为只读模式。
 
-## 远程使用
+## 遠程使用
 - 在远程模式下，网关 WebSocket 通过 SSH/Tailscale 进行隧道传输。
 - 您无需运行单独的 WebChat 服务器。
 

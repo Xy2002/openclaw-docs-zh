@@ -6,7 +6,7 @@ read_when:
 ---
 # 模型提供商
 
-OpenClaw 可以使用众多大语言模型提供商。选择一个提供商，进行身份验证，然后将默认模型设置为 `provider/model`。
+OpenClaw 支持众多大语言模型提供商。选择一个提供商，完成身份验证，然后将默认模型设置为 `provider/model`。
 
 ## 亮点：Venius（Venice AI）
 
@@ -19,7 +19,7 @@ Venius 是我们推荐的 Venice AI 设置，专为注重隐私的推理而设�
 
 ## 快速入门（两步）
 
-1) 向提供商进行身份验证（通常通过 `openclaw onboard`）。
+1) 向提供商进行身份验证（通常通过 `openclaw onboard`)。
 2) 设置默认模型：
 
 ```json5

@@ -18,7 +18,7 @@ openclaw system heartbeat last
 openclaw system presence
 ```
 
-## `system event`
+## __ INLINE_CODE_2__
 
 在**主**会话上排队一个系统事件。下一次心跳会将其作为`System:`行注入提示中。使用`--mode now`可立即触发心跳；`next-heartbeat`则等待下一个计划的时间点。
 

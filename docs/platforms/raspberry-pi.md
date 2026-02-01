@@ -9,7 +9,7 @@ read_when:
 
 ## 目标
 
-在树莓派上运行一个持久、始终在线的 OpenClaw 网关，一次性成本约为 **35–80 美元**（无月费）。非常适合：
+在树莓派上部署一个持久、始终在线的 OpenClaw 网关，一次性成本约为 **35–80 美元**（无月费）。此方案非常适合：
 - 全天候个人 AI 助手
 - 家庭自动化中枢
 - 低功耗、随时可用的 Telegram/WhatsApp 机器人
@@ -347,5 +347,5 @@ echo 'wireless-power off' | sudo tee -a /etc/network/interfaces
 - [Linux 指南](/platforms/linux) — 通用 Linux 设置
 - [DigitalOcean 指南](/platforms/digitalocean) — 云替代方案
 - [Hetzner 指南](/platforms/hetzner) — Docker 设置
-- [Tailscale](/gateway/tailscale) — 远程访问
+- [Tailscale](/gateway/tailscale) — 进行远程访问
 - [Nodes](/nodes) — 将您的笔记本电脑/手机与树莓派网关配对

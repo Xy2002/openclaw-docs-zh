@@ -48,7 +48,7 @@ Cron 作业是一个存储记录，包含：
 - 可选的 **交付**（输出应发送到何处）。
 - 可选的 **代理绑定**（`agentId`）：在特定代理下运行作业；如果缺失或未知，网关将回退到默认代理。
 
-作业由稳定的 `jobId` 标识（用于 CLI/网关 API）。在代理工具调用中，`jobId` 是规范；为兼容性保留了旧版 `id`。作业可以在成功完成一次性运行后通过 `deleteAfterRun: true` 自动删除。
+作业由稳定的 `jobId` 标识（用于 CLI/网关 API）。在代理工具调用中， `jobId` 是规范；为兼容性保留了旧版 `id`。作业可以在成功完成一次性运行后通过 `deleteAfterRun: true` 自动删除。
 
 ### 计划
 Cron 支持三种计划类型：
@@ -138,8 +138,8 @@ Telegram 通过 `message_thread_id` 支持论坛主题。对于 cron 交付，�
 - `telegram:group:-1001234567890:topic:123`
 
 ## 存储与历史
-- 作业存储：`~/.openclaw/cron/jobs.json`（网关管理的 JSON）。
-- 运行历史：`~/.openclaw/cron/runs/<jobId>.jsonl`（JSONL，自动修剪）。
+- 作业存储： `~/.openclaw/cron/jobs.json`（网关管理的 JSON）。
+- 运行历史： `~/.openclaw/cron/runs/<jobId>.jsonl`（JSONL，自动修剪）。
 - 覆盖存储路径：config 中的 `cron.store`。
 
 ## 配置
@@ -263,9 +263,9 @@ openclaw system event --mode now --text "Next heartbeat: check battery."
 ## 故障排除
 
 ### “没有任何东西运行”
-- 检查 cron 是否已启用：`cron.enabled` 和 `OPENCLAW_SKIP_CRON`。
+- 检查 cron 是否已启用： `cron.enabled` 和 `OPENCLAW_SKIP_CRON`。
 - 检查网关是否持续运行（cron 在网关进程内运行）。
-- 对于 `cron` 计划：确认时区（`--tz`）与主机时区一致。
+- 对于 `cron` 计划：确认时区（ `--tz`）与主机时区一致。
 
 ### Telegram 传递到了错误的地方
 - 对于论坛主题，使用 `-100…:topic:<id>`，使其明确且无歧义。

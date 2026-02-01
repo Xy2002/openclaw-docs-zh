@@ -108,13 +108,13 @@ openclaw pairing approve line <CODE>
 - `channels.line.allowFrom`: 用于 DM 的已批准 LINE 用户 ID 列表
 - `channels.line.groupPolicy`: `allowlist | open | disabled`
 - `channels.line.groupAllowFrom`: 用于群组的已批准 LINE 用户 ID 列表
-- 每个群组的覆盖设置：`channels.line.groups.<groupId>.allowFrom`
+- 每个群组的覆盖设置： `channels.line.groups.<groupId>.allowFrom`
 
 LINE ID 区分大小写。有效 ID 的格式如下：
 
-- 用户：`U` + 32 个十六进制字符
-- 群组：`C` + 32 个十六进制字符
-- 房间：`R` + 32 个十六进制字符
+- 用户： `U` + 32 个十六进制字符
+- 群组： `C` + 32 个十六进制字符
+- 房间： `R` + 32 个十六进制字符
 
 ## 消息行为
 

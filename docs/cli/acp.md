@@ -75,7 +75,7 @@ openclaw acp --session agent:design:main
 openclaw acp --session agent:qa:bug-123
 ```
 
-每个 ACP 会话都映射到一个唯一的网关会话密钥。一个代理可以拥有多个会话；除非您覆盖密钥或标签，否则 ACP 默认使用隔离的 `acp:<uuid>` 会话。
+每个 ACP 会话都映射到一个独特的网关会话密钥。一个代理可以拥有多个会话；除非您覆盖密钥或标签，否则 ACP 默认使用隔离的 `acp:<uuid>` 会话。
 
 ## Zed 编辑器设置
 

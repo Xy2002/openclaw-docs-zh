@@ -43,7 +43,7 @@ read_when:
 
 1. 在 [venice.ai](https://venice.ai) 注册
 2. 转到 **设置 → API 密钥 → 创建新密钥**
-3. 复制您的 API 密钥（格式： `vapi_xxxxxxxxxxxx`）
+3. 复制您的 API 密钥（格式： `vapi_xxxxxxxxxxxx`)
 
 ### 2. 配置 OpenClaw
 
@@ -60,7 +60,7 @@ openclaw onboard --auth-choice venice-api-key
 ```
 
 这将：
-1. 提示您输入 API 密钥（或使用现有 `VENICE_API_KEY`）
+1. 提示您输入 API 密钥（或使用现有 `VENICE_API_KEY`)
 2. 显示所有可用的威尼斯模型
 3. 让您选择默认模型
 4. 自动配置提供商
@@ -168,7 +168,7 @@ openclaw models list | grep venice
 | 功能 | 支持 |
 |---------|---------|
 | **流式传输** | ✅ 所有模型 |
-| **函数调用** | ✅ 大多数模型（请查看 API 中的 `supportsFunctionCalling`） |
+| **函数调用** | ✅ 大多数模型（请查看 API 中的 `supportsFunctionCalling`) |
 | **视觉/图像** | ✅ 标有“视觉”功能的模型 |
 | **JSON 模式** | ✅ 通过 `response_format` 支持 |
 
@@ -224,7 +224,7 @@ openclaw models list | grep venice
 
 ### 连接问题
 
-威尼斯 API 位于 `https://api.venice.ai/api/v1`。请确保您的网络允许 HTTPS 连接。
+威尼斯 API 位于 `https://api.venice.ai/api/v1`.请确保您的网络允许 HTTPS 连接。
 
 ## 配置文件示例
 

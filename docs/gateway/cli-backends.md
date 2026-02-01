@@ -136,8 +136,8 @@ agents.defaults.cliBackends
 
 ## 会话
 
-- 如果 CLI 支持会话，请设置 `sessionArg`（例如 `--session-id`）或 `sessionArgs`（占位符 `{sessionId}`），以便在多个标志中插入会话 ID。
-- 如果 CLI 使用带有不同标志的**恢复子命令**，请设置 `resumeArgs`（在恢复时替换 `args`），并可选设置 `resumeOutput`（用于非 JSON 格式的恢复）。
+- 如果 CLI 支持会话，请设置 `sessionArg`（例如 `--session-id`) 或 `sessionArgs`（占位符 `{sessionId}`)，以便在多个标志中插入会话 ID。
+- 如果 CLI 使用带有不同标志的**恢复子命令**，请设置 `resumeArgs`（在恢复时替换 `args`)，并可选设置 `resumeOutput`（用于非 JSON 格式的恢复）。
 - `sessionMode`：
   - `always`：始终发送会话 ID（如果没有存储过，则生成新的 UUID）。
   - `existing`：仅在之前已存储会话 ID 时发送会话 ID。
@@ -155,7 +155,7 @@ OpenClaw 会将 Base64 编码的图像写入临时文件。如果设置了 `imag
 
 ## 输入/输出
 - `output: "json"`（默认）尝试解析 JSON 并提取文本和会话 ID。
-- `output: "jsonl"` 解析 JSONL 流（Codex CLI 的 `--json`），并在存在的情况下提取最后一条代理消息以及 `thread_id`。
+- `output: "jsonl"` 解析 JSONL 流（Codex CLI 的 `--json`)，在存在的情况下提取最后一条代理消息以及 `thread_id`。
 - `output: "text"` 将标准输出视为最终响应。
 
 输入模式：
@@ -186,7 +186,7 @@ OpenClaw 还为 `codex-cli` 提供了内置默认配置：
 - `imageArg: "--image"`
 - `sessionMode: "existing"`
 
-仅在必要时覆盖默认配置（常见情况：绝对路径 `command`）。
+仅在必要时覆盖默认配置（常见情况：绝对路径 `command`)。
 
 ## 限制
 - **无 OpenClaw 工具**（CLI 后端永远不会接收工具调用）。某些 CLI 仍可能运行其自身的代理工具。

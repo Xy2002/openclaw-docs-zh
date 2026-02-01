@@ -85,7 +85,7 @@ openclaw channels logs --channel whatsapp
 
 控制台日志具有 **TTY 感知性**，并经过格式化以提高可读性：
 
-- 子系统前缀（例如 `gateway/channels/whatsapp`）
+- 子系统前缀（例如 `gateway/channels/whatsapp`)
 - 级别着色（信息/警告/错误）
 - 可选的紧凑或 JSON 模式
 
@@ -155,13 +155,13 @@ openclaw channels logs --channel whatsapp
 ### 诊断事件目录
 
 模型使用：
-- `model.usage`：令牌、成本、持续时间、上下文、提供商/模型/通道、会话 ID。
+- `model.usage`：令牌、成本、持续时间、上下文、提供商/模型/通道、会社 ID。
 
 消息流：
 - `webhook.received`：按通道划分的 webhook 入站流量。
 - `webhook.processed`：已处理的 webhook 及其持续时间。
 - `webhook.error`：webhook 处理器错误。
-- `message.queued`：已排队等待处理的消息。
+- `message.queued`：已 queued 等待处理的消息。
 - `message.processed`：结果 + 持续时间 + 可选错误。
 
 队列 + 会话：
@@ -170,7 +170,7 @@ openclaw channels logs --channel whatsapp
 - `session.state`：会话状态转换 + 原因。
 - `session.stuck`：会话卡住警告 + 年龄。
 - `run.attempt`：运行重试/尝试元数据。
-- `diagnostic.heartbeat`：聚合计数器（webhooks/队列/会话）。
+- `diagnostic.heartbeat`：聚合计数器（webhooks/队列/会社）。
 
 ### 启用诊断（无导出器）
 
@@ -184,7 +184,7 @@ openclaw channels logs --channel whatsapp
 }
 ```
 
-### 诊断标志（定向日志）
+### 导诊标志（定向日志）
 
 使用标志可在不提高 `logging.level` 的情况下开启额外的定向调试日志。标志不区分大小写，并支持通配符（如 `telegram.*` 或 `*`）。
 
@@ -241,7 +241,7 @@ OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 注意事项：
 - 您也可以通过 `openclaw plugins enable diagnostics-otel` 启用插件。
 - `protocol` 目前仅支持 `http/protobuf`。`grpc` 被忽略。
-- 指标包括令牌使用、成本、上下文大小、运行持续时间以及消息流计数器/直方图（webhooks、排队、会话状态、队列深度/等待）。
+- 指标包括令牌使用、成本、上下文大小、运行持续时间以及消息流计数器/直方图（webhooks、排队、会社状态、队列深度/等待）。
 - 可通过 `traces` / `metrics` 切换跟踪/指标（默认为开启）。启用后，跟踪包括模型使用跨度以及 webhook/消息处理跨度。
 - 当您的收集器需要身份验证时，请设置 `headers`。
 - 支持的环境变量：`OTEL_EXPORTER_OTLP_ENDPOINT`，
@@ -273,7 +273,7 @@ OPENCLAW_DIAGNOSTICS=telegram.http,telegram.payload
 - `openclaw.message.duration_ms`（直方图，属性：`openclaw.channel`，
   `openclaw.outcome`）
 
-队列 + 会话：
+队列 + 会社：
 - `openclaw.queue.lane.enqueue`（计数器，属性：`openclaw.lane`）
 - `openclaw.queue.lane.dequeue`（计数器，属性：`openclaw.lane`）
 - `openclaw.queue.depth`（直方图，属性：`openclaw.lane` 或

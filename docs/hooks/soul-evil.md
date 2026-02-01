@@ -47,7 +47,7 @@ openclaw hooks enable soul-evil
 - `file`（字符串）：备用 SOUL 文件名（默认：`SOUL_EVIL.md`）
 - `chance`（0–1 之间的数字）：每次运行使用 `SOUL_EVIL.md` 的随机概率
 - `purge.at`（HH:mm）：每日清除开始时间（24小时制）
-- `purge.duration`（持续时间）：清除窗口长度（例如 `30s`、`10m`、`1h`）
+- `purge.duration`（持续时间）：清除窗口长度（例如 `30s`、`10m`、`1h`)
 
 **优先级：** 清除窗口优先于随机概率。
 

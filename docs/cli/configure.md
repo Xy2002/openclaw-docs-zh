@@ -7,7 +7,7 @@ read_when:
 
 用于设置凭据、设备和代理默认值的交互式提示。
 
-注意：**模型**部分现在包含一个用于`agents.defaults.models`白名单的多选框（显示在`/model`和模型选择器中）。
+注意：**模型**部分现在包含一个用于`agents.defaults.models`白名单的多选框（显示在__ INLINE_CODE_3__和模型选择器中）。
 
 提示：不带子命令的`openclaw config`会打开相同的向导。使用`openclaw config get|set|unset`进行非交互式编辑。
 

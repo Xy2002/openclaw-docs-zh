@@ -46,7 +46,7 @@ pnpm gateway:watch
   ```bash
   ssh -N -L 18789:127.0.0.1:18789 user@host
   ```
-- 客户端随后通过隧道连接到 `ws://127.0.0.1:18789`。
+- 客户ient随后通过隧道连接到 `ws://127.0.0.1:18789`。
 - 如果配置了令牌，客户端即使通过隧道也必须在 `connect.params.auth.token` 中包含该令牌。
 
 ## 同一主机上的多个网关
@@ -114,12 +114,12 @@ OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b opencla
 
 ## 协议（操作员视角）
 - 完整文档：[网关协议](/gateway/protocol) 和 [桥接协议（旧版）](/gateway/bridge-protocol)。
-- 客户端必须发送的第一个帧： `req {type:"req", id, method:"connect", params:{minProtocol,maxProtocol,client:{id,displayName?,version,platform,deviceFamily?,modelIdentifier?,mode,instanceId?}, caps, auth?, locale?, userAgent? } }`。
+- 客户ient必须发送的第一个帧： `req {type:"req", id, method:"connect", params:{minProtocol,maxProtocol,client:{id,displayName?,version,platform,deviceFamily?,modelIdentifier?,mode,instanceId?}, caps, auth?, locale?, userAgent? } }`。
 - 网关回复 `res {type:"res", id, ok:true, payload:hello-ok }`（或带有错误的 `ok:false`，然后关闭连接）。
 - 握手完成后：
   - 请求：`{type:"req", id, method, params}` → `{type:"res", id, ok, payload|error}`
   - 事件：`{type:"event", event, payload, seq?, stateVersion?}`
-- 结构化 Presence 条目：`{host, ip, version, platform?, deviceFamily?, modelIdentifier?, mode, lastInputSeconds?, ts, reason?, tags?[], instanceId? }`（对于 WS 客户端，`instanceId` 来自 `connect.client.instanceId`）。
+- 结构化 Presence 条目：`{host, ip, version, platform?, deviceFamily?, modelIdentifier?, mode, lastInputSeconds?, ts, reason?, tags?[], instanceId? }`（对于 WS 客户ient，`instanceId` 来自 `connect.client.instanceId`）。
 - `agent` 响应分为两个阶段：首先 `res` 确认 `{runId,status:"accepted"}`，然后在运行结束后发送最终的 `res` `{runId,status:"ok"|"error",summary}`；流式输出以 `event:"agent"` 形式到达。
 
 ## 方法（初始集合）
@@ -138,24 +138,24 @@ OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b opencla
 
 ## 事件
 - `agent` — 从代理运行中流式传输工具/输出事件（带序列标记）。
-- `presence` — Presence 更新（带 stateVersion 的增量）推送给所有连接的客户端。
+- `presence` — Presence 更新（带 stateVersion 的增量）推送给所有连接的客户ients。
 - `tick` — 定期保活/空操作，用于确认存活状态。
-- `shutdown` — 网关即将退出；有效载荷包括 `reason` 和可选的 `restartExpectedMs`。客户端应重新连接。
+- `shutdown` — 网关即将退出；有效载荷包括 `reason` 和可选的 `restartExpectedMs`。客户ients应重新连接。
 
 ## WebChat 集成
 - WebChat 是原生 SwiftUI UI，直接与网关 WebSocket 通信，获取历史记录、发送、中止和事件。
-- 远程使用通过相同的 SSH/Tailscale 隧道；如果配置了网关令牌，客户端会在 `connect` 时包含该令牌。
+- 远程使用通过相同的 SSH/Tailscale 隧el；如果配置了网关令牌，客户ients会在 `connect` 时包含该令牌。
 - macOS 应用通过单个 WS 连接（共享连接）；它从初始快照中填充 Presence，并监听 `presence` 事件以更新 UI。
 
 ## 类型检查与验证
 - 服务器使用 AJV 根据协议定义生成的 JSON Schema 验证每个传入帧。
-- 客户端（TS/Swift）消费生成的类型（TS 直接；Swift 通过仓库的生成器）。
+- 客户ients（TS/Swift）消费生成的类型（TS 直接；Swift 通过仓库的生成器）。
 - 协议定义是事实的来源；可通过以下命令重新生成模式/模型：
   - `pnpm protocol:gen`
   - `pnpm protocol:gen:swift`
 
 ## 连接快照
-- `hello-ok` 包含一个 `snapshot`，其中包含 `presence`、`health`、`stateVersion` 和 `uptimeMs`，以及 `policy {maxPayload,maxBufferedBytes,tickIntervalMs}`，使客户端无需额外请求即可立即渲染。
+- `hello-ok` 包含一个 `snapshot`，其中包含 `presence`、`health`、`stateVersion` 和 `uptimeMs`，以及 `policy {maxPayload,maxBufferedBytes,tickIntervalMs}`，使 clientients无需额外请求即可立即渲染。
 - `health`/`system-presence` 仍然可用于手动刷新，但在连接时并非必需。
 
 ## 错误代码（res.error 形状）
@@ -167,11 +167,11 @@ OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b opencla
   - `UNAVAILABLE` — 网关正在关闭或依赖项不可用。
 
 ## 保活行为
-- `tick` 事件（或 WS ping/pong）定期发出，使客户端即使在没有流量时也能知道网关仍然存活。
+- `tick` 事件（或 WS ping/pong）定期发出，使 clientients即使在没有流量时也能知道网关仍然存活。
 - 发送/代理确认仍然是单独的响应；不要为了发送而过度加载心跳。
 
 ## 回放/间隙
-- 事件不会被回放。客户端检测到序列间隙后应刷新（`health` + `system-presence`）后再继续。WebChat 和 macOS 客户端现在会在出现间隙时自动刷新。
+- 事件不会被回放。Clientients检测到序列间隙后应刷新（`health` + `system-presence`）后再继续。WebChat 和 macOS Clientients现在会在出现间隙时自动刷新。
 
 ## 监督（macOS 示例）
 - 使用 launchd 保持服务运行：
@@ -265,13 +265,13 @@ Windows 安装应使用 **WSL2**，遵循上述 Linux systemd 部分。
 ## 操作检查
 - 存活性：打开 WS 并发送 `req:connect` → 预期收到带有 `payload.type="hello-ok"` 的 `res`（附带快照）。
 - 准备性：调用 `health` → 预期收到 `ok: true`，且 `linkChannel` 中显示关联的通道（如适用）。
-- 调试：订阅 `tick` 和 `presence` 事件；确保 `status` 显示关联/认证时间；Presence 条目显示网关主机和连接的客户端。
+- 调试：订阅 `tick` 和 `presence` 事件；确保 `status` 显示关联/认证时间；Presence 条目显示网关主机和连接的 clientients。
 
 ## 安全保障
 - 默认假设每台主机只有一个网关；如果运行多个配置文件，需隔离端口/状态并针对正确的实例。
 - 不会回退到直接的 Baileys 连接；如果网关宕机，发送将快速失败。
 - 不连接的第一帧或格式错误的 JSON 将被拒绝并关闭套接字。
-- 优雅关闭：在关闭前发出 `shutdown` 事件；客户端必须处理关闭并重新连接。
+- 优雅关闭：在关闭前发出 `shutdown` 事件；clientients必须处理关闭并重新连接。
 
 ## CLI 辅助工具
 - `openclaw gateway health|status` — 通过网关 WS 请求健康/状态。
@@ -283,4 +283,4 @@ Windows 安装应使用 **WSL2**，遵循上述 Linux systemd 部分。
 
 ## 迁移指导
 - 停用 `openclaw gateway` 和旧版 TCP 控制端口。
-- 更新客户端，使其使用 WS 协议进行强制连接，并采用结构化的 Presence。
+- 更新 clientients，使其使用 WS 协议进行强制连接，并采用结构化的 Presence。

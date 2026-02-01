@@ -131,7 +131,7 @@ Gateway WS 协议是 OpenClaw 的**单一控制平面 + 节点传输**层。所�
 
 ### 角色
 - `operator` = 控制平面客户端（CLI/UI/自动化）。
-- `node` = 功能宿主（摄像头/屏幕/画布/system.run）。
+- __ INLINE_CODE_11__ = 功能宿主（摄像头/屏幕/画布/system.run）。
 
 ### 作用域（操作员）
 常见作用域：
@@ -182,11 +182,11 @@ Gateway WS 协议是 OpenClaw 的**单一控制平面 + 节点传输**层。所�
 
 ## 设备身份与配对
 
-- 节点应包含一个稳定的设备身份（`device.id`），该身份源自密钥对指纹。
+- 节诺应包含一个稳定的设备身份（`device.id`），该身份源自密钥对指纹。
 - 网关按设备和角色颁发令牌。
 - 对于新的设备 ID，除非启用了本地自动批准，否则需要批准才能配对。
 - **本地**连接包括回环以及网关主机自身的 Tailnet 地址（因此同一主机上的 Tailnet 绑定仍可自动批准）。
-- 所有 WS 客户端在 `connect` 期间必须包含 `device` 身份（操作员 + 节点）。
+- 所有 WS 客户端在 `connect` 期间必须包含 `device` 身份（操作员 + 节诺）。
   控制 UI 只有在启用 `gateway.controlUi.allowInsecureAuth` 时才可省略它
   （或在紧急情况下使用 `gateway.controlUi.dangerouslyDisableDeviceAuth`）。
 - 非本地连接必须签署由服务器提供的 `connect.challenge` 随机数。

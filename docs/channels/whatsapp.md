@@ -161,13 +161,13 @@ WhatsApp 需要真实的手机号码进行验证。VoIP 和虚拟号码通常会
 注意：
 - 自聊模式始终跳过读取回执。
 
-## WhatsApp 常见问题解答：发送消息 + 配对
+## WhatsApp 常见问题解答：发送消息 + 配着
 
 **当我绑定 WhatsApp 时，OpenClaw 会随机给联系人发送消息吗？**  
 不会。默认的私信策略是**配对**，因此未知发件人只会收到配对代码，他们的消息**不会被处理**。OpenClaw 只会回复它收到的聊天消息，或者您明确触发的发送（代理/CLI）。
 
-**WhatsApp 上的配对是如何工作的？**  
-配对是针对未知发件人的私信门控：
+**WhatsApp 上的配着是如何工作的？**  
+配着是针对未知发件人的私信门控：
 - 来自新发件人的第一条私信会返回一个短代码（消息不会被处理）。
 - 批准方式：`openclaw pairing approve whatsapp <code>`（通过 `openclaw pairing list whatsapp` 列表批准）。
 - 代码 1 小时后失效；每个频道最多允许 3 个待处理请求。
@@ -349,11 +349,11 @@ WhatsApp 以**语音笔记**（PTT 气泡）的形式发送音频。
 
 **未链接 / 需要 QR 登录**
 - 症状：`channels status` 显示 `linked: false` 或警告“未链接”。
-- 解决方法：在网关主机上运行 `openclaw channels login`，并扫描 QR 码（WhatsApp → 设置 → 已链接设备）。
+- 解决法：在网关主机上运行 `openclaw channels login`，并扫描 QR 码（WhatsApp → 设置 → 已链接设备）。
 
 **已链接但断开 / 重新连接循环**
 - 症状：`channels status` 显示 `running, disconnected` 或警告“已链接但断开”。
-- 解决方法：`openclaw doctor`（或重启网关）。如果问题仍然存在，通过 `channels login` 重新链接，并检查 `openclaw logs --follow`。
+- 解决法：`openclaw doctor`（或重启网关）。如果问题仍然存在，通过 `channels login` 重新链接，并检查 `openclaw logs --follow`。
 
 **Bun 运行时**
 - **不推荐使用 Bun**。WhatsApp（Baileys）和 Telegram 在 Bun 上表现不稳定。

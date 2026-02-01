@@ -27,7 +27,7 @@ read_when:
 - 随时重新打开：`openclaw dashboard`（复制链接，如果可能则打开浏览器，无头模式时显示 SSH 提示）。
 - 令牌仅保留在本地（作为查询参数）；UI 在首次加载后会移除令牌并将其保存在 localStorage 中。
 
-## 令牌基础（本地 vs 远程）
+## 令牌基础（本地 vs 运程）
 
 - **本地主机**：打开 `http://127.0.0.1:18789/`。如果显示“未授权”，请运行 `openclaw dashboard` 并使用带令牌的链接 (`?token=...`)。
 - **令牌来源**：`gateway.auth.token`（或 `OPENCLAW_GATEWAY_TOKEN`）；UI 在首次加载后会存储该令牌。
@@ -36,5 +36,5 @@ read_when:
 ## 如果看到“未授权”/1008
 
 - 运行 `openclaw dashboard` 获取新的带令牌链接。
-- 确保网关可访问（本地：`openclaw status`；远程：先通过 SSH 隧道 `ssh -N -L 18789:127.0.0.1:18789 user@host`，然后打开 `http://127.0.0.1:18789/?token=...`）。
+- 确保网关可访问（本地：`openclaw status`；远程：先通过 SSH 隧道 `ssh -N -L 18789:127.0.0.1:18789 user@host`，然后打开 `http://127.0.0.1:18789/?token=...`)。
 - 在仪表板设置中，粘贴您在 `gateway.auth.token`（或 `OPENCLAW_GATEWAY_TOKEN`）中配置的相同令牌。
