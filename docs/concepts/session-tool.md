@@ -62,7 +62,7 @@ read_when:
 - `includeTools?: boolean`（默认为假）
 
 行为：
-- `includeTools=false` 过滤 `role: "toolResult"` 条消息。
+- `includeTools=false` 进行 `role: "toolResult"` 条消息的过滤。
 - 以原始对话格式返回消息数组。
 - 当提供 `sessionId` 时，OpenClaw将其解析为相应的会话密钥（缺失ID则报错）。
 

@@ -122,7 +122,7 @@ WhatsApp 需要真实的手机号码进行验证。VoIP 和虚拟号码通常会
 - 状态/广播聊天会被忽略。
 - 直接聊天使用 E.164 格式；群组使用群组 JID。
 - **私信策略**：`channels.whatsapp.dmPolicy` 控制直接聊天的访问权限（默认：`pairing`）。
-  - 配对：未知发件人会收到配对代码（通过 `openclaw pairing approve whatsapp <code>` 批准；代码 1 小时后失效）。
+  - 配着：未知发件人会收到配着代码（通过 `openclaw pairing approve whatsapp <code>` 批准；代码 1 小时后失效）。
   - 开放：需要 `channels.whatsapp.allowFrom` 包括 `"*"`。
   - 您已链接的 WhatsApp 号码被视为隐含信任，因此自消息会跳过 `channels.whatsapp.dmPolicy` 和 `channels.whatsapp.allowFrom` 检查。
 
@@ -130,7 +130,7 @@ WhatsApp 需要真实的手机号码进行验证。VoIP 和虚拟号码通常会
 如果您在**个人 WhatsApp 号码**上运行 OpenClaw，请启用 `channels.whatsapp.selfChatMode`（见上方示例）。
 
 行为：
-- 出站私信永远不会触发配对回复（防止向联系人发送垃圾信息）。
+- 出站私信永远不会触发配着回复（防止向联系人发送垃圾信息）。
 - 入站未知发件人仍遵循 `channels.whatsapp.dmPolicy`。
 - 自聊模式（allowFrom 包括您的号码）可避免自动读取回执，并忽略提及 JID。
 - 非自聊私信会发送读取回执。
@@ -164,7 +164,7 @@ WhatsApp 需要真实的手机号码进行验证。VoIP 和虚拟号码通常会
 ## WhatsApp 常见问题解答：发送消息 + 配着
 
 **当我绑定 WhatsApp 时，OpenClaw 会随机给联系人发送消息吗？**  
-不会。默认的私信策略是**配对**，因此未知发件人只会收到配对代码，他们的消息**不会被处理**。OpenClaw 只会回复它收到的聊天消息，或者您明确触发的发送（代理/CLI）。
+不会。默认的私信策略是**配着**，因此未知发件人只会收到配着代码，他们的消息**不会被处理**。OpenClaw 只会回复它收到的聊天消息，或者您明确触发的发送（代理/CLI）。
 
 **WhatsApp 上的配着是如何工作的？**  
 配着是针对未知发件人的私信门控：
@@ -310,7 +310,7 @@ WhatsApp 以**语音笔记**（PTT 气泡）的形式发送音频。
 - 注销 => 停止并要求重新链接。
 
 ## 配置快速地图
-- `channels.whatsapp.dmPolicy`（私信策略：配对/白名单/开放/禁用）。
+- `channels.whatsapp.dmPolicy`（私信策略：配着/白名单/开放/禁用）。
 - `channels.whatsapp.selfChatMode`（同手机设置；机器人使用您的个人 WhatsApp 号码）。
 - `channels.whatsapp.allowFrom`（私信白名单）。WhatsApp 使用 E.164 电话号码（无用户名）。
 - `channels.whatsapp.mediaMaxMb`（入站媒体保存上限）。

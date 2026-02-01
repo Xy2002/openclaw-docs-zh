@@ -120,8 +120,8 @@ openclaw config set browser.executablePath "/usr/bin/google-chrome"
 - **远程 CDP：**设置 `browser.profiles.<name>.cdpUrl`（或 `browser.cdpUrl`）以连接到远程基于 Chromium 的浏览器。在这种情况下，OpenClaw 不会启动本地浏览器。
 
 远程 CDP URL 可以包含身份验证：
-- 查询令牌（如 `https://provider.example?token=<token>`）
-- HTTP 基本身份验证（如 `https://user:pass@provider.example`）
+- 查询令牌（如 `https://provider.example?token=<token>`)
+- HTTP 基本身份验证（如 `https://user:pass@provider.example`)
 
 OpenClaw 在调用 `/json/*` 端点以及连接到 CDP WebSocket 时会保留身份验证信息。建议使用环境变量或密钥管理工具来存储令牌，而不是将其写入配置文件。
 
@@ -205,7 +205,7 @@ OpenClaw 还可以通过本地 CDP 中继和 Chrome 扩展来驱动**您现有�
 ### 沙盒会话
 
 如果代理会话处于沙盒状态，`browser` 工具可能会默认使用 `target="sandbox"`（沙盒浏览器）。Chrome 扩展中继接管需要主机浏览器控制，因此：
-- 运行未沙盒化的会话，或
+- 运行未沙盒化的会 sess，或
 - 设置 `agents.defaults.sandbox.browser.allowHostControl: true`，然后在调用该工具时使用 `target="host"`。
 
 ### 设置
@@ -480,7 +480,7 @@ JSON 中的角色快照包括 `refs` 加上一个小的 `stats` 块（行数/字
   在页面上下文中执行任意 JavaScript。提示注入可能会导致偏离预期。如果您不需要此功能，请使用 `browser.evaluateEnabled=false` 禁用它。
 - 对于登录和反机器人注意事项（X/Twitter 等），请参阅 [浏览器登录 + X/Twitter 发布](/tools/browser-login)。
 - 保持 Gateway/节点主机的私密性（仅限环回或尾网）。
-- 远程 CDP 端点功能强大；请对其进行隧道保护并加以防护。
+- 运输 CDP 端点功能强大；请对其进行隧道保护并加以防护。
 
 ## 故障排除
 
@@ -498,8 +498,8 @@ JSON 中的角色快照包括 `refs` 加上一个小的 `stats` 块（行数/字
 - `browser` 接受：
   - `profile` 用于选择命名浏览器配置文件（openclaw、chrome 或远程 CDP）。
   - `target`（`sandbox` | `host` | `node`）用于选择浏览器所在的位置。
-  - 在沙盒会话中，`target: "host"` 需要 `agents.defaults.sandbox.browser.allowHostControl=true`。
-  - 如果省略了 `target`：沙盒会话默认使用 `sandbox`，非沙盒会话默认使用 `host`。
+  - 在沙盒会 sess，`target: "host"` 需要 `agents.defaults.sandbox.browser.allowHostControl=true`。
+  - 如果省略了 `target`：沙盒会 sess默认使用 `sandbox`，非沙盒会 sess默认使用 `host`。
   - 如果连接了具备浏览器功能的节点，该工具可能会自动路由到该节点，除非您固定 `target="host"` 或 `target="node"`。
 
 这使得代理的操作具有确定性，并避免了脆弱的选择器。

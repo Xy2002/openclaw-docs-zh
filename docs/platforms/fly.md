@@ -297,7 +297,7 @@ fly sftp shell
 > put /local/path/config.json /data/openclaw.json
 ```
 
-**注意：** 如果文件已存在，`fly sftp` 可能会失败。请先删除：
+**注意：:** 如果文件已存在，`fly sftp` 可能会失败。请先删除：
 ```bash
 fly ssh console --command "rm /data/openclaw.json"
 ```
@@ -306,7 +306,7 @@ fly ssh console --command "rm /data/openclaw.json"
 
 如果在重启后丢失凭据或会话，说明状态目录正在写入容器文件系统。
 
-**修复：** 确保在 `fly.toml` 中设置了 `OPENCLAW_STATE_DIR=/data`，并重新部署。
+**修复：:** 确保在 `fly.toml` 中设置了 `OPENCLAW_STATE_DIR=/data`，并重新部署。
 
 ## 更新
 
@@ -337,7 +337,7 @@ fly machine update <machine-id> --command "node dist/index.mjs gateway --port 30
 fly machine update <machine-id> --vm-memory 2048 --command "node dist/index.mjs gateway --port 3000 --bind lan" -y
 ```
 
-**注意：** 在 `fly deploy` 之后，机器命令可能会重置为 `fly.toml` 中的内容。如果您进行了手动更改，请在部署后重新应用。
+**注意：:** 在 `fly deploy` 之后，机器命令可能会重置为 `fly.toml` 中的内容。如果您进行了手动更改，请在部署后重新应用。
 
 ## 私有部署（加固）
 

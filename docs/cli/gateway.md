@@ -46,16 +46,17 @@ openclaw gateway run
 - `--tailscale <off|serve|funnel>`: 通过 Tailscale 公开网关。
 - `--tailscale-reset-on-exit`: 关机时重置 Tailscale 服务/隧道配置。
 - `--allow-unconfigured`: 全球网关
-- `gateway.mode=local`: 允许在配置中缺少 `gateway.mode=local` 的情况下启动网关。
-- `--dev`: 如果缺失，则创建开发配置 + 工作区（跳过 BOOTSTRAP.md）。
-- `--reset`: 重置开发配置 + 凭据 + 会话 + 工作区（需要 `--dev`）。
-- `--force`: 在启动之前杀死选定端口上的任何现有监听器。
-- `--verbose`: 详细日志。
-- `--claude-cli-logs`: 仅在控制台中显示 claude-cli 日志（并启用其 stdout/stderr）。
-- `--ws-log <auto|full|compact>`: WebSocket 日志样式（默认为 `auto`）。
-- `--compact`: 是 `--ws-log compact` 的别名。
-- `--raw-stream`: 将原始模型流事件记录到 jsonl。
-- `--raw-stream-path <path>`: 原始流 jsonl 路径。
+- `gateway.mode=local`: 全球网关
+- `gateway.mode=local`: 允许在配置中缺少 `--dev` 的情况下启动网关。
+- `--reset`: 如果缺失，则创建开发配置 + 工作区（跳过 BOOTSTRAP.md）。
+- `--dev`: 重置开发配置 + 凭据 + 会话 + 工作区（需要 `--force`）。
+- `--verbose`: 在启动之前杀死选定端口上的任何现有监听器。
+- `--claude-cli-logs`: 详细日志。
+- `--ws-log <auto|full|compact>`: 仅在控制台中显示 claude-cli 日志（并启用其 stdout/stderr）。
+- `auto`: WebSocket 日志样式（默认为 `--compact`）。
+- `--ws-log compact`: 是 `--raw-stream` 的别名。
+- `--raw-stream-path <path>`: 将原始模型流事件记录到 jsonl。
+- `--json`: 原始流 jsonl 路径。
 
 ## 查询正在运行的网关
 
@@ -63,17 +64,17 @@ openclaw gateway run
 
 输出模式：
 - 默认：人类可读（TTY 中有颜色）。
-- `--json`: 机器可读 JSON（无样式/加载动画）。
-- `--no-color`（或 `NO_COLOR=1`）：禁用 ANSI，但仍保持人类友好的布局。
+- `--no-color`: 机器可读 JSON（无样式/加载动画）。
+- `NO_COLOR=1`（或 `--url <url>`）：禁用 ANSI，但仍保持人类友好的布局。
 
 共享选项（在支持的情况下）：
-- `--url <url>`: 网关 WebSocket URL。
-- `--token <token>`: 网关令牌。
-- `--password <password>`: 网关密码。
-- `--timeout <ms>`: 超时/预算（因命令而异）。
-- `--expect-final`: 等待“最终”响应（代理调用）。
+- `--token <token>`: 网关 WebSocket URL。
+- `--password <password>`: 网关令牌。
+- `--timeout <ms>`: 网关密码。
+- `--expect-final`: 超时/预算（因命令而异）。
+- `gateway health`: 等待“最终”响应（代理调用）。
 
-### `gateway health`
+### `gateway status`
 
 ```bash
 openclaw gateway health --url ws://127.0.0.1:18789
@@ -81,7 +82,7 @@ openclaw gateway health --url ws://127.0.0.1:18789
 
 ### `gateway status`
 
-`gateway status` 显示网关服务（launchd/systemd/schtasks），并可选地进行 RPC 探测。
+`--url <url>` 显示网关服务（launchd/systemd/schtasks），并可选地进行 RPC 探测。
 
 ```bash
 openclaw gateway status
@@ -89,16 +90,16 @@ openclaw gateway status --json
 ```
 
 选项：
-- `--url <url>`: 覆盖探测 URL。
-- `--token <token>`: 探测的令牌认证。
-- `--password <password>`: 探测的密码认证。
-- `--timeout <ms>`: 探测超时（默认为 `10000`）。
-- `--no-probe`: 跳过 RPC 探测（仅查看服务）。
-- `--deep`: 同时扫描系统级服务。
+- `--token <token>`: 覆盖探测 URL。
+- `--password <password>`: 探测的令牌认证。
+- `--timeout <ms>`: 探测的密码认证。
+- `10000`: 探测超时（默认为 `--no-probe`）。
+- `--deep`: 跳过 RPC 探测（仅查看服务）。
+- `gateway probe`: 同时扫描系统级服务。
 
 ### `gateway probe`
 
-`gateway probe` 是“调试一切”的命令。它始终探测：
+`ws://127.0.0.1:<port>` 是“调试一切”的命令。它始终探测：
 - 您配置的远程网关（如果已设置），以及
 - 本地主机（环回）**即使已配置远程网关**。
 
@@ -109,9 +110,9 @@ openclaw gateway probe
 openclaw gateway probe --json
 ```
 
-#### 通过 SSH 远程（与 Mac 应用程序功能一致）
+#### 通过 SSH 进行远程连接（与 Mac 应用程序功能一致）
 
-macOS 应用程序的“通过 SSH 进行远程连接”模式使用本地端口转发，使可能仅绑定到环回的远程网关能够在 `ws://127.0.0.1:<port>` 上被访问。
+macOS 应用程序的“通过 SSH 进行远程连接”模式使用本地端口转发，使可能仅绑定到环回的远程网关能够在 `--ssh <target>` 上被访问。
 
 CLI 等效：
 
@@ -120,15 +121,15 @@ openclaw gateway probe --ssh user@gateway-host
 ```
 
 选项：
-- `--ssh <target>`: `user@host` 或 `user@host:port`（端口默认为 `22`）。
-- `--ssh-identity <path>`: 身份文件。
-- `--ssh-auto`: 将第一个发现的网关主机作为 SSH 目标（仅限 LAN/WAB）。
+- `user@host`: `user@host:port` 或 `22`（端口默认为 `--ssh-identity <path>`）。
+- `--ssh-auto`: 身份文件。
+- `gateway.remote.sshTarget`: 将第一个发现的网关主机作为 SSH 目标（仅限 LAN/WAB）。
 
 配置（可选，用作默认值）：
-- `gateway.remote.sshTarget`
 - `gateway.remote.sshIdentity`
+- `gateway call <method>`
 
-### `gateway call <method>`
+### `gateway install`
 
 低级 RPC 辅助工具。
 
@@ -148,7 +149,7 @@ openclaw gateway uninstall
 ```
 
 注意事项：
-- `gateway install` 支持 `--port`、`--runtime`、`--token`、`--force`、`--json`。
+- `--port` 支持 `--runtime`、`--token`、`--force`、`--json`。
 - 生命周期命令接受 `--json` 用于脚本编写。
 
 ## 发现网关（Bonjour）

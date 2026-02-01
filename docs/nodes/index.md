@@ -37,33 +37,33 @@ openclaw nodes describe --node <idOrNameOrIp>
 - 当节点的设备配对角色包含 `node` 时，`nodes status` 将节点标记为 **已配对**。
 - `node.pair.*`（CLI：`openclaw nodes pending/approve/reject`）是网关拥有的独立节点配对存储；它 **不** 对 WS `connect` 握手进行门控。
 
-## 远程节点主机（system.run）
+## 遠程節點主機（system.run）
 
-当您的网关运行在一台机器上，而您希望命令在另一台机器上执行时，可以使用 **节点主机**。模型仍然与 **网关** 通信；当选择 `host=node` 时，网关会将 `exec` 调用转发到 **节点主机**。
+當您的網關運行在一台機器上，而您希望命令在另一台機器上執行時，可以使用 **節點主機**。模型仍然與 **網關** 通信；當選擇 `host=node` 时，網關會將 `exec` 調用轉發到 **節點主機**。
 
-### 各组件的运行位置
-- **网关主机**：接收消息、运行模型、路由工具调用。
-- **节点主机**：在节点机器上执行 `system.run`/`system.which`。
-- **审批**：通过 `~/.openclaw/exec-approvals.json` 在节点主机上强制执行。
+### 各組件的運行位置
+- **網關主機**：接收消息、運行模型、路由工具調用。
+- **節點主機**：在節點機器上執行 `system.run`/`system.which`。
+- **審批**：通過 `~/.openclaw/exec-approvals.json` 在節點主機上強制執行。
 
-### 启动节点主机（前台）
+### 啟動節點主機（前台）
 
-在节点机器上：
+在節點機器上：
 
 ```bash
 openclaw node run --host <gateway-host> --port 18789 --display-name "Build Node"
 ```
 
-### 启动节点主机（服务）
+### 啟動節點主機（服務）
 
 ```bash
 openclaw node install --host <gateway-host> --port 18789 --display-name "Build Node"
 openclaw node restart
 ```
 
-### 配对 + 命名
+### 配對 + 命名
 
-在网关主机上：
+在網關主機上：
 
 ```bash
 openclaw nodes pending
@@ -72,51 +72,51 @@ openclaw nodes list
 ```
 
 命名选项：
-- `--display-name` 在 `openclaw node run` / `openclaw node install` 上设置（持久保存在节点的 `~/.openclaw/node.json` 中）。
-- `openclaw nodes rename --node <id|name|ip> --name "Build Node"`（网关覆盖）。
+- `--display-name` 在 `openclaw node run` / `openclaw node install` 上設置（持久保存在節點的 `~/.openclaw/node.json` 中）。
+- `openclaw nodes rename --node <id|name|ip> --name "Build Node"`（網關覆蓋）。
 
-### 全局默认：
+### 全局預設：
 
 ```bash
 openclaw config set tools.exec.node "node-id-or-name"
 ```
 
-按代理覆盖：
+按代理覆蓋：
 
 ```bash
 openclaw config get agents.list
 openclaw config set agents.list[0].tools.exec.node "node-id-or-name"
 ```
 
-取消设置以允许任意节点：
+取消設置以允許任意節點：
 
 ```bash
 openclaw config unset tools.exec.node
 openclaw config unset agents.list[0].tools.exec.node
 ```
 
-## 权限映射
+## 權限映射
 
-节点可以在 `node.list` / `node.describe` 中包含一个 `permissions` 映射，以权限名称（如 `screenRecording`、`accessibility`）为键，以布尔值（`true` = 已授予）为值。
+節點可以在 `node.list` / `node.describe` 中包含一個 `permissions` 映射，以權限名稱（如 `screenRecording`、`accessibility`）為鍵，以布爾值（`true` = 已授予）為值。
 
-## 无头节点主机（跨平台）
+## 無頭節點主機（跨平台）
 
-OpenClaw 可以运行 **无头节点主机**（无 UI），它连接到网关 WebSocket 并暴露 `system.run` / `system.which`。这在 Linux/Windows 上很有用，或者用于在服务器旁边运行一个极简节点。
+OpenClaw 可以運行 **無頭節點主機**（無 UI），它連接到網關 WebSocket 并暴露 `system.run` / `system.which`。這在 Linux/Windows 上很有用，或者用於在伺服器旁運行一個極簡節點。
 
-启动它：
+啟動它：
 
 ```bash
 openclaw node run --host <gateway-host> --port 18789
 ```
 
-注意事项：
-- 仍需配对（网关会显示节点批准提示）。
-- 节点主机将其节点 ID、令牌、显示名称和网关连接信息存储在 `~/.openclaw/node.json` 中。
-- 执行审批通过 `~/.openclaw/exec-approvals.json` 在本地强制执行（参见 [执行审批](/tools/exec-approvals))。
-- 在 macOS 上，无头节点主机优先使用可达的配套应用执行主机，如果应用不可用，则回退到本地执行。设置 `OPENCLAW_NODE_EXEC_HOST=app` 以要求使用该应用，或 `OPENCLAW_NODE_EXEC_FALLBACK=0` 以禁用回退。
-- 如果网关 WS 使用 TLS，添加 `--tls` / `--tls-fingerprint`.
+注意事項：
+- 仍需配對（網關會顯示節點批准提示）。
+- 節點主機將其節點 ID、令牌、顯示名稱和網關連接信息存儲在 `~/.openclaw/node.json` 中。
+- 執行審批通過 `~/.openclaw/exec-approvals.json` 在本地強制執行（參見 [執行審批](/tools/exec-approvals))。
+- 在 macOS 上，無頭節點主機會優先使用可達的配套應用執行主機，如果應用不可用，則回退到本地執行。設置 `OPENCLAW_NODE_EXEC_HOST=app` 以要求使用該應用，或 `OPENCLAW_NODE_EXEC_FALLBACK=0` 以禁用回退。
+- 如果網關 WS 使用 TLS，添加 `--tls` / `--tls-fingerprint`。
 
-## Mac 节点模式
+## Mac 節點模式
 
-- macOS 菜单栏应用会以节点身份连接到网关 WS 服务器（因此 `openclaw nodes …` 可以针对这台 Mac 工作）。
-- 在远程模式下，该应用会为网关端口打开一个 SSH 隧道，并连接到 `localhost`。
+- macOS 菜單欄應用會以節點身份連接到網關 WS 伺服器（因此 `openclaw nodes …` 可以針對這台 Mac 工作）。
+- 在遠程模式下，該應用會為網關端口打開一個 SSH 隧道，並連接到 `localhost`。

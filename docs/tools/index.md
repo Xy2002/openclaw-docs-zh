@@ -209,7 +209,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 核心参数：
 - `url`（必填）
-- `extractMode`（`markdown` | `text`）
+- `extractMode`（`markdown` | `text`)
 - `maxChars`（截断长页面）
 
 注意事项：
@@ -237,7 +237,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 通用参数：
 - `profile`（可选；默认为`browser.defaultProfile`）
-- `target`（`sandbox` | `host` | `node`）
+- `target`（`sandbox` | `host` | `node`)
 - `node`（可选；选择特定的节点ID/名称）
 
 注意事项：

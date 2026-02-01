@@ -186,7 +186,7 @@ Gateway WS 协议是 OpenClaw 的**单一控制平面 + 节点传输**层。所�
 - 网关按设备和角色颁发令牌。
 - 对于新的设备 ID，除非启用了本地自动批准，否则需要批准才能配对。
 - **本地**连接包括回环以及网关主机自身的 Tailnet 地址（因此同一主机上的 Tailnet 绑定仍可自动批准）。
-- 所有 WS 客户端在 `connect` 期间必须包含 `device` 身份（操作员 + 节诺）。
+- 所有 WS 客户ients在 `connect` 期间必须包含 `device` 身份（操作员 + 节诺）。
   控制 UI 只有在启用 `gateway.controlUi.allowInsecureAuth` 时才可省略它
   （或在紧急情况下使用 `gateway.controlUi.dangerouslyDisableDeviceAuth`）。
 - 非本地连接必须签署由服务器提供的 `connect.challenge` 随机数。
@@ -194,7 +194,7 @@ Gateway WS 协议是 OpenClaw 的**单一控制平面 + 节点传输**层。所�
 ## TLS + 证书固定
 
 - WS 连接支持 TLS。
-- 客户端可以选择固定网关证书指纹（参见 `gateway.tls` 配置以及 `gateway.remote.tlsFingerprint` 或 CLI 中的 `--tls-fingerprint`）。
+- 客户ients可以选择固定网关证书指纹（参见 `gateway.tls` 配置以及 `gateway.remote.tlsFingerprint` 或 CLI 中的 `--tls-fingerprint`）。
 
 ## 作用域
 

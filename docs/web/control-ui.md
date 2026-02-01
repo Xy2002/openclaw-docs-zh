@@ -30,7 +30,7 @@ read_when:
 ## 当前功能
 - 通过网关 WS 与模型聊天（`chat.history`、`chat.send`、`chat.abort`、`chat.inject`)
 - 在聊天中流式传输工具调用和实时工具输出卡片（代理事件）
-- 频道：WhatsApp/Telegram/Discord/Slack + 插件频道（Mattermost 等）状态 + QR 登录 + 每个频道的配置（`channels.status`、`web.login.*`、`config.patch`)
+- 频道：WhatsApp/Telegram/Discord/Slack + 插件频道（Mattermost 等）状态 + QR 登入 + 每个频道的配置（`channels.status`、`web.login.*`、`config.patch`)
 - 实例：在线实例列表 + 刷新（`system-presence`)
 - 会话：列表 + 每个会话的思考/详细模式覆盖（`sessions.list`、`sessions.patch`)
 - 定时任务：列出/添加/运行/启用/禁用 + 运行历史（`cron.*`)

@@ -124,7 +124,7 @@ openclaw agents list --bindings
 ## 核心概念
 
 - `agentId`：一个“大脑”（工作区、按代理划分的身份验证、按代理划分的会话存储）。
-- `accountId`：一个渠道账号实例（例如 WhatsApp 账号 `"personal"` vs `"biz"`）。
+- `accountId`：一个渠道账号实例（例如 WhatsApp 货号 `"personal"` vs `"biz"`）。
 - `binding`：根据 `(channel, accountId, peer)` 以及可选的公会/团队 ID，将入站消息路由到 `agentId`。
 - 直接聊天会合并到 `agent:<agentId>:<mainKey>`（按代理划分的“主会话”；`session.mainKey`）。
 

@@ -54,5 +54,5 @@ openclaw models set github-copilot/gpt-4o
 ## 注意事项
 
 - 需要交互式TTY；请直接在终端中运行。
-- Copilot模型的可用性取决于您的订阅计划；如果某个模型被拒绝，请尝试使用其他ID（例如 `github-copilot/gpt-4.1`）。
+- Copilot模型的可用性取决于您的订阅计划；如果某个模型被拒绝，请尝试使用其他ID（例如 `github-copilot/gpt-4.1`)。
 - 登录过程会将GitHub令牌存储在身份验证配置文件存储中，并在OpenClaw运行时将其兑换为Copilot API令牌。

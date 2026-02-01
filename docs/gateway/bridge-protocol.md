@@ -43,7 +43,7 @@ read_when:
 - `req` / `res`：作用域限定的网关 RPC（聊天、会话、配置、健康、语音唤醒、skills.bins）
 - `event`：节点信号（语音转录、代理请求、聊天订阅、执行生命周期）
 
-网关 → 客户端：
+网关 → 客户ient：
 - `invoke` / `invoke-res`：节点命令(`canvas.*`, `camera.*`, `screen.record`,
 `location.get`, `sms.send`)
 - `event`：已订阅会话的聊天更新
@@ -53,7 +53,7 @@ read_when:
 
 ## 执行生命周期事件
 
-节点可发出`exec.finished`或`exec.denied`事件，以反映 system.run 活动。这些事件会被映射到网关中的系统事件。（旧版节点仍可能发出`exec.started`。）
+节点可发出`exec.finished`或`exec.denied`事件，以反映 system.run 活动。这些事件会被映射到网关中的系统事件。（旧版节点仍可能发出`exec.started`。)
 
 有效载荷字段（除非另有说明，均为可选）：
 - `sessionKey`（必填）：接收系统事件的代理会话。

@@ -35,7 +35,7 @@ OpenClaw 还为 OpenClaw 助手提供支持。
 ## 从这里开始
 
 - **全新安装：** [入门](/start/getting-started)
-- **引导式设置（推荐）：** [向导](/start/wizard) (`openclaw onboard`)
+- **引导式设置（推荐）：:** [向导](/start/wizard) (`openclaw onboard`)
 - **打开仪表板（本地网关）：:** http://127.0.0.1:18789/（或 http://localhost:18789/）
 
 如果网关在同一台计算机上运行，该链接会立即打开浏览器控制界面。如果失败，请先启动网关：`openclaw gateway`。
@@ -70,7 +70,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
   - 向导现在默认生成网关令牌（即使是环回）。
   - 对于 Tailnet 访问，运行 `openclaw gateway --bind tailnet --token ...`（非环回绑定需要令牌）。
 - **节点：** 连接到网关 WebSocket（根据需要使用 LAN/Tailnet/SSH）；旧版 TCP 桥已弃用并移除。
-- **画布主机：** HTTP 文件服务器位于 `canvasHost.port`（默认 `18793`），为节点 WebView 提供 `/__openclaw__/canvas/`；请参阅 [网关配置](/gateway/configuration)（`canvasHost`）。
+- **画布主机：:** HTTP 文件服务器位于 `canvasHost.port`（默认 `18793`），为节点 WebView 提供 `/__openclaw__/canvas/`；请参阅 [网关配置](/gateway/configuration)（`canvasHost`）。
 - **远程使用：:** SSH 隧道或 Tailnet/VPN；请参阅 [远程访问](/gateway/remote) 和 [发现](/gateway/discovery)。
 
 ## 功能（高层次）
@@ -82,7 +82,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 - 💬 **iMessage** — 本地 imsg CLI 集成（macOS）
 - 🤖 **代理桥接** — Pi（RPC 模式）与工具流传输
 - ⏱️ **流媒体 + 分块传输** — 块级流媒体 + Telegram 草稿流媒体细节（[/concepts/streaming](/concepts/streaming)）
-- 🧠 **多代理路由** — 将提供商账户/对等方路由到隔离的代理（工作区 + 每个代理的会话）
+- 🧠 **多代理路由** — 将提供商账户/对等方路由到隔离的代理（工作区 + 每个代理的会 session）
 - 🔐 **订阅认证** — Anthropic（Claude Pro/Max）+ OpenAI（ChatGPT/Codex）通过 OAuth
 - 💬 **会话** — 直接聊天合并为共享的 `main`（默认）；群组是隔离的
 - 👥 **群聊支持** — 默认基于提及；所有者可以切换 `/activation always|mention`
@@ -146,7 +146,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 配置位于 `~/.openclaw/openclaw.json`。
 
-- 如果你 **什么都不做**，OpenClaw 会以 RPC 模式使用捆绑的 Pi 二进制文件，并为每个发送者创建会话。
+- 如果你 **什么都不做**，OpenClaw 会以 RPC 模式使用捆绑的 Pi 二进制文件，并为每个发送者创建会 session。
 - 如果你想锁定配置，可以从 `channels.whatsapp.allowFrom` 开始，并（对于群组）设置提及规则。
 
 示例：
@@ -203,7 +203,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
   - [Windows（WSL2）](/platforms/windows)
   - [Linux 应用程序](/platforms/linux)
 - 运维与安全：
-  - [会话](/concepts/session)
+  - [会 session](/concepts/session)
   - [定时任务](/automation/cron-jobs)
   - [Webhook](/automation/webhook)
   - [Gmail 钩子（Pub/Sub）](/automation/gmail-pubsub)

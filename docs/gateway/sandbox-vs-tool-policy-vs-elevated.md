@@ -63,7 +63,7 @@ openclaw sandbox explain --json
 - `deny` 始终优先。
 - 如果 `allow` 不为空，则其他所有规则均被视为已阻止。
 - 工具策略是硬性限制：`/exec`无法覆盖已被拒绝的 `exec` 工具。
-- `/exec`  only 会更改授权发送者的会话默认设置，并不授予工具访问权限。
+- `/exec` only 会更改授权发送者的会话默认设置，并不授予工具访问权限。
 提供商工具密钥可接受 `provider`（如 `google-antigravity`）或 `provider/model`（如 `openai/gpt-5.2`）。
 
 ### 工具组（快捷方式）

@@ -84,5 +84,5 @@ macOS 应用会渲染 `system-presence` 的输出，并根据上次更新的时�
 - 要查看原始列表，可对网关调用 `system-presence`。
 - 如果发现重复条目：
   - 确认客户端在握手时发送了稳定的 `client.instanceId`
-  - 确认周期性信标使用相同的 `instanceId`
+  - 确认周期性信贝使用相同的 `instanceId`
   - 检查是否缺少基于连接派生的条目中的 `instanceId`（出现重复条目是预期的）

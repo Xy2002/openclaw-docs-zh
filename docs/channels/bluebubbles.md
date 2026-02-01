@@ -50,7 +50,7 @@ openclaw onboard
 - **服务器 URL**（必填）：BlueBubbles 服务器地址（例如，`http://192.168.1.100:1234`）
 - **密码**（必填）：来自 BlueBubbles 服务器设置的 API 密码
 - **Webhook 路径**（可选）：默认为 `/bluebubbles-webhook`
-- **DM 政策**：配对、白名单、开放或禁用
+- **DM 政策**：配着、白名单、开放或禁用
 - **白名单**：电话号码、电子邮件或聊天目标
 
 您也可以通过 CLI 添加 BlueBubbles：
@@ -61,11 +61,11 @@ openclaw channels add bluebubbles --http-url http://192.168.1.100:1234 --passwor
 ## 访问控制（DM + 群组）
 DM：
 - 默认：`channels.bluebubbles.dmPolicy = "pairing"`。
-- 未知发件人会收到配对码；消息在批准前会被忽略（配着码在一小时内过期）。
+- 未知发件人会收到配着码；消息在批准前会被忽略（配着码在一小时内过期）。
 - 可通过以下方式批准：
   - `openclaw pairing list bluebubbles`
   - `openclaw pairing approve bluebubbles <CODE>`
-- 配对是默认的令牌交换方式。详情：[Pairing](/start/pairing)
+- 配着是默认的令牌交换方式。详情：[Pairing](/start/pairing)
 
 群组：
 - `channels.bluebubbles.groupPolicy = open | allowlist | disabled`（默认：`allowlist`）。
@@ -225,7 +225,7 @@ BlueBubbles 支持群聊的提及门控，行为与 iMessage/WhatsApp 一致：
 
 ## 故障排除
 - 如果输入/已读事件停止工作，请检查 BlueBubbles Webhook 日志，并确保网关路径与 `channels.bluebubbles.webhookPath` 匹配。
-- 配对码在一小时内过期；请使用 `openclaw pairing list bluebubbles` 和 `openclaw pairing approve bluebubbles <code>`。
+- 配着码在一小时内过期；请使用 `openclaw pairing list bluebubbles` 和 `openclaw pairing approve bluebubbles <code>`。
 - 反应需要 BlueBubbles 私有 API（`POST /api/v1/message/react`）；请确保服务器版本公开了该 API。
 - 编辑/撤回需要 macOS 13+ 和兼容的 BlueBubbles 服务器版本。在 macOS 26（Tahoe）上，由于私有 API 的变化，编辑功能目前存在缺陷。
 - 在 macOS 26（Tahoe）上，群组图标更新可能不稳定：API 可能返回成功，但新图标不会同步。

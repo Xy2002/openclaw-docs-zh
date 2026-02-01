@@ -74,6 +74,6 @@ read_when:
 - 需要语音和麦克风权限。
 - 使用 `chat.send` 对会话密钥 `main` 进行验证。
 - TTS 使用 ElevenLabs 流式 API，并在 macOS/iOS/Android 上采用 `ELEVENLABS_API_KEY` 和增量播放以降低延迟。
-- `stability` 对于 `eleven_v3` 的验证范围为 `0.0`、`0.5` 或 `1.0`；其他模型接受 `0..1`。
+- `stability` 对于 `eleven_v3` 的验证范围为 `0.0`、 `0.5` 或 `1.0`；其他模型接受 `0..1`。
 - 如果设置了 `latency_tier`，则会对其有效性进行验证，确保其符合 `0..4` 的要求。
 - Android 支持 `pcm_16000`、 `pcm_22050`、 `pcm_24000` 和 `pcm_44100` 输出格式，以实现低延迟的 AudioTrack 流式传输。

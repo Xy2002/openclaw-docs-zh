@@ -7,7 +7,7 @@ read_when:
 # Exec 工具
 
 在工作区中运行 shell 命令。通过 `process` 支持前台和后台执行。
-如果 `process` 被禁止，`exec` 将同步运行，并忽略 `yieldMs`/`background`。
+如果 `process` 被禁止， `exec` 将同步运行，并忽略 `yieldMs`/`background`。
 后台会话按代理划分作用域；`process` 只能看到来自同一代理的会话。
 
 ## 参数
@@ -65,7 +65,7 @@ read_when:
 - `host=sandbox`：在容器内运行 `sh -lc`（登录 shell），因此 `/etc/profile` 可能会重置 `PATH`。
   OpenClaw 通过内部环境变量在加载配置文件后预先添加 `env.PATH`（无需 shell 插值）；
   `tools.exec.pathPrepend` 在此处同样适用。
-- `host=node`：只有您传递的环境变量覆盖会被发送到节点。 `tools.exec.pathPrepend` 仅在 exec 调用已设置 `env.PATH` 时生效。无头节点主机仅在 `PATH` 预先添加节点主机 PATH 时接受（不替换）。macOS 节点完全忽略 `PATH` 覆盖。
+- `host=node`：只有您传递的环境变量覆盖会被发送到节点。 `tools.exec.pathPrepend` 仅在 exec 调用已设置 `env.PATH` 时生效。无头节点主机仅在 `PATH` 预先添加节点主机 PATH 时接受（不替换）。macOS 节诺完全忽略 `PATH` 覆盖。
 
 按代理的节点绑定（在配置中使用代理列表索引）：
 

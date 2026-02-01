@@ -101,7 +101,7 @@ pnpm add -g clawhub
 
 列出：
 
-- `clawhub list`（读取 `.clawhub/lock.json`）
+- `clawhub list`（读取 __ INLINE_CODE_45__）
 
 发布：
 

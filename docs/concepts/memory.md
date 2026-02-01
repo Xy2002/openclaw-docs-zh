@@ -6,13 +6,13 @@ read_when:
 ---
 # 内存
 
-OpenClaw 的内存是**代理工作区中的纯 Markdown 文件**。文件是事实的唯一来源；模型仅“记住”写入磁盘的内容。
+OpenClaw 的内存由**代理工作区中的纯 Markdown 文件**构成。文件是事实的唯一来源；模型仅“记住”写入磁盘的内容。
 
 内存搜索工具由活动内存插件提供（默认：`memory-core`）。可通过 `plugins.slots.memory = "none"` 禁用内存插件。
 
 ## 内存文件（Markdown）
 
-默认的工作区布局使用两层内存：
+默认的工作区布局采用两层内存：
 
 - `memory/YYYY-MM-DD.md`
   - 每日日志（仅追加）。

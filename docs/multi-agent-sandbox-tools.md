@@ -273,7 +273,7 @@ agents.list[].sandbox.prune.* > agents.defaults.sandbox.prune.*
 }
 ```
 
-旧版 `agent.*` 配置由 `openclaw doctor` 迁移；今后应优先使用 `agents.defaults` + `agents.list`。
+旧版 `agent.*` 配置由 `openclaw doctor` 还原；今后应优先使用 `agents.defaults` + `agents.list`。
 
 ---
 

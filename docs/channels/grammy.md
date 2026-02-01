@@ -13,7 +13,7 @@ read_when:
 
 # 我们已实现的功能
 - **单一客户端路径：** 去除了基于 fetch 的实现；grammY 现在是唯一的 Telegram 客户端（发送 + 网关），且默认启用 grammY 限流器。
-- **网关：** `monitorTelegramProvider` 构建了一个 grammY `Bot`，并集成了提及/白名单过滤、通过 `getFile`/`download` 进行媒体下载，以及使用 `sendMessage/sendPhoto/sendVideo/sendAudio/sendDocument` 发送回复。支持通过 `webhookCallback` 实现长轮询或 Webhook。
+- **网关：:** `monitorTelegramProvider` 构建了一个 grammY `Bot`，并集成了提及/白名单过滤、通过 `getFile`/`download` 进行媒体下载，以及使用 `sendMessage/sendPhoto/sendVideo/sendAudio/sendDocument` 发送回复。支持通过 `webhookCallback` 实现长轮询或 Webhook。
 - **代理：** 可选的 `channels.telegram.proxy` 通过 grammY 的 `client.baseFetch` 使用 `undici.ProxyAgent`。
 - **Webhook 支持：** `webhook-set.ts` 包装了 `setWebhook/deleteWebhook`；`webhook.ts` 承载回调，并提供健康检查与优雅关闭功能。当 `channels.telegram.webhookUrl` 被设置时，网关会启用 Webhook 模式（否则采用长轮询）。
 - **会话：** 直接聊天合并到代理主会话中 (`agent:<agentId>:<mainKey>`)；群组使用 __ INLINE_CODE_14__；回复会路由回同一频道。

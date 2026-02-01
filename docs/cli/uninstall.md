@@ -6,8 +6,4 @@ read_when:
 ---
 卸载网关服务+本地数据（CLI保留）。
 
-```bash
-openclaw uninstall
-openclaw uninstall --all --yes
-openclaw uninstall --dry-run
-```
+__代码块_0__

@@ -57,7 +57,7 @@ read_when:
 }
 ```
 
-如果您希望使用固定频道，请设置 `channel` + `to`.否则，`channel: "last"` 将使用上次的交付路由（回退到 WhatsApp）。
+如果您希望使用固定频道，请设置 `channel` + `to`.否则， `channel: "last"` 将使用上次的交付路由（回退到 WhatsApp）。
 
 要为 Gmail 运行强制使用更便宜的模型，请在映射中设置 `model`（`provider/model` 或别名）。如果强制使用 `agents.defaults.models`，请将其包含在映射中。
 
@@ -123,7 +123,7 @@ gcloud auth login
 gcloud config set project <project-id>
 ```
 
-注意：Gmail 监视要求 Pub/Sub 主题与 OAuth 客户端位于同一项目中。
+注意：Gmail 监视要求 Pub/Sub 主题与 OAuth 客户ient位于同一项目中。
 
 2) 启用 API：
 

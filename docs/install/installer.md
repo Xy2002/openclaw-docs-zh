@@ -60,7 +60,7 @@ SHARP_IGNORE_GLOBAL_LIBVIPS=0 curl -fsSL https://openclaw.bot/install.sh | bash
 
 ### 为什么需要 Git
 
-Git 是 `--install-method git` 路径（克隆/拉取）所必需的。
+Git 是 `--install-method git` 路径（克лон/拉取）所必需的。
 
 对于 `npm` 安装，Git*通常*不是必需的，但某些环境仍然需要 Git（例如，当某个包或依赖项通过 Git URL 获取时）。目前，安装程序会确保 Git 存在，以避免在全新发行版上出现 `spawn git ENOENT` 的意外情况。
 
@@ -89,7 +89,7 @@ curl -fsSL https://openclaw.bot/install-cli.sh | bash -s -- --help
 - 确保 Node.js **22+**（通过 winget/Chocolatey/Scoop 或手动）。
 - 选择安装方法：
   - `npm`（默认）：`npm install -g openclaw@latest`
-  - `git`：克隆/构建源代码仓库并安装包装脚本
+  - `git`：克лон/构建源代码仓库并安装包装脚本
 - 在升级和 Git 安装时尽可能运行 `openclaw doctor --non-interactive`。
 
 示例：

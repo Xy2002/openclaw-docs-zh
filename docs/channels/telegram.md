@@ -306,11 +306,11 @@ Telegram 功能可以在两个级别上配置（上面显示的是对象形式�
 ## 访问控制（DMs + 群组）
 
 ### DM 访问
-- 默认：`channels.telegram.dmPolicy = "pairing"`。未知发送者会收到配对代码；消息在批准之前会被忽略（代码在 1 小时后失效）。
+- 默认：`channels.telegram.dmPolicy = "pairing"`。未知发送者会收到配着代码；消息在批准之前会被忽略（代码在 1 小时后失效）。
 - 批准方式：
   - `openclaw pairing list telegram`
   - `openclaw pairing approve telegram <CODE>`
-- 配对是 Telegram DMs 使用的默认令牌交换方式。详情：[配对](/start/pairing)
+- 配着是 Telegram DMs 使用的默认令牌交换方式。详情：[配着](/start/pairing)
 - `channels.telegram.allowFrom` 接受数字用户 ID（推荐）或 `@username` 条目。这不是机器人用户名；使用人类发送者的 ID。向导接受 `@username`，并在可能的情况下将其解析为数字 ID。
 
 #### 查找您的 Telegram 用户 ID
@@ -391,7 +391,7 @@ OpenClaw 支持接收和发送 Telegram 贴纸，并具有智能缓存功能。
 
 - **静态贴纸（WEBP）：** 下载并经过视觉处理。贴纸在消息内容中显示为 `<media:sticker>` 占位符。
 - **动画贴纸（TGS）：** 跳过（不支持 Lottie 格式进行处理）。
-- **视频贴纸（WEBM）：** 跳过（不支持视频格式进行处理）。
+- **视频贴纸（WEBM）：:** 跳过（不支持视频格式进行处理）。
 
 接收贴纸时可用的模板上下文字段：
 - `Sticker` — 包含以下信息的对象：
@@ -630,7 +630,7 @@ Telegram 反应作为 **单独的 `message_reaction` 事件** 到达，而不是
 - `channels.telegram.enabled`：启用/禁用通道启动。
 - `channels.telegram.botToken`：机器人令牌（BotFather）。
 - `channels.telegram.tokenFile`：从文件路径读取令牌。
-- `channels.telegram.dmPolicy`：`pairing | allowlist | open | disabled`（默认：配对）。
+- `channels.telegram.dmPolicy`：`pairing | allowlist | open | disabled`（默认：配着）。
 - `channels.telegram.allowFrom`：DM 白名单（ID/用户名）。`open` 需要 `"*"`。
 - `channels.telegram.groupPolicy`：`open | allowlist | disabled`（默认：白名单）。
 - `channels.telegram.groupAllowFrom`：群组发送者白名单（ID/用户名）。

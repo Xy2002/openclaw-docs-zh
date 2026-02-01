@@ -54,7 +54,7 @@ pnpm gateway:dev
 OPENCLAW_PROFILE=dev openclaw tui
 ```
 
-如果您尚未进行全局安装，请通过 `pnpm openclaw ...` 运行 CLI。
+如果您尚未进行全局安装，请通过 `pnpm openclaw ...` 进行 CLI 安装。
 
 此流程的作用如下：
 

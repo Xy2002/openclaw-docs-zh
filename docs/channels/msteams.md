@@ -164,7 +164,7 @@ OpenClaw将自动提供本地安装路径。
 1. 在Azure Bot → **配置**
 2. 将**消息端点**设置为您的Webhook URL：
    - 生产：`https://your-domain.com/api/messages`
-   - 本地开发：使用隧道（参见下方[本地开发](#local-development-tunneling)）
+   - 本地开发：使用隧道（参见下方[本地开发](#local-development-tunneling))
 
 ### 第四步：启用Teams频道
 
@@ -430,11 +430,11 @@ Teams的Markdown比Slack或Discord更有限：
 - `deny`：按频道的每发送方工具政策覆盖。
 - `alsoAllow`：按频道的每发送方工具政策覆盖。
 - `channels.msteams.teams.<teamId>.channels.<conversationId>.toolsBySender`：按频道的每发送方工具政策覆盖（`"*"`通配符支持）。
-- `channels.msteams.sharePointSiteId`：用于群聊/频道文件上传的SharePoint站点ID（参见[在群聊中发送文件](#sending-files-in-group-chats)）。
+- `channels.msteams.sharePointSiteId`：用于群聊/频道文件上传的SharePoint站点ID（参见[在群聊中发送文件](#sending-files-in-group-chats))。
 
 ## 路径与会话
-- 会话密钥遵循标准代理格式（参见[/概念/会话](/concepts/session)）：
-  - 直接消息共享主会话(`agent:<agentId>:<mainKey>`)。
+- 会话密钥遵循标准代理格式（参见[/概念/会社](/concepts/session)）：
+  - 直接消息共享主会社(`agent:<agentId>:<mainKey>`)。
   - 频道/群组消息使用对话ID：
     - `agent:<agentId>:msteams:channel:<conversationId>`
     - `agent:<agentId>:msteams:group:<conversationId>`
@@ -496,7 +496,7 @@ Teams最近在同一底层数据模型上引入了两种频道UI风格：
 
 ### 设置
 
-1. 在Entra ID（Azure AD）→ 应用程序注册中**添加Graph API权限**：
+1. 在Entra ID（Azure AD）→ 应用ment注册中**添加Graph API权限**：
    - `Sites.ReadWrite.All`（应用程序） - 将文件上传到SharePoint
    - `Chat.Read.All`（应用程序） - 可选，启用按用户共享链接
 

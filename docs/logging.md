@@ -136,7 +136,7 @@ openclaw channels logs --channel whatsapp
 
 ## 诊断 + OpenTelemetry
 
-诊断是结构化的、机器可读的事件，用于模型运行**和**消息流遥测（webhook、排队、会话状态）。它们**不**取代日志；它们的存在是为了为指标、跟踪和其他导出器提供数据。
+诊断是结构化的、机器可读的事件，用于模型运行**和**消息流遥测（webhook、排队、会社状态）。它们**不**取代日志；它们的存在是为了为指标、跟踪和其他导出器提供数据。
 
 诊断事件是在进程中发出的，但只有在启用诊断和导出器插件时，导出器才会附加。
 
@@ -152,7 +152,7 @@ openclaw channels logs --channel whatsapp
 - **跟踪**：用于模型使用 + webhook/消息处理的跨度。
 - **日志**：当 `diagnostics.otel.logs` 启用时，通过 OTLP 导出。日志量可能很大；请记住 `logging.level` 和导出器筛选器。
 
-### 诊断事件目录
+### 导诊事件目录
 
 模型使用：
 - `model.usage`：令牌、成本、持续时间、上下文、提供商/模型/通道、会社 ID。
@@ -164,11 +164,11 @@ openclaw channels logs --channel whatsapp
 - `message.queued`：已 queued 等待处理的消息。
 - `message.processed`：结果 + 持续时间 + 可选错误。
 
-队列 + 会话：
+队列 + 会社：
 - `queue.lane.enqueue`：命令队列车道入队 + 深度。
 - `queue.lane.dequeue`：命令队列车道出队 + 等待时间。
-- `session.state`：会话状态转换 + 原因。
-- `session.stuck`：会话卡住警告 + 年龄。
+- `session.state`：会社状态转换 + 原因。
+- `session.stuck`：会社卡住警告 + 年龄。
 - `run.attempt`：运行重试/尝试元数据。
 - `diagnostic.heartbeat`：聚合计数器（webhooks/队列/会社）。
 

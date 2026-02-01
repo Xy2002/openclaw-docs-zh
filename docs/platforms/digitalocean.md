@@ -24,14 +24,14 @@ read_when:
 
 **选择云提供商：**
 - DigitalOcean：最简单的用户体验 + 可预测的部署流程（本指南）
-- Hetzner：性价比高（参见 [Hetzner 指南](/platforms/hetzner)）
+- Hetzner：性价比高（参见 [Hetzner 指南](/platforms/hetzner))
 - Oracle Cloud：理论上可实现零成本，但配置更复杂且仅支持 ARM 架构（参见 [Oracle 指南](/platforms/oracle))
 
 ---
 
 ## 前置条件
 
-- DigitalOcean 账户（[注册即享 $200 免费额度](https://m.do.co/c/signup)）
+- DigitalOcean 账户（[注册即享 $200 免费额度](https://m.do.co/c/signup))
 - SSH 密钥对（或愿意使用密码认证）
 - 大约 20 分钟时间
 
@@ -78,7 +78,7 @@ openclaw onboard --install-daemon
 
 向导将引导你完成以下步骤：
 - 模型认证（API 密钥或 OAuth）
-- 渠道设置（Telegram、WhatsApp、Discord 等）
+- 游戏频道设置（Telegram、WhatsApp、Discord 等）
 - 网关令牌（自动生成）
 - 守护进程安装（systemd）
 
@@ -180,7 +180,7 @@ htop
 
 所有状态存储于：
 - `~/.openclaw/` — 配置、凭据、会话数据
-- `~/.openclaw/workspace/` — 工作区（SOUL.md、记忆等）
+- `~/.openclaw/workspace/` — 工作区（SOUL.md、记忆等)
 
 这些数据在重启后仍会保留。请定期备份：
 ```bash

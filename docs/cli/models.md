@@ -64,4 +64,4 @@ openclaw models auth paste-token
 
 注意事项：
 - `setup-token` 会提示输入设置令牌值（可在任何机器上使用 `claude setup-token` 生成）。
-- `paste-token` 接受在其他地方或通过自动化生成的令牌字符串。
+- `paste-token` 接收在其他地方或通过自动化生成的令牌字符串。

@@ -20,7 +20,7 @@ read_when:
 ## 解析顺序
 1. 消息上的内联指令（仅适用于该消息）。
 2. 会话覆盖（通过发送仅含指令的消息设置）。
-3. 全局默认值（配置中的 `agents.defaults.thinkingDefault`）。
+3. 全局默认值（配置中的 `agents.defaults.thinkingDefault`)。
 4. 回退：对于具备推理能力的模型，使用 low；否则关闭。
 
 ## 设置会话默认值

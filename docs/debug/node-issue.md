@@ -47,7 +47,7 @@ node --import tsx scripts/repro/tsx-name-repro.ts
 
 ## 回归历史
 - `2871657e`（2026-01-06）：脚本从 Bun 切换到 tsx，使 Bun 成为可选依赖。
-- 在此之前（Bun 路径），`openclaw status` 和 `gateway:watch` 工作正常。
+- 在此之前（Bun 路径）， `openclaw status` 和 `gateway:watch` 工作正常。
 
 ## 临时解决方案
 - 在开发脚本中继续使用 Bun（当前的临时回滚方案）。

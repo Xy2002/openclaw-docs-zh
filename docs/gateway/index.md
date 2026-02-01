@@ -144,7 +144,7 @@ OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b opencla
 
 ## WebChat 集成
 - WebChat 是原生 SwiftUI UI，直接与网关 WebSocket 通信，获取历史记录、发送、中止和事件。
-- 远程使用通过相同的 SSH/Tailscale 隧el；如果配置了网关令牌，客户ients会在 `connect` 时包含该令牌。
+- 遥远使用通过相同的 SSH/Tailscale 隧el；如果配置了网关令牌，客户ients会在 `connect` 时包含该令牌。
 - macOS 应用通过单个 WS 连接（共享连接）；它从初始快照中填充 Presence，并监听 `presence` 事件以更新 UI。
 
 ## 类型检查与验证

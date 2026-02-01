@@ -200,7 +200,7 @@ Lobster是用于**多步骤工具管道**的工作流运行时，适用于需要
 ### 操作注意事项（来自代码）
 
 - Lobster以**本地子进程**（`lobster` CLI）的形式在工具模式下运行，并返回一个**JSON封装**。
-- 如果工具返回 `needs_approval`，则需使用 `resumeToken` 和 `approve` 标志继续运行。
+- 如果工具返回 `needs_approval` ，则需使用 `resumeToken` 和 `approve` 标志继续运行。
 - 工具是**可选插件**；建议通过 `tools.alsoAllow: ["lobster"]` 以附加方式启用。
 - 如果传递 `lobsterPath` ，则必须是**绝对路径**。
 

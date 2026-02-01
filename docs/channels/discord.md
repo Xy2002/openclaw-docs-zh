@@ -64,7 +64,7 @@ read_when:
 注意：Guild 上下文 `[from:]` 行包括 `author.tag` + `id`，使 ping 就绪的回复变得容易。
 
 ## 配置写入
-默认情况下，Discord 允许写入由 `/config set|unset` 触发的配置更新（需要 `commands.config: true`)。
+默认情况下，Discord 全允许由 `/config set|unset` 触发的配置更新（需要 `commands.config: true`)。
 
 禁用方法：
 ```json5
@@ -386,7 +386,7 @@ Discord 在任何地方都使用数字 ID；OpenClaw 配置更倾向于使用 ID
 - `react` / `reactions`（添加或列举反应）
 - `sticker`、`poll`、`permissions`
 - `readMessages`、`sendMessage`、`editMessage`、`deleteMessage`
-- 读取/搜索/图钉工具的有效载荷包括归一化的 `timestampMs`（UTC epoch ms）和 `timestampUtc` 与原始 Discord `timestamp` 一起。
+- 读取/搜索/图钉工具的有效载荷包括归一化的 `timestampMs`（UTC epoch ms）和 `timestampUtc` 与原始 Discord `timestamp`一起。
 - `threadCreate`、`threadList`、`threadReply`
 - `pinMessage`、`unpinMessage`、`listPins`
 - `searchMessages`、`memberInfo`、`roleInfo`、`roleAdd`、`roleRemove`、`emojiList`

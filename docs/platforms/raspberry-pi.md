@@ -292,7 +292,7 @@ free -h
 
 - 使用 USB SSD 替代 SD 卡
 - 禁用未使用的服务：`sudo systemctl disable cups bluetooth avahi-daemon`
-- 检查 CPU 节流情况：`vcgencmd get_throttled`（应返回 `0x0`）
+- 检查 CPU 节流情况：`vcgencmd get_throttled`（应返回 `0x0`)
 
 ### 服务无法启动
 

@@ -18,7 +18,7 @@ read_when:
 - 工作区初始化 + 技能配置
 - 可选的后台服务
 
-如果您需要更深入的参考文档，请跳转至：[向导](/start/wizard)、[设置](/start/setup)、[配对](/start/pairing)、[安全](/gateway/security)。
+如果您需要更深入的参考文档，请跳转至：[向导](/start/wizard)、[设置](/start/setup)、[配着](/start/pairing)、[安全](/gateway/security)。
 
 沙箱说明：`agents.defaults.sandbox.mode: "non-main"` 使用 `session.mainKey`（默认为 `"main"`），因此群组或频道会话会被隔离在沙箱中。如果您希望主代理始终在主机上运行，可以为每个代理显式设置覆盖：
 
@@ -74,7 +74,7 @@ openclaw onboard --install-daemon
 ```
 
 您将选择的内容包括：
-- **本地 vs 运程** 网关
+- **本地 vs 远程** 网关
 - **身份验证**：OpenAI Code（Codex）订阅（OAuth）或 API 密钥。对于 Anthropic，我们推荐使用 API 密钥；也支持 `claude setup-token`。
 - **提供商**：WhatsApp QR 登录、Telegram/Discord 机器人令牌、Mattermost 插件令牌等。
 - **守护进程**：后台安装（launchd/systemd；WSL2 使用 systemd）
@@ -119,7 +119,7 @@ openclaw health
 openclaw security audit --deep
 ```
 
-## 4) 配对并连接您的第一个聊天界面
+## 4) 配着并连接您的第一个聊天界面
 
 ### WhatsApp（QR 登录）
 
@@ -138,18 +138,18 @@ WhatsApp 文档：[WhatsApp](/channels/whatsapp)
 - Discord：[Discord](/channels/discord)
 - Mattermost（插件）：[Mattermost](/channels/mattermost)
 
-**Telegram 私信提示：** 您的第一条私信会返回一个配对代码。请批准该代码（见下一步），否则机器人将无法响应。
+**Telegram 私信提示：** 您的第一条私信会返回一个配着代码。请批准该代码（见下一步），否则机器人将无法响应。
 
-## 5) 私信安全（配对批准）
+## 5) 私信安全（配着批准）
 
-默认行为：未知私信会收到一个短代码，消息在获得批准之前不会被处理。如果您的第一条私信没有回复，请批准配对：
+默认行为：未知私信会收到一个短代码，消息在获得批准之前不会被处理。如果您的第一条私信没有回复，请批准配着：
 
 ```bash
 openclaw pairing list whatsapp
 openclaw pairing approve whatsapp <code>
 ```
 
-配对文档：[配对](/start/pairing)
+配着文档：[配着](/start/pairing)
 
 ## 从源码（开发）
 
@@ -164,7 +164,7 @@ pnpm build
 openclaw onboard --install-daemon
 ```
 
-如果您尚未进行全局安装，可以通过仓库中的 `pnpm openclaw ...` 运行引导步骤。`pnpm build` 还打包了 A2UI 资产；如果只需要运行这一步骤，可以使用 `pnpm canvas:a2ui:bundle`。
+如果您尚未进行全局安装，可以通过仓库中的 `pnpm openclaw ...` 还运行引导步骤。`pnpm build` 还打包了 A2UI 资产；如果只需要运行这一步骤，可以使用 `pnpm canvas:a2ui:bundle`。
 
 网关（来自此仓库）：
 

@@ -116,7 +116,7 @@ openclaw onboard --install-daemon
 安装程序支持两种方法：
 
 - `npm`（默认）：`npm install -g openclaw@latest`
-- `git`：从 GitHub 克lon/构建，并从源代码检出目录中运行
+- `git`：从 GitHub 克隆/构建，并从源代码检出目录中运行
 
 ### CLI 标志
 

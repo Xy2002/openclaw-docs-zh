@@ -146,7 +146,7 @@ message action=react channel=signal target=signal:group:<groupId> targetAuthor=u
 - 私信： `signal:+15551234567`（或纯 E.164）。
 - UUID 私信： `uuid:<id>`（或裸 UUID）。
 - 群组： `signal:group:<groupId>`。
-- 用户名： `username:<name>`（如果您的 Signal 账号支持）。
+- 用户名： `username:<name>`（如果您的 Signal 货号支持）。
 
 ## 配置参考（Signal）
 完整配置： [Configuration](/gateway/configuration)

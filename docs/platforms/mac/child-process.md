@@ -40,7 +40,7 @@ rm ~/.openclaw/disable-launchagent
 
 要强制 macOS 应用程序**从不安装或管理 launchd**，请使用 `--attach-only`（或 `--no-launchd`)启动应用程序。这会设置 `~/.openclaw/disable-launchagent`，使应用程序仅附加到已运行的网关。你也可以在调试设置中切换相同的行为。
 
-## 遠程模式
+## 远程模式
 
 远程模式绝不会启动本地网关。应用程序会使用 SSH 隧道连接到远程主机，并通过该隧道进行通信。
 
