@@ -5,24 +5,26 @@ read_when:
   - 'You need to understand separate endpoints, keys, and model refs'
   - You want copy/paste config for either provider
 ---
-# 月之暗面 AI（Kimi）
+月之暗面 AI（Kimi）
 
 月之暗面提供了与 OpenAI 兼容端点的 Kimi API。配置提供商并将默认模型设置为 `moonshot/kimi-k2.5`，或使用 `kimi-coding/k2p5` 进行 Kimi Coding。
 
 当前 Kimi K2 模型 ID：
 {/* moonshot-kimi-k2-ids:start */}
+
 - `kimi-k2.5`
 - `kimi-k2-0905-preview`
 - `kimi-k2-turbo-preview`
 - `kimi-k2-thinking`
 - `kimi-k2-thinking-turbo`
-{/* moonshot-kimi-k2-ids:end */}
+
+{/* 月球计划-基米-K2-ID：结束 */}
 
 ```bash
 openclaw onboard --auth-choice moonshot-api-key
 ```
 
-Kimi Coding：
+基米编码：
 
 ```bash
 openclaw onboard --auth-choice kimi-code-api-key
@@ -111,7 +113,7 @@ openclaw onboard --auth-choice kimi-code-api-key
 }
 ```
 
-## Kimi Coding
+## 基米编码
 
 ```json5
 {

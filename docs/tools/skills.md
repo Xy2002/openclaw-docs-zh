@@ -4,7 +4,7 @@ read_when:
   - Adding or modifying skills
   - Changing skill gating or load rules
 ---
-# 技能（OpenClaw）
+# 技能（开爪）
 
 OpenClaw 使用与 **[AgentSkills](https://agentskills.io)** 兼容的技能文件夹来教导智能体如何使用工具。每个技能都是一个目录，包含带有 YAML 前置元数据和说明的 `SKILL.md` 文件。OpenClaw 会加载**捆绑技能**以及可选的本地覆盖，并在加载时根据环境、配置和二进制文件的存在情况对它们进行过滤。
 
@@ -18,11 +18,11 @@ OpenClaw 使用与 **[AgentSkills](https://agentskills.io)** 兼容的技能文�
 
 如果技能名称发生冲突，优先级如下：
 
-`<workspace>/skills`（最高）→ `~/.openclaw/skills` → 捆绑技能（最低）
+`<workspace>/skills`（最高）→ `~/.openclaw/skills` → 绑定技能（最低）
 
 此外，您可以通过 `skills.load.extraDirs` 在 `~/.openclaw/openclaw.json` 中配置额外的技能文件夹（优先级最低）。
 
-## 每个智能体专用技能与共享技能
+## 每个智能体的专用技能与共享技能
 
 在**多智能体**设置中，每个智能体都有自己的工作区。这意味着：
 
@@ -32,13 +32,13 @@ OpenClaw 使用与 **[AgentSkills](https://agentskills.io)** 兼容的技能文�
 
 如果同一个技能名称存在于多个位置，则按常规优先级处理：工作区优先，其次是托管/本地，最后是捆绑技能。
 
-## 插件 + 技能
+插件 + 技能
 
-插件可以通过在 `openclaw.plugin.json` 中列出 `skills` 目录来自带技能（路径相对于插件根目录）。插件技能在插件启用时加载，并参与正常的技能优先级规则。您可以通过插件配置条目中的 `metadata.openclaw.requires.config` 来控制这些技能的启用条件。有关发现和配置，请参阅 [插件](/plugin)；有关这些技能所教授的工具界面，请参阅 [工具](/tools)。
+插件可以通过在 `openclaw.plugin.json` 中列出 `skills` 目录来加载技能（路径相对于插件根目录）。插件技能在插件启用时加载，并遵循正常的技能优先级规则。您可以通过插件配置条目中的 `metadata.openclaw.requires.config` 来控制这些技能的启用条件。有关发现和配置，请参阅 [插件](/plugin)；有关这些技能所教授的工具界面，请参阅 [工具](/tools)。
 
 ## ClawHub（安装 + 同步）
 
-ClawHub 是 OpenClaw 的公共技能注册表。您可以在 https://clawhub.com. 上浏览它。使用它来发现、安装、更新和备份技能。完整指南：[ClawHub](/tools/clawhub)。
+ClawHub是OpenClaw的公共技能注册表。您可以在https://clawhub.com.上浏览它。使用ClawHub来发现、安装、更新和备份技能。完整指南：[ClawHub](/tools/clawhub)。
 
 常见流程：
 
@@ -70,6 +70,7 @@ description: Generate or edit images via Gemini 3 Pro Image
 ```
 
 注意事项：
+
 - 我们遵循 AgentSkills 规范来定义布局和意图。
 - 内嵌智能体使用的解析器仅支持**单行**前置元数据键。
 - `metadata` 应为**单行 JSON 对象**。
@@ -82,7 +83,7 @@ description: Generate or edit images via Gemini 3 Pro Image
   - `command-tool` — 当 `command-dispatch: tool` 设置时要调用的工具名称。
   - `command-arg-mode` — `raw`（默认）。对于工具调度，原始参数字符串会转发给工具（不进行核心解析）。
 
-    工具以以下参数调用：
+工具以以下参数调用：
     `{ command: "<raw args>", commandName: "<slash command>", skillName: "<skill name>" }`。
 
 ## 过滤（加载时的筛选器）
@@ -98,9 +99,10 @@ metadata: {"openclaw":{"requires":{"bins":["uv"],"env":["GEMINI_API_KEY"],"confi
 ```
 
 `metadata.openclaw` 下的字段：
+
 - `always: true` — 始终包含该技能（跳过其他门控）。
-- `emoji` — macOS Skills UI 使用的可选表情符号。
-- `homepage` — macOS Skills UI 中显示为“网站”的可选 URL。
+- __ INLINE_CODE_1__ — macOS Skills UI 使用的可选表情符号。
+- `homepage` — 在 macOS Skills UI 中显示为“网站”的可选 URL。
 - `os` — 可选的平台列表（`darwin`、`linux`、`win32`）。如果设置，该技能仅适用于这些操作系统。
 - `requires.bins` — 列表；每个条目必须存在于 `PATH` 中。
 - `requires.anyBins` — 列表；至少有一个条目必须存在于 `PATH` 中。
@@ -110,10 +112,12 @@ metadata: {"openclaw":{"requires":{"bins":["uv"],"env":["GEMINI_API_KEY"],"confi
 - `install` — macOS Skills UI 使用的可选安装程序规范数组（brew/node/go/uv/download）。
 
 关于沙箱的注意事项：
+
 - 在技能加载时，会在**主机**上检查 `requires.bins`。
 - 如果智能体处于沙箱中，二进制文件也必须存在于**容器内**。通过 `agents.defaults.sandbox.docker.setupCommand`（或自定义镜像）安装它。
-  `setupCommand` 在容器创建后运行一次。
-  软件包安装还需要网络出口、可写的根文件系统以及沙箱中的 root 用户。例如，`summarize` 技能（`skills/summarize/SKILL.md`）需要在沙箱容器中具有 `summarize` CLI才能运行。
+
+`setupCommand` 在容器创建后运行一次。
+软件包安装还需要网络出口、可写的根文件系统以及沙箱中的 root 用户。例如，__ INLINE_CODE_1__ 技能（__ INLINE_CODE_2__）需要在沙箱容器中具有 __ INLINE_CODE_3__ CLI才能运行。
 
 安装程序示例：
 
@@ -126,19 +130,22 @@ metadata: {"openclaw":{"emoji":"♊️","requires":{"bins":["gemini"]},"install"
 ```
 
 注意事项：
+
 - 如果列出了多个安装程序，网关会选择**一个**首选选项（如果有 brew，则优先使用 brew，否则使用 node）。
 - 如果所有安装程序都为 `download`，OpenClaw 会列出每一条目，以便您可以看到可用的工件。
 - 安装程序规范可以包括 `os: ["darwin"|"linux"|"win32"]`，以按平台过滤选项。
-- Node 安装尊重 `skills.install.nodeManager` 在 `openclaw.json` 中的规定（默认：npm；选项：npm/pnpm/yarn/bun）。这仅影响**技能安装**；网关运行时仍应为 Node
-  （不建议在 WhatsApp/Telegram 中使用 Bun）。
-- Go 安装：如果 `go` 不存在且 `brew` 可用，网关会先通过 Homebrew 安装 Go，并在可能的情况下将 `GOBIN` 设置为 Homebrew 的 `bin`。
+- Node 安装会尊重 `skills.install.nodeManager` 在 `openclaw.json` 中的规定（默认：npm；选项：npm/pnpm/yarn/bun）。这仅影响**技能安装**；网关运行时仍应为 Node。
+
+（不建议在 WhatsApp/Telegram 中使用 Bun）。
+
+- Go 安装：如果 `go` 不存在且 __ INLINE_CODE_1__ 可用，网关会先通过 Homebrew 安装 Go，并在可能的情况下将 `GOBIN` 设置为 Homebrew 的 `bin`。
 - 下载安装：`url`（必需），`archive`（`tar.gz` | `tar.bz2` | `zip`），`extract`（默认：检测到存档时自动启用），`stripComponents`，`targetDir`（默认：`~/.openclaw/tools/<skillKey>`）。
 
 如果没有 `metadata.openclaw`，该技能始终符合条件（除非在配置中被禁用或因 `skills.allowBundled` 而被阻止用于捆绑技能）。
 
 ## 配置覆盖（`~/.openclaw/openclaw.json`）
 
-捆绑/托管技能可以切换状态并提供环境值：
+绑定/托管技能可以切换状态并提供环境数值：
 
 ```json5
 {
@@ -167,7 +174,8 @@ metadata: {"openclaw":{"emoji":"♊️","requires":{"bins":["gemini"]},"install"
 默认情况下，配置键与**技能名称**匹配。如果技能定义了 `metadata.openclaw.skillKey`，应在 `skills.entries` 下使用该键。
 
 规则：
-- `enabled: false` 即使技能是捆绑的或已安装的，也会禁用该技能。
+
+- `enabled: false` 即使技能已捆绑或已安装，也会禁用该技能。
 - `env`：仅在进程中尚未设置该变量时注入。
 - `apiKey`：为声明了 `metadata.openclaw.primaryEnv` 的技能提供便利。
 - `config`：为自定义技能特定字段提供的可选容器；自定义键必须在此处定义。
@@ -181,20 +189,23 @@ metadata: {"openclaw":{"emoji":"♊️","requires":{"bins":["gemini"]},"install"
 3) 使用**符合条件**的技能构建系统提示。
 4) 在运行结束后恢复原始环境。
 
-此操作**仅限于智能体运行**，而非全局 shell 环境。
+此操作**仅适用于智能体运行**，而非全局 Shell 环境。
 
-## 会话快照（性能）
-OpenClaw 在**会社开始时**对符合条件的技能进行快照，并在同一会社的后续回合中重复使用该列表。技能或配置的更改将在下一个新会社中生效。
+会话快照（性能）
 
-如果启用了技能监视器，或者出现了新的符合条件的远程节点，技能也可以在会社中途刷新（见下文）。您可以将其视为**热重载**：刷新后的列表将在下一个智能体回合中被采用。
+OpenClaw会在**公司启动时**对符合条件的技能进行快照，并在同一公司的后续回合中重复使用该技能列表。任何技能或配置的更改都将在下一个新公司中生效。
 
-## 遠程 macOS 节點（Linux 網關）
-如果網關在 Linux 上運行，但**macOS 节点**已連接**且允許 `system.run`**（未將 Exec 批准的安全設為 `deny`），則當該節點上存在所需的二進制文件時，OpenClaw 可以將僅適用於 macOS 的技能視為符合條件。智能體應通過 `nodes` 工具（通常是 `nodes.run`）執行這些技能。
+如果启用了技能监视器，或者出现了新的符合条件的远程节点，技能也可以在会话中途刷新（见下文）。您可以将其视为“热重载”：刷新后的列表将在下一个智能体回合中生效。
 
-這依賴於節點报告其命令支援，並通过 `system.run`进行二進制探測。如果 macOS 节点随后离线，技能仍然可见；调用可能会失败，直到节点重新连接。
+远程 macOS 节点（Linux 网关）
 
-## 技能監視器（自動刷新）
-默認情況下，OpenClaw 会監視技能文件夾，並在 `SKILL.md` 文件發生變化時更新技能快照。您可以通過 `skills.load`进行配置：
+如果网关在 Linux 上运行，但**macOS 节点**已连接**且允许 `system.run`**（未将 Exec 批准的安全设置为 `deny`），则当该节点上存在所需的二进制文件时，OpenClaw 可以将仅适用于 macOS 的技能视为符合条件。智能体应通过 `nodes` 工具（通常是 `nodes.run`）执行这些技能。
+
+这取决于节点报告其命令支持，并通过 `system.run` 进行二进制探测。如果 macOS 节点随后离线，该技能仍可见；在节点重新连接之前，调用可能会失败。
+
+## 技能监视器（自动刷新）
+
+默认情况下，OpenClaw 会监视技能文件夹，并在 `SKILL.md` 文件发生更改时更新技能快照。您可以通过 `skills.load` 进行配置：
 
 ```json5
 {
@@ -207,10 +218,11 @@ OpenClaw 在**会社开始时**对符合条件的技能进行快照，并在同�
 }
 ```
 
-## 令牌影響（技能列表）
-当技能符合条件时，OpenClaw 会将一个紧凑的可用技能 XML 列表注入系统提示中（通过 `formatSkillsForPrompt` 在 `pi-coding-agent` 中）。成本是确定性的：
+## 令牌影响（技能列表）
 
-- **基礎开销（仅当 ≥1 技能时）：** 195 个字符。
+当技能符合条件时，OpenClaw会通过`formatSkillsForPrompt`在`pi-coding-agent`中将一个紧凑的可用技能XML列表注入系统提示中。成本是确定性的：
+
+- **基础开销（仅当 ≥1 技能时）：** 195 个字符。
 - **每项技能：** 97 个字符加上 XML 转义的 `<name>`、`<description>` 和 `<location>` 值的长度。
 
 公式（字符数）：
@@ -220,15 +232,18 @@ total = 195 + Σ (97 + len(name_escaped) + len(description_escaped) + len(locati
 ```
 
 注意事项：
+
 - XML 转义会将 `& < > " '` 扩展为实体（`&amp;`、`&lt;`等），从而增加长度。
 - 不同模型的分词器计算的令牌数量有所不同。粗略的 OpenAI 式估算约为 4 个字符/令牌，因此**每项技能约 97 个字符 ≈ 24 个令牌**，再加上您实际字段的长度。
 
-## 托管技能生命周期
-OpenClaw 随安装包（npm 包或 OpenClaw.app）提供一組基准技能作为**捆绑技能**。`~/.openclaw/skills` 用于本地覆盖（例如，在不更改变捆绑副本的情况下修复或补丁某个技能）。工作区技能由用户拥有，并在名称冲突时覆盖其他技能。
+托管技能生命周期
+
+OpenClaw 随安装包（npm 包或 OpenClaw.app）提供一組基准技能作为**捆绑技能**。`~/.openclaw/skills` 用于本地覆盖（例如，在不更改变捆绑副本的情况下修复或补丁某个技能）。工作区技能由用户拥有，并在名称冲突时优先覆盖其他技能。
 
 ## 配置参考
-有关完整的配置模式请参阅 [技能配置](/tools/skills-config)。
 
-## 寻找更多技能？
+有关完整的配置模式，请参阅 [技能配置](/tools/skills-config)。
+
+## 想掌握更多技能吗？
 
 请浏览 https://clawhub.com.

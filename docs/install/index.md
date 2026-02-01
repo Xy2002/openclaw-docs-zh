@@ -6,7 +6,7 @@ read_when:
 ---
 # 安装
 
-除非有特殊原因，否则请使用安装程序。它会设置 CLI 并运行入门流程。
+除非有特殊原因，否则请使用安装程序。它会配置 CLI 并引导你完成入门流程。
 
 ## 快速安装（推荐）
 
@@ -56,7 +56,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --help
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --no-onboard
 ```
 
-### 2) 全局安装（手动）
+2) 全局安装（手动）
 
 如果您已经安装了 Node：
 
@@ -64,13 +64,13 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --no-onboard
 npm install -g openclaw@latest
 ```
 
-如果您已全局安装 libvips（在 macOS 上通过 Homebrew 往往如此），并且 `sharp` 安装失败，请强制使用预编译二进制文件：
+如果您已在全局安装 libvips（在 macOS 上通常通过 Homebrew 安装），并且 `sharp` 安装失败，请强制使用预编译二进制文件：
 
 ```bash
 SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install -g openclaw@latest
 ```
 
-如果您看到 `sharp: Please add node-gyp to your dependencies`，请安装构建工具（macOS：Xcode CLT + `npm install -g node-gyp`），或使用上述 `SHARP_IGNORE_GLOBAL_LIBVIPS=1` workaround 来跳过原生构建。
+如果您看到 `sharp: Please add node-gyp to your dependencies`，请安装构建工具（macOS：Xcode CLT + `npm install -g node-gyp`），或使用上述 `SHARP_IGNORE_GLOBAL_LIBVIPS=1`  workaround 来跳过原生构建。
 
 或者：
 
@@ -84,7 +84,7 @@ pnpm add -g openclaw@latest
 openclaw onboard --install-daemon
 ```
 
-### 3) 从源代码安装（贡献者/开发者）
+3) 从源代码安装（贡献者/开发者）
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -97,7 +97,7 @@ openclaw onboard --install-daemon
 
 提示：如果您还没有全局安装，请通过 `pnpm openclaw ...` 运行仓库命令。
 
-### 4) 其他安装选项
+4）其他安装选项
 
 - Docker：[Docker](/install/docker)
 - Nix：[Nix](/install/nix)
@@ -137,7 +137,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 - `--dry-run`（打印将发生什么；不进行任何更改）
 - `--no-onboard`（跳过入门流程）
 
-### 环境变量
+环境变量
 
 等效的环境变量（对自动化有用）：
 
@@ -149,7 +149,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 - `OPENCLAW_NO_ONBOARD=1`
 - `SHARP_IGNORE_GLOBAL_LIBVIPS=0|1`（默认：`1`；避免 `sharp` 针对系统 libvips 进行构建）
 
-## 故障排除：未找到 `openclaw`（PATH）
+故障排除：未找到 `openclaw`（路径）
 
 快速诊断：
 
@@ -160,7 +160,7 @@ npm prefix -g
 echo "$PATH"
 ```
 
-如果 `$(npm prefix -g)/bin`（macOS/Linux）或 `$(npm prefix -g)`（Windows）**未**出现在 `echo "$PATH"` 中，您的 shell 就无法找到全局 npm 二进制文件（包括 `openclaw`）。
+如果`$(npm prefix -g)/bin`（macOS/Linux）或`$(npm prefix -g)`（Windows）**未**出现在`echo "$PATH"`中，您的 shell 就无法找到全局 npm 二进制文件（包括`openclaw`）。
 
 解决方法：将其添加到您的 shell 启动文件中（zsh：`~/.zshrc`，bash：`~/.bashrc`）：
 
