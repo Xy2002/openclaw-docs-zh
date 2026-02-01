@@ -9,6 +9,7 @@ import { resolve, join } from 'path';
 import { RateLimiter } from './rate-limiter.js';
 import { Translator } from './translator.js';
 import { Orchestrator } from './orchestrator.js';
+import { ParagraphOrchestrator } from './paragraph-orchestrator.js';
 import {
     scanMarkdownFiles,
     loadHashCache,
@@ -33,6 +34,7 @@ program
     .option('-c, --config <file>', 'Configuration file path', './config.json')
     .option('-i, --incremental', 'Only translate changed files', false)
     .option('--cache <file>', 'Hash cache file for incremental builds', './.translation-cache.json')
+    .option('--paragraph-cache <file>', 'Enable paragraph-level caching (reduces API calls for small changes)', '')
     .option('--dry-run', 'Show what would be translated without actually translating', false)
     .action(async (options) => {
         try {
@@ -126,6 +128,46 @@ program
                 targetLanguage: config.translation.targetLanguage,
             }, rateLimiter);
 
+            // Use paragraph-level caching if enabled
+            const useParagraphCache = !!options.paragraphCache;
+            const paragraphCacheFile = options.paragraphCache
+                ? resolve(process.cwd(), options.paragraphCache)
+                : resolve(process.cwd(), '.paragraph-cache.json');
+
+            if (useParagraphCache) {
+                console.log('\n📦 Using paragraph-level caching...');
+
+                const paragraphOrchestrator = new ParagraphOrchestrator({
+                    sourceDir,
+                    outputDir,
+                    paragraphCacheFile,
+                }, translator);
+
+                // Translate files with paragraph-level caching
+                console.log('\n🌐 Translating with paragraph cache...');
+                const { results, stats: translationStats } = await paragraphOrchestrator.translateFiles(
+                    filesToTranslate,
+                    (current, total, file, status) => {
+                        process.stdout.write(`\r   [${current}/${total}] ${file.padEnd(40).slice(0, 40)} ${status}`);
+                    }
+                );
+                console.log('\n');
+
+                // Report failures
+                const failures = results.filter(r => !r.success);
+                if (failures.length > 0) {
+                    console.log('\n⚠️ Failed files:');
+                    for (const failure of failures) {
+                        console.log(`   ❌ ${failure.file.relativePath}: ${failure.error}`);
+                    }
+                }
+
+                // Print summary
+                paragraphOrchestrator.printSummary(translationStats);
+                return;
+            }
+
+            // Standard file-level translation (no paragraph caching)
             const orchestrator = new Orchestrator({
                 sourceDir,
                 outputDir,

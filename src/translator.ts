@@ -164,6 +164,52 @@ export class Translator {
     }
 
     /**
+     * Translate a single paragraph
+     * Used for incremental translation where only changed paragraphs need translation
+     */
+    async translateParagraph(content: string): Promise<{
+        translatedContent: string;
+        inputTokens: number;
+        outputTokens: number;
+    }> {
+        // Parse and protect non-translatable content within the paragraph
+        const parsed = parseMarkdown(content);
+
+        const textToTranslate = parsed.content.trim();
+        if (!textToTranslate || this.isOnlyPlaceholders(textToTranslate)) {
+            return {
+                translatedContent: content,
+                inputTokens: 0,
+                outputTokens: 0,
+            };
+        }
+
+        // Estimate tokens for rate limiting
+        const estimatedInputTokens = estimateTokens(textToTranslate) + estimateTokens(TRANSLATION_SYSTEM_PROMPT);
+        const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 1.5);
+        const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
+
+        // Execute translation with rate limiting
+        const result = await this.rateLimiter.execute(estimatedTotalTokens, async () => {
+            const apiResult = await this.makeRequest(textToTranslate);
+
+            return {
+                result: apiResult,
+                actualTokens: apiResult.inputTokens + apiResult.outputTokens,
+            };
+        });
+
+        // Restore protected blocks
+        const restoredContent = restoreProtectedBlocks(result.translatedText, parsed.protectedBlocks);
+
+        return {
+            translatedContent: restoredContent,
+            inputTokens: result.inputTokens,
+            outputTokens: result.outputTokens,
+        };
+    }
+
+    /**
      * Check if content is only placeholders (no actual text to translate)
      */
     private isOnlyPlaceholders(content: string): boolean {

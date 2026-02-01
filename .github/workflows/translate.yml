@@ -47,6 +47,16 @@ jobs:
           restore-keys: |
             translation-cache-
 
+      # 恢复段落级别缓存
+      - name: Restore paragraph cache
+        if: github.event.inputs.full_rebuild != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .paragraph-cache.json
+          key: paragraph-cache-${{ github.run_id }}
+          restore-keys: |
+            paragraph-cache-
+
       - name: Sync upstream documentation
         run: |
           echo "🔄 Syncing documentation from upstream..."
@@ -63,14 +73,18 @@ jobs:
         run: |
           echo "🌐 Translating documentation..."
           INCREMENTAL_FLAG=""
+          PARA_CACHE_FLAG="--paragraph-cache .paragraph-cache.json"
           if [ "${{ github.event.inputs.full_rebuild }}" != "true" ]; then
             INCREMENTAL_FLAG="--incremental"
+          else
+            PARA_CACHE_FLAG=""
           fi
           node dist/index.js translate \
             --source ./docs \
             --output ./docs \
             --config ./config.json \
-            $INCREMENTAL_FLAG
+            $INCREMENTAL_FLAG \
+            $PARA_CACHE_FLAG
 
       - name: Fix syntax errors
         run: |
@@ -88,6 +102,13 @@ jobs:
         with:
           path: .translation-cache.json
           key: translation-cache-${{ github.run_id }}
+
+      # 保存段落级别缓存
+      - name: Save paragraph cache
+        uses: actions/cache/save@v4
+        with:
+          path: .paragraph-cache.json
+          key: paragraph-cache-${{ github.run_id }}
 
       - name: Generate translation status
         run: node dist/index.js status --source ./docs --output ./docs > TRANSLATION_STATUS.md
