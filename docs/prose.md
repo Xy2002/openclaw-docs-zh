@@ -106,7 +106,7 @@ OpenProse 支持多种状态后端：
 - sqlite/postgres 需手动启用，目前仍处于实验阶段。
 - PostgreSQL 凭证会记录在子代理日志中；请使用专用且权限最小化的数据库。
 
-## 远程程序
+## 近程程序
 
 `/prose run <handle/slug>` 解析为 `https://p.prose.md/<handle>/<slug>`。
 直接 URL 会按原样获取。这使用了 `web_fetch` 工具（或对于 POST 请求使用 `exec`）。

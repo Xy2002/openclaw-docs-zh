@@ -65,7 +65,7 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
 - 命令：`pnpm test:live`
 - 配置：`vitest.live.config.ts`
 - 文件：`src/**/*.live.test.ts`
-- 默认：由 `pnpm test:live` 启用（设置 `OPENCLAW_LIVE_TEST=1`）
+- 默认：由 `pnpm test:live` 启用（设置 `OPENCLAW_LIVE_TEST=1`)
 - 范围：
   - “这个提供商/模型今天是否真的能用真实凭据正常工作？”
   - 捕捉提供商格式变化、工具调用怪癖、认证问题以及速率限制行为
@@ -80,7 +80,7 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
 
 使用此决策表：
 - 编辑逻辑/测试：运行 `pnpm test`（如果你做了大量更改，还应运行 `pnpm test:coverage`）
-- 修改网关网络/WS 协议/配对：添加 `pnpm test:e2e`
+- 修改网关网络/WS 协议/配 pair：添加 `pnpm test:e2e`
 - 调试“我的机器人宕机”/特定于提供商的故障/工具调用：运行缩小后的 `pnpm test:live`
 
 ## 实时测试：模型冒烟测试（配置文件密钥）

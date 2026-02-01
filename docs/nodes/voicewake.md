@@ -55,7 +55,7 @@ OpenClaw将**唤醒词视为由网关拥有的单一全局列表**。
 - 使用全局列表进行 `VoiceWakeManager` 触发检测。
 - 在设置中编辑唤醒词会通过网关 WebSocket 调用 `voicewake.set`，并确保本地唤醒词检测始终保持响应。
 
-### Android 节点
+### Android 节诺
 
 - 在设置中提供唤醒词编辑器。
 - 通过网关 WebSocket 调用 `voicewake.set`，以确保所有设备上的编辑内容实时同步。

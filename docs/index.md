@@ -36,19 +36,9 @@ OpenClaw 还为 OpenClaw 助手提供支持。
 
 - **全新安装：** [入门](/start/getting-started)
 - **引导式设置（推荐）：** [向导](/start/wizard) (`openclaw onboard`)
-- **打开仪表板（本地网关）：** http://127.0.0.1:18789/（或 http://localhost:18789/）
+- **打开仪表板（本地网关）：:** http://127.0.0.1:18789/（或 http://localhost:18789/）
 
 如果网关在同一台计算机上运行，该链接会立即打开浏览器控制界面。如果失败，请先启动网关：`openclaw gateway`。
-
-## 仪表板（浏览器控制界面）
-
-仪表板是用于聊天、配置、节点、会话等功能的浏览器控制界面。
-本地默认： http://127.0.0.1:18789/
-远程访问： [Web 界面](/web) 和 [Tailscale](/gateway/tailscale)
-
-<p align="center">
-  <img src="whatsapp-openclaw.jpg" alt="OpenClaw" width="420" />
-</p>
 
 ## 工作原理
 
@@ -76,12 +66,12 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 ## 网络模型
 
 - **每台主机一个网关（推荐）：** 它是唯一可以拥有 WhatsApp Web 会话的进程。如果你需要救援机器人或严格隔离，可以运行多个网关，并使用隔离的配置文件和端口；请参阅 [多网关](/gateway/multiple-gateways)。
-- **环回优先：** 网关 WS 默认使用 `ws://127.0.0.1:18789`。
+- **环回优先：:** 网关 WS 默认使用 `ws://127.0.0.1:18789`。
   - 向导现在默认生成网关令牌（即使是环回）。
   - 对于 Tailnet 访问，运行 `openclaw gateway --bind tailnet --token ...`（非环回绑定需要令牌）。
 - **节点：** 连接到网关 WebSocket（根据需要使用 LAN/Tailnet/SSH）；旧版 TCP 桥已弃用并移除。
 - **画布主机：** HTTP 文件服务器位于 `canvasHost.port`（默认 `18793`），为节点 WebView 提供 `/__openclaw__/canvas/`；请参阅 [网关配置](/gateway/configuration)（`canvasHost`）。
-- **远程使用：** SSH 隧道或 Tailnet/VPN；请参阅 [远程访问](/gateway/remote) 和 [发现](/gateway/discovery)。
+- **远程使用：:** SSH 隧道或 Tailnet/VPN；请参阅 [远程访问](/gateway/remote) 和 [发现](/gateway/discovery)。
 
 ## 功能（高层次）
 
@@ -106,7 +96,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 
 ## 快速入门
 
-运行时要求： **Node ≥ 22**。
+运行时要求： **Node ≥ 22**.
 
 ```bash
 # Recommended: global install (npm/pnpm)

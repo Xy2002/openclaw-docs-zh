@@ -18,7 +18,7 @@ read_when:
 1) **版本与元数据**
 - [ ] 提升 `package.json` 版本（例如，`2026.1.29`）。
 - [ ] 运行 `pnpm plugins:sync` 以同步扩展包版本和变更日志。
-- [ ] 更新 CLI/版本字符串：[`src/cli/program.ts`](https://github.com/openclaw/openclaw/blob/main/src/cli/program.ts) 以及 Baileys 用户代理在 [`src/provider-web.ts`](https://github.com/openclaw/openclaw/blob/main/src/provider-web.ts) 中的定义。
+- [ ] 更新 CLI/版本字符串：[`src/cli/program.ts`](https://github.com/openclaw/openclaw/blob/main/src/cli/program.ts)以及 Baileys 用户代理在 [`src/provider-web.ts`](https://github.com/openclaw/openclaw/blob/main/src/provider-web.ts) 中的定义。
 - [ ] 确认软件包元数据（名称、描述、仓库、关键词、许可证）以及 `bin` 映射指向 [`openclaw.mjs`](https://github.com/openclaw/openclaw/blob/main/openclaw.mjs)，用于 `openclaw`。
 - [ ] 如果依赖项发生变化，运行 `pnpm install`，以确保 `pnpm-lock.yaml` 最新。
 

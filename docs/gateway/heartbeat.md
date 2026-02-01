@@ -166,7 +166,7 @@ channels:
           showAlerts: false # Suppress alert delivery for this account
 ```
 
-优先级：按账户 → 按渠道 → 渠道默认 → 内置默认。
+优先级：按账户 → 按渠道 → 按渠道默认 → 内置默认。
 
 ### 各标志的作用
 

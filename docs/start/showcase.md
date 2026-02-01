@@ -174,7 +174,7 @@ summary: Community-built projects and integrations powered by OpenClaw
 <Card title="iOS App via Telegram" icon="mobile" href="#">
   **@coard** • `ios` `xcode` `testflight`
 
-  完整的 iOS 应用程序，包含地图和语音录制功能，完全通过 Telegram 聊天部署到 TestFlight。
+  与 Claude Code 和 OpenClaw 集成的 Linear CLI 工作流。从终端管理问题、项目和工作流。首个外部 PR 已合并！
 
 <img src="/assets/showcase/ios-testflight.jpg" alt="iOS app on TestFlight" />
 </Card>
@@ -189,7 +189,7 @@ summary: Community-built projects and integrations powered by OpenClaw
 <Card title="Kev's Dream Team (14+ Agents)" icon="robot" href="__URL_151__">
   **@adam91holt** • `multi-agent` `orchestration` `architecture` `manifesto`
 
-  14 个以上的代理通过 Opus 4.5 协调器委托给 Codex 工作者。全面的技术说明涵盖了梦之队阵容、模型选择、沙箱、Webhook、心跳和委派流程。用于代理沙箱的 [Clawdspace](__URL_133__)__。相关博客文章请参见 [Blog post](__URL_134__)__。
+  14 个以上的代理通过 Opus 4.5 协调器委托给 Codex 工作者。全面的技术说明涵盖了梦之队阵容、模型选择、沙箱、Webhook、心跳和委派流程。用于代理沙箱的 [Clawdspace](__URL_133__)__.相关博客文章请参见 [Blog post](__URL_134__)__.
 
 </Card>
 
@@ -427,7 +427,7 @@ summary: Community-built projects and integrations powered by OpenClaw
 
 <Steps>
   <Step title="Share It">
-    在 [Discord 的 #showcase 频道](__URL_136__) 或 [在 X 上发布推文并标记 @openclaw](__URL_137__) 发布
+    在 [Discord 的 #showcase 频道](__URL_135__) 或 [在 X 上发布推文并标记 @openclaw](__URL_136__) 发布
   </Step>
   <Step title="Include Details">
     告诉我们你的项目是做什么的，附上仓库或演示链接，如果有截图，请一并分享

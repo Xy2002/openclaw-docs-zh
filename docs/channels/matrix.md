@@ -162,9 +162,9 @@ E2EE 配置（启用端到端加密）：
 
 - 支持回复线程化。
 - `channels.matrix.threadReplies` 控制回复是否保留在线程中：
-  - `off`, `inbound`（默认），`always`
+  - `off`, `inbound`（默认）， `always`
 - `channels.matrix.replyToMode` 控制不在线程中回复时的回复元数据：
-  - `off`（默认），`first`, `all`
+  - `off`（默认）， `first`, `all`
 
 ## 功能
 

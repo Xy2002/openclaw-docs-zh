@@ -145,7 +145,7 @@ read_when:
 - [macOS 图标](/platforms/mac/icon)
 - [macOS 日志记录](/platforms/mac/logging)
 - [macOS 权限](/platforms/mac/permissions)
-- [macOS 远程](/platforms/mac/remote)
+- [macOS 进行远程](/platforms/mac/remote)
 - [macOS 签名](/platforms/mac/signing)
 - [macOS 发布](/platforms/mac/release)
 - [macOS 网关（launchd）](/platforms/mac/bundled-gateway)

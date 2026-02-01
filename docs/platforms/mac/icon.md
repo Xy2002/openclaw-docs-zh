@@ -13,7 +13,7 @@ read_when:
 - **工作中（代理运行）：** `AppState.isWorking=true` 驱动一种“尾巴/腿部小幅度抖动”的微运动：在工作进行时，腿部抖动频率加快并产生轻微偏移。目前该状态与 WebChat 代理运行相关联；在其他长时间任务接入后，也应添加类似的切换逻辑。
 
 连线点
-- 语音唤醒：在触发时，运行时或测试器调用 `AppState.triggerVoiceEars(ttl: nil)`；在静默 1 秒后调用 `stopVoiceEars()`，以匹配捕获窗口。
+- 语音唤醒：在触发时，运行时或测试器调用 `AppState.triggerVoiceEars(ttl: nil)`；在静默 1 秒后调用 __ INLINE_CODE_7__，以匹配捕获窗口。
 - 代理活动：在工作时段周围设置 `AppStateStore.shared.setWorking(true/false)`（已在 WebChat 代理调用中实现）。确保工作跨度较短，并在 `defer` 块中重置，以避免动画卡住。
 
 形状与尺寸

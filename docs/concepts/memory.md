@@ -62,7 +62,7 @@ OpenClaw 的内存是**代理工作区中的纯 Markdown 文件**。文件是事
 - **每个压缩周期一次刷新**（在 `sessions.json` 中跟踪）。
 - **工作区必须可写**：如果会话以沙盒模式运行，并启用了 `workspaceAccess: "ro"` 或 `"none"`，则跳过刷新。
 
-有关完整的压缩生命周期，请参见 [会话管理 + 压缩](/reference/session-management-compaction)。
+有关完整的压缩生命周期，请参见 [会观管理 + 压缩](/reference/session-management-compaction)。
 
 ## 向量内存搜索
 

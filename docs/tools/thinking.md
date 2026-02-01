@@ -26,7 +26,7 @@ read_when:
 ## 设置会话默认值
 - 发送一条**仅包含**指令的消息（允许空格），例如 `/think:medium` 或 `/t high`。
 - 该设置在当前会话中生效（默认按发送者区分）；可通过 `/think:off` 或会话空闲重置来清除。
-- 系统会发送确认回复（`Thinking level set to high.` / `Thinking disabled.`）。如果层级无效（如 `/thinking big`），命令将被拒绝并给出提示，且会话状态保持不变。
+- 系统会发送确认回复（`Thinking level set to high.` / `Thinking disabled.`)。如果层级无效（如 `/thinking big`)，命令将被拒绝并给出提示，且会话状态保持不变。
 - 发送 `/think`（或 `/think:`）且不带参数，即可查看当前的思维层级。
 
 ## 代理中的应用
@@ -53,10 +53,10 @@ read_when:
 - 高级模式文档位于 [高级模式](/tools/elevated)。
 
 ## 心跳信号
-- 心跳探测消息体为配置的心跳提示（默认：`Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`）。心跳消息中的内联指令照常生效（但应避免通过心跳更改会话默认值）。
+- 心跳探测消息体为配置的心跳提示（默认：`Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`)。心跳消息中的内联指令照常生效（但应避免通过心跳更改会话默认值）。
 - 心跳交付默认仅发送最终有效载荷。若要同时发送单独的 `Reasoning:` 消息（若可用），请设置 `agents.defaults.heartbeat.includeReasoning: true` 或针对单个代理的 `agents.list[].heartbeat.includeReasoning: true`。
 
 ## Web 聊天界面
 - Web 聊天中的思维选择器在页面加载时会反映入站会话存储/配置中保存的会话层级。
-- 选择其他层级仅适用于下一条消息（`thinkingOnce`）；发送后，选择器会自动恢复为保存的会话层级。
+- 选择其他层级仅适用于下一条消息（`thinkingOnce`)；发送后，选择器会自动恢复为保存的会话层级。
 - 若要更改会话默认值，可像之前一样发送 `/think:<level>` 指令；下次重新加载后，选择器将反映这一更改。

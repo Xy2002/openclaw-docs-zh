@@ -154,7 +154,7 @@ swift run openclaw-mac discover --timeout 3000 --json
 
 提示：与 `openclaw gateway discover --json` 对比，以了解 macOS 应用程序的发现管道（NWBrowser + tailnet DNS‑SD 回退）是否与 Node CLI 的 `dns-sd` 基于发现的方式有所不同。
 
-## 远程连接管道（SSH 隧道）
+## 遥远连接管道（SSH 隧道）
 
 当 macOS 应用程序以**远程**模式运行时，它会打开一个 SSH 隧道，使本地 UI 组件能够像在 localhost 上一样与远程网关通信。
 
@@ -166,7 +166,7 @@ swift run openclaw-mac discover --timeout 3000 --json
 - **SSH 形状**：`ssh -N -L <local>:127.0.0.1:<remote>`，带有 BatchMode、ExitOnForwardFailure 和保持连接选项。
 - **IP 报告**：SSH 隧道使用环回地址，因此网关会将节点 IP 视为 `127.0.0.1`。如果您希望显示真实的客户端 IP，请使用**直接（ws/wss）**传输方式（参见 [macOS 远程访问](/platforms/mac/remote)）。
 
-有关设置步骤，请参阅 [macOS 远程访问](/platforms/mac/remote)。有关协议细节，请参阅 [网关协议](/gateway/protocol)。
+有关设置步骤，请参阅 [macOS 运输](/platforms/mac/remote)。有关协议细节，请参阅 [网关协议](/gateway/protocol)。
 
 ## 相关文档
 

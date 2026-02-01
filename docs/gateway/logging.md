@@ -46,7 +46,7 @@ CLI 捕获 `console.log/info/warn/error/debug/trace` 并将其写入文件日志
 您可以通过以下方式独立调整控制台详细程度：
 
 - `logging.consoleLevel`（默认 `info`）
-- `logging.consoleStyle`（`pretty` | `compact` | `json`）
+- `logging.consoleStyle`（`pretty` | `compact` | `json`)
 
 ## 工具摘要脱敏
 
@@ -98,13 +98,13 @@ openclaw gateway --verbose --ws-log full
 
 行为：
 
-- 每行都有 **子系统前缀**（例如 `[gateway]`、`[canvas]`、`[tailscale]`）
+- 每行都有 **子系统前缀**（例如 `[gateway]`、`[canvas]`、`[tailscale]`)
 - **子系统颜色**（每个子系统稳定）加上级别着色
 - **当输出为 TTY 或环境看起来像富终端时使用颜色**（`TERM`/`COLORTERM`/`TERM_PROGRAM`），尊重 `NO_COLOR`
-- **缩短的子系统前缀**：删除开头的 `gateway/` + `channels/`，保留最后 2 个部分（例如 `whatsapp/outbound`）
-- **按子系统划分的子日志记录器**（自动前缀 + 结构化字段 `{ subsystem }`）
+- **缩短的子系统前缀**：删除开头的 `gateway/` + `channels/`，保留最后 2 个部分（例如 `whatsapp/outbound`)
+- **按子系统划分的子日志记录器**（自动前缀 + 结构化字段 `{ subsystem }`)
 - **`logRaw()`** 用于 QR/UX 输出（无前缀，无格式）
-- **控制台样式**（例如 `pretty | compact | json`）
+- **控制台样式**（例如 `pretty | compact | json`)
 - **控制台日志级别**与文件日志级别分开（当 `logging.level` 设置为 `debug`/`trace` 时，文件保持完整细节）
 - **WhatsApp 消息正文**以 `debug` 记录（使用 `--verbose` 查看它们）
 

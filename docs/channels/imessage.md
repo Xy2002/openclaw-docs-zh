@@ -45,7 +45,7 @@ read_when:
 }
 ```
 
-## 要求
+## 需求
 - 已登录“信息”的 macOS。
 - OpenClaw 的全盘访问权限 + `imsg`（“信息”数据库访问）。
 - 发送时需具备自动化权限。
@@ -100,7 +100,7 @@ exec /usr/bin/ssh -o BatchMode=yes -o ConnectTimeout=5 -T <bot-macos-user>@local
 }
 ```
 
-对于单账户设置，使用扁平选项（`channels.imessage.cliPath`, `channels.imessage.dbPath`）而不是 `accounts` 映射。
+对于单账户设置，使用扁平选项（`channels.imessage.cliPath`, `channels.imessage.dbPath`)而不是 `accounts` 映射。
 
 ### 远程/SSH 变体（可选）
 如果您希望在另一台 Mac 上使用 iMessage，请将 `channels.imessage.cliPath` 设置为一个包装脚本，该脚本通过 SSH 在远程 macOS 主机上运行 `imsg`。OpenClaw 只需要标准输入/输出。

@@ -183,7 +183,7 @@ docker compose version
 
 ---
 
-## 6) 克隆 OpenClaw 仓库
+## 6) 克lon OpenClaw 仓库
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -403,7 +403,7 @@ OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有长期�
 | 模型身份验证配置文件 | `/home/node/.openclaw/` | 主机卷挂载 | OAuth 令牌和 API 密钥 |
 | 技能配置 | `/home/node/.openclaw/skills/` | 主机卷挂载 | 技能级别的状态 |
 | 代理工作区 | `/home/node/.openclaw/workspace/` | 主机卷挂载 | 代码和代理工件 |
-| WhatsApp 会话 | `/home/node/.openclaw/` | 主机卷挂载 | 保留 QR 登录状态 |
+| WhatsApp 会话 | `/home/node/.openclaw/` | 主机卷挂载 | 保留 QR 登入状态 |
 | Gmail 密钥环 | `/home/node/.openclaw/` | 主机卷 + 密码 | 需要 `GOG_KEYRING_PASSWORD` |
 | 外部二进制文件 | `/usr/local/bin/` | Docker 镜像 | 必须在构建时烘焙 |
 | Node 运行时 | 容器文件系统 | Docker 镜像 | 每次构建镜像时都会重建 |

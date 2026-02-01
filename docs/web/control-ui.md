@@ -9,7 +9,7 @@ read_when:
 控制 UI 是一个由网关提供服务的小型 **Vite + Lit** 单页应用：
 
 - 默认：`http://<host>:18789/`
-- 可选前缀：设置 `gateway.controlUi.basePath`（例如 `/openclaw`）
+- 可选前缀：设置 `gateway.controlUi.basePath`（例如 `/openclaw`)
 
 它在同一端口上**直接与网关 WebSocket 通信**。
 
@@ -28,21 +28,21 @@ read_when:
 首次连接时，引导向导会默认生成一个网关令牌，请在此处粘贴。
 
 ## 当前功能
-- 通过网关 WS 与模型聊天（`chat.history`、`chat.send`、`chat.abort`、`chat.inject`）
+- 通过网关 WS 与模型聊天（`chat.history`、`chat.send`、`chat.abort`、`chat.inject`)
 - 在聊天中流式传输工具调用和实时工具输出卡片（代理事件）
-- 频道：WhatsApp/Telegram/Discord/Slack + 插件频道（Mattermost 等）状态 + QR 登录 + 每个频道的配置（`channels.status`、`web.login.*`、`config.patch`）
-- 实例：在线实例列表 + 刷新（`system-presence`）
-- 会话：列表 + 每个会话的思考/详细模式覆盖（`sessions.list`、`sessions.patch`）
-- 定时任务：列出/添加/运行/启用/禁用 + 运行历史（`cron.*`）
-- 技能：状态、启用/禁用、安装、API 密钥更新（`skills.*`）
-- 节点：列表 + 功能集（`node.list`）
-- 执行审批：编辑网关或节点白名单 + 请求 `exec host=gateway/node` 的策略（`exec.approvals.*`）
-- 配置：查看/编辑 `~/.openclaw/openclaw.json`（`config.get`、`config.set`）
+- 频道：WhatsApp/Telegram/Discord/Slack + 插件频道（Mattermost 等）状态 + QR 登录 + 每个频道的配置（`channels.status`、`web.login.*`、`config.patch`)
+- 实例：在线实例列表 + 刷新（`system-presence`)
+- 会话：列表 + 每个会话的思考/详细模式覆盖（`sessions.list`、`sessions.patch`)
+- 定时任务：列出/添加/运行/启用/禁用 + 运行历史（`cron.*`)
+- 技能：状态、启用/禁用、安装、API 密钥更新（`skills.*`)
+- 节点：列表 + 功能集（`node.list`)
+- 执行审批：编辑网关或节点白名单 + 请求 `exec host=gateway/node` 的策略（`exec.approvals.*`)
+- 配置：查看/编辑 `~/.openclaw/openclaw.json`（`config.get`、`config.set`)
 - 配置：应用并重启，同时进行验证（`config.apply`），并唤醒最近一次活跃会话
 - 配置写入包含基础哈希保护，以防止并发编辑相互覆盖
 - 配置模式 + 表单渲染（`config.schema`，包括插件和频道模式）；原始 JSON 编辑器仍然可用
-- 调试：状态/健康/模型快照 + 事件日志 + 手动 RPC 调用（`status`、`health`、`models.list`）
-- 日志：带有过滤和导出功能的网关文件日志实时尾部跟踪（`logs.tail`）
+- 调试：状态/健康/模型快照 + 事件日志 + 手动 RPC 调用（`status`、`health`、`models.list`)
+- 日志：带有过滤和导出功能的网关文件日志实时尾部跟踪（`logs.tail`)
 - 更新：运行包/Git 更新并重启（`update.run`），附带重启报告
 
 ## 聊天行为
@@ -51,7 +51,7 @@ read_when:
 - 使用相同的 `idempotencyKey` 重新发送，在运行时返回 `{ status: "in_flight" }`，完成后返回 `{ status: "ok" }`。
 - `chat.inject` 会将助手备注附加到会话记录中，并广播一个仅用于 UI 更新的 `chat` 事件（不运行代理，不传递到频道）。
 - 停止：
-  - 点击**停止**（调用 `chat.abort`）
+  - 点击**停止**（调用 `chat.abort`)
   - 输入 `/stop`（或 `stop|esc|abort|wait|exit|interrupt`）以在带外终止
   - `chat.abort` 支持 `{ sessionKey }`（无 `runId`），可为该会话的所有活动运行终止
 
@@ -66,7 +66,7 @@ openclaw gateway --tailscale serve
 ```
 
 打开：
-- `https://<magicdns>/`（或您配置的 `gateway.controlUi.basePath`）
+- `https://<magicdns>/`（或您配置的 `gateway.controlUi.basePath`)
 
 默认情况下，Serve 请求可以通过 Tailscale 身份标头进行身份验证
 （`tailscale-user-login`），当 `gateway.auth.allowTailscale` 设置为 `true` 时。OpenClaw 通过解析 `x-forwarded-for` 地址并与标头匹配来验证身份，并且仅在接受请求通过 Tailscale 的 `x-forwarded-*` 标头访问环回地址时才接受此类请求。如果您希望即使对于 Serve 流量也要求令牌/密码，请设置 `gateway.auth.allowTailscale: false`（或强制 `gateway.auth.mode: "password"`）。
@@ -78,7 +78,7 @@ openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
 ```
 
 然后打开：
-- `http://<tailscale-ip>:18789/`（或您配置的 `gateway.controlUi.basePath`）
+- `http://<tailscale-ip>:18789/`（或您配置的 `gateway.controlUi.basePath`)
 
 将令牌粘贴到 UI 设置中（作为 `connect.params.auth.token` 发送）。
 

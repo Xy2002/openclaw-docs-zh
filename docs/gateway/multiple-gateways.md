@@ -11,7 +11,7 @@ read_when:
 ## 隔离检查清单（必需）
 - `OPENCLAW_CONFIG_PATH` — 每实例配置文件
 - `OPENCLAW_STATE_DIR` — 每实例会话、凭据、缓存
-- `agents.defaults.workspace` — 每实例工作区根目录
+- __ INLINE_CODE_7__ — 每实例工作区根目录
 - `gateway.port`（或 `--port`）— 每实例唯一
 - 衍生端口（浏览器/画布）不得重叠
 

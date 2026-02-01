@@ -61,7 +61,7 @@ Model output
 
 当区块流式传输启用时，OpenClaw 可以在发送之前**合并连续的区块块**。这减少了“单行垃圾信息”，同时仍能提供渐进式的输出。
 
-- 合并会在出现**空闲间隔**（`idleMs`）后才进行刷新。
+- 合并在出现**空闲间隔**（`idleMs`）后才进行刷新。
 - 缓冲区受`maxChars` 的限制，一旦超过该值就会被清空。
 - `minChars` 会阻止微小片段在文本积累到足够之前发送（最终刷新始终会发送剩余文本）。
 - 连接符源自`blockStreamingChunk.breakPreference`（`paragraph` → `\n\n`，`newline` → `\n`，`sentence` → 空格）。

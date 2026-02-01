@@ -117,7 +117,7 @@ openclaw tui --url ws://<host>:<port> --token <gateway-token>
 - `--session <key>`：会话密钥（默认： `main`，或当作用域为全局时为 `global`）
 - `--deliver`：是否将助手回复投递到提供商（默认关闭）
 - `--thinking <level>`：覆盖发送时的思考级别
-- `--timeout-ms <ms>`：代理超时时间（以毫秒为单位；默认为 `agents.defaults.timeoutSeconds`）
+- `--timeout-ms <ms>`：代理超时时间（以毫秒为单位；默认为 `agents.defaults.timeoutSeconds`)
 
 ## 故障排除
 

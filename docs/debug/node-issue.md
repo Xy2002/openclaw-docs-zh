@@ -4,10 +4,10 @@ read_when:
   - Debugging Node-only dev scripts or watch mode failures
   - Investigating tsx/esbuild loader crashes in OpenClaw
 ---
-# Node + tsx 中“__name 不是函数”导致的崩溃
+# 在 Node + tsx 中因“__name 不是函数”而导致的崩溃
 
 ## 摘要
-通过 Node 运行 OpenClaw 时，使用 `tsx` 导致启动失败，错误信息如下：
+当通过 Node 运行 OpenClaw 时，使用 `tsx` 导致启动失败，错误信息如下：
 
 ```
 [openclaw] Failed to start CLI: TypeError: __name is not a function
@@ -56,7 +56,7 @@ node --import tsx scripts/repro/tsx-name-repro.ts
   pnpm exec tsc --watch --preserveWatchOutput
   node --watch openclaw.mjs status
   ```
-- 经本地验证，`pnpm exec tsc -p tsconfig.json` + `node openclaw.mjs status` 在 Node 25 上可行。
+- 经本地验证， `pnpm exec tsc -p tsconfig.json` + `node openclaw.mjs status` 在 Node 25 上可行。
 - 如果可能，禁用 TS 加载器中的 esbuild keepNames 选项（这会阻止插入 `__name` 帮助函数）；目前 tsx 尚未公开此选项。
 - 使用 Node LTS（22/24）配合 `tsx` 测试，以确定问题是否仅限于 Node 25。
 

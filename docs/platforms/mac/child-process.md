@@ -11,7 +11,7 @@ read_when:
 
 ## 默认行为（launchd）
 
-- 应用程序会为每个用户安装一个名为 `bot.molt.gateway` 的 LaunchAgent（当使用 `--profile`/`OPENCLAW_PROFILE` 时则为 `bot.molt.<profile>`；仍支持旧版 `com.openclaw.*`）。
+- 应用程序会为每个用户安装一个名为 `bot.molt.gateway` 的 LaunchAgent（当使用 `--profile`/`OPENCLAW_PROFILE` 时则为 `bot.molt.<profile>`；仍支持旧版 `com.openclaw.*`)。
 - 当启用本地模式时，应用程序会确保该 LaunchAgent 已加载，并在必要时启动网关。
 - 日志会写入 launchd 网关日志路径（可在调试设置中查看）。
 
@@ -38,9 +38,9 @@ rm ~/.openclaw/disable-launchagent
 
 ## 仅附加模式
 
-要强制 macOS 应用程序**从不安装或管理 launchd**，请使用 `--attach-only`（或 `--no-launchd`）启动应用程序。这会设置 `~/.openclaw/disable-launchagent`，使应用程序仅附加到已运行的网关。你也可以在调试设置中切换相同的行为。
+要强制 macOS 应用程序**从不安装或管理 launchd**，请使用 `--attach-only`（或 `--no-launchd`)启动应用程序。这会设置 `~/.openclaw/disable-launchagent`，使应用程序仅附加到已运行的网关。你也可以在调试设置中切换相同的行为。
 
-## 远程模式
+## 遠程模式
 
 远程模式绝不会启动本地网关。应用程序会使用 SSH 隧道连接到远程主机，并通过该隧道进行通信。
 

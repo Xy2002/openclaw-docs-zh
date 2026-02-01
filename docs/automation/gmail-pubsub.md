@@ -57,7 +57,7 @@ read_when:
 }
 ```
 
-如果您希望使用固定频道，请设置 `channel` + `to`。否则，`channel: "last"` 将使用上次的交付路由（回退到 WhatsApp）。
+如果您希望使用固定频道，请设置 `channel` + `to`.否则，`channel: "last"` 将使用上次的交付路由（回退到 WhatsApp）。
 
 要为 Gmail 运行强制使用更便宜的模型，请在映射中设置 `model`（`provider/model` 或别名）。如果强制使用 `agents.defaults.models`，请将其包含在映射中。
 
@@ -223,7 +223,7 @@ gog gmail history --account openclaw@gmail.com --since <historyId>
 
 ## 故障排除
 
-- `Invalid topicName`：项目不匹配（主题不在 OAuth 客户端项目中）。
+- `Invalid topicName`：项目不匹配（主题不在 OAuth 客户ient项目中）。
 - `User not authorized`：主题缺少 `roles/pubsub.publisher`。
 - 消息为空：Gmail 推送仅提供 `historyId`；可通过 `gog gmail history` 获取。
 

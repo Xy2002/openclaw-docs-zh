@@ -98,7 +98,7 @@ git commit -m "Add Clawd workspace"
 - **spotify-player** — 终端 Spotify 客户端，可用于搜索、排队和控制播放。
 - **sag** — ElevenLabs 语音合成，采用 macOS 风格的 say 用户界面；默认流式传输至扬声器。
 - **Sonos CLI** — 从脚本控制 Sonos 扬声器（发现/状态/播放/音量/分组）。
-- **blucli** — 从脚本控制、分组并自动化 BluOS 播放器。
+- **blucli** — 从脚本控制、分组并自动化 BluOS 播拉器。
 - **OpenHue CLI** — 用于场景和自动化控制的飞利浦 Hue 照明。
 - **OpenAI Whisper** — 本地语音转文本，适用于快速听写和语音邮件转录。
 - **Gemini CLI** — 从终端调用 Google Gemini 模型，实现快速问答。

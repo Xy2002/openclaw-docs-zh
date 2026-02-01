@@ -54,4 +54,4 @@ read_when:
 
 - 清单对**所有插件**都是**必需的**，包括从本地文件系统加载的插件。
 - 运行时仍会单独加载插件模块；清单仅用于发现和验证。
-- 如果您的插件依赖原生模块，请记录构建步骤以及任何包管理器白名单要求（例如，pnpm `allow-build-scripts` + `pnpm rebuild <package>`）。
+- 如果您的插件依赖原生模块，请记录构建步骤以及任何包管理器白名单要求（例如，pnpm `allow-build-scripts` + `pnpm rebuild <package>`)。

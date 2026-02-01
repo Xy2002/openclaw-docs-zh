@@ -4,8 +4,6 @@ read_when:
   - You want to remove the gateway service and/or local state
   - You want a dry-run first
 ---
-# `openclaw uninstall`
-
 卸载网关服务+本地数据（CLI保留）。
 
 ```bash

@@ -70,7 +70,7 @@ npm install -g openclaw@latest
 SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install -g openclaw@latest
 ```
 
-如果您看到 `sharp: Please add node-gyp to your dependencies`，请安装构建工具（macOS：Xcode CLT + `npm install -g node-gyp`），或使用上述 `SHARP_IGNORE_GLOBAL_LIBVIPS=1`  workaround 来跳过原生构建。
+如果您看到 `sharp: Please add node-gyp to your dependencies`，请安装构建工具（macOS：Xcode CLT + `npm install -g node-gyp`），或使用上述 `SHARP_IGNORE_GLOBAL_LIBVIPS=1` workaround 来跳过原生构建。
 
 或者：
 
@@ -116,7 +116,7 @@ openclaw onboard --install-daemon
 安装程序支持两种方法：
 
 - `npm`（默认）：`npm install -g openclaw@latest`
-- `git`：从 GitHub 克隆/构建，并从源代码检出目录中运行
+- `git`：从 GitHub 克lon/构建，并从源代码检出目录中运行
 
 ### CLI 标志
 

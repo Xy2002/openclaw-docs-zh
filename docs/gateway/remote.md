@@ -33,7 +33,7 @@ read_when:
 
 笔记本电脑**不**运行代理，而是以远程方式连接：
 
-- 使用 macOS 应用程序的 **通过 SSH 远程** 模式（设置 → 通用 → “OpenClaw 运行”）。
+- 使用 macOS 应用程序的 **通过 SSH 进行远程** 模式（设置 → 通用 → “OpenClaw 运行”）。
 - 应用程序会自动打开并管理隧道，因此 WebChat 和健康检查可以“无缝工作”。
 
 操作手册：[macOS 远程访问](/platforms/mac/remote)。
@@ -104,7 +104,7 @@ WebChat 不再使用单独的 HTTP 端口。SwiftUI 聊天界面直接连接到�
 
 macOS 菜单栏应用程序可以端到端地驱动同一套设置（远程状态检查、WebChat 和语音唤醒转发）。
 
-操作手册：[macOS 远程访问](/platforms/mac/remote)。
+操作手册：[macOS 进行远程访问](/platforms/mac/remote)。
 
 ## 安全规则（远程/VPN）
 

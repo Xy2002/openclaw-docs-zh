@@ -58,7 +58,7 @@ openclaw plugins install ./extensions/twitch
 }
 ```
 
-## 它是什么
+## 但它是什么
 
 - 由网关拥有的Twitch频道。
 - 确定性路由：回复始终返回到Twitch。

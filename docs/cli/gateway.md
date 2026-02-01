@@ -45,7 +45,8 @@ openclaw gateway run
 - `--password <password>`: 密码覆盖（同时为进程设置 `OPENCLAW_GATEWAY_PASSWORD`）。
 - `--tailscale <off|serve|funnel>`: 通过 Tailscale 公开网关。
 - `--tailscale-reset-on-exit`: 关机时重置 Tailscale 服务/隧道配置。
-- `--allow-unconfigured`: 允许在配置中缺少 `gateway.mode=local` 的情况下启动网关。
+- `--allow-unconfigured`: 全球网关
+- `gateway.mode=local`: 允许在配置中缺少 `gateway.mode=local` 的情况下启动网关。
 - `--dev`: 如果缺失，则创建开发配置 + 工作区（跳过 BOOTSTRAP.md）。
 - `--reset`: 重置开发配置 + 凭据 + 会话 + 工作区（需要 `--dev`）。
 - `--force`: 在启动之前杀死选定端口上的任何现有监听器。
@@ -110,7 +111,7 @@ openclaw gateway probe --json
 
 #### 通过 SSH 远程（与 Mac 应用程序功能一致）
 
-macOS 应用程序的“通过 SSH 远程”模式使用本地端口转发，使可能仅绑定到环回的远程网关能够在 `ws://127.0.0.1:<port>` 上被访问。
+macOS 应用程序的“通过 SSH 进行远程连接”模式使用本地端口转发，使可能仅绑定到环回的远程网关能够在 `ws://127.0.0.1:<port>` 上被访问。
 
 CLI 等效：
 

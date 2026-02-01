@@ -26,7 +26,7 @@ macOS 伴侣应用通过将 Apple 设备型号标识符（例如 `iPad16,6`、`M
 
 1. 选择您想要固定的上游提交（分别为 iOS 和 macOS 各一个）。
 2. 更新 `apps/macos/Sources/OpenClaw/Resources/DeviceModels/NOTICE.md` 中的提交哈希值。
-3. 重新下载已固定到这些提交的 JSON 文件：
+3. 面向这些提交重新下载已固定的 JSON 文件：
 
 ```bash
 IOS_COMMIT="<commit sha for ios-device-identifiers.json>"

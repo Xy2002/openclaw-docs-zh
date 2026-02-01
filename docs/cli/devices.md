@@ -12,7 +12,7 @@ read_when:
 
 ## 命令
 
-### `openclaw devices list`
+### __ INLINE_CODE_6__
 
 列出待处理的配对请求和已配对的设备。
 
@@ -21,7 +21,7 @@ openclaw devices list
 openclaw devices list --json
 ```
 
-### `openclaw devices approve <requestId>`
+### __ INLINE_CODE_7__
 
 批准待处理的设备配对请求。
 
@@ -29,7 +29,7 @@ openclaw devices list --json
 openclaw devices approve <requestId>
 ```
 
-### `openclaw devices reject <requestId>`
+### __ INLINE_CODE_8__
 
 拒绝待处理的设备配对请求。
 
@@ -37,7 +37,7 @@ openclaw devices approve <requestId>
 openclaw devices reject <requestId>
 ```
 
-### `openclaw devices rotate --device <id> --role <role> [--scope <scope...>]`
+### __ INLINE_CODE_9__
 
 为特定角色轮换设备令牌（可选择更新作用域）。
 
@@ -45,7 +45,7 @@ openclaw devices reject <requestId>
 openclaw devices rotate --device <deviceId> --role operator --scope operator.read --scope operator.write
 ```
 
-### `openclaw devices revoke --device <id> --role <role>`
+### __ INLINE_CODE_10__
 
 撤销特定角色的设备令牌。
 
@@ -55,13 +55,13 @@ openclaw devices revoke --device <deviceId> --role node
 
 ## 常见选项
 
-- `--url <url>`: 网关 WebSocket URL（配置时默认为 `gateway.remote.url`）。
-- `--token <token>`: 网关令牌（如果需要）。
-- `--password <password>`: 网关密码（密码认证）。
-- `--timeout <ms>`: RPC 超时。
-- `--json`: JSON 输出（建议用于脚本）。
+- __ INLINE_CODE_11__: 网关 WebSocket URL（配置时默认为 __ INLINE_CODE_12__)。
+- __ INLINE_CODE_13__: 网关令牌（如果需要）。
+- __ INLINE_CODE_14__: 网关密码（密码认证）。
+- __ INLINE_CODE_15__: RPC 超时。
+- __ INLINE_CODE_16__: JSON 输出（建议用于脚本）。
 
 ## 注意事项
 
 - 令牌轮换会返回一个新的令牌（敏感信息），请将其视为秘密。
-- 这些命令需要 `operator.pairing`（或 `operator.admin`）作用域。
+- 这些命令需要 __ INLINE_CODE_17__（或 __ INLINE_CODE_18__)作用域。

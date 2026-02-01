@@ -163,7 +163,7 @@ MiniMax在M2.1中重点提升了以下能力：
 - 手动添加 `models.providers.minimax` 块；
 - 设置 `MINIMAX_API_KEY`（或创建一个MiniMax认证配置），以便注入提供商。
 
-请确保模型ID**区分大小写**：
+请注意，模型ID**区分大小写**：
 - `minimax/MiniMax-M2.1`
 - `minimax/MiniMax-M2.1-lightning`
 
