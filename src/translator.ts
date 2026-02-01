@@ -9,7 +9,8 @@ import {
     parseMarkdown,
     restoreProtectedBlocks,
     reconstructMarkdown,
-    estimateTokens
+    estimateTokens,
+    fixCorruptedPlaceholders
 } from './markdown-parser.js';
 
 export interface TranslatorConfig {
@@ -27,16 +28,25 @@ export interface TranslationResult {
 
 const TRANSLATION_SYSTEM_PROMPT = `You are a professional technical documentation translator. Translate the following content to Simplified Chinese (简体中文).
 
-Important rules:
-1. Preserve all markdown formatting exactly
-2. Do NOT translate:
-   - Placeholders like __CODE_BLOCK_0__, __LINK_1__, etc.
+CRITICAL RULES:
+1. NEVER modify placeholders that look like __SOMETHING_N__ (e.g. __CODE_BLOCK_0__, __INLINE_CODE_1__, __LINK_2__, __URL_3__, __IMAGE_4__, __HTML_5__, __HEADING_6__).
+   - Keep them EXACTLY as-is, character by character
+   - Do NOT translate the placeholder names
+   - Do NOT add spaces inside placeholders (e.g. "__ INLINE_CODE_1__" is WRONG)
+   - Do NOT change the format (e.g. "__内联代码_0__" is WRONG, keep as "__INLINE_CODE_0__")
+
+2. Preserve all markdown formatting exactly (headings, lists, bold, italic, etc.)
+
+3. Do NOT translate:
    - Technical terms, command names, function names, variable names
    - Brand names and product names
-3. Keep the same paragraph structure and line breaks
-4. Maintain professional and technical tone
-5. Translate naturally, not word-by-word
-6. For link placeholders like "__LINK_X__[text]", translate the text in brackets but keep the placeholder
+   - Content inside backticks
+
+4. For link placeholders like "__LINK_X__[text]", translate the text in brackets but keep the placeholder unchanged
+
+5. Keep the same paragraph structure and line breaks
+6. Maintain professional and technical tone
+7. Translate naturally, not word-by-word
 
 Return ONLY the translated content, no explanations.`;
 
@@ -244,8 +254,11 @@ export class Translator {
         // Merge translated chunks
         const translatedContent = translatedChunks.join('\n\n');
 
+        // Fix any corrupted placeholders (LLM may have modified them)
+        const fixedContent = fixCorruptedPlaceholders(translatedContent, parsed.protectedBlocks);
+
         // Restore protected blocks
-        const restoredContent = restoreProtectedBlocks(translatedContent, parsed.protectedBlocks);
+        const restoredContent = restoreProtectedBlocks(fixedContent, parsed.protectedBlocks);
 
         // Reconstruct with frontmatter
         const finalContent = reconstructMarkdown(parsed.frontmatter, restoredContent);
@@ -293,8 +306,11 @@ export class Translator {
             };
         });
 
+        // Fix any corrupted placeholders (LLM may have modified them)
+        const fixedContent = fixCorruptedPlaceholders(result.translatedText, parsed.protectedBlocks);
+
         // Restore protected blocks
-        const restoredContent = restoreProtectedBlocks(result.translatedText, parsed.protectedBlocks);
+        const restoredContent = restoreProtectedBlocks(fixedContent, parsed.protectedBlocks);
 
         return {
             translatedContent: restoredContent,

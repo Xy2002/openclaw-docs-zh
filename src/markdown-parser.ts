@@ -95,6 +95,17 @@ export function parseMarkdown(rawContent: string): ParsedMarkdown {
         }
     );
 
+    // Protect markdown heading markers (preserve # symbols)
+    // Match lines starting with 1-6 # followed by space
+    processedContent = processedContent.replace(
+        /^(#{1,6})\s+/gm,
+        (match, hashes) => {
+            const placeholder = `__HEADING_${blockIndex++}__ `;
+            protectedBlocks.push({ placeholder, original: match, type: 'html' });
+            return placeholder;
+        }
+    );
+
     return {
         frontmatter,
         content: processedContent,
@@ -149,6 +160,40 @@ export function reconstructMarkdown(
  */
 function escapeRegex(str: string): string {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Fix placeholders that LLM may have corrupted during translation.
+ * Common issues:
+ * 1. Spaces inserted: "__ INLINE_CODE_1__" -> "__INLINE_CODE_1__"
+ * 2. Names translated: "__内联代码_0__" -> needs to match original
+ */
+export function fixCorruptedPlaceholders(
+    content: string,
+    protectedBlocks: ProtectedBlock[]
+): string {
+    let result = content;
+
+    // Fix spaces in placeholders: "__ SOMETHING" -> "__SOMETHING"
+    result = result.replace(/__ ([A-Z]+)/g, '__$1');
+
+    // Build a map of Chinese placeholder names to their original names
+    const chineseToEnglish: Record<string, string> = {
+        '内联代码': 'INLINE_CODE',
+        '代码块': 'CODE_BLOCK',
+        '链接': 'LINK',
+        '网址': 'URL',
+        '图片': 'IMAGE',
+        '标题': 'HEADING',
+    };
+
+    // Fix translated placeholder names
+    for (const [chinese, english] of Object.entries(chineseToEnglish)) {
+        const chinesePattern = new RegExp(`__${chinese}_(\\d+)__`, 'g');
+        result = result.replace(chinesePattern, `__${english}_$1__`);
+    }
+
+    return result;
 }
 
 /**
