@@ -78,7 +78,7 @@ OpenAI代码（Codex）
 - 示例模型：`google/gemini-3-pro-preview`
 - CLI：`openclaw onboard --auth-choice gemini-api-key`
 
-__HEADING_0__Google Vertex / 反重力 / Gemini 命令行界面
+__HEADING_0__谷歌Vertex / 反重力 / Gemini命令行界面
 
 - 提供商：`google-vertex`、`google-antigravity`、`google-gemini-cli`
 - 身份验证：Vertex 使用 gcloud ADC；Antigravity/Gemini CLI 使用各自的认证流程
@@ -123,7 +123,7 @@ Vercel AI网关
 
 登月人工智能（Kimi）
 
-Moonshot 使用与OpenAI兼容的端点，因此可以将其配置为自定义提供商：
+Moonshot 使用与 OpenAI 兼容的端点，因此可以将其配置为自定义提供商：
 
 - 提供商：`moonshot`
 - 身份验证：`MOONSHOT_API_KEY`

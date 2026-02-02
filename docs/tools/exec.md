@@ -80,7 +80,7 @@ openclaw config get agents.list
 openclaw config set agents.list[0].tools.exec.node "node-id-or-name"
 ```
 
-控制界面：Nodes选项卡包含一个小型的“Exec节点绑定”面板，用于进行相同的设置。
+控制界面：Nodes选项卡包含一个小型的“Exec节点绑定”面板，用于执行相同的设置。
 
 ## 会话覆盖（`/exec`）
 

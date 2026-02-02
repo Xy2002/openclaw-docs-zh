@@ -53,7 +53,7 @@ read_when:
   - `pnpm test:install:e2e`（需要两个密钥；同时运行两个提供商）
 - [ ] （可选）如果你的更改影响发送/接收路径，则对 Web 网关进行抽查。
 
-5) macOS 应用程序（Sparkle）
+5）macOS应用程序（Sparkle）
 
 - [ ] 构建并签名 macOS 应用程序，然后将其压缩以供分发。
 - [ ] 生成 Sparkle appcast（通过 [`scripts/make_appcast.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/make_appcast.sh) 生成 HTML 说明），并更新 `appcast.xml`。
@@ -79,7 +79,7 @@ read_when:
 - **标签在后期修复后需要重新指向**：强制更新并推送标签，然后确保 GitHub 发布资产仍然匹配：
   - `git tag -f vX.Y.Z && git push -f origin vX.Y.Z`
 
-7) **GitHub发布 + appcast**
+7) **GitHub发布 + 应用通告**
 
 - [ ] 打标签并推送：`git tag vX.Y.Z && git push origin vX.Y.Z`（或 `git push --tags`）。
 - [ ] 为 `vX.Y.Z` 创建或刷新 GitHub 发布，**标题为 `openclaw X.Y.Z`**（不仅仅是标签）；正文应包含该版本的**完整**变更日志部分（亮点 + 变更 + 修复），以内联方式显示（不使用裸链接），并且**不得在正文中重复标题**。

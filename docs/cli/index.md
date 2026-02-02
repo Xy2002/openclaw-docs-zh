@@ -356,7 +356,7 @@ openclaw [--dev] [--profile <name>] <command>
 选项：
 
 - `--no-workspace-suggestions`：禁用工作区内存提示。
-- `--non-interactive`：接受默认设置而不提示（无头模式）。
+- `--non-interactive`：接受默认设置，不显示提示（无头模式）。
 - `--non-interactive`：跳过提示；仅执行安全迁移。
 - `--deep`：扫描系统服务，查找额外的网关安装。
 

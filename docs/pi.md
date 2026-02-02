@@ -260,7 +260,7 @@ export function splitSdkTools(options: { tools: AnyAgentTool[]; sandboxEnabled: 
 
 ## 系统提示构建
 
-系统提示是在 `buildAgentSystemPrompt()` (`system-prompt.ts`) 中构建的。它组装了一个完整的提示，其中包括工具、工具调用风格、OpenClaw CLI 参考、技能、文档、工作区、沙箱、消息传递、回复标签、语音、静默回复、心跳、运行时元数据，以及启用时的记忆和反应；此外还包含可选的上下文文件和额外的系统提示内容。对于子代理使用的最小提示模式，各部分会被相应裁剪。
+系统提示是在 `buildAgentSystemPrompt()` (`system-prompt.ts`) 中构建的。它会组装一个完整的提示，其中包含工具、工具调用风格、OpenClaw CLI 参考、技能、文档、工作区、沙箱、消息传递、回复标签、语音、静默回复、心跳、运行时元数据，以及启用时的记忆和反应；此外，系统提示还可能包含可选的上下文文件和额外的系统提示内容。对于子代理使用的最小提示模式，各部分将根据需要进行相应裁剪。
 
 提示通过 `systemPrompt` 覆盖传递给 pi：
 
@@ -469,14 +469,14 @@ if (sandboxRoot) {
 - 工具模式净化（`sanitizeToolsForGoogle`）
 - 会话历史净化（`sanitizeSessionHistory`）
 
-### 开放AI
+### 开放人工智能
 
 - 用于 Codex 模型的 `apply_patch` 工具
 - 思考级别降级处理
 
-__HEADING_0__TUI 集成
+__HEADING_0__TUI集成
 
-OpenClaw 还提供一种本地 TUI 模式，直接使用 pi-tui 组件：
+OpenClaw还提供一种本地TUI模式，直接使用pi-tui组件：
 
 ```typescript
 // src/tui/tui.ts
