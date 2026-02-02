@@ -13,7 +13,7 @@ read_when:
 
 旧版传输：[桥接协议](/gateway/bridge-protocol)（TCP JSONL；已弃用/移除，不再用于当前节点）。
 
-macOS 也可以以**节点模式**运行：菜单栏应用会连接到网关的 WS 服务器，并将其本地画布/相机命令作为节点暴露出来（因此 `openclaw nodes …` 可以在这台 Mac 上正常工作）。
+macOS 也可以以**节点模式**运行：菜单栏应用会连接到网关的 WebSocket 服务器，并将其本地画布/相机命令作为节点暴露出来（因此 `openclaw nodes …` 可以在这台 Mac 上正常工作）。
 
 注意事项：
 
@@ -105,7 +105,7 @@ openclaw config unset agents.list[0].tools.exec.node
 
 ## 无头节点主机（跨平台）
 
-OpenClaw 可以运行**无头节点主机**（无UI），它通过WebSocket连接到网关，并暴露 `system.run` 和 `system.which`。这在 Linux 或 Windows 上非常有用，也可用于在服务器旁运行一个极简节点。
+OpenClaw 可以在**无头节点主机**（无UI）上运行，通过WebSocket连接到网关，并公开 `system.run` 和 `system.which`。这在Linux或Windows上非常实用，也适用于在服务器旁运行一个极简节点。
 
 启动它：
 

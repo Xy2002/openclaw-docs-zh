@@ -174,7 +174,7 @@ OpenClaw 在启动时向 Telegram 的机器人菜单注册原生命令（如 `/s
 }
 ```
 
-**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** - 只有列入名单的群组（或 `"*"`）才会被接受。
+**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** -  only 列入名单的群组（或 `"*"`）才会被接受。
 论坛主题将继承其父群组的配置（allowFrom、requireMention、skills、prompts），除非您在 `channels.telegram.groups.<groupId>.topics.<topicId>` 下为特定主题添加覆盖设置。
 
 要允许所有群组始终响应：
@@ -622,7 +622,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
   - `"minimal"` — 代理可以谨慎地做出反应（指南：每 5–10 次交流做 1 次）
   - `"extensive"` — 代理可以在适当的时候自由地做出反应
 
-**论坛群组：** 论坛群组中的回复包含 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题中的回复和消息保持在一起。
+**论坛群组：** 论坛群组中的回复包含 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题内的回复和消息始终归于一处。
 
 **示例配置：**
 
@@ -682,7 +682,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
 
 **机器人启动后悄然停止响应（或记录 `HttpError: Network request ... failed`）：**
 
-- 一些主机可能会首先将 `api.telegram.org` 解析为 IPv6。如果您的服务器没有正常的 IPv6 出口，gramY 可能会因仅支持 IPv6 的请求而卡住。
+- 某些主机可能会首先将 `api.telegram.org` 解析为 IPv6。如果您的服务器没有正常的 IPv6 出口，gramY 可能会因仅支持 IPv6 的请求而卡住。
 - 通过启用 IPv6 出口 **或** 强制对 `api.telegram.org` 进行 IPv4 解析（例如，使用 IPv4 A 记录添加一个 `/etc/hosts` 条目，或在您的操作系统 DNS 堆栈中优先使用 IPv4），然后重启网关。
 - 快速检查：运行 `dig +short api.telegram.org A` 和 `dig +short api.telegram.org AAAA` 以确认 DNS 返回的内容。
 

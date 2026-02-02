@@ -6,7 +6,7 @@ read_when:
 ---
 # Windows（WSL2）
 
-在 Windows 上运行 OpenClaw 时，我们强烈建议通过 WSL2 来进行（推荐使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅确保了运行时的一致性，还显著提升了工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）的兼容性。目前，原生 Windows 安装尚未经过充分测试，可能存在更多未发现的问题。
+在 Windows 上运行 OpenClaw 时，我们强烈建议通过 WSL2 来进行（推荐使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅确保了运行时的一致性，还显著提升了工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）的兼容性。目前，原生 Windows 安装尚未经过充分测试，可能存在更多尚未发现的问题。
 
 我们计划开发原生Windows应用程序。
 
