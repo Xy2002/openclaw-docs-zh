@@ -51,7 +51,7 @@ read_when:
 ## 聊天行为
 
 - `chat.send` 是**非阻塞的**：它会立即使用 `{ runId, status: "started" }` 确认，并通过 `chat` 事件流式传输响应。
-- 使用相同的 `idempotencyKey` 重新发送，在运行时返回 __ INLINE_CODE_4__，完成后返回 `{ status: "ok" }`。
+- 使用相同的 `idempotencyKey` 重新发送，在运行时返回 `{ status: "ok" }`，完成后返回 `{ status: "ok" }`。
 - `chat.inject` 会将助手备注附加到会话记录中，并广播一个仅用于 UI 更新的 `chat` 事件（不运行代理，不传递到频道）。
 - 停止：
   - 点击**停止**（调用 `chat.abort`)
@@ -72,7 +72,7 @@ openclaw gateway --tailscale serve
 
 - `https://<magicdns>/`（或您配置的 `gateway.controlUi.basePath`)
 
-默认情况下，Serve 请求可以通过 Tailscale 身份标头进行身份验证（`tailscale-user-login`），前提是 __ INLINE_CODE_1__ 设置为 `true`。OpenClaw 通过解析 `x-forwarded-for` 地址并与标头匹配来验证身份，并且仅在请求通过 Tailscale 的 `x-forwarded-*` 标头访问环回地址时才接受此类请求。如果您希望即使对于 Serve 流量也要求使用令牌或密码，请设置 `gateway.auth.allowTailscale: false`（或强制 `gateway.auth.mode: "password"`）。
+默认情况下，Serve 请求可以通过 Tailscale 身份标头进行身份验证（`tailscale-user-login`），前提是 `true` 设置为 `true`。OpenClaw 通过解析 `x-forwarded-for` 地址并与标头匹配来验证身份，并且仅在请求通过 Tailscale 的 `x-forwarded-*` 标头访问环回地址时才接受此类请求。如果您希望即使对于 Serve 流量也要求使用令牌或密码，请设置 `gateway.auth.allowTailscale: false`（或强制 `gateway.auth.mode: "password"`）。
 
 绑定到 Tailnet + 令牌
 
@@ -107,7 +107,7 @@ openclaw gateway --bind tailnet --token "$(openssl rand -hex 32)"
 }
 ```
 
-这会禁用控制 UI 的设备身份验证和配对（即使在 HTTPS 下）。请仅在您信任网络时使用。
+这将禁用控制UI的设备身份验证和配对（即使在HTTPS下）。请仅在您信任网络时使用。
 
 有关 HTTPS 设置指南，请参阅 [Tailscale](/gateway/tailscale)。
 
@@ -135,7 +135,7 @@ pnpm ui:dev # auto-installs UI deps on first run
 
 ## 调试/测试：开发服务器 + 远程网关
 
-控制 UI 是静态文件；WebSocket 目标的配置是可自定义的，可以与 HTTP 源不同。当您希望在本地运行 Vite 开发服务器，而网关部署在其他位置时，这一点尤为方便。
+控制 UI 是静态文件；WebSocket 目标的配置是可自定义的，可以独立于 HTTP 源进行设置。当您希望在本地运行 Vite 开发服务器，而网关部署在其他位置时，这种灵活性尤为方便。
 
 1) 启动 UI 开发服务器：`pnpm ui:dev`
 2) 打开类似以下的 URL：
@@ -153,7 +153,7 @@ http://localhost:5173/?gatewayUrl=wss://<gateway-host>:18789&token=<gateway-toke
 注意事项：
 
 - `gatewayUrl` 在加载后存储在 localStorage 中，并从 URL 中移除。
-- `token` 存储在 localStorage 中；__ INLINE_CODE_2__ 仅保留在内存中。
+- `token` 存储在 localStorage 中；`wss://` 仅保留在内存中。
 - 如果网关位于 TLS 之后（Tailscale Serve、HTTPS 代理等），请使用 `wss://`。
 
 远程访问设置详情：[远程访问](/gateway/remote)。

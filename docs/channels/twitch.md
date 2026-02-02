@@ -3,13 +3,13 @@ summary: Twitch chat bot configuration and setup
 read_when:
   - Setting up Twitch chat integration for OpenClaw
 ---
-# Twitch（插件）
+__HEADING_0__Twitch（插件）
 
-通过IRC连接支持Twitch聊天。OpenClaw会以Twitch用户（机器人账号）的身份连接，以便在频道中接收和发送消息。
+通过IRC连接支持Twitch聊天。OpenClaw将以Twitch用户（机器人账号）的身份连接，以便在频道中接收和发送消息。
 
 ## 插件要求
 
-Twitch作为插件提供，并未与核心安装捆绑在一起。
+Twitch作为插件提供，未与核心安装捆绑在一起。
 
 通过CLI（npm注册表）安装：
 
@@ -25,18 +25,22 @@ openclaw plugins install ./extensions/twitch
 
 详情：[插件](/plugin)
 
-## 快速设置（初学者）
+快速设置（初学者）
 
 1) 为机器人创建一个专用的Twitch账号（或使用现有账号）。
 2) 生成凭据：[Twitch令牌生成器](https://twitchtokengenerator.com/)
-   - 选择**Bot Token**
+
+- 选择**Bot Token**
    - 确保已选中作用域`chat:read`和`chat:write`
-   - 复制**Client ID**和**Access Token**
+   - 复制**客户端ID**和**访问令牌**
+
 3) 查找您的Twitch用户ID：https://www.streamweasels.com/tools/convert-twitch-username-to-user-id/
 4) 配置令牌：
-   - 环境变量：`OPENCLAW_TWITCH_ACCESS_TOKEN=...`（仅限默认账号）
+
+- 环境变量：`OPENCLAW_TWITCH_ACCESS_TOKEN=...`（仅限默认账号）
    - 或配置文件：`channels.twitch.accessToken`
    - 如果同时设置了环境变量和配置文件，则以配置文件为准（环境变量仅作为默认账号的后备）。
+
 5) 启动网关。
 
 **⚠️ 重要提示：** 添加访问控制（`allowFrom`或`allowedRoles`），以防止未经授权的用户触发机器人。`requireMention`默认为`true`。
@@ -70,20 +74,23 @@ openclaw plugins install ./extensions/twitch
 ### 生成凭据
 
 使用[Twitch令牌生成器](https://twitchtokengenerator.com/)：
+
 - 选择**Bot Token**
 - 确保已选中作用域`chat:read`和`chat:write`
 - 复制**Client ID**和**Access Token**
 
-无需手动注册应用。令牌会在数小时后过期。
+无需手动注册应用。令牌将在数小时后过期。
 
 ### 配置机器人
 
 **环境变量（仅限默认账号）：**
+
 ```bash
 OPENCLAW_TWITCH_ACCESS_TOKEN=oauth:abc123...
 ```
 
 **或配置文件：**
+
 ```json5
 {
   channels: {
@@ -240,7 +247,7 @@ OPENCLAW_TWITCH_ACCESS_TOKEN=oauth:abc123...
 }
 ```
 
-## 故障排除
+故障排除
 
 首先运行诊断命令：
 
@@ -249,7 +256,7 @@ openclaw doctor
 openclaw channels status --probe
 ```
 
-### 机器人不响应消息
+### 机器人不回复消息
 
 **检查访问控制：** 暂时设置`allowedRoles: ["all"]`进行测试。
 
@@ -257,7 +264,8 @@ openclaw channels status --probe
 
 ### 令牌问题
 
-**“连接失败”或身份验证错误：**
+“连接失败”或身份验证错误：
+
 - 确认`accessToken`是OAuth访问令牌的值（通常以`oauth:`为前缀）
 - 检查令牌是否具有`chat:read`和`chat:write`作用域
 - 如果使用令牌刷新功能，确保已设置`clientSecret`和`refreshToken`
@@ -265,21 +273,24 @@ openclaw channels status --probe
 ### 令牌刷新不起作用
 
 **检查日志中的刷新事件：**
+
 ```
 Using env token source for mybot
 Access token refreshed for user 123456 (expires in 14400s)
 ```
 
 如果您看到“令牌刷新已禁用（无刷新令牌）”：
+
 - 确保提供了`clientSecret`
 - 确保提供了`refreshToken`
 
 ## 配置
 
 **账号配置：**
+
 - `username` - 机器人用户名
 - `accessToken` - OAuth访问令牌，包含`chat:read`和`chat:write`
-- `clientId` - Twitch Client ID（来自令牌生成器或您的应用）
+- `clientId` - Twitch客户端ID（来自令牌生成器或您的应用）
 - `channel` - 要加入的频道（必填）
 - `enabled` - 启用此账号（默认：`true`）
 - `clientSecret` - 可选：用于自动令牌刷新
@@ -291,6 +302,7 @@ Access token refreshed for user 123456 (expires in 14400s)
 - `requireMention` - 要求@提及（默认：`true`）
 
 **提供商选项：**
+
 - `channels.twitch.enabled` - 启用或禁用频道启动
 - `channels.twitch.username` - 机器人用户名（简化单账号配置）
 - `channels.twitch.accessToken` - OAuth访问令牌（简化单账号配置）
@@ -336,6 +348,7 @@ Access token refreshed for user 123456 (expires in 14400s)
 ## 工具操作
 
 代理可以调用`twitch`执行以下操作：
+
 - `send` - 向频道发送消息
 
 示例：

@@ -7,24 +7,28 @@ read_when:
 ---
 # 测试
 
-OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时）以及一组小型 Docker 运行器。
+OpenClaw 包含三个 Vitest 测试套件——单元/集成测试、端到端测试和实时测试——以及一组小型 Docker 运行器。
 
 本文档是一份“我们如何测试”的指南：
-- 每个测试套件涵盖的内容（以及它刻意不涵盖的内容）
+
+- 每个测试套件涵盖的内容（以及它有意排除的内容）
 - 常见工作流所需的命令（本地、推送前、调试）
 - 实时测试如何发现凭据并选择模型/提供商
-- 如何为现实世界中的模型/提供商问题添加回归测试
+- 如何为现实世界中可能出现的模型/提供商问题添加回归测试
 
 ## 快速入门
 
 大多数情况下：
+
 - 完整门控（预计在推送前运行）：`pnpm lint && pnpm build && pnpm test`
 
 当你修改测试或需要额外信心时：
+
 - 覆盖率门控：`pnpm test:coverage`
 - 端到端测试套件：`pnpm test:e2e`
 
-当调试真实提供商/模型时（需要真实凭据）：
+在调试真实提供商/模型时（需要真实凭据）：
+
 - 实时测试套件（模型 + 网关工具/镜像探针）：`pnpm test:live`
 
 提示：如果你只需要一个失败用例，建议通过下面描述的白名单环境变量来缩小实时测试范围。
@@ -79,15 +83,17 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
 ## 我应该运行哪个测试套件？
 
 使用此决策表：
+
 - 编辑逻辑/测试：运行 `pnpm test`（如果你做了大量更改，还应运行 `pnpm test:coverage`）
-- 修改网关网络/WS 协议/配 pair：添加 `pnpm test:e2e`
-- 调试“我的机器人宕机”/特定于提供商的故障/工具调用：运行缩小后的 `pnpm test:live`
+- 修改网关网络/WS 协议/配对：添加 `pnpm test:e2e`
+- 调试“我的机器人宕机”/特定于提供商的故障/工具调用：运行精简版 `pnpm test:live`
 
 ## 实时测试：模型冒烟测试（配置文件密钥）
 
 实时测试分为两层，以便我们可以隔离故障：
-- “直接模型”告诉我们，给定的密钥可以让提供商/模型至少能够回答问题。
-- “网关冒烟测试”告诉我们，对于该模型，完整的网关+代理流程是有效的（会话、历史、工具、沙盒策略等）。
+
+- “直接模型”告诉我们，给定的密钥至少能让提供商或模型回答问题。
+- “网关冒烟测试”告诉我们，对于该模型，完整的网关与代理流程是有效的，包括会话、历史、工具和沙盒策略等。
 
 ### 第一层：直接模型完成度测试（无网关）
 
@@ -117,16 +123,16 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
 - 测试：`src/gateway/gateway-models.profiles.live.test.ts`
 - 目标：
   - 启动一个进程内网关
-  - 创建/修补一个 `agent:dev:*` 会话（每次运行时覆盖模型）
-  - 遍历有密钥的模型并断言：
-    - 得到“有意义”的响应（无工具）
+  - 创建或修补一个 `agent:dev:*` 会话（每次运行时覆盖模型）
+  - 遍历包含密钥的模型，并断言：
+    - 获得“有意义”的响应（无需工具）
     - 真实的工具调用有效（读取探针）
     - 可选的额外工具探针（执行+读取探针）
     - OpenAI 回归路径（仅工具调用 → 后续调用）仍然有效
-- 探针细节（以便你能快速解释失败原因）：
-  - `read` 探针：测试会在工作区写入一个随机文件，并要求代理将其 `read` 并将随机数回显。
-  - `exec+read` 探针：测试要求代理将随机数 `exec` 写入临时文件，然后将其 `read` 回来。
-  - 图像探针：测试附加一个生成的 PNG 图片（猫 + 随机代码），并期望模型返回 `cat <CODE>`。
+- 探针详情（以便你快速查明失败原因）：
+  - `read` 探针：测试会在工作区写入一个随机文件，并要求代理将其 `read`，同时将随机数回显。
+  - `exec+read` 探针：测试要求代理将随机数 `exec` 写入临时文件，然后将其 `read` 读回。
+  - 图像探针：测试附加一张生成的 PNG 图片（猫 + 随机代码），并期望模型返回 `cat <CODE>`。
   - 实现参考：`src/gateway/gateway-models.profiles.live.test.ts` 和 `src/gateway/live-image-probe.ts`。
 - 启用方式：
   - `pnpm test:live`（或如果你直接调用 Vitest，则使用 `OPENCLAW_LIVE_TEST=1`）
@@ -136,7 +142,7 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
   - 或者设置 `OPENCLAW_LIVE_GATEWAY_MODELS="provider/model"`（或逗号分隔列表）以缩小范围
 - 如何选择提供商（避免“OpenRouter 全部”）：
   - `OPENCLAW_LIVE_GATEWAY_PROVIDERS="google,google-antigravity,google-gemini-cli,openai,anthropic,zai,minimax"`（逗号分隔的白名单）
-- 工具 + 图像探针在此实时测试中始终开启：
+- 在此实时测试中，工具和图像探针始终启用：
   - `read` 探针 + `exec+read` 探针（工具压力测试）
   - 当模型宣称支持图像输入时，图像探针就会运行
   - 流程（高层次）：
@@ -146,7 +152,7 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
     - 嵌入式代理将多模态用户消息转发给模型
     - 断言：回复包含 `cat` + 代码（OCR 容差：允许轻微错误）
 
-提示：要查看你在本地机器上可以测试的内容（以及确切的 `provider/model` ID），运行：
+提示：要查看你在本地机器上可以测试的内容（以及确切的 `provider/model`ID），运行：
 
 ```bash
 openclaw models list
@@ -206,7 +212,7 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 
 ### 推荐的实时测试配方
 
-缩小的、明确的白名单速度最快且最不易出错：
+缩小且明确的白名单速度最快，也最不易出错：
 
 - 单一模型，直接（无网关）：
   - `OPENCLAW_LIVE_MODELS="openai/gpt-5.2" pnpm test:live src/agents/models.profiles.live.test.ts`
@@ -222,10 +228,11 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
   - Antigravity（OAuth）：`OPENCLAW_LIVE_GATEWAY_MODELS="google-antigravity/claude-opus-4-5-thinking,google-antigravity/gemini-3-pro-high" pnpm test:live src/gateway/gateway-models.profiles.live.test.ts`
 
 注释：
+
 - `google/...` 使用 Gemini API（API 密钥）。
 - `google-antigravity/...` 使用 Antigravity OAuth 桥接（Cloud Code Assist 风格的代理端点）。
 - `google-gemini-cli/...` 使用你机器上的本地 Gemini CLI（独立的身份验证 + 工具怪癖）。
-- Gemini API vs Gemini CLI：
+- Gemini API 与 Gemini CLI：
   - API：OpenClaw 通过 HTTP 调用 Google 托管的 Gemini API（API 密钥 / 配置文件身份验证）；这是大多数用户所说的“Gemini”。
   - CLI：OpenClaw 调用本地的 `gemini` 二进制文件；它有自己的身份验证机制，并且行为可能不同（流式传输/工具支持/版本差异）。
 
@@ -236,6 +243,7 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 ### 现代冒烟测试集（工具调用 + 图像）
 
 这是我们期望持续运行的“常见模型”测试：
+
 - OpenAI（非 Codex）：`openai/gpt-5.2`（可选：`openai/gpt-5.1`）
 - OpenAI Codex：`openai-codex/gpt-5.2`（可选：`openai-codex/gpt-5.2-codex`）
 - Anthropic：`anthropic/claude-opus-4-5`（或 `anthropic/claude-sonnet-4-5`）
@@ -244,19 +252,21 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 - Z.AI（GLM）：`zai/glm-4.7`
 - MiniMax：`minimax/minimax-m2.1`
 
-运行带工具 + 图像的网关冒烟测试：
+运行带工具+图像的网关冒烟测试：
 `OPENCLAW_LIVE_GATEWAY_MODELS="openai/gpt-5.2,openai-codex/gpt-5.2,anthropic/claude-opus-4-5,google/gemini-3-pro-preview,google/gemini-3-flash-preview,google-antigravity/claude-opus-4-5-thinking,google-antigravity/gemini-3-flash,zai/glm-4.7,minimax/minimax-m2.1" pnpm test:live src/gateway/gateway-models.profiles.live.test.ts`
 
 ### 基线：工具调用（读取 + 可选执行）
 
 每家提供商家族至少选择一个：
+
 - OpenAI：`openai/gpt-5.2`（或 `openai/gpt-5-mini`）
 - Anthropic：`anthropic/claude-opus-4-5`（或 `anthropic/claude-sonnet-4-5`）
 - Google：`google/gemini-3-flash-preview`（或 `google/gemini-3-pro-preview`）
 - Z.AI（GLM）：`zai/glm-4.7`
 - MiniMax：`minimax/minimax-m2.1`
 
-可选的额外覆盖（锦上添花）：
+可选的额外保障（锦上添花）：
+
 - xAI：`xai/grok-4`（或最新可用的）
 - Mistral：`mistral/`…（选择一个你已启用的“工具”能力模型）
 - Cerebras：`cerebras/`…（如果你有访问权限）
@@ -264,37 +274,40 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 
 ### 视觉：图像发送（附件 → 多模态消息）
 
-在 `OPENCLAW_LIVE_GATEWAY_MODELS` 中至少包括一个支持图像的模型（Claude/Gemini/OpenAI 支持视觉的变体等），以测试图像探针。
+在 `OPENCLAW_LIVE_GATEWAY_MODELS` 中至少包含一个支持图像的模型（如Claude、Gemini或OpenAI的视觉变体等），以测试图像探针。
 
 ### 聚合器 / 替代网关
 
 如果你启用了密钥，我们还支持通过以下方式进行测试：
+
 - OpenRouter：`openrouter/...`（数百种模型；使用 `openclaw models scan` 查找具备工具 + 图像能力的候选者）
 - OpenCode Zen：`opencode/...`（通过 `OPENCODE_API_KEY` / `OPENCODE_ZEN_API_KEY` 进行身份验证）
 
-更多你可以纳入实时矩阵的提供商（如果你有凭据/配置）：
-- 内置：`openai`, `openai-codex`, `anthropic`, `google`, `google-vertex`, `google-antigravity`, `google-gemini-cli`, `zai`, `openrouter`, `opencode`, `xai`, `groq`, `cerebras`, `mistral`, `github-copilot`
+更多你可以纳入实时矩阵的提供商（如果你有凭据或配置）：
+
+- 内置：`openai`，`openai-codex`，`anthropic`，`google`，`google-vertex`，`google-antigravity`，`google-gemini-cli`，`zai`，`openrouter`，`opencode`，`xai`，`groq`，`cerebras`，`mistral`，`github-copilot`
 - 通过 `models.providers`（自定义端点）：`minimax`（云/API），以及任何兼容 OpenAI/Anthropic 的代理（LM Studio、vLLM、LiteLLM 等）
 
-提示：不要试图在文档中硬编码“所有模型”。权威列表是你机器上 `discoverModels(...)` 返回的内容 + 当前可用的密钥。
+提示：不要试图在文档中硬编码“所有模型”。权威列表是你机器上 `discoverModels(...)` 返回的内容加上当前可用的密钥。
 
 ## 凭据（切勿提交）
 
 实时测试以与 CLI 相同的方式发现凭据。实际含义：
+
 - 如果 CLI 能正常工作，实时测试也应该能找到相同的密钥。
 - 如果实时测试显示“没有凭据”，请按照调试 `openclaw models list` / 模型选择的方式进行调试。
 
-- 配置文件存储：`~/.openclaw/credentials/`（首选；测试中“配置文件密钥”的含义）
+- 配置文件存储：`~/.openclaw/credentials/`（首选；正在测试“配置文件密钥”的含义）
 - 配置文件：`~/.openclaw/openclaw.json`（或 `OPENCLAW_CONFIG_PATH`）
 
-如果你想依赖环境密钥（例如，在你的 `~/.profile` 中导出），请在 `source ~/.profile` 之后运行本地测试，或使用下面的 Docker 运行器（它们可以将 `~/.profile` 挂载到容器中）。
+如果你想依赖环境密钥（例如，在你的 `~/.profile` 中导出），请在 `source ~/.profile` 之后运行本地测试，或使用下方的 Docker 运行器（它们可以将 `~/.profile` 挂载到容器中）。
 
-## Deepgram 实时测试（音频转录）
+__HEADING_0__Deepgram 实时测试（音频转录）
 
 - 测试：`src/media-understanding/providers/deepgram/audio.live.test.ts`
 - 启用：`DEEPGRAM_API_KEY=... DEEPGRAM_LIVE_TEST=1 pnpm test:live src/media-understanding/providers/deepgram/audio.live.test.ts`
 
-## Docker 运行器（可选的“在 Linux 中运行”检查）
+__HEADING_0__Docker 运行器（可选的“在 Linux 中运行”检查）
 
 这些运行 `pnpm test:live` 在仓库的 Docker 镜像内，挂载你的本地配置目录和工作区（并在挂载时获取 `~/.profile`）：
 
@@ -319,21 +332,25 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 ## 离线回归测试（CI 安全）
 
 这些是无需真实提供商的“真实管道”回归测试：
+
 - 网关工具调用（模拟 OpenAI，真实网关 + 代理循环）：`src/gateway/gateway.tool-calling.mock-openai.test.ts`
 - 网关向导（WS `wizard.start`/`wizard.next`，写入配置 + 强制执行认证）：`src/gateway/gateway.wizard.e2e.test.ts`
 
 ## 代理可靠性评估（技能）
 
-我们已经有一些类似于“代理可靠性评估”的 CI 安全测试：
-- 通过真实网关 + 代理循环进行模拟工具调用（`src/gateway/gateway.tool-calling.mock-openai.test.ts`）。
+我们已经有一些类似于“代理可靠性评估”的持续集成安全测试：
+
+- 通过真实网关 + 代理循环模拟工具调用（`src/gateway/gateway.tool-calling.mock-openai.test.ts`）。
 - 验证会话布线和配置效果的端到端向导流程（`src/gateway/gateway.wizard.e2e.test.ts`）。
 
-技能方面仍缺少的部分（参见 [Skills](/tools/skills))：
+技能方面仍缺少的部分（参见 [技能](/tools/skills)）：
+
 - **决策**：当提示中列出技能时，代理是否会选择正确的技能（或避免无关的技能）？
 - **合规**：代理在使用前是否会读取 `SKILL.md` 并遵循所需的步骤/参数？
-- **工作流契约**：多轮场景是否能确保工具顺序、会话历史传递和沙盒边界？
+- **工作流契约**：在多轮场景中，能否确保工具调用顺序、会话历史传递以及沙盒边界得到妥善处理？
 
 未来的评估应首先保持确定性：
-- 使用模拟提供商的场景运行器，以确保工具调用 + 顺序、技能文件读取和会话布线。
-- 一套小型的以技能为中心的场景（使用 vs 避免、门控、提示注入）。
-- 仅在 CI 安全套件就位后，才进行可选的实时评估（需通过环境变量选择加入）。
+
+- 使用模拟提供商的场景运行器，确保工具调用、调用顺序、技能文件读取和会话布线均符合预期。
+- 一套小型、以技能为中心的场景，涵盖“使用 vs 避免”、“门控”和“提示注入”等关键模式。
+- 仅在 CI 安全套件部署到位后，才进行可选的实时评估（需通过环境变量明确选择加入）。

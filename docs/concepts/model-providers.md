@@ -17,9 +17,9 @@ read_when:
 
 ## 内置提供商（pi-ai目录）
 
-OpenClaw 附带 pi‑ai 目录。这些提供商**无需**任何 `models.providers` 配置；只需设置身份验证并选择一个模型即可。
+OpenClaw 附带 pi‑ai 目录。这些提供商**无需**任何 `models.providers` 配置；只需配置身份验证并选择一个模型即可。
 
-### 开放AI
+### 开放人工智能
 
 - 提供商：`openai`
 - 身份验证：`OPENAI_API_KEY`
@@ -78,7 +78,7 @@ OpenAI代码（Codex）
 - 示例模型：`google/gemini-3-pro-preview`
 - CLI：`openclaw onboard --auth-choice gemini-api-key`
 
-### Google Vertex / 反重力 / Gemini 命令行界面
+__HEADING_0__Google Vertex / 反重力 / Gemini 命令行界面
 
 - 提供商：`google-vertex`、`google-antigravity`、`google-gemini-cli`
 - 身份验证：Vertex 使用 gcloud ADC；Antigravity/Gemini CLI 使用各自的认证流程
@@ -123,14 +123,14 @@ Vercel AI网关
 
 登月人工智能（Kimi）
 
-Moonshot 使用与 OpenAI 兼容的端点，因此可以将其配置为自定义提供商：
+Moonshot 使用与OpenAI兼容的端点，因此可以将其配置为自定义提供商：
 
 - 提供商：`moonshot`
 - 身份验证：`MOONSHOT_API_KEY`
 - 示例模型：`moonshot/kimi-k2.5`
 - Kimi K2 模型 ID：
 
-{/* 月球计划-基米-K2模型引用:开始 */}
+{/* 月球计划-基米-K2模型引用：开始 */}
 
 - `moonshot/kimi-k2.5`
   - `moonshot/kimi-k2-0905-preview`
@@ -232,7 +232,7 @@ MiniMax 通过 `models.providers` 进行配置，因为它使用自定义端点�
 
 奥拉马
 
-Ollama是一个本地LLM运行时，提供与OpenAI兼容的API：
+Ollama是一个本地大语言模型运行时，提供与OpenAI兼容的API：
 
 - 提供商：`ollama`
 - 身份验证：无需（本地服务器）
@@ -254,7 +254,7 @@ ollama pull llama3.3
 
 在本地运行时，Ollama 会自动检测到 `http://127.0.0.1:11434/v1`。有关模型推荐和自定义配置，请参阅 [/providers/ollama](/providers/ollama)。
 
-本地代理（LM Studio、vLLM、LiteLLM 等）
+本地代理（LM Studio、vLLM、LiteLLM等）
 
 示例（与 OpenAI 兼容）：
 

@@ -15,7 +15,7 @@ OpenClaw 在每次运行时都会组装自己的系统提示。它包含以下�
 - 工具列表 + 简短描述
 - 技能列表（仅包含元数据；指令按需通过 `read` 加载）
 - 自我更新指令
-- 工作空间 + 引导文件（__ INLINE_CODE_1__、__ INLINE_CODE_2__、__ INLINE_CODE_3__、__ INLINE_CODE_4__、__ INLINE_CODE_5__、__ INLINE_CODE_6__、__ INLINE_CODE_7__，在新建会话时加载）。大文件会通过 __ INLINE_CODE_8__ 截断（默认截断长度为 20000）。
+- 工作空间 + 引导文件（__INLINE_CODE_1__、__INLINE_CODE_2__、__INLINE_CODE_3__、__INLINE_CODE_4__、__INLINE_CODE_5__、__INLINE_CODE_6__、__INLINE_CODE_7__，在新建会话时加载）。大文件会通过 __INLINE_CODE_8__ 截断（默认截断长度为 20000）。
 - 时间（UTC + 用户时区）
 - 回复标签 + 心跳行为
 - 运行时元数据（主机/操作系统/模型/思考状态）
@@ -58,7 +58,7 @@ OpenClaw 在每次运行时都会组装自己的系统提示。它包含以下�
 models.providers.<provider>.models[].cost
 ```
 
-这些是针对 `input`、`output`、`cacheRead` 和 `cacheWrite` 的**每100万令牌的美元价格**。如果缺少定价信息，OpenClaw 将仅显示令牌数量。OAuth 令牌始终不显示美元成本。
+这些是针对 `input`、`output`、`cacheRead` 和 `cacheWrite` 的**每100万令牌的美元价格**。如果缺少定价信息，OpenClaw 将仅显示代币数量。OAuth 代币始终不显示美元成本。
 
 缓存TTL与修剪的影响
 
@@ -86,7 +86,7 @@ agents:
       every: "55m"
 ```
 
-减少令牌压力的技巧
+减轻令牌压力的技巧
 
 - 使用 `/compact` 总结长时间会话。
 - 在工作流中裁剪大型工具的输出。

@@ -35,7 +35,7 @@ openclaw onboard --anthropic-api-key "$ANTHROPIC_API_KEY"
 
 ## 提示缓存（Anthropic API）
 
-OpenClaw不会覆盖Anthropic的默认缓存TTL，除非你显式设置它。
+除非你显式设置，否则OpenClaw不会覆盖Anthropic的默认缓存TTL。
 这仅适用于**API**；订阅身份验证不遵循TTL设置。
 
 要为每个模型设置 TTL，请在模型的 `params` 中使用 `cacheControlTtl`：
@@ -54,7 +54,7 @@ OpenClaw不会覆盖Anthropic的默认缓存TTL，除非你显式设置它。
 }
 ```
 
-OpenClaw为Anthropic API请求引入了`extended-cache-ttl-2025-04-11`测试标志；如果你要覆盖提供商标头，请保留此标志（参见[/gateway/configuration](/gateway/configuration)）。
+OpenClaw为Anthropic API请求引入了`extended-cache-ttl-2025-04-11`测试标志；如果你想覆盖提供商标头，请保留此标志（参见[/gateway/configuration](/gateway/configuration)）。
 
 ## 选项B：Claude 设置令牌
 
@@ -62,7 +62,7 @@ OpenClaw为Anthropic API请求引入了`extended-cache-ttl-2025-04-11`测试标�
 
 获取设置令牌的位置
 
-设置令牌由 **Claude Code CLI** 创建，而非 Anthropic 控制台。你可以在**任何机器**上运行以下命令：
+设置令牌由 **Claude Code CLI** 创建，而非 Anthropic 控制台。你可以在**任何设备**上运行以下命令：
 
 ```bash
 claude setup-token

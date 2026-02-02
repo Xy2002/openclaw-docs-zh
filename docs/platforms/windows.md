@@ -6,7 +6,7 @@ read_when:
 ---
 # Windows（WSL2）
 
-在 Windows 上运行 OpenClaw 时，我们强烈建议通过 WSL2 来进行（推荐使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅确保了运行时的一致性，还提高了工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）的兼容性。目前，原生 Windows 安装尚未经过充分测试，可能存在更多问题。
+在 Windows 上运行 OpenClaw 时，我们强烈建议通过 WSL2 来进行（推荐使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅确保了运行时的一致性，还显著提升了工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）的兼容性。目前，原生 Windows 安装尚未经过充分测试，可能存在更多未发现的问题。
 
 我们计划开发原生Windows应用程序。
 
@@ -85,7 +85,7 @@ netsh interface portproxy add v4tov4 listenport=$ListenPort listenaddress=0.0.0.
 注意事项：
 
 - 通过 SSH 从另一台机器连接时，使用的是**Windows 主机的 IP**（例如：`ssh user@windows-host -p 2222`）。
-- 驻留在远程节点上的网关 URL 必须是**可访问**的；可以使用 __ INLINE_CODE_1__ 来进行确认。
+- 驻留在远程节点上的网关 URL 必须是**可访问**的；可以使用 `listenaddress=0.0.0.0` 来进行确认。
 - 使用 `listenaddress=0.0.0.0` 可实现局域网访问；而使用 `127.0.0.1` 则仅限于本地访问。
 - 如果希望自动执行此操作，可以注册一个计划任务，在登录时自动运行刷新步骤。
 

@@ -38,7 +38,7 @@ OpenClaw 使用与 **[AgentSkills](https://agentskills.io)** 兼容的技能文�
 
 ## ClawHub（安装 + 同步）
 
-ClawHub是OpenClaw的公共技能注册表。您可以在https://clawhub.com.上浏览它。使用ClawHub来发现、安装、更新和备份技能。完整指南：[ClawHub](/tools/clawhub)。
+ClawHub是OpenClaw的公共技能注册表。您可以在https://clawhub.com.上浏览它。使用ClawHub来发现、安装、更新和备份技能。完整指南：__LINK_0__[ClawHub]中找到它。
 
 常见流程：
 
@@ -101,7 +101,7 @@ metadata: {"openclaw":{"requires":{"bins":["uv"],"env":["GEMINI_API_KEY"],"confi
 `metadata.openclaw` 下的字段：
 
 - `always: true` — 始终包含该技能（跳过其他门控）。
-- __ INLINE_CODE_1__ — macOS Skills UI 使用的可选表情符号。
+- `homepage` — macOS Skills UI 使用的可选表情符号。
 - `homepage` — 在 macOS Skills UI 中显示为“网站”的可选 URL。
 - `os` — 可选的平台列表（`darwin`、`linux`、`win32`）。如果设置，该技能仅适用于这些操作系统。
 - `requires.bins` — 列表；每个条目必须存在于 `PATH` 中。
@@ -117,7 +117,7 @@ metadata: {"openclaw":{"requires":{"bins":["uv"],"env":["GEMINI_API_KEY"],"confi
 - 如果智能体处于沙箱中，二进制文件也必须存在于**容器内**。通过 `agents.defaults.sandbox.docker.setupCommand`（或自定义镜像）安装它。
 
 `setupCommand` 在容器创建后运行一次。
-软件包安装还需要网络出口、可写的根文件系统以及沙箱中的 root 用户。例如，__ INLINE_CODE_1__ 技能（__ INLINE_CODE_2__）需要在沙箱容器中具有 __ INLINE_CODE_3__ CLI才能运行。
+软件包安装还需要网络出口、可写的根文件系统以及沙箱中的 root 用户。例如，__INLINE_CODE_1__ 技能（__INLINE_CODE_2__）需要在沙箱容器中具有 __INLINE_CODE_3__CLI才能运行。
 
 安装程序示例：
 
@@ -138,7 +138,7 @@ metadata: {"openclaw":{"emoji":"♊️","requires":{"bins":["gemini"]},"install"
 
 （不建议在 WhatsApp/Telegram 中使用 Bun）。
 
-- Go 安装：如果 `go` 不存在且 __ INLINE_CODE_1__ 可用，网关会先通过 Homebrew 安装 Go，并在可能的情况下将 `GOBIN` 设置为 Homebrew 的 `bin`。
+- Go 安装：如果 `go` 不存在且 `GOBIN` 可用，网关会先通过 Homebrew 安装 Go，并在可能的情况下将 `GOBIN` 设置为 Homebrew 的 `bin`。
 - 下载安装：`url`（必需），`archive`（`tar.gz` | `tar.bz2` | `zip`），`extract`（默认：检测到存档时自动启用），`stripComponents`，`targetDir`（默认：`~/.openclaw/tools/<skillKey>`）。
 
 如果没有 `metadata.openclaw`，该技能始终符合条件（除非在配置中被禁用或因 `skills.allowBundled` 而被阻止用于捆绑技能）。
@@ -244,6 +244,6 @@ OpenClaw 随安装包（npm 包或 OpenClaw.app）提供一組基准技能作为
 
 有关完整的配置模式，请参阅 [技能配置](/tools/skills-config)。
 
-## 想掌握更多技能吗？
+想掌握更多技能吗？
 
 请浏览 https://clawhub.com.

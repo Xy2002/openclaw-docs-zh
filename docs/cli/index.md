@@ -52,7 +52,7 @@ read_when:
 
 ## 全局标志
 
-- `--dev`：在 __ INLINE_CODE_1__ 下隔离状态，并调整默认端口。
+- `--dev`：在 `--profile <name>` 下隔离状态，并调整默认端口。
 - `--profile <name>`：在 `~/.openclaw-<name>` 下隔离状态。
 - `--no-color`：禁用 ANSI 颜色。
 - `--update`：是 `openclaw update` 的简写（仅适用于源码安装）。
@@ -71,7 +71,7 @@ read_when:
 OpenClaw 在 CLI 输出中使用龙虾色调色板。
 
 - `accent` (#FF5A2D)：标题、标签、主要高亮。
-- __ INLINE_CODE_1__ (#FF7A3D)：命令名称、强调。
+- `accentDim` (#FF7A3D)：命令名称、强调。
 - `accentDim` (#D14A22)：次要高亮文本。
 - `info` (#FF8A5B)：信息性数值。
 - `success` (#2FBF71)：成功状态。
@@ -260,7 +260,7 @@ openclaw [--dev] [--profile <name>] <command>
 对 `MEMORY.md` + `memory/*.md` 进行向量搜索：
 
 - `openclaw memory status` — 显示索引统计信息。
-- __ INLINE_CODE_1__ — 重新索引内存文件。
+- `openclaw memory search "<query>"` — 重新索引内存文件。
 - `openclaw memory search "<query>"` — 对内存进行语义搜索。
 
 ## 聊天斜杠命令
@@ -275,7 +275,7 @@ openclaw [--dev] [--profile <name>] <command>
 
 ## 设置 + 上手
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 初始化配置 + 工作区。
 
@@ -290,14 +290,14 @@ openclaw [--dev] [--profile <name>] <command>
 
 当存在任何向导标志时（`--non-interactive`、`--mode`、`--remote-url`、`--remote-token`），向导会自动运行。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 交互式向导，用于设置网关、工作区和技能。
 
 选项：
 
 - `--workspace <dir>`
-- __ INLINE_CODE_1__（在向导之前重置配置 + 凭证 + 会话 + 工作区）
+- `--non-interactive`（在向导之前重置配置 + 凭证 + 会话 + 工作区）
 - `--non-interactive`
 - `--mode <local|remote>`
 - `--flow <quickstart|advanced|manual>`（manual 是 advanced 的别名）
@@ -335,41 +335,41 @@ openclaw [--dev] [--profile <name>] <command>
 - `--node-manager <npm|pnpm|bun>`（推荐使用 pnpm；不推荐在 Gateway 运行时使用 bun）
 - `--json`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 交互式配置向导（模型、渠道、技能、网关）。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 非交互式配置助手（获取/设置/取消设置）。运行 `openclaw config` 且不带子命令时，将启动向导。
 
 子命令：
 
 - `config get <path>`：打印配置值（点/方括号路径）。
-- __ INLINE_CODE_1__：设置值（JSON5 或原始字符串）。
+- `config unset <path>`：设置值（JSON5 或原始字符串）。
 - `config unset <path>`：删除一个值。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 健康检查 + 快速修复（配置 + 网关 + 旧版服务）。
 
 选项：
 
 - `--no-workspace-suggestions`：禁用工作区内存提示。
-- __ INLINE_CODE_1__：接受默认设置而不提示（无头模式）。
+- `--non-interactive`：接受默认设置而不提示（无头模式）。
 - `--non-interactive`：跳过提示；仅执行安全迁移。
 - `--deep`：扫描系统服务，查找额外的网关安装。
 
 渠道助手
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 管理聊天渠道账户（WhatsApp/Telegram/Discord/Google Chat/Slack/Mattermost（插件）/Signal/iMessage/MS Teams）。
 
 子命令：
 
 - `channels list`：显示已配置的渠道和认证资料。
-- __ INLINE_CODE_1__：检查网关可达性和渠道健康状况（`--probe` 执行额外的检查；使用 `openclaw health` 或 `openclaw status --deep` 进行网关健康探测）。
+- `--probe`：检查网关可达性和渠道健康状况（`--probe` 执行额外的检查；使用 `openclaw health` 或 `openclaw status --deep` 进行网关健康探测）。
 - 提示：当检测到常见配置错误时，`channels status` 会打印警告并提供修复建议（随后引导您前往 `openclaw doctor`）。
 - `channels logs`：从网关日志文件中显示最近的渠道日志。
 - `channels add`：在未传递任何标志时，采用向导式设置；标志切换到非交互式模式。
@@ -397,12 +397,12 @@ openclaw [--dev] [--profile <name>] <command>
 `channels list` 选项：
 
 - `--no-usage`：跳过模型提供商使用情况/配额快照（仅 OAuth/API 支持）。
-- __ INLINE_CODE_1__：输出 JSON（包括使用情况，除非设置了 `--no-usage`）。
+- `--no-usage`：输出 JSON（包括使用情况，除非设置了 `--no-usage`）。
 
 `channels logs` 选项：
 
 - `--channel <name|all>`（默认 `all`）
-- __ INLINE_CODE_2__（默认 `200`）
+- `200`（默认 `200`）
 - `--json`
 
 更多详情：[/concepts/oauth](/concepts/oauth)
@@ -417,7 +417,7 @@ openclaw channels status --probe
 openclaw status --deep
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 列出并检查可用技能及就绪信息。
 
@@ -435,7 +435,7 @@ openclaw status --deep
 
 提示：使用 `npx clawhub` 来搜索、安装和同步技能。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 批准跨渠道的直邮匹配请求。
 
@@ -444,7 +444,7 @@ openclaw status --deep
 - `pairing list <channel> [--json]`
 - `pairing approve <channel> <code> [--notify]`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/automation/gmail-pubsub)。
 
@@ -453,7 +453,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `webhooks gmail setup`（需要 `--account <email>`；支持 `--project`、`--topic`、`--subscription`、`--label`、`--hook-url`、`--hook-token`、`--push-token`、`--bind`、`--port`、`--path`、`--include-body`、`--max-bytes`、`--renew-minutes`、`--tailscale`、`--tailscale-path`、`--tailscale-target`、`--push-endpoint`、`--json`）
 - `webhooks gmail run`（针对相同标志的运行时覆盖）
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 广域发现 DNS 助手（CoreDNS + Tailscale）。请参阅 [/gateway/discovery](/gateway/discovery)。
 
@@ -463,7 +463,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 消息传递 + 代理
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 统一的出站消息传递与渠道操作。
 
@@ -486,7 +486,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `openclaw message send --target +15555550123 --message "Hi"`
 - `openclaw message poll --channel discord --target channel:123 --poll-question "Snack?" --poll-option Pizza --poll-option Sushi`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 通过网关运行一次代理回合（或嵌入 `--local`）。
 
@@ -506,11 +506,11 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `--json`
 - `--timeout <seconds>`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 管理隔离的代理（工作区 + 认证 + 路由）。
 
-#### __内联代码_0__
+#### __INLINE_CODE_0__
 
 列出已配置的代理。
 
@@ -519,14 +519,14 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `--json`
 - `--bindings`
 
-#### __内联代码_0__
+#### __INLINE_CODE_0__
 
 添加一个新的隔离代理。除非传递了标志（或 `--non-interactive`），否则会运行引导向导；在非交互式模式下，必须使用 `--workspace`。
 
 选项：
 
 - `--workspace <dir>`
-- __ INLINE_CODE_1__
+- `--agent-dir <dir>`
 - `--agent-dir <dir>`
 - `--bind <channel[:accountId]>`（可重复）
 - `--non-interactive`
@@ -534,7 +534,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 绑定规范使用 `channel[:accountId]`。当 WhatsApp 缺少 `accountId` 时，将使用默认账户 ID。
 
-#### __内联代码_0__
+#### __INLINE_CODE_0__
 
 删除代理并清理其工作区和状态。
 
@@ -543,13 +543,13 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `--force`
 - `--json`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 运行连接 IDE 和网关的 ACP 桥。
 
 完整选项和示例请参见 [`acp`](/cli/acp)。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 显示关联会话的健康状况和最近的接收者。
 
@@ -584,7 +584,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - 如果找不到匹配的凭据，使用情况将被隐藏。
 - 有关更多详细信息，请参阅 [使用跟踪](/concepts/usage-tracking)。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 从正在运行的网关获取健康信息。
 
@@ -594,7 +594,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `--timeout <ms>`
 - `--verbose`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 列出存储的对话会话。
 
@@ -607,7 +607,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 重置 / 卸载
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 重置本地配置/状态（保留 CLI 安装）。
 
@@ -622,7 +622,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 - `--non-interactive` 需要 `--scope` 和 `--yes`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 卸载网关服务 + 本地数据（CLI 保留）。
 
@@ -643,14 +643,14 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 ## 网关
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 运行 WebSocket 网关。
 
 选项：
 
 - `--port <port>`
-- __ INLINE_CODE_1__
+- `--token <token>`
 - `--token <token>`
 - `--auth <token|password>`
 - `--password <password>`
@@ -667,7 +667,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `--raw-stream`
 - `--raw-stream-path <path>`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 管理网关服务（launchd/systemd/schtasks）。
 
@@ -682,7 +682,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 
 注释：
 
-- `gateway status` 默认使用服务解析的端口/配置来探测网关 RPC（可用 __ INLINE_CODE_1__ 进行覆盖）。
+- `gateway status` 默认使用服务解析的端口/配置来探测网关 RPC（可用 `gateway status` 进行覆盖）。
 - `gateway status` 支持 `--no-probe`、`--deep` 和 `--json` 用于脚本编写。
 - `gateway status` 还会在检测到时显示遗留或额外的网关服务（`--deep` 添加系统级扫描）。以 Profile 命名的 OpenClaw 服务被视为一流服务，不会被标记为“额外”。
 - `gateway status` 打印 CLI 使用的配置路径与服务可能使用的配置路径（服务环境），以及解析后的探测目标 URL。
@@ -690,7 +690,7 @@ Gmail Pub/Sub 钩子设置与运行器。请参阅 [/automation/gmail-pubsub](/a
 - `gateway install` 默认使用 Node 运行时；不推荐使用 bun（WhatsApp/Telegram 错误）。
 - `gateway install` 选项：`--port`、`--runtime`、`--token`、`--force`、`--json`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 通过 RPC 尾部查看网关文件日志。
 
@@ -709,14 +709,14 @@ openclaw logs --json
 openclaw logs --no-color
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 网关 CLI 助手（使用 `--url`、`--token`、`--password`、`--timeout`、`--expect-final` 处理 RPC 子命令）。
 
 子命令：
 
 - `gateway call <method> [--params <json>]`
-- __ INLINE_CODE_1__
+- `gateway status`
 - `gateway status`
 - `gateway probe`
 - `gateway discover`
@@ -752,7 +752,7 @@ openclaw models status
 - `--status-json`（是 `models status --json` 的别名）
 - `--status-plain`（是 `models status --plain` 的别名）
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -762,7 +762,7 @@ openclaw models status
 - `--json`
 - `--plain`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -779,15 +779,15 @@ openclaw models status
 始终包含认证概览以及认证库中资料的 OAuth 到期状态。
 `--probe` 执行实时请求（可能会消耗令牌并触发速率限制）。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 设置 `agents.defaults.model.primary`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 设置 `agents.defaults.imageModel.primary`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -795,7 +795,7 @@ openclaw models status
 - `add <alias> <model>`
 - `remove <alias>`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -804,7 +804,7 @@ openclaw models status
 - `remove <model>`
 - `clear`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -813,7 +813,7 @@ openclaw models status
 - `remove <model>`
 - `clear`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -830,7 +830,7 @@ openclaw models status
 - `--set-image`
 - `--json`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -838,7 +838,7 @@ openclaw models status
 - `setup-token`：`--provider <name>`（默认 `anthropic`）、`--yes`
 - `paste-token`：`--provider <name>`、`--profile-id <id>`、`--expires-in <duration>`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 选项：
 
@@ -848,7 +848,7 @@ openclaw models status
 
 ## 系统
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 将一个系统事件加入队列，并可选择触发心跳（网关 RPC）。
 
@@ -862,7 +862,7 @@ openclaw models status
 - `--json`
 - `--url`、`--token`、`--timeout`、`--expect-final`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 心跳控制（网关 RPC）。
 
@@ -871,7 +871,7 @@ openclaw models status
 - `--json`
 - `--url`、`--token`、`--timeout`、`--expect-final`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 列出系统中存在的条目（网关 RPC）。
 
@@ -1001,20 +1001,20 @@ openclaw models status
 
 ## 文档搜索
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 搜索实时文档索引。
 
 ## 图易
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 打开与网关相连的终端用户界面。
 
 选项：
 
 - `--url <url>`
-- __ INLINE_CODE_1__
+- `--password <password>`
 - `--password <password>`
 - `--session <key>`
 - `--deliver`

@@ -5,7 +5,7 @@ read_when:
 ---
 # 配置 🔧
 
-OpenClaw会从`~/.openclaw/openclaw.json`读取可选的**JSON5**配置文件（允许使用注释和尾随逗号）。
+OpenClaw会从`~/.openclaw/openclaw.json`读取可选的**JSON5**配置文件，该文件允许使用注释和尾随逗号。
 
 如果文件缺失，OpenClaw 会使用相对安全的默认设置（内置 Pi 代理 + 按发送方划分的会话 + 工作区 `~/.openclaw/workspace`）。通常，你只需通过配置来：
 
@@ -37,9 +37,9 @@ OpenClaw仅接受与模式完全匹配的配置。
 网关通过`config.schema`向UI编辑器公开配置的JSON Schema表示。
 控制UI根据此模式渲染一个表单，并提供一个**原始JSON**编辑器作为应急出口。
 
-渠道插件和扩展可以为其配置注册模式和 UI 提示，从而使渠道设置在各应用中始终以模式驱动，而无需硬编码表单。
+渠道插件和扩展可以为其配置注册模式和UI提示，从而使渠道设置在各应用中始终以模式驱动，而无需硬编码表单。
 
-提示（标签、分组、敏感字段）随模式一起提供，以便客户端无需硬编码配置知识即可渲染出更优质的表单。
+提示（标签、分组、敏感字段）随模式一起提供，使客户端无需硬编码配置知识即可渲染出更优质的表单。
 
 应用并重启（RPC）
 
@@ -47,7 +47,7 @@ OpenClaw仅接受与模式完全匹配的配置。
 在网关恢复后，它会写入重启标记并ping最后一个活跃会话。
 
 警告：`config.apply` 会替换**整个配置**。如果您只想更改少数几个键，
-请使用 __ INLINE_CODE_1__ 或 `openclaw config set`。请保留 `~/.openclaw/openclaw.json` 的备份。
+请使用 `openclaw config set` 或 `openclaw config set`。请保留 `~/.openclaw/openclaw.json` 的备份。
 
 参数：
 
@@ -69,7 +69,7 @@ openclaw gateway call config.apply --params '{
 }'
 ```
 
-部分更新（RPC）
+部分更新（远程过程调用）
 
 使用 `config.patch` 将部分更新合并到现有配置中，而不会覆盖无关的键。它采用 JSON 合并补丁语义：
 
@@ -279,7 +279,7 @@ OpenClaw从父进程（Shell、launchd、systemd、CI等）中读取环境变量
 
 没有`.env`文件会覆盖现有的环境变量。
 
-你也可以在配置中提供内联环境变量。这些变量仅在进程环境缺少相应键时才会生效（遵循相同的不覆盖规则）：
+你也可以在配置中提供内联环境变量。这些变量仅在进程环境中缺少相应键时才会生效（遵循相同的不覆盖规则）：
 
 ```json5
 {
@@ -294,7 +294,7 @@ OpenClaw从父进程（Shell、launchd、systemd、CI等）中读取环境变量
 
 有关完整的优先级和来源，请参阅[/environment](/environment)。
 
-### `env.shellEnv`（可选）
+__标题1__ __内联代码0__（可选）
 
 选择加入的便利性：如果已启用且尚未设置任何预期密钥，OpenClaw将运行您的登录Shell，并仅导入缺失的预期密钥（绝不会覆盖现有密钥）。这实际上会加载您的Shell配置文件。
 
@@ -358,7 +358,7 @@ OpenClaw从父进程（Shell、launchd、systemd、CI等）中读取环境变量
 
 身份验证存储（OAuth + API 密钥）
 
-OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth + API 密钥）：
+OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth + API密钥）：
 
 - `<agentDir>/auth-profiles.json`（默认：`~/.openclaw/agents/<agentId>/agent/auth-profiles.json`）
 
@@ -374,7 +374,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 
 遗留代理目录（多代理之前）：
 
-- `~/.openclaw/agent/*`（由`openclaw doctor`迁移到`~/.openclaw/agents/<defaultAgentId>/agent/*`）
+- `~/.openclaw/agent/*`（从`openclaw doctor`迁移到`~/.openclaw/agents/<defaultAgentId>/agent/*`）
 
 覆盖：
 
@@ -383,9 +383,9 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 
 首次使用时，OpenClaw会将`oauth.json`条目导入`auth-profiles.json`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
-身份验证配置文件的可选元数据。这**不**存储机密；它将配置文件 ID 映射到提供商 + 模式（以及可选电子邮件），并定义用于故障转移的提供商轮转顺序。
+身份验证配置文件的可选元数据。这**不**存储机密；它将配置文件 ID 映射到提供商和模式（以及可选电子邮件），并定义用于故障转移的提供商轮转顺序。
 
 ```json5
 {
@@ -401,7 +401,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 用于默认设置和用户体验的可选代理身份。此字段由 macOS 入网助理写入。
 
@@ -414,8 +414,8 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 `identity.avatar` 接受：
 
 - 与工作区相关的路径（必须位于代理工作区内）
-- `http(s)` URL
-- `data:` URI
+- `http(s)`URL
+- `data:`URI
 
 ```json5
 {
@@ -435,7 +435,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 由 CLI 向导编写的元数据（`onboard`、`configure`、`doctor`）。
 
@@ -451,7 +451,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 - 默认日志文件：`/tmp/openclaw/openclaw-YYYY-MM-DD.log`
 - 如果你需要一个稳定的路径，请将 `logging.file` 设置为 `/tmp/openclaw/openclaw.log`。
@@ -479,12 +479,12 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制WhatsApp私信（DM）的处理方式：
 
 - `"pairing"`（默认）：未知发件人会收到配对代码；所有者必须批准
-- __ INLINE_CODE_1__: 仅允许来自 `channels.whatsapp.allowFrom` 的发件人（或已配对的允许商店）
+- `channels.whatsapp.allowFrom`: 仅允许来自 `channels.whatsapp.allowFrom` 的发件人（或已配对的允许商店）
 - `"open"`: 允许所有入站私信（**需要** `channels.whatsapp.allowFrom` 包含 `"*"`）
 - `"disabled"`: 忽略所有入站私信
 
@@ -495,7 +495,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 - `openclaw pairing list whatsapp`
 - `openclaw pairing approve whatsapp <code>`
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 可触发WhatsApp自动回复的E.164电话号码白名单（仅限私信）。
 如果为空且`channels.whatsapp.dmPolicy="pairing"`，未知发件人将收到配对码。
@@ -515,7 +515,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制入站WhatsApp消息是否标记为已读（蓝色对勾）。默认值：`true`。
 
@@ -589,7 +589,7 @@ OpenClaw在以下位置存储**每个代理**的身份验证配置文件（OAuth
 
 群聊提及限制（`agents.list[].groupChat` + `messages.groupChat`）
 
-群组消息默认设置为“需要提及”（可通过元数据提及或正则表达式模式触发）。此设置适用于 WhatsApp、Telegram、Discord、Google Chat 和 iMessage 群聊。
+群组消息的默认设置为“需要提及”（可通过元数据提及或正则表达式模式触发）。此设置适用于WhatsApp、Telegram、Discord、Google Chat和iMessage群聊。
 
 **提及类型：**
 
@@ -723,7 +723,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 注释：
 
 - `"open"`: 允许绕过允许列表的群组；提及限制仍适用。
-- __ INLINE_CODE_1__: 阻止所有群组/聊天室消息。
+- `"allowlist"`: 阻止所有群组/聊天室消息。
 - `"allowlist"`: 仅允许与配置的允许列表匹配的群组/聊天室。
 - `channels.defaults.groupPolicy` 在提供商的 `groupPolicy` 未设置时定义默认行为。
 - WhatsApp/Telegram/Signal/iMessage/Microsoft Teams 使用 `groupAllowFrom`（回退：显式 `allowFrom`）。
@@ -737,13 +737,13 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 入站消息通过绑定路由到代理。
 
 - `agents.list[]`: 每个代理的覆盖设置。
-  - __ INLINE_CODE_1__: 稳定的代理ID（必填）。
+  - `default`: 稳定的代理ID（必填）。
   - `default`: 可选；如果设置了多个，以第一个为准，并记录一条警告。
 
 如果未设置任何代理，则列表中的**第一条记录**为默认代理。
 
 - `name`: 代理的显示名称。
-  - __ INLINE_CODE_1__: 默认 `~/.openclaw/workspace-<agentId>`（对于 `main`，回退到 `agents.defaults.workspace`）。
+  - `~/.openclaw/workspace-<agentId>`: 默认 `~/.openclaw/workspace-<agentId>`（对于 `main`，回退到 `agents.defaults.workspace`）。
   - `agentDir`: 默认 `~/.openclaw/agents/<agentId>/agent`。
   - `model`: 每个代理的默认模型，会覆盖该代理的 `agents.defaults.model`。
     - 字符串形式：`"provider/model"`，仅覆盖 `agents.defaults.model.primary`
@@ -773,7 +773,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 
 确定性匹配顺序：
 1) `match.peer`
-2) __ INLINE_CODE_1__
+2) `match.teamId`
 3) `match.teamId`
 4) `match.accountId`（精确匹配，不考虑对等方/公会/团队）
 5) `match.accountId: "*"`（频道范围匹配，不考虑对等方/公会/团队）
@@ -781,9 +781,9 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 
 在每个匹配层级中，`bindings` 中的第一个匹配条目获胜。
 
-每代理访问配置文件（多代理）
+每个代理访问配置文件（多代理）
 
-每个代理都可以携带自己的沙箱和工具策略。利用这一点，您可以在一个网关中混合不同的访问级别：
+每个代理都可以携带自己的沙箱和工具策略。利用这一特性，您可以在一个网关中混合不同的访问级别：
 
 - **完全访问权限**（个人代理）
 - 仅限只读的工具和工作区
@@ -880,7 +880,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 }
 ```
 
-### `tools.agentToAgent`（可选）
+__标题1__ __内联代码0__（可选）
 
 代理间消息传递是可选的：
 
@@ -895,7 +895,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制在代理运行已处于活动状态时入站消息的行为。
 
@@ -919,9 +919,9 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
-对来自**同一发件人**的快速传入消息进行防抖处理，使多条连续消息合并为一次话术交互。防抖处理按渠道加会话进行作用域划分，并使用最新消息来构建回复线程和消息ID。
+对来自**同一发件人**的快速传入消息进行防抖处理，将多条连续消息合并为一次话术交互。防抖处理按渠道和会话划分作用域，并使用最新消息构建回复线程和消息ID。
 
 ```json5
 {
@@ -943,7 +943,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 - 对纯文本消息进行去抖动处理；媒体/附件则立即发送。
 - 控制命令（例如 `/queue`、`/new`）绕过去抖动机制，以保持独立运行。
 
-### `commands`（聊天命令处理）
+__标题1__ __内联代码0__（聊天命令处理）
 
 控制聊天命令在各个连接器中的启用方式。
 
@@ -965,7 +965,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 注释：
 
 - 文本命令必须作为**独立**消息发送，并使用前导`/`（不支持纯文本别名）。
-- __ INLINE_CODE_1__会禁用对聊天消息中命令的解析。
+- `commands.native: "auto"`会禁用对聊天消息中命令的解析。
 - `commands.native: "auto"`（默认设置）为Discord和Telegram启用原生命令，但不启用Slack；不受支持的渠道仍仅支持文本消息。
 - 将`commands.native: true|false`设置为强制启用所有命令，或通过`channels.discord.commands.native`、`channels.telegram.commands.native`、`channels.slack.commands.native`（布尔值或`"auto"`）按频道覆盖设置。`false`会在启动时清除Discord/Telegram上先前注册的所有命令；Slack命令则在Slack应用中管理。
 - `channels.telegram.customCommands`会添加额外的Telegram机器人菜单项。名称会进行规范化处理；与原生命令发生冲突的条目将被忽略。
@@ -980,7 +980,7 @@ DM 对话使用由客服人员管理的基于会话的历史记录。您可以�
 
 频道白名单/配对加上`commands.useAccessGroups`。
 
-### `web`（WhatsApp网页渠道运行时）
+__标题1__ __内联代码0__（WhatsApp网页渠道运行时）
 
 WhatsApp通过网关的网页渠道（Baileys Web）运行。当存在已链接的会话时，它会自动启动。
 将`web.enabled: false`设置为默认关闭。
@@ -1001,7 +1001,7 @@ WhatsApp通过网关的网页渠道（Baileys Web）运行。当存在已链接�
 }
 ```
 
-### `channels.telegram`（机器人运输）
+__标题1__ __内联代码0__（机器人运输）
 
 OpenClaw仅在存在`channels.telegram`配置节时才启动Telegram。机器人令牌从`channels.telegram.botToken`（或`channels.telegram.tokenFile`）中解析，其中`TELEGRAM_BOT_TOKEN`用作默认账户的后备。
 将`channels.telegram.enabled: false`设置为禁用自动启动。
@@ -1072,7 +1072,7 @@ OpenClaw仅在存在`channels.telegram`配置节时才启动Telegram。机器人
 
 重试策略的默认设置和行为记录在[重试策略](/concepts/retry)中。
 
-### `channels.discord`（机器人运输）
+__标题1__ __内联代码0__（机器人运输）
 
 通过设置机器人令牌和可选的准入控制来配置Discord机器人：
 多账号支持位于`channels.discord.accounts`下（请参阅上文的多账号部分）。环境令牌仅适用于默认账号。
@@ -1156,7 +1156,7 @@ OpenClaw仅在存在`channels.discord`配置节时才启动Discord。令牌从`c
 出站文本按`channels.discord.textChunkLimit`分块（默认为2000）。将`channels.discord.chunkMode="newline"`设置为在按长度分块之前按空行（段落边界）进行拆分。Discord客户端可能会截断高度过高的消息，因此`channels.discord.maxLinesPerMessage`（默认值为17）会在多行回复长度低于2000字符时仍将其拆分成多个部分。
 重试策略的默认设置和行为记录在[重试策略](/concepts/retry)中。
 
-### `channels.googlechat`（聊天API Webhook）
+__标题1__ __内联代码0__（聊天API Webhook）
 
 Google Chat 通过具有应用级身份验证（服务账号）的 HTTP Webhook 运行。
 多账户支持位于 `channels.googlechat.accounts` 下（请参阅上面的多账户部分）。环境变量仅适用于默认账户。
@@ -1195,7 +1195,7 @@ Google Chat 通过具有应用级身份验证（服务账号）的 HTTP Webhook 
 - `audienceType` + `audience` 必须与聊天应用的 Webhook 身份验证配置匹配。
 - 设置投放目标时，请使用 `spaces/<spaceId>` 或 `users/<userId|email>`。
 
-### `channels.slack`（套接字模式）
+__标题1__ __行内代码0__（套接字模式）
 
 Slack 以套接字模式运行，同时需要机器人令牌和应用令牌：
 
@@ -1271,7 +1271,7 @@ Slack 以套接字模式运行，同时需要机器人令牌和应用令牌：
 线程会话隔离：
 
 - `channels.slack.thread.historyScope` 用于控制线程历史是按线程独立记录（`thread`，默认）还是在整个频道中共享（`channel`）。
-- __ INLINE_CODE_3__ 用于控制新线程会话是否继承父频道的对话记录（默认：false）。
+- __INLINE_CODE_3__ 用于控制新线程会话是否继承父频道的对话记录（默认：false）。
 
 Slack 操作组（网关`slack`工具操作）：
 | 操作组 | 默认 | 备注 |
@@ -1282,7 +1282,7 @@ Slack 操作组（网关`slack`工具操作）：
 | memberInfo | 已启用 | 成员信息 |
 | emojiList | 已启用 | 自定义表情符号列表 |
 
-### `channels.mattermost`（机器人令牌）
+__标题1__ __行内代码0__（机器人令牌）
 
 Mattermost以插件形式提供，不随核心安装包一起打包。
 请先安装它：`openclaw plugins install @openclaw/mattermost`（或从 Git 检出中使用 `./extensions/mattermost`）。
@@ -1306,7 +1306,7 @@ Mattermost 需要一个机器人令牌以及您服务器的基础 URL：
 }
 ```
 
-当账户已配置（包含机器人令牌和基础 URL）并启用时，OpenClaw 会启动 Mattermost。对于默认账户，令牌和基础 URL 会从 `channels.mattermost.botToken` + `channels.mattermost.baseUrl` 或 `MATTERMOST_BOT_TOKEN` + `MATTERMOST_URL` 中解析（除非 `channels.mattermost.enabled` 等于 `false`）。
+当账户已配置（包含机器人令牌和基础 URL）并启用时，OpenClaw 会启动 Mattermost。对于默认账户，令牌和基础 URL 将从 `channels.mattermost.botToken` + `channels.mattermost.baseUrl` 或 `MATTERMOST_BOT_TOKEN` + `MATTERMOST_URL` 中解析（除非 `channels.mattermost.enabled` 等于 `false`）。
 
 聊天模式：
 
@@ -1348,7 +1348,7 @@ Mattermost 需要一个机器人令牌以及您服务器的基础 URL：
 
 ### `channels.imessage`（imsg CLI）
 
-OpenClaw生成`imsg rpc`（通过标准输入输出的JSON-RPC）。无需守护进程或端口。
+OpenClaw通过标准输入输出的JSON-RPC生成`imsg rpc`。无需守护进程或端口。
 
 ```json5
 {
@@ -1374,11 +1374,11 @@ OpenClaw生成`imsg rpc`（通过标准输入输出的JSON-RPC）。无需守护
 
 注释：
 
-- 需要对消息数据库进行完全磁盘访问权限。
-- 第一次发送时会提示授予消息自动化权限。
+- 需要对消息数据库拥有完全磁盘访问权限。
+- 第一次发送时会提示您授予消息自动化权限。
 - 优先使用`chat_id:<id>`目标。使用`imsg chats --limit 20`列出聊天。
 - `channels.imessage.cliPath`可以指向一个包装脚本（例如，`ssh`指向另一台运行`imsg rpc`的Mac）；使用SSH密钥可避免出现密码提示。
-- 对于远程SSH包装脚本，当__ INLINE_CODE_6__启用时，将`channels.imessage.remoteHost`设置为通过SCP获取附件。
+- 对于远程SSH包装脚本，当__INLINE_CODE_6__启用时，将`channels.imessage.remoteHost`设置为通过SCP获取附件。
 
 示例包装器：
 
@@ -1387,7 +1387,7 @@ OpenClaw生成`imsg rpc`（通过标准输入输出的JSON-RPC）。无需守护
 exec ssh -T gateway-host imsg "$@"
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 设置代理用于文件操作的**单个全局工作区目录**。
 
@@ -1401,7 +1401,7 @@ exec ssh -T gateway-host imsg "$@"
 
 如果启用了`agents.defaults.sandbox`，非主会话可以使用其各自的`agents.defaults.sandbox.workspaceRoot`作用域工作区来覆盖此设置。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 可选的仓库根目录，用于在系统提示符的运行时行中显示。如果未设置，OpenClaw 会尝试通过从工作区（以及当前工作目录）向上遍历来检测一个 `.git` 目录。只有存在的路径才能被使用。
 
@@ -1411,7 +1411,7 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 禁用工作区引导文件（`AGENTS.md`、`SOUL.md`、`TOOLS.md`、`IDENTITY.md`、`USER.md` 和 `BOOTSTRAP.md`）的自动创建。
 
@@ -1423,11 +1423,11 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
-在截断之前注入系统提示的每个工作区引导文件的最大字符数。默认值：`20000`。
+在截断之前，每个工作区引导文件中可注入系统提示的最大字符数。默认值：`20000`。
 
-当文件超出此限制时，OpenClaw会记录一条警告，并注入带有标记的截断头部/尾部。
+当文件超出此限制时，OpenClaw会记录一条警告，并注入带有标记的截断头部或尾部。
 
 ```json5
 {
@@ -1435,7 +1435,7 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 为**系统提示上下文**设置用户的时区（不适用于消息信封中的时间戳）。如果未设置，OpenClaw 将在运行时使用主机的时区。
 
@@ -1445,7 +1445,7 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制系统提示中“当前日期与时间”部分显示的**时间格式**。
 默认：`auto`（操作系统偏好）。
@@ -1456,7 +1456,7 @@ exec ssh -T gateway-host imsg "$@"
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制入站/出站前缀以及可选的确认响应。
 有关排队、会话和流式上下文，请参阅[消息](/concepts/messages)。
@@ -1505,7 +1505,7 @@ exec ssh -T gateway-host imsg "$@"
 WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 `messages.messagePrefix`）进行配置。默认保持**不变**：当`channels.whatsapp.allowFrom`为空时为`"[openclaw]"`，否则为`""`（无前缀）。使用`"[openclaw]"`时，如果被路由的客服人员设置了`identity.name`，OpenClaw将改用`[{identity.name}]`。
 
-`ackReaction` 会发送尽力而为的表情反应，以确认在支持表情反应的频道（Slack/Discord/Telegram/Google Chat）中收到的消息。默认使用已设置的当前坐席的 `identity.emoji`，否则使用 `"👀"`。将其设置为 `""` 可禁用此功能。
+`ackReaction` 会在支持表情反应的频道（Slack/Discord/Telegram/Google Chat）中发送尽力而为的表情反应，以确认收到的消息。默认使用已设置的当前坐席的 `identity.emoji`，否则使用 `"👀"`。将其设置为 `""` 可禁用此功能。
 
 `ackReactionScope` 控制反应触发的时间：
 
@@ -1517,9 +1517,9 @@ WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 `removeAckAfterReply` 在发送回复后移除机器人的确认反应
 （仅适用于 Slack/Discord/Telegram/Google Chat）。默认值：`false`。
 
-#### __内联代码_0__
+#### __INLINE_CODE_0__
 
-为外发回复启用文本转语音功能。启用后，OpenClaw会使用ElevenLabs或OpenAI生成音频，并将其附加到回复中。Telegram使用Opus语音消息；其他渠道则发送MP3音频。
+为外发回复启用文本转语音功能。启用后，OpenClaw将使用ElevenLabs或OpenAI生成音频，并将其附加到回复中。Telegram使用Opus语音消息；其他渠道则发送MP3音频。
 
 ```json5
 {
@@ -1564,7 +1564,7 @@ WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 注释：
 
 - `messages.tts.auto` 控制自动 TTS (`off`、`always`、`inbound`、`tagged`)。
-- __ INLINE_CODE_5__ 设置会话级别的自动模式（覆盖配置）。
+- `messages.tts.enabled` 设置会话级别的自动模式（覆盖配置）。
 - `messages.tts.enabled` 属于旧版；医生会将其迁移到 `messages.tts.auto`。
 - `prefsPath` 存储本地覆盖设置（提供者/限制/总结）。
 - `maxTextLength` 是 TTS 输入的硬性上限；摘要会被截断以适应此限制。
@@ -1578,7 +1578,7 @@ WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 
 `useSpeakerBoost`，以及 `speed`（0.5..2.0）。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 通话模式的默认设置（macOS/iOS/Android）。未设置时，语音ID会回退到`ELEVENLABS_VOICE_ID`或`SAG_VOICE_ID`。
 未设置时，`apiKey`会回退到`ELEVENLABS_API_KEY`（或网关的 Shell 配置文件）。
@@ -1600,7 +1600,7 @@ WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 }
 ```
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制嵌入式代理运行时（模型/思考/详细信息/超时）。
 `agents.defaults.models` 定义了配置的模型目录（并充当 `/model` 的白名单）。
@@ -1609,7 +1609,7 @@ WhatsApp入站前缀通过`channels.whatsapp.messagePrefix`（已弃用：
 每个 `agents.defaults.models` 条目可以包含：
 
 - `alias`（可选模型快捷方式，例如 `/opus`）。
-- `params`（可选的提供商特定 API 参数，会传递到模型请求中）。
+- `params`（可选的提供商特定API参数，会传递到模型请求中）。
 
 `params` 也适用于流式运行（嵌入式代理 + 压缩）。目前支持的键包括：`temperature`、`maxTokens`。这些键会与调用时选项合并；调用方提供的值优先。`temperature` 是一个高级控制开关——除非您了解模型的默认设置并确实需要进行更改，否则请保持未设置状态。
 
@@ -1669,14 +1669,14 @@ OpenClaw还附带了一些内置的别名快捷方式。默认设置仅在模型
 
 MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers.minimax`。
 
-#### `agents.defaults.cliBackends`（CLI 备用）
+__标题1__ __行内代码0__（CLI 备用）
 
 用于纯文本回退运行（不调用工具）的可选 CLI 后端。当 API 提供商出现故障时，这些后端可用作备用路径。在您配置一个接受文件路径的`imageArg`时，支持图像直通。
 
 注释：
 
 - CLI 后端采用“文本优先”设计；工具始终处于禁用状态。
-- 当设置 `sessionArg` 时支持会话；会话 ID 按后端持久化存储。
+- 当设置 `sessionArg` 时，会话功能可用；会话 ID 按后端持久化存储。
 - 对于 `claude-cli`，已内置默认配置。如果 PATH 非常精简，请覆盖命令路径。
 
 （launchd/systemd）。
@@ -1766,9 +1766,9 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 }
 ```
 
-#### `agents.defaults.contextPruning`（工具结果修剪）
+__标题1__ __内联代码0__（工具结果修剪）
 
-`agents.defaults.contextPruning` 在向 LLM 发送请求之前，从内存中的上下文中清除**旧工具结果**。
+在向 LLM 发送请求之前，从内存中的上下文中清除**旧工具结果**。
 它**不会**修改磁盘上的会话历史记录（`*.jsonl` 保持完整）。
 
 此举旨在减少那些会随时间累积大量工具输出的“健谈”智能体对令牌的使用。
@@ -1800,7 +1800,7 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 - 目前，包含**图像块的工具结果会被跳过**（永远不会被修剪或清除）。
 - 估算的“上下文比例”基于**字符数**（近似值），而非精确的标记数。
 - 如果会话中尚未包含至少`keepLastAssistants`条助手消息，则跳过修剪操作。
-- 在__ INLINE_CODE_1__模式下，`hardClear.enabled`会被忽略（符合条件的工具结果始终会被替换为`hardClear.placeholder`）。
+- 在`hardClear.enabled`模式下，`hardClear.enabled`会被忽略（符合条件的工具结果始终会被替换为`hardClear.placeholder`）。
 
 默认（自适应）：
 
@@ -1821,7 +1821,7 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 默认值（当`mode`为`"adaptive"`或`"aggressive"`时）：
 
 - `keepLastAssistants`: `3`
-- __ INLINE_CODE_2__: `0.3`（仅自适应）
+- `0.3`: `0.3`（仅自适应）
 - `hardClearRatio`: `0.5`（仅自适应）
 - `minPrunableToolChars`: `50000`（仅自适应）
 - `softTrim`: `{ maxChars: 4000, headChars: 1500, tailChars: 1500 }`（仅自适应）
@@ -1859,7 +1859,7 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 
 有关行为详情，请参阅 [/concepts/session-pruning](/concepts/session-pruning)。
 
-#### `agents.defaults.compaction`（预留余量 + 内存刷新）
+#### __行内代码_0__（预留余量 + 内存刷新）
 
 `agents.defaults.compaction.mode` 选择压缩汇总策略。默认为 `default`；设置 `safeguard` 可为超长历史启用分块汇总。请参阅 [/concepts/compaction](/concepts/compaction)。
 
@@ -1871,7 +1871,7 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 遗留默认值：
 
 - `memoryFlush.enabled`: `true`
-- __ INLINE_CODE_2__: `4000`
+- `4000`: `4000`
 - `memoryFlush.prompt` / `memoryFlush.systemPrompt`: 内置默认值，使用 `NO_REPLY`
 - 注意：当会话工作区为只读时，将跳过内存刷新
 
@@ -1905,7 +1905,7 @@ MiniMax 认证：设置 `MINIMAX_API_KEY`（环境）或配置 `models.providers
 
 非Telegram频道需要显式设置`*.blockStreaming: true`才能启用屏蔽回复。
 
-- `agents.defaults.blockStreamingBreak`: __ INLINE_CODE_1__ 或 `"message_end"`（默认：text_end）。
+- `agents.defaults.blockStreamingBreak`: `"message_end"` 或 `"message_end"`（默认：text_end）。
 - `agents.defaults.blockStreamingChunk`: 用于流式块的软分块。默认为
 
 800–1200字符，优先使用段落分隔(`\n\n`)，其次使用换行，最后使用句子。
@@ -1965,7 +1965,7 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 `30m`。将 `0m` 设置为禁用。
 
 - `model`: 心跳运行的可选覆盖模型 (`provider/model`)。
-- __ INLINE_CODE_2__: 当 `true` 为真时，心跳在可用的情况下还会发送单独的 `Reasoning:` 消息（形状与 `/reasoning on` 相同）。默认值：`false`。
+- `true`: 当 `true` 为真时，心跳在可用的情况下还会发送单独的 `Reasoning:` 消息（形状与 `/reasoning on` 相同）。默认值：`false`。
 - `session`: 可选会话密钥，用于控制心跳在哪个会话中运行。默认值：`main`。
 - `to`: 可选收件人覆盖（特定于渠道的 ID，例如 WhatsApp 的 E.164、Telegram 的聊天 ID）。
 - `target`: 可选投递渠道 (`last`、`whatsapp`、`telegram`、`discord`、`slack`、`msteams`、`signal`、`imessage`、`none`)。默认值：`last`。
@@ -1984,7 +1984,7 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 `tools.exec` 配置后台执行默认设置：
 
 - `backgroundMs`: 自动转入后台前的等待时间（毫秒，默认10000）
-- __ INLINE_CODE_1__: 在此运行时长后自动终止（秒，默认1800）
+- `cleanupMs`: 在此运行时长后自动终止（秒，默认1800）
 - `cleanupMs`: 已完成会话在内存中保留的时间（毫秒，默认1800000）
 - `notifyOnExit`: 当后台执行退出时，将系统事件加入队列并请求心跳（默认true）
 - `applyPatch.enabled`: 启用实验性 `apply_patch`（仅适用于OpenAI/OpenAI Codex；默认false）
@@ -2015,7 +2015,7 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 `tools.media` 配置入站媒体理解（图像/音频/视频）：
 
 - `tools.media.models`: 共享模型列表（按能力标记；在各能力专用列表之后使用）。
-- __ INLINE_CODE_1__: 最大并发能力运行数（默认值为2）。
+- `tools.media.image`: 最大并发能力运行数（默认值为2）。
 - `tools.media.image` / `tools.media.audio` / `tools.media.video`:
   - `enabled`: 选择退出开关（当模型已配置时，默认为真）。
   - `prompt`: 可选的提示覆盖（图像/视频会自动附加一个 `maxChars` 提示）。
@@ -2071,10 +2071,10 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 
 `agents.defaults.subagents` 配置子代理默认设置：
 
-- `model`: 用于生成的子代理的默认模型（字符串或__ INLINE_CODE_1__）。如果省略，子代理将继承调用方的模型，除非按代理或按调用单独覆盖。
+- `model`: 用于生成的子代理的默认模型（字符串或`maxConcurrent`）。如果省略，子代理将继承调用方的模型，除非按代理或按调用单独覆盖。
 - `maxConcurrent`: 最大并发子代理运行数（默认值为1）
-- `archiveAfterMinutes`: 在N分钟后自动归档子代理会话（默认值为60；设置__ INLINE_CODE_4__可禁用）
-- 每个子代理的工具策略：__ INLINE_CODE_5__ / __ INLINE_CODE_6__（拒绝优先）
+- `archiveAfterMinutes`: 在N分钟后自动归档子代理会话（默认值为60；设置__INLINE_CODE_4__可禁用）
+- 每个子代理的工具策略：__INLINE_CODE_5__ / __INLINE_CODE_6__（拒绝优先）
 
 `tools.profile` 在 `tools.allow`/`tools.deny` 之前设置了一个**基础工具白名单**：
 
@@ -2153,7 +2153,7 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 
 工具组（快捷方式）适用于**全局**和**按代理**的工具策略：
 
-- `group:runtime`: `exec`, __ INLINE_CODE_2__, `process`
+- `group:runtime`: `exec`, `process`, `process`
 - `group:fs`: `read`, `write`, `edit`, `apply_patch`
 - `group:sessions`: `sessions_list`, `sessions_history`, `sessions_send`, `sessions_spawn`, `session_status`
 - `group:memory`: `memory_search`, `memory_get`
@@ -2217,7 +2217,7 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 
 `agents.defaults.maxConcurrent` 设置可在会话间并行执行的最大嵌入式代理运行数。每个会话仍按顺序执行（每次一个会话密钥对应一个运行）。默认值：1。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 为嵌入式代理提供可选的**Docker 沙箱**。专为非主会话设计，以防止其访问您的主机系统。
 
@@ -2238,9 +2238,9 @@ Z.AI 模型以 `zai/<model>` 的形式提供（例如 `zai/glm-4.7`），并且�
 - 可选的沙盒浏览器（Chromium + CDP，noVNC 观察器）
 - 强化选项：`network`、`user`、`pidsLimit`、`memory`、`cpus`、`ulimits`、`seccompProfile`、`apparmorProfile`
 
-警告：`scope: "shared"` 表示共享容器和共享工作区。没有跨会话隔离。如需每会话隔离，请使用 `scope: "session"`。
+警告：`scope: "shared"` 表示共享容器和共享工作区。不存在跨会话隔离。如需实现每会话隔离，请使用 `scope: "session"`。
 
-遗留：`perSession` 仍受支持（__ INLINE_CODE_1__ → `scope: "session"`，
+遗留：`perSession` 仍受支持（`scope: "session"` → `scope: "session"`，
 `false` → `scope: "shared"`）。
 
 `setupCommand` 在容器创建后**仅运行一次**（通过 `sh -lc` 在容器内部运行）。
@@ -2339,18 +2339,18 @@ scripts/sandbox-browser-setup.sh
 
 远程控制白名单：
 
-- `allowedControlUrls`：允许用于__ INLINE_CODE_1__的精确控制网址。
+- `allowedControlUrls`：允许用于`allowedControlHosts`的精确控制网址。
 - `allowedControlHosts`：允许的主机名（仅限主机名，不包含端口）。
 - `allowedControlPorts`：允许的端口（默认值：http=80，https=443）。
 
-默认值：所有白名单均未设置（无限制）。`allowHostControl` 默认为 false。
+默认值：未设置任何白名单（无限制）。`allowHostControl` 默认为 false。
 
-### `models`（自定义提供商 + 基础 URL）
+__标题1__ __内联代码0__（自定义提供商 + 基础URL）
 
 OpenClaw 使用 **pi-coding-agent** 模型目录。您可以通过编写 `~/.openclaw/agents/<agentId>/agent/models.json`，或在 OpenClaw 配置中的 `models.providers` 下定义相同的模式，来添加自定义提供商（LiteLLM、本地兼容 OpenAI 的服务器、Anthropic 代理等）。
 按提供商划分的概览与示例：[/concepts/model-providers](/concepts/model-providers)。
 
-当`models.providers`存在时，OpenClaw会在启动时将一个`models.json`写入/合并到`~/.openclaw/agents/<agentId>/agent/`中：
+当`models.providers`存在时，OpenClaw会在启动时将一个`models.json`写入或合并到`~/.openclaw/agents/<agentId>/agent/`中：
 
 - 默认行为：**合并**（保留现有提供者，按名称覆盖）
 - 将 `models.mode: "replace"` 设置为覆盖文件内容
@@ -2393,7 +2393,7 @@ OpenClaw 使用 **pi-coding-agent** 模型目录。您可以通过编写 `~/.ope
 
 OpenCode Zen（多模型代理）
 
-OpenCode Zen是一个具有单模型端点的多模型网关。OpenClaw使用pi-ai内置的`opencode`提供商；请从https://opencode.ai/auth.设置`OPENCODE_API_KEY`（或`OPENCODE_ZEN_API_KEY`）。
+OpenCode Zen是一个具有单模型端点的多模型网关。OpenClaw使用pi-ai内置的`opencode`提供商；请从https://opencode.ai/auth.设置__INLINE_CODE_1__（或__INLINE_CODE_2__）。
 
 注释：
 
@@ -2412,7 +2412,7 @@ OpenCode Zen是一个具有单模型端点的多模型网关。OpenClaw使用pi-
 }
 ```
 
-Z.AI（GLM-4.7）——提供者别名支持
+Z.AI（GLM-4.7）——支持提供者别名
 
 Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `ZAI_API_KEY`，并按提供商标识/模型标识引用该模型。
 
@@ -2439,11 +2439,11 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 请求使用专用的 Coding 端点 `https://api.z.ai/api/coding/paas/v4`。
 内置的 `zai` 提供程序使用 Coding 端点。如果您需要通用端点，请在 `models.providers` 中定义一个自定义提供程序，并通过覆盖基础 URL 来实现（请参阅上面的自定义提供程序部分）。
 
-- 在文档和配置中使用虚假占位符；切勿提交真实的 API 密钥。
+- 在文档和配置中使用虚假占位符；切勿提交真实的API密钥。
 
 登月人工智能（Kimi）
 
-使用Moonshot与OpenAI兼容的端点：
+使用与OpenAI兼容的Moonshot端点：
 
 ```json5
 {
@@ -2648,7 +2648,7 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 
 如果您想将`models.json`存储在其他位置（默认：`~/.openclaw/agents/main/agent`）。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 控制会话作用域、重置策略、重置触发器，以及会话存储的写入位置。
 
@@ -2693,7 +2693,7 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 字段：
 
 - `mainKey`: 直聊桶键（默认：`"main"`）。当您想在不更改 `agentId` 的情况下“重命名”主私信线程时，此键非常有用。
-  - 沙盒说明：__ INLINE_CODE_3__ 使用此键来检测主会话。任何与 `mainKey` 不匹配的会话键（群组/频道）都会被置于沙盒中。
+  - 沙盒说明：`mainKey` 使用此键来检测主会话。任何与 `mainKey` 不匹配的会话键（群组/频道）都会被置于沙盒中。
 - `dmScope`: 定义私信会话的分组方式（默认：`"main"`）。
   - `main`: 所有私信共享主会话以保持连续性。
   - `per-peer`: 在不同频道之间按发送者 ID 隔离私信。
@@ -2712,9 +2712,9 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 - `sendPolicy.default`: 当没有规则匹配时使用的 `allow` 或 `deny` 备用规则。
 - `sendPolicy.rules[]`: 根据 `channel`、`chatType`（`direct|group|room`）或 `keyPrefix`（例如 `cron:`）进行匹配。首个拒绝规则优先；否则允许通过。
 
-### `skills`（技能配置）
+__标题1__ __内联代码0__（技能配置）
 
-捆绑控件允许白名单、安装偏好、额外技能文件夹以及按技能的覆盖设置。适用于**捆绑**技能和`~/.openclaw/skills`（在名称冲突时，工作区技能仍具有优先权）。
+捆绑控件允许设置白名单、安装偏好、额外技能文件夹以及按技能的覆盖设置。适用于**捆绑**技能和`~/.openclaw/skills`（在名称冲突时，工作区技能仍具有优先权）。
 
 字段：
 
@@ -2723,13 +2723,13 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 捆绑技能符合条件（受管/工作区技能不受影响）。
 
 - `load.extraDirs`: 要扫描的附加技能目录（优先级最低）。
-- __ INLINE_CODE_1__: 在可用时优先使用 Homebrew 安装程序（默认：true）。
+- `install.nodeManager`: 在可用时优先使用 Homebrew 安装程序（默认：true）。
 - `install.nodeManager`: Node 安装程序偏好（`npm` | `pnpm` | `yarn`，默认：npm）。
 - `entries.<skillKey>`: 各技能的配置覆盖。
 
 按技能字段：
 
-- `enabled`: 将 __ INLINE_CODE_1__ 设置为禁用某个技能，即使该技能已捆绑或安装。
+- `enabled`: 将 `env` 设置为禁用某个技能，即使该技能已捆绑或安装。
 - `env`: 为代理运行注入的环境变量（仅在尚未设置时生效）。
 - `apiKey`: 为声明主要环境变量的技能提供的可选便利功能（例如 `nano-banana-pro` → `GEMINI_API_KEY`）。
 
@@ -2763,15 +2763,15 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 }
 ```
 
-### `plugins`（扩展）
+__标题1__ __内联代码0__（扩展）
 
-控制插件发现、允许/拒绝以及每个插件的配置。插件从`~/.openclaw/extensions`、`<workspace>/.openclaw/extensions`以及任何`plugins.load.paths`条目中加载。**配置更改需要重启网关。**
+控制插件的发现、允许/拒绝以及每个插件的配置。插件从`~/.openclaw/extensions`、`<workspace>/.openclaw/extensions`以及任何`plugins.load.paths`条目中加载。**配置更改需要重启网关。**
 有关完整用法，请参阅[/plugin](/plugin)。
 
 字段：
 
 - `enabled`: 插件加载的主开关（默认：true）。
-- __ INLINE_CODE_1__: 可选的插件 ID 允许列表；设置后，仅加载列出的插件。
+- `deny`: 可选的插件 ID 允许列表；设置后，仅加载列出的插件。
 - `deny`: 可选的插件 ID 拒绝列表（拒绝优先）。
 - `load.paths`: 需要额外加载的插件文件或目录（绝对路径或 `~`）。
 - `entries.<pluginId>`: 各插件的覆盖配置。
@@ -2800,7 +2800,7 @@ Z.AI 模型可通过内置的 `zai` 提供商获取。在您的环境中设置 `
 }
 ```
 
-### `browser`（OpenClaw管理的浏览器）
+### `browser`（由OpenClaw管理的浏览器）
 
 OpenClaw可以为OpenClaw启动一个**专用且隔离的**Chrome/Brave/Edge/Chromium实例，并公开一个小型环回控制服务。
 通过`profiles.<name>.cdpUrl`，配置文件可以指向一个**远程**基于Chromium的浏览器。远程配置文件仅支持附加模式（启动、停止和重置功能已被禁用）。
@@ -2839,9 +2839,9 @@ OpenClaw可以为OpenClaw启动一个**专用且隔离的**Chrome/Brave/Edge/Chr
 }
 ```
 
-### `ui`（外观）
+__标题1__ __内联代码0__（外观）
 
-原生应用用于界面装饰的可选强调色（例如通话模式气泡色调）。
+原生应用用于界面装饰的可选强调色，例如通话模式气泡的色调。
 
 如果未设置，客户端将回退到静音的浅蓝色。
 
@@ -2859,7 +2859,7 @@ OpenClaw可以为OpenClaw启动一个**专用且隔离的**Chrome/Brave/Edge/Chr
 }
 ```
 
-### `gateway`（网关服务器模式 + 绑定）
+__标题1__ __行内代码0__（网关服务器模式 + 绑定）
 
 使用`gateway.mode`显式声明这台机器是否应运行网关。
 
@@ -2905,28 +2905,28 @@ OpenClaw可以为OpenClaw启动一个**专用且隔离的**Chrome/Brave/Edge/Chr
 受信任的代理：
 
 - `gateway.trustedProxies`：在网关前终止 TLS 的反向代理 IP 列表。
-- 当连接来自这些 IP 之一时，OpenClaw 使用 __ INLINE_CODE_1__（或 `x-real-ip`）来确定客户端 IP，以用于本地配对检查以及 HTTP 身份验证/本地检查。
+- 当连接来自这些 IP 之一时，OpenClaw 使用 `x-real-ip`（或 `x-real-ip`）来确定客户端 IP，以用于本地配对检查以及 HTTP 身份验证/本地检查。
 - 仅列出您完全控制的代理，并确保它们会**覆盖**传入的 `x-forwarded-for`。
 
 注释：
 
-- 除非将`gateway.mode`设置为`local`（或传递覆盖标志），否则`openclaw gateway`拒绝启动。
-- `gateway.port`控制用于WebSocket + HTTP的单个复用端口（控制UI、钩子、A2UI）。
-- OpenAI聊天补全端点：**默认禁用**；通过`gateway.http.endpoints.chatCompletions.enabled: true`启用。
+- 除非将`gateway.mode`设置为`local`（或传递覆盖标志），否则`openclaw gateway`将拒绝启动。
+- `gateway.port`用于控制WebSocket + HTTP共用的单个复用端口（用于控制UI、钩子和A2UI）。
+- OpenAI聊天补全端点：**默认禁用**；可通过`gateway.http.endpoints.chatCompletions.enabled: true`启用。
 - 优先级：`--port` > `OPENCLAW_GATEWAY_PORT` > `gateway.port` > 默认`18789`。
-- 默认需要网关身份验证（令牌/密码或Tailscale Serve身份）。非环回绑定需要共享令牌/密码。
+- 默认情况下需要网关身份验证（令牌/密码或Tailscale Serve身份）。非环回绑定需要共享令牌/密码。
 - 入门向导默认会生成网关令牌（即使在环回模式下也是如此）。
-- `gateway.remote.token`**仅**用于远程CLI调用；它不会启用本地网关身份验证。`gateway.token`会被忽略。
+- `gateway.remote.token`**仅**用于远程CLI调用；它不会启用本地网关身份验证。`gateway.token`将被忽略。
 
 身份验证与Tailscale：
 
 - `gateway.auth.mode` 用于设置握手要求（`token` 或 `password`）。未设置时，默认使用令牌身份验证。
-- __ INLINE_CODE_3__ 存储用于令牌身份验证的共享令牌（由同一台机器上的 CLI 使用）。
+- `gateway.auth.mode` 存储用于令牌身份验证的共享令牌（由同一台机器上的 CLI 使用）。
 - 当 `gateway.auth.mode` 被设置时，仅接受该方法（外加可选的 Tailscale 标头）。
-- `gateway.auth.password` 可在此处设置，也可通过 `OPENCLAW_GATEWAY_PASSWORD` 设置（推荐）。
-- `gateway.auth.allowTailscale` 允许使用 Tailscale Serve 身份标头。
+- 可在此处设置 `gateway.auth.password`，也可通过 `OPENCLAW_GATEWAY_PASSWORD` 设置（推荐）。
+- `gateway.auth.allowTailscale` 允许使用Tailscale Serve身份标头。
 
-(`tailscale-user-login`) 在请求通过环回接口到达时，使用 __ INLINE_CODE_1__、`x-forwarded-proto` 和 `x-forwarded-host` 进行身份验证。OpenClaw 会先通过 `tailscale whois` 解析 `x-forwarded-for` 地址来验证身份，然后才予以接受。当启用 `true` 时，处理请求无需提供令牌或密码；将 `false` 设置为需要显式凭据。如果未指定 `tailscale.mode = "serve"` 且身份验证模式不是 `password`，则默认为 `true`。
+(`tailscale-user-login`) 当请求通过环回接口到达时，使用 `x-forwarded-proto`、`x-forwarded-proto` 和 `x-forwarded-host` 进行身份验证。OpenClaw 会先通过 `tailscale whois` 解析 `x-forwarded-for` 地址来验证身份，然后才予以接受。当启用 `true` 时，处理请求无需提供令牌或密码；将 `false` 设置为需要显式凭据。如果未指定 `tailscale.mode = "serve"` 且身份验证模式不是 `password`，则默认为 `true`。
 
 - `gateway.tailscale.mode: "serve"` 使用 Tailscale Serve（仅限尾网，绑定回环）。
 - `gateway.tailscale.mode: "funnel"` 公开暴露仪表板；需要身份验证。
@@ -2973,14 +2973,14 @@ macOS应用行为：
 }
 ```
 
-### `gateway.reload`（配置热重载）
+__标题1__ __内联代码0__（配置热重载）
 
 网关会监控`~/.openclaw/openclaw.json`（或`OPENCLAW_CONFIG_PATH`），并自动应用更改。
 
 模式：
 
-- `hybrid`（默认）：热部署安全变更；对于关键变更，需重启网关。
-- `hot`：仅应用热部署安全变更；在需要重启时记录日志。
+- `hybrid`（默认）：支持热部署安全变更；对于关键变更，需重启网关。
+- `hot`：仅支持应用热部署安全变更；在需要重启时记录日志。
 - `restart`：任何配置变更都会重启网关。
 - `off`：禁用热重载。
 
@@ -3004,7 +3004,7 @@ macOS应用行为：
 热部署（无需完整网关重启）：
 
 - `hooks`（Webhook 认证/路径/映射）+ `hooks.gmail`（Gmail 监视器已重启）
-- __ INLINE_CODE_2__（浏览器控制服务器重启）
+- `cron`（浏览器控制服务器重启）
 - `cron`（Cron 服务重启 + 并发更新）
 - `agents.defaults.heartbeat`（心跳运行程序重启）
 - `web`（WhatsApp Web 渠道重启）
@@ -3022,17 +3022,17 @@ macOS应用行为：
 
 多实例隔离
 
-要在一台主机上运行多个网关（用于冗余或救援机器人），请为每个实例隔离状态和配置，并使用唯一端口：
+要在一台主机上运行多个网关（用于冗余或救援机器人），请为每个实例隔离状态和配置，并使用唯一的端口：
 
 - `OPENCLAW_CONFIG_PATH`（按实例配置）
-- __ INLINE_CODE_1__（会话/凭据）
+- `agents.defaults.workspace`（会话/凭据）
 - `agents.defaults.workspace`（记忆）
 - `gateway.port`（每个实例唯一）
 
 便利标志（CLI）：
 
-- `openclaw --dev …` → 使用 __ INLINE_CODE_1__ + 从基础 __ INLINE_CODE_2__ 转移端口
-- `openclaw --profile <name> …` → 使用 __ INLINE_CODE_4__（通过配置/环境变量/标志指定端口）
+- `openclaw --dev …` → 使用 `openclaw --profile <name> …` + 从基础 __INLINE_CODE_2__ 转移端口
+- `openclaw --profile <name> …` → 使用 __INLINE_CODE_4__（通过配置/环境变量/标志指定端口）
 
 有关派生端口映射（网关/浏览器/画布），请参阅[网关运行手册](/gateway)。
 有关浏览器/CDP端口隔离的详细信息，请参阅[多个网关](/gateway/multiple-gateways)。
@@ -3045,7 +3045,7 @@ OPENCLAW_STATE_DIR=~/.openclaw-a \
 openclaw gateway --port 19001
 ```
 
-### `hooks`（网关 Webhook）
+__标题1__ __行内代码0__（网关Webhook）
 
 在网关 HTTP 服务器上启用一个简单的 HTTP Webhook 端点。
 
@@ -3093,12 +3093,12 @@ openclaw gateway --port 19001
 - `POST /hooks/agent` → `{ message, name?, sessionKey?, wakeMode?, deliver?, channel?, to?, model?, thinking?, timeoutSeconds? }`
 - `POST /hooks/<name>` → 通过 `hooks.mappings` 解析
 
-`/hooks/agent` 始终将摘要发布到主会话中（并可选择通过 `wakeMode: "now"` 触发即时心跳）。
+始终将摘要发布到主会话中（并可选择通过 `wakeMode: "now"` 触发即时心跳）。
 
 映射说明：
 
 - `match.path` 匹配 `/hooks` 之后的子路径（例如 `/hooks/gmail` → `gmail`）。
-- __ INLINE_CODE_4__ 匹配有效载荷字段（例如 `{ source: "gmail" }`），因此您可以使用通用的 `/hooks/ingest` 路径。
+- `{ source: "gmail" }` 匹配有效载荷字段（例如 `{ source: "gmail" }`），因此您可以使用通用的 `/hooks/ingest` 路径。
 - 类似 `{{messages[0].subject}}` 的模板会从有效载荷中读取数据。
 - `transform` 可以指向一个返回钩子动作的 JS/TS 模块。
 - `deliver: true` 将最终回复发送到某个频道；`channel` 默认为 `last`（回退到 WhatsApp）。
@@ -3148,15 +3148,15 @@ Gmail钩子的模型覆盖：
 `gog gmail watch serve` 在启动时运行并自动续订手表。
 
 - 将`OPENCLAW_SKIP_GMAIL_WATCHER=1`设置为禁用自动启动（用于手动运行）。
-- 请勿在网关旁边单独运行__ INLINE_CODE_1__；它会
+- 请勿在网关旁边单独运行__INLINE_CODE_1__；它会
 
 失败，代码为`listen tcp 127.0.0.1:8788: bind: address already in use`。
 
 注意：当`tailscale.mode`启用时，OpenClaw会将`serve.path`默认设置为`/`，以便
 Tailscale能够正确代理`/gmail-pubsub`（它会剥离set-path前缀）。如果您希望后端接收带前缀的路径，请将
-`hooks.gmail.tailscale.target`设置为完整URL，并对齐`serve.path`。
+`hooks.gmail.tailscale.target`设置为完整URL，并确保`serve.path`与之匹配。
 
-### `canvasHost`（LAN/尾网画布文件服务器 + 实时重载）
+### `canvasHost`（局域网/尾网画布文件服务器 + 实时重载）
 
 网关通过 HTTP 提供 HTML/CSS/JS 目录，以便 iOS/Android 节点可以简单地`canvas.navigate`到它。
 
@@ -3243,11 +3243,11 @@ Tailscale能够正确代理`/gmail-pubsub`（它会剥离set-path前缀）。如
 }
 ```
 
-### `discovery.mdns`（Bonjour / mDNS 广播模式）
+__标题1__ __内联代码0__（Bonjour / mDNS 广播模式）
 
 控制局域网mDNS发现广播（`_openclaw-gw._tcp`）。
 
-- `minimal`（默认）：从TXT记录中省略__ INLINE_CODE_1__ + `sshPort`
+- `minimal`（默认）：从TXT记录中省略`sshPort` + `sshPort`
 - `full`：在TXT记录中包含`cliPath` + `sshPort`
 - `off`：完全禁用mDNS广播
 - 主机名：默认为`openclaw`（通告`openclaw.local`）。可通过`OPENCLAW_MDNS_HOSTNAME`覆盖。
@@ -3258,14 +3258,14 @@ Tailscale能够正确代理`/gmail-pubsub`（它会剥离set-path前缀）。如
 }
 ```
 
-### `discovery.wideArea`（广域Bonjour / 单播DNS‑SD）
+__标题1__ __行内代码0__（广域Bonjour / 单播DNS‑SD）
 
-启用后，网关会使用已配置的发现域，在`~/.openclaw/dns/`下为`_openclaw-gw._tcp`写入单播 DNS-SD 区域（示例：`openclaw.internal.`）。
+启用后，网关将使用已配置的发现域，在`~/.openclaw/dns/`下为`_openclaw-gw._tcp`写入单播 DNS-SD 区域（示例：`openclaw.internal.`）。
 
 要在不同网络之间实现iOS/Android发现（维也纳⇄伦敦），请将其与以下内容搭配使用：
 
-- 网关主机上用于您所选域名的 DNS 服务器（推荐使用 CoreDNS）
-- 使用 Tailscale 的“分离 DNS”功能，使客户端通过网关 DNS 服务器解析该域名
+- 网关主机上为您所选域名配置的 DNS 服务器（推荐使用 CoreDNS）
+- 使用 Tailscale 的“分离 DNS”功能，让客户端通过网关 DNS 服务器解析该域名。
 
 一次性设置助手（网关主机）：
 
@@ -3306,9 +3306,9 @@ openclaw dns setup --apply
 | `{{SenderE164}}` | 发送者电话号码（尽力而为） |
 | `{{Provider}}` | 提供商提示（whatsapp|telegram|discord|googlechat|slack|signal|imessage|msteams|webchat|…）|
 
-## Cron（网关调度器）
+__HEADING_0__Cron（网关调度器）
 
-Cron 是 Gateway 自有的调度程序，用于触发唤醒和计划任务。有关该功能的概览和 CLI 示例，请参阅 [Cron 作业](/automation/cron-jobs)。
+Cron 是 Gateway 自带的调度程序，用于触发唤醒和计划任务。有关该功能的概览和 CLI 示例，请参阅 [Cron 作业](/automation/cron-jobs)。
 
 ```json5
 {

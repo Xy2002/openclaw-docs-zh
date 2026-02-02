@@ -8,9 +8,9 @@ read_when:
 
 目标：在 exe.dev 虚拟机上运行 OpenClaw 网关，并可通过以下方式从您的笔记本电脑访问：`https://<vm-name>.exe.xyz`
 
-本页面假定使用 exe.dev 的默认 **exeuntu** 镜像。如果您选择了其他发行版，请相应地映射软件包。
+本页面假定使用 exe.dev 的默认 **exeuntu** 镜像。如果您选择了其他发行版，请根据所选发行版相应地映射软件包。
 
-## 初学者快速路径
+## 初学者快速通道
 
 1) [https://exe.new/openclaw](https://exe.new/openclaw)
 2) 根据需要填写您的身份验证密钥/令牌
@@ -22,7 +22,6 @@ read_when:
 
 - exe.dev 帐户
 - `ssh exe.dev` 访问 [exe.dev](https://exe.dev) 虚拟机（可选）
-
 
 ## 使用 Shelley 进行自动化安装
 
@@ -48,7 +47,7 @@ ssh exe.dev new
 ssh <vm-name>.exe.xyz
 ```
 
-提示：请将此虚拟机设置为 **有状态**。OpenClaw 将状态存储在 `~/.openclaw/` 和 `~/.openclaw/workspace/` 下。
+提示：请将此虚拟机设置为**有状态**。OpenClaw会将状态存储在`~/.openclaw/`和`~/.openclaw/workspace/`下。
 
 ## 2) 在虚拟机上安装先决条件
 
@@ -65,7 +64,7 @@ sudo apt-get install -y git curl jq ca-certificates openssl
 curl -fsSL https://openclaw.bot/install.sh | bash
 ```
 
-## 4) 设置 nginx 以将 OpenClaw 代理到端口 8000
+## 4) 配置 nginx 将 OpenClaw 代理到端口 8000
 
 编辑 `/etc/nginx/sites-enabled/default`，内容如下：
 
@@ -103,7 +102,7 @@ server {
 
 访问 `https://<vm-name>.exe.xyz/?token=YOUR-TOKEN-FROM-TERMINAL`。使用 `openclaw devices list` 和 `openclaw device approve` 授权设备。如有疑问，请通过浏览器使用 Shelley！
 
-## 远程访问
+## 这是远程访问
 
 远程访问由 [exe.dev](https://exe.dev) 的身份验证处理。默认情况下，来自端口 8000 的 HTTP 流量会通过电子邮件身份验证转发到 `https://<vm-name>.exe.xyz`。
 

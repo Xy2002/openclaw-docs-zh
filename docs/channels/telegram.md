@@ -103,15 +103,15 @@ Telegram 机器人默认启用**隐私模式**，这限制了它们能够接收�
 
 - 入站消息被归一化为共享通道信封，其中包含回复上下文和媒体占位符。
 - 群组回复默认需要提及（原生 @提及或 `agents.list[].groupChat.mentionPatterns` / `messages.groupChat.mentionPatterns`）。
-- 多代理覆盖：在 __ INLINE_CODE_2__ 上为每个代理设置模式。
+- 多代理覆盖：在 __INLINE_CODE_2__ 上为每个代理设置模式。
 - 回复始终路由回同一个 Telegram 聊天。
-- 长轮询使用 grammY 运行器对每条聊天进行序列化；整体并发由 __ INLINE_CODE_3__ 限制。
-- Telegram Bot API 不支持已读回执；没有 __ INLINE_CODE_4__ 选项。
+- 长轮询使用 grammY 运行器对每条聊天进行序列化；整体并发由 __INLINE_CODE_3__ 限制。
+- Telegram Bot API 不支持已读回执；没有 __INLINE_CODE_4__ 选项。
 
 ## 格式化（Telegram HTML）
 
 - 出站 Telegram 文本使用 `parse_mode: "HTML"`（Telegram 支持的标签子集）。
-- 类 Markdown 输入会被渲染为 **Telegram 安全的 HTML**（包括粗体、斜体、删除线、代码和链接）；块元素则被展平为带有换行符和项目符号的纯文本。
+- 类 Markdown 输入会被渲染为**Telegram 安全的 HTML**（包括粗体、斜体、删除线、代码和链接）；块元素则被展平为带有换行符和项目符号的纯文本。
 - 来自模型的原始 HTML 会经过转义处理，以避免 Telegram 解析错误。
 - 如果 Telegram 拒绝处理 HTML 负载，OpenClaw 会以纯文本格式重试发送同一消息。
 
@@ -174,8 +174,8 @@ OpenClaw 在启动时向 Telegram 的机器人菜单注册原生命令（如 `/s
 }
 ```
 
-**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** -  only 列入名单的群组（或 `"*"`）才会被接受。
-论坛主题会继承其父群组的配置（allowFrom、requireMention、skills、prompts），除非您在 `channels.telegram.groups.<groupId>.topics.<topicId>` 下为特定主题添加覆盖设置。
+**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** - 只有列入名单的群组（或 `"*"`）才会被接受。
+论坛主题将继承其父群组的配置（allowFrom、requireMention、skills、prompts），除非您在 `channels.telegram.groups.<groupId>.topics.<topicId>` 下为特定主题添加覆盖设置。
 
 要允许所有群组始终响应：
 
@@ -250,7 +250,7 @@ Telegram 论坛主题的每条消息都包含一个 `message_thread_id`。OpenCl
 - 特定主题的配置可在 `channels.telegram.groups.<chatId>.topics.<threadId>` 下获取，包括技能、白名单、自动回复、系统提示和禁用设置。
 - 主题配置默认继承群组设置（requireMention、白名单、技能、提示、启用），除非在主题级别进行了覆盖。
 
-在某些边缘情况下，私人聊天可能包含 `message_thread_id`。OpenClaw 会保持 DM 会话密钥不变，但在存在线程 ID 时仍使用线程 ID 来进行回复或草稿的流式传输。
+在某些边缘情况下，私人聊天可能包含 `message_thread_id`。OpenClaw会保持DM会话密钥不变，但在存在线程ID时仍使用线程ID来处理回复或草稿的流式传输。
 
 内联按钮
 
@@ -327,7 +327,7 @@ Telegram 支持带有回调按钮的内联键盘。
 Telegram 功能可以在两个级别上进行配置（上面显示的是对象形式；旧版字符串数组仍受支持）：
 
 - `channels.telegram.capabilities`: 全局默认功能配置适用于所有 Telegram 账户，除非被覆盖。
-- `channels.telegram.accounts.<account>.capabilities`: 每账户的功能会覆盖该特定账户的全局默认设置。
+- `channels.telegram.accounts.<account>.capabilities`: 每个账户的功能会覆盖该特定账户的全局默认设置。
 
 当所有 Telegram 机器人或账户的行为应保持一致时，使用全局设置。当不同机器人需要不同的行为时（例如，一个账户只处理私信，而另一个账户被允许加入群组），使用每账户配置。
 
@@ -380,7 +380,7 @@ DM 访问
 
 大多数用户希望：`groupPolicy: "allowlist"` + `groupAllowFrom` + 在 `channels.telegram.groups` 中列出特定群组。
 
-长轮询 vs Webhook
+长轮询与Webhook
 
 - 默认：长轮询（不需要公共 URL）。
 - Webhook 模式：设置 `channels.telegram.webhookUrl`（可选地设置 `channels.telegram.webhookSecret` + `channels.telegram.webhookPath`）。
@@ -478,7 +478,7 @@ OpenClaw支持接收和发送Telegram贴纸，并具备智能缓存功能。
 
 发送贴纸
 
-代理可以使用 `sticker` 和 `sticker-search` 操作来发送和搜索贴纸。默认情况下此功能已禁用，必须在配置中手动启用：
+代理可以使用 `sticker` 和 `sticker-search` 操作来发送和搜索贴纸。默认情况下，此功能已禁用，必须在配置中手动启用：
 
 ```json5
 {
@@ -587,11 +587,11 @@ OpenClaw 使用 Bot API `sendMessageDraft`（并非真实消息），然后将�
 
 重试策略
 
-出站 Telegram API 调用在遇到短暂网络或 429 错误时，会使用指数退避和抖动机制进行重试。可通过 `channels.telegram.retry` 进行配置。更多信息请参见 [重试策略](/concepts/retry)。
+出站 Telegram API 调用在遇到短暂网络问题或 429 错误时，会使用指数退避和抖动机制进行重试。可通过 `channels.telegram.retry` 进行配置。更多信息请参见 [重试策略](/concepts/retry)。
 
 代理工具（消息 + 反应）
 
-- 工具：`telegram` 带 `sendMessage` 操作（__ INLINE_CODE_2__、`content`、可选 `mediaUrl`、`replyToMessageId`、`messageThreadId`）。
+- 工具：`telegram` 带 `sendMessage` 操作（`content`、`content`、可选 `mediaUrl`、`replyToMessageId`、`messageThreadId`）。
 - 工具：`telegram` 带 `react` 操作（`chatId`、`messageId`、`emoji`）。
 - 工具：`telegram` 带 `deleteMessage` 操作（`chatId`、`messageId`）。
 - 反应移除语义：请参见 [/tools/reactions](/tools/reactions)。
@@ -622,7 +622,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
   - `"minimal"` — 代理可以谨慎地做出反应（指南：每 5–10 次交流做 1 次）
   - `"extensive"` — 代理可以在适当的时候自由地做出反应
 
-**论坛群组：** 论坛群组中的回复包括 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题中的回复和消息保持在一起。
+**论坛群组：** 论坛群组中的回复包含 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题中的回复和消息保持在一起。
 
 **示例配置：**
 
@@ -668,7 +668,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
 **机器人会对提及作出回应，但不会对 `/activation always` 作出回应：**
 
 - `/activation` 命令会更新会话状态，但不会将其持久化到配置中。
-- 对于持久行为，请将群组添加到 __ INLINE_CODE_1__ 并使用 __ INLINE_CODE_2__。
+- 对于持久行为，请将群组添加到 __INLINE_CODE_1__ 并使用 __INLINE_CODE_2__。
 
 **像 `/status` 这样的命令不起作用：**
 
@@ -682,7 +682,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
 
 **机器人启动后悄然停止响应（或记录 `HttpError: Network request ... failed`）：**
 
-- 一些主机会首先将 `api.telegram.org` 解析为 IPv6。如果您的服务器没有正常的 IPv6 出口，gramY 可能会卡在仅 IPv6 的请求上。
+- 一些主机可能会首先将 `api.telegram.org` 解析为 IPv6。如果您的服务器没有正常的 IPv6 出口，gramY 可能会因仅支持 IPv6 的请求而卡住。
 - 通过启用 IPv6 出口 **或** 强制对 `api.telegram.org` 进行 IPv4 解析（例如，使用 IPv4 A 记录添加一个 `/etc/hosts` 条目，或在您的操作系统 DNS 堆栈中优先使用 IPv4），然后重启网关。
 - 快速检查：运行 `dig +short api.telegram.org A` 和 `dig +short api.telegram.org AAAA` 以确认 DNS 返回的内容。
 
@@ -693,7 +693,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
 提供商选项：
 
 - `channels.telegram.enabled`：启用或禁用通道启动。
-- __ INLINE_CODE_1__：机器人令牌（BotFather）。
+- `channels.telegram.tokenFile`：机器人令牌（BotFather）。
 - `channels.telegram.tokenFile`：从文件路径读取令牌。
 - `channels.telegram.dmPolicy`：`pairing | allowlist | open | disabled`（默认：配着）。
 - `channels.telegram.allowFrom`：DM 白名单（ID/用户名）。`open` 需要 `"*"`。
