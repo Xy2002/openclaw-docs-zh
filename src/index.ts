@@ -380,4 +380,231 @@ program
         }
     });
 
+// Cache management command group
+const cacheCommand = program
+    .command('cache')
+    .description('Manage translation cache');
+
+cacheCommand
+    .command('delete <files...>')
+    .description('Delete cache entries for specific files')
+    .option('--paragraph-cache <file>', 'Paragraph cache file', './.paragraph-cache.json')
+    .option('--translation-cache <file>', 'Translation cache file', './.translation-cache.json')
+    .option('--upstream-cache <file>', 'Upstream hash cache file', './.upstream-hashes.json')
+    .option('--all', 'Delete from all cache types', false)
+    .option('--dry-run', 'Show what would be deleted without actually deleting', false)
+    .action(async (files: string[], options) => {
+        try {
+            console.log('🗑️  Cache Delete\n');
+
+            const paragraphCacheFile = resolve(process.cwd(), options.paragraphCache);
+            const translationCacheFile = resolve(process.cwd(), options.translationCache);
+            const upstreamCacheFile = resolve(process.cwd(), options.upstreamCache);
+
+            const { readFile, writeFile, access } = await import('fs/promises');
+
+            // Normalize file paths for matching
+            const normalizeFilePath = (p: string) => p.replace(/\\/g, '/').replace(/^\.\//, '');
+            const filesToDelete = files.map(normalizeFilePath);
+
+            console.log(`📋 Files to clear from cache:`);
+            for (const file of filesToDelete) {
+                console.log(`   - ${file}`);
+            }
+            console.log('');
+
+            let totalDeleted = 0;
+
+            // Helper to check if file exists
+            const fileExists = async (path: string) => {
+                try {
+                    await access(path);
+                    return true;
+                } catch {
+                    return false;
+                }
+            };
+
+            // Helper to delete entries from a JSON cache file
+            const deleteFromCache = async (cacheFile: string, cacheName: string) => {
+                if (!(await fileExists(cacheFile))) {
+                    console.log(`⏭️  ${cacheName}: file not found, skipping`);
+                    return 0;
+                }
+
+                try {
+                    const content = await readFile(cacheFile, 'utf-8');
+                    const cacheData = JSON.parse(content);
+                    let deleted = 0;
+
+                    // Handle paragraph cache format (has 'paragraphs' and 'fileHashes' keys)
+                    if (cacheData.paragraphs && typeof cacheData.paragraphs === 'object') {
+                        for (const filePattern of filesToDelete) {
+                            // Delete from paragraphs
+                            for (const key of Object.keys(cacheData.paragraphs)) {
+                                if (normalizeFilePath(key).includes(filePattern) ||
+                                    filePattern.includes(normalizeFilePath(key))) {
+                                    if (!options.dryRun) {
+                                        delete cacheData.paragraphs[key];
+                                    }
+                                    console.log(`   ✓ paragraphs: ${key}`);
+                                    deleted++;
+                                }
+                            }
+                            // Delete from fileHashes
+                            if (cacheData.fileHashes) {
+                                for (const key of Object.keys(cacheData.fileHashes)) {
+                                    if (normalizeFilePath(key).includes(filePattern) ||
+                                        filePattern.includes(normalizeFilePath(key))) {
+                                        if (!options.dryRun) {
+                                            delete cacheData.fileHashes[key];
+                                        }
+                                        console.log(`   ✓ fileHashes: ${key}`);
+                                        deleted++;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // Handle simple key-value cache format
+                        for (const filePattern of filesToDelete) {
+                            for (const key of Object.keys(cacheData)) {
+                                if (normalizeFilePath(key).includes(filePattern) ||
+                                    filePattern.includes(normalizeFilePath(key))) {
+                                    if (!options.dryRun) {
+                                        delete cacheData[key];
+                                    }
+                                    console.log(`   ✓ ${key}`);
+                                    deleted++;
+                                }
+                            }
+                        }
+                    }
+
+                    if (deleted > 0) {
+                        if (!options.dryRun) {
+                            await writeFile(cacheFile, JSON.stringify(cacheData, null, 2), 'utf-8');
+                        }
+                        console.log(`   ${options.dryRun ? '(dry run) Would delete' : 'Deleted'} ${deleted} entries from ${cacheName}`);
+                    } else {
+                        console.log(`   No matching entries found in ${cacheName}`);
+                    }
+
+                    return deleted;
+                } catch (error) {
+                    console.error(`   ❌ Error processing ${cacheName}: ${error instanceof Error ? error.message : error}`);
+                    return 0;
+                }
+            };
+
+            // Process paragraph cache
+            console.log(`\n🔍 Paragraph cache (${options.paragraphCache}):`);
+            totalDeleted += await deleteFromCache(paragraphCacheFile, 'paragraph cache');
+
+            // Process translation cache
+            console.log(`\n🔍 Translation cache (${options.translationCache}):`);
+            totalDeleted += await deleteFromCache(translationCacheFile, 'translation cache');
+
+            // Process upstream cache
+            console.log(`\n🔍 Upstream hash cache (${options.upstreamCache}):`);
+            totalDeleted += await deleteFromCache(upstreamCacheFile, 'upstream cache');
+
+            // Summary
+            console.log('\n' + '─'.repeat(40));
+            if (options.dryRun) {
+                console.log(`📊 Dry run: would delete ${totalDeleted} total cache entries`);
+            } else if (totalDeleted > 0) {
+                console.log(`✅ Deleted ${totalDeleted} total cache entries`);
+            } else {
+                console.log(`⚠️  No matching cache entries found`);
+            }
+
+        } catch (error) {
+            console.error('❌ Error:', error instanceof Error ? error.message : error);
+            process.exit(1);
+        }
+    });
+
+cacheCommand
+    .command('list')
+    .description('List all cached file entries')
+    .option('--paragraph-cache <file>', 'Paragraph cache file', './.paragraph-cache.json')
+    .option('--translation-cache <file>', 'Translation cache file', './.translation-cache.json')
+    .option('--upstream-cache <file>', 'Upstream hash cache file', './.upstream-hashes.json')
+    .action(async (options) => {
+        try {
+            console.log('📋 Cache Contents\n');
+
+            const paragraphCacheFile = resolve(process.cwd(), options.paragraphCache);
+            const translationCacheFile = resolve(process.cwd(), options.translationCache);
+            const upstreamCacheFile = resolve(process.cwd(), options.upstreamCache);
+
+            const { readFile, access } = await import('fs/promises');
+
+            const fileExists = async (path: string) => {
+                try {
+                    await access(path);
+                    return true;
+                } catch {
+                    return false;
+                }
+            };
+
+            // List paragraph cache
+            console.log(`🔍 Paragraph cache (${options.paragraphCache}):`);
+            if (await fileExists(paragraphCacheFile)) {
+                const content = await readFile(paragraphCacheFile, 'utf-8');
+                const cacheData = JSON.parse(content);
+                if (cacheData.paragraphs) {
+                    const files = Object.keys(cacheData.paragraphs);
+                    console.log(`   ${files.length} files cached`);
+                    for (const file of files) {
+                        const paragraphCount = Object.keys(cacheData.paragraphs[file]).length;
+                        console.log(`   - ${file} (${paragraphCount} paragraphs)`);
+                    }
+                }
+            } else {
+                console.log('   (not found)');
+            }
+
+            // List translation cache
+            console.log(`\n🔍 Translation cache (${options.translationCache}):`);
+            if (await fileExists(translationCacheFile)) {
+                const content = await readFile(translationCacheFile, 'utf-8');
+                const cacheData = JSON.parse(content);
+                const files = Object.keys(cacheData);
+                console.log(`   ${files.length} files cached`);
+                for (const file of files.slice(0, 20)) {
+                    console.log(`   - ${file}`);
+                }
+                if (files.length > 20) {
+                    console.log(`   ... and ${files.length - 20} more`);
+                }
+            } else {
+                console.log('   (not found)');
+            }
+
+            // List upstream cache
+            console.log(`\n🔍 Upstream hash cache (${options.upstreamCache}):`);
+            if (await fileExists(upstreamCacheFile)) {
+                const content = await readFile(upstreamCacheFile, 'utf-8');
+                const cacheData = JSON.parse(content);
+                const files = Object.keys(cacheData);
+                console.log(`   ${files.length} files tracked`);
+                for (const file of files.slice(0, 20)) {
+                    console.log(`   - ${file}`);
+                }
+                if (files.length > 20) {
+                    console.log(`   ... and ${files.length - 20} more`);
+                }
+            } else {
+                console.log('   (not found)');
+            }
+
+        } catch (error) {
+            console.error('❌ Error:', error instanceof Error ? error.message : error);
+            process.exit(1);
+        }
+    });
+
 program.parse();

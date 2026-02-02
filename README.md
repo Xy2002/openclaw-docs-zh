@@ -73,6 +73,22 @@ node dist/index.js translate --paragraph-cache .paragraph-cache.json
 3. 只翻译变化的段落，其他段落从缓存读取
 4. 相同段落即使在不同文件中也能复用
 
+### 缓存管理
+
+```bash
+# 查看所有缓存的文件
+node dist/index.js cache list
+
+# 删除特定文件的缓存（强制重新翻译）
+node dist/index.js cache delete token-use.md
+
+# 删除多个文件的缓存
+node dist/index.js cache delete token-use.md install/index.md
+
+# 预览要删除的内容（不实际删除）
+node dist/index.js cache delete --dry-run token-use.md
+```
+
 ### 使用 act 本地测试 GitHub Actions
 
 需要安装 Docker 和 [act](https://github.com/nektos/act)。
