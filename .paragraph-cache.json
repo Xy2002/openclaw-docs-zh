@@ -2099,6 +2099,11 @@
         "upstreamHash": "d71c3b51977d01d1d6e355965e2d07b4",
         "translatedContent": "- 通过 SSH 从另一台机器连接时，使用的是**Windows 主机的 IP**（例如：`ssh user@windows-host -p 2222`）。\n- 驻留在远程节点上的网关 URL 必须是**可访问**的；可以使用 `listenaddress=0.0.0.0` 来进行确认。\n- 使用 `listenaddress=0.0.0.0` 可实现局域网访问；而使用 `127.0.0.1` 则仅限于本地访问。\n- 如果希望自动执行此操作，可以注册一个计划任务，在登录时自动运行刷新步骤。",
         "timestamp": 1770005712417
+      },
+      "ec33c539b1392fdf0d065878c1c9b0a7": {
+        "upstreamHash": "ec33c539b1392fdf0d065878c1c9b0a7",
+        "translatedContent": "在 Windows 上运行 OpenClaw 时，我们强烈建议通过 WSL2 来进行（推荐使用 Ubuntu）。CLI 和网关在 Linux 环境中运行，这不仅确保了运行时的一致性，还显著提升了工具链（Node/Bun/pnpm、Linux 二进制文件、技能等）的兼容性。目前，原生 Windows 安装尚未经过充分测试，可能存在更多尚未发现的问题。",
+        "timestamp": 1770091622168
       }
     },
     "install/index.md": {
@@ -13257,6 +13262,26 @@
         "upstreamHash": "bbf8c423d3ae7065849e180c0a58b036",
         "translatedContent": "- 使用模拟提供商的场景运行器，确保工具调用、调用顺序、技能文件读取和会话布线均符合预期。\n- 一套小型、以技能为中心的场景，涵盖“使用与避免”、“门控”和“提示注入”等关键模式。\n- 仅在 CI 安全套件部署到位后，才进行可选的实时评估（需通过环境变量明确选择加入）。",
         "timestamp": 1770005653638
+      },
+      "9187dc07b129f29b3d6693c6c352d3b2": {
+        "upstreamHash": "9187dc07b129f29b3d6693c6c352d3b2",
+        "translatedContent": "- 每个测试套件涵盖的内容（以及它有意排除的内容）\n- 常见工作流所需的命令（本地、推送前、调试）\n- 实时测试如何检测凭据并选择模型/提供商\n- 如何为现实世界中可能出现的模型/提供商问题添加回归测试",
+        "timestamp": 1770091573295
+      },
+      "a7a68cd505067a4e2b0bbbb49d25411e": {
+        "upstreamHash": "a7a68cd505067a4e2b0bbbb49d25411e",
+        "translatedContent": "如果你想依赖环境密钥（例如，在你的 `~/.profile` 中导出），请在 `source ~/.profile` 之后运行本地测试，或使用下方的 Docker 运行器——它们可以将 `~/.profile` 挂载到容器中。",
+        "timestamp": 1770091574108
+      },
+      "147d7181f7f493f01acef508ce82e3a9": {
+        "upstreamHash": "147d7181f7f493f01acef508ce82e3a9",
+        "translatedContent": "- **决策**：当提示中列出技能时，代理能否准确选择正确的技能（或有效避开无关的技能）？\n- **合规**：代理在使用前是否会读取 `SKILL.md` 并严格遵守所需的步骤和参数？\n- **工作流契约**：在多轮对话场景中，能否确保工具调用顺序、会话历史传递以及沙盒边界得到妥善处理？",
+        "timestamp": 1770091575080
+      },
+      "2a702e0c3328e54a8ee0039b33d09dc5": {
+        "upstreamHash": "2a702e0c3328e54a8ee0039b33d09dc5",
+        "translatedContent": "- 使用模拟提供商的场景运行器，确保工具调用、调用顺序、技能文件读取和会话布线均符合预期。\n- 一套小型、以技能为中心的场景，涵盖“使用与避免”、“门控”和“提示注入”等关键模式。\n- 仅在 CI 安全套件部署到位后，才进行可选的实时评估（需通过环境变量明确选择加入）。",
+        "timestamp": 1770091576056
       }
     },
     "pi.md": {
@@ -13769,6 +13794,21 @@
         "upstreamHash": "6b29effd57ef6643b70898a8d9b3bd14",
         "translatedContent": "涵盖π积分及其扩展的所有现有测试：",
         "timestamp": 1770005666208
+      },
+      "0a88e7b10efc0b70280af6315ce0b62b": {
+        "upstreamHash": "0a88e7b10efc0b70280af6315ce0b62b",
+        "translatedContent": "系统提示是在 `buildAgentSystemPrompt()` (`system-prompt.ts`) 中构建的。它会组装一个完整的提示，其中包含工具、工具调用风格、OpenClaw CLI 参考、技能、文档、工作区、沙箱、消息传递、回复标签、语音、静默回复、心跳、运行时元数据，以及启用时的记忆和反应；此外，系统提示还可能包含可选的上下文文件和额外的系统提示内容。对于子代理使用的最小提示模式，各部分将根据需要进行相应裁剪。",
+        "timestamp": 1770091577185
+      },
+      "e3e802b51a64a9b4ca169695b2d43233": {
+        "upstreamHash": "e3e802b51a64a9b4ca169695b2d43233",
+        "translatedContent": "__HEADING_0__TUI集成",
+        "timestamp": 1770091577764
+      },
+      "c4fa036124bff6cdd2ecff0ceac3c3e3": {
+        "upstreamHash": "c4fa036124bff6cdd2ecff0ceac3c3e3",
+        "translatedContent": "OpenClaw还提供一种本地TUI模式，直接使用pi-tui组件：",
+        "timestamp": 1770091578319
       }
     },
     "tools/exec.md": {
@@ -14178,6 +14218,16 @@
         "upstreamHash": "f4c8bf4d096fd045f0a496048b22f5af",
         "translatedContent": "- [ ] 打标签并推送：`git tag vX.Y.Z && git push origin vX.Y.Z`（或 `git push --tags`）。\n- [ ] 为 `vX.Y.Z` 创建或刷新 GitHub 发布，**标题为 `openclaw X.Y.Z`**（不仅仅是标签）；正文应包含该版本的**完整**变更日志部分（亮点 + 变更 + 修复），以内联方式显示（不使用裸链接），并且**不得在正文中重复标题**。\n- [ ] 附加工件：`npm pack` tarball（可选）、`OpenClaw-X.Y.Z.zip` 和 `OpenClaw-X.Y.Z.dSYM.zip`（如果已生成）。\n- [ ] 提交更新的 `appcast.xml` 并推送（Sparkle 从 main 分支获取数据）。\n- [ ] 在一个干净的临时目录中（不含 `package.json`），运行 `npx -y openclaw@X.Y.Z send --help` 以确认安装/CLI 入口点正常工作。\n- [ ] 宣布并分享发布说明。",
         "timestamp": 1770005708169
+      },
+      "79bd2ed6d2b73c0204109d5b25c76f34": {
+        "upstreamHash": "79bd2ed6d2b73c0204109d5b25c76f34",
+        "translatedContent": "5）macOS应用程序（Sparkle）",
+        "timestamp": 1770091620720
+      },
+      "0a1979ac09f5f6b150ae168a2e3fdeed": {
+        "upstreamHash": "0a1979ac09f5f6b150ae168a2e3fdeed",
+        "translatedContent": "7) **GitHub发布 + 应用通告**",
+        "timestamp": 1770091621206
       }
     },
     "platforms/exe-dev.md": {
@@ -14617,6 +14667,16 @@
         "upstreamHash": "bd4156f03b03943e2a8091a66824df92",
         "translatedContent": "- macOS 菜单栏应用会以节点身份连接到网关 WS 服务器（因此 `openclaw nodes …` 可以在这台 Mac 上运行）。\n- 在远程模式下，该应用会为网关端口打开一个 SSH 隧道，并连接到 `localhost`。",
         "timestamp": 1770005734907
+      },
+      "301cac8f2bab2cd9f7e239488767b577": {
+        "upstreamHash": "301cac8f2bab2cd9f7e239488767b577",
+        "translatedContent": "macOS 也可以以**节点模式**运行：菜单栏应用会连接到网关的 WebSocket 服务器，并将其本地画布/相机命令作为节点暴露出来（因此 `openclaw nodes …` 可以在这台 Mac 上正常工作）。",
+        "timestamp": 1770091622939
+      },
+      "1ad5265586fe37a8b35c8db14287d099": {
+        "upstreamHash": "1ad5265586fe37a8b35c8db14287d099",
+        "translatedContent": "OpenClaw可以在**无头节点主机**（无用户界面）上运行，通过WebSocket连接到网关，并公开 `system.run` 和 `system.which`。这在Linux或Windows上非常实用，也非常适合在服务器旁运行一个极简节点。",
+        "timestamp": 1770091623782
       }
     },
     "channels/twitch.md": {
@@ -15497,6 +15557,322 @@
         "translatedContent": "- 将机器人令牌视为密码；在受监督的主机上优先使用 `DISCORD_BOT_TOKEN` 环境变量，或锁定配置文件权限。\n- 仅授予机器人所需的权限（通常是读取/发送消息）。\n- 如果机器人卡住或受到速率限制，在确认没有其他进程占用 Discord 会话后，重启网关（`openclaw gateway --force`）。",
         "timestamp": 1770005935971
       }
+    },
+    "tools/subagents.md": {
+      "f2788e7aa01c5191f9635a9ce45f4057": {
+        "upstreamHash": "f2788e7aa01c5191f9635a9ce45f4057",
+        "translatedContent": "# 子代理",
+        "timestamp": 1770091578815
+      },
+      "9526fa3f70a1bd7dcc079ed162ab7a53": {
+        "upstreamHash": "9526fa3f70a1bd7dcc079ed162ab7a53",
+        "translatedContent": "子代理是从现有代理运行中派生的后台代理运行。它们在自己的会话中运行（`agent:<agentId>:subagent:<uuid>`），并在完成时，将结果**宣布**回请求者的聊天频道。",
+        "timestamp": 1770091579509
+      },
+      "d4018453e2800940055df13d2eee2bdc": {
+        "upstreamHash": "d4018453e2800940055df13d2eee2bdc",
+        "translatedContent": "## 斜杠命令",
+        "timestamp": 1770091580035
+      },
+      "e86f57ddc050c04a8de71be971d15654": {
+        "upstreamHash": "e86f57ddc050c04a8de71be971d15654",
+        "translatedContent": "使用 `/subagents` 来检查或控制**当前会话**的子代理运行：",
+        "timestamp": 1770091580704
+      },
+      "5d7c12cc87be939bf828155c37563d8f": {
+        "upstreamHash": "5d7c12cc87be939bf828155c37563d8f",
+        "translatedContent": "- `/subagents list`\n- `/subagents stop <id|#|all>`\n- `/subagents log <id|#> [limit] [tools]`\n- `/subagents info <id|#>`\n- `/subagents send <id|#> <message>`",
+        "timestamp": 1770091581392
+      },
+      "32cb510f6522b7c7355c7593bdeeac90": {
+        "upstreamHash": "32cb510f6522b7c7355c7593bdeeac90",
+        "translatedContent": "`/subagents info` 显示运行元数据（状态、时间戳、会话 ID、转录路径、清理）。",
+        "timestamp": 1770091582002
+      },
+      "cde7051f5315f71e36231bf610dd54a7": {
+        "upstreamHash": "cde7051f5315f71e36231bf610dd54a7",
+        "translatedContent": "主要目标：",
+        "timestamp": 1770091582464
+      },
+      "1c438e6afa42bd0b811e8ce455d15f0c": {
+        "upstreamHash": "1c438e6afa42bd0b811e8ce455d15f0c",
+        "translatedContent": "- 在不阻塞主运行的情况下，并行处理“研究/长任务/慢速工具”相关工作。\n- 默认情况下保持子代理隔离——通过会话分离和可选沙箱实现。\n- 使工具界面更难被误用：子代理默认**不会**获取会话工具。\n- 避免嵌套扇出：子代理不得再派生其他子代理。",
+        "timestamp": 1770091583419
+      },
+      "2450c074f3b31ca8321a47526601c1f4": {
+        "upstreamHash": "2450c074f3b31ca8321a47526601c1f4",
+        "translatedContent": "成本说明：每个子代理都拥有其**独立**的上下文和令牌用量。对于繁重或重复性任务，可为子代理配置更经济实惠的模型，而让主代理使用质量更高的模型。您可以通过 `agents.defaults.subagents.model` 或按代理覆盖来完成这一配置。",
+        "timestamp": 1770091584204
+      },
+      "29c3bdadc96a7f2c5ebec0288668ab8f": {
+        "upstreamHash": "29c3bdadc96a7f2c5ebec0288668ab8f",
+        "translatedContent": "## 工具",
+        "timestamp": 1770091584722
+      },
+      "72fe9b678b8f6e28120abfc231c88975": {
+        "upstreamHash": "72fe9b678b8f6e28120abfc231c88975",
+        "translatedContent": "使用 `sessions_spawn`：",
+        "timestamp": 1770091585217
+      },
+      "cf9846ff35cfe1db40789230e9018a1a": {
+        "upstreamHash": "cf9846ff35cfe1db40789230e9018a1a",
+        "translatedContent": "- 启动子代理运行（`deliver: false`，全局通道：`subagent`）\n- 然后运行一个宣布步骤，并将宣布回复发布到请求者聊天频道\n- 默认模型：继承调用方，除非您设置 `agents.defaults.subagents.model`（或按代理 `agents.list[].subagents.model`）；显式 `sessions_spawn.model` 仍优先。",
+        "timestamp": 1770091586097
+      },
+      "dda33f5c92d67fac50297ae342bcd8cd": {
+        "upstreamHash": "dda33f5c92d67fac50297ae342bcd8cd",
+        "translatedContent": "工具参数：",
+        "timestamp": 1770091586581
+      },
+      "35a994faf68e6aeda62e45cb9b854b04": {
+        "upstreamHash": "35a994faf68e6aeda62e45cb9b854b04",
+        "translatedContent": "- `task`（必填）\n- `label?`（可选）\n- `agentId?`（可选；如果允许，则在另一个代理 ID 下启动）\n- `model?`（可选；覆盖子代理模型；无效值将被忽略，子代理将以默认模型运行，并在工具结果中发出警告）\n- `thinking?`（可选；覆盖子代理运行的思考级别）\n- `runTimeoutSeconds?`（默认 `0`；设置后，子代理运行将在 N 秒后中止）\n- `cleanup?`（`delete|keep`，默认 `keep`）",
+        "timestamp": 1770091587854
+      },
+      "0a6b85c03658cf7eeecb4957e050c564": {
+        "upstreamHash": "0a6b85c03658cf7eeecb4957e050c564",
+        "translatedContent": "白名单：",
+        "timestamp": 1770091588366
+      },
+      "f768e7941d7a20d82f42a4258fa49be5": {
+        "upstreamHash": "f768e7941d7a20d82f42a4258fa49be5",
+        "translatedContent": "- `agents.list[].subagents.allowAgents`：可通过 `agentId` 指定的目标代理 ID 列表（`[\"*\"]` 允许任意）。默认：仅请求者代理。",
+        "timestamp": 1770091589052
+      }
+    },
+    "install/updating.md": {
+      "3ad56df15d0ed750097543573ab1bd41": {
+        "upstreamHash": "3ad56df15d0ed750097543573ab1bd41",
+        "translatedContent": "# 更新",
+        "timestamp": 1770091624301
+      },
+      "361def920a1e0a71e4a6357eb5d5b657": {
+        "upstreamHash": "361def920a1e0a71e4a6357eb5d5b657",
+        "translatedContent": "OpenClaw 正在快速演进（尚未达到“1.0”版本）。请将更新视为基础设施部署：更新 → 运行检查 → 重启（或使用 `openclaw update`，它会自动重启）→ 验证。",
+        "timestamp": 1770091625081
+      },
+      "eb8da51253febdaf3257868209ab3723": {
+        "upstreamHash": "eb8da51253febdaf3257868209ab3723",
+        "translatedContent": "## 推荐：重新运行网站安装程序（就地升级）",
+        "timestamp": 1770091625690
+      },
+      "df23b5fdd61d5850469064aec9c69250": {
+        "upstreamHash": "df23b5fdd61d5850469064aec9c69250",
+        "translatedContent": "**首选**的更新路径是从网站重新运行安装程序。它会检测现有安装，进行就地升级，并在必要时运行 `openclaw doctor`。",
+        "timestamp": 1770091626329
+      },
+      "704ace40b265e8c8d26f40995a659fcd": {
+        "upstreamHash": "704ace40b265e8c8d26f40995a659fcd",
+        "translatedContent": "- 如果您不希望再次运行入门向导，请添加 `--no-onboard`。\n- 对于**源码安装**，请使用：",
+        "timestamp": 1770091626945
+      },
+      "475c43321bf61b346e4e7f2f3531eff8": {
+        "upstreamHash": "475c43321bf61b346e4e7f2f3531eff8",
+        "translatedContent": "安装程序**仅**在仓库状态干净时才会执行 `git pull --rebase`。",
+        "timestamp": 1770091627538
+      },
+      "78d6a43b1d2fd8503ac998af1f96406d": {
+        "upstreamHash": "78d6a43b1d2fd8503ac998af1f96406d",
+        "translatedContent": "- 对于**全局安装**，脚本在后台使用 `npm install -g openclaw@latest`。\n- 旧版说明：`openclaw` 仍作为兼容性适配层提供。",
+        "timestamp": 1770091628229
+      },
+      "ce9e9fa04ce027f5815aed83d4dba757": {
+        "upstreamHash": "ce9e9fa04ce027f5815aed83d4dba757",
+        "translatedContent": "## 在更新之前",
+        "timestamp": 1770091628748
+      },
+      "31441fcb7a5dee9ef9e32fb3306463c0": {
+        "upstreamHash": "31441fcb7a5dee9ef9e32fb3306463c0",
+        "translatedContent": "- 了解您的安装方式：是**全局安装**（npm/pnpm）还是**源码安装**（git clone）。\n- 了解您的网关运行方式：是**前台终端**还是**受监督的服务**（launchd/systemd）。\n- 备份您的自定义配置：\n  - 配置： `~/.openclaw/openclaw.json`\n  - 凭据： `~/.openclaw/credentials/`\n  - 工作区： `~/.openclaw/workspace`",
+        "timestamp": 1770091629745
+      },
+      "5b2fd4ee7d2d5a232863666716a4c438": {
+        "upstreamHash": "5b2fd4ee7d2d5a232863666716a4c438",
+        "translatedContent": "## 更新（全局安装）",
+        "timestamp": 1770091630995
+      },
+      "6597cc24682b99261c8ae3d560b55037": {
+        "upstreamHash": "6597cc24682b99261c8ae3d560b55037",
+        "translatedContent": "全局安装（任选其一）：",
+        "timestamp": 1770091633886
+      },
+      "c5eae0ebe88787ad4122c0862d03566a": {
+        "upstreamHash": "c5eae0ebe88787ad4122c0862d03566a",
+        "translatedContent": "我们**不推荐**在 Gateway 运行时使用 Bun（WhatsApp/Telegram 存在问题）。",
+        "timestamp": 1770091634771
+      },
+      "d344ab3851980f7a18fdf9af710caaa9": {
+        "upstreamHash": "d344ab3851980f7a18fdf9af710caaa9",
+        "translatedContent": "切换更新通道（通过 Git + npm 安装）：",
+        "timestamp": 1770091635729
+      },
+      "02d4ad10e2e7e31c34e711d4fe062b21": {
+        "upstreamHash": "02d4ad10e2e7e31c34e711d4fe062b21",
+        "translatedContent": "使用 `--tag <dist-tag|version>` 可以一次性指定安装标签或版本。",
+        "timestamp": 1770091636721
+      },
+      "64bd122924f1259156dcd6c9a0abec63": {
+        "upstreamHash": "64bd122924f1259156dcd6c9a0abec63",
+        "translatedContent": "有关通道语义和发布说明，请参阅 [开发通道](/install/development-channels)。",
+        "timestamp": 1770091637935
+      },
+      "d408ee77a817855e3db801baf74e24eb": {
+        "upstreamHash": "d408ee77a817855e3db801baf74e24eb",
+        "translatedContent": "注意：在 npm 安装中，Gateway 在启动时会记录一条更新提示（检查当前通道标签）。可通过 `update.checkOnStart: false` 禁用此功能。",
+        "timestamp": 1770091638596
+      },
+      "05506ab804a56eb4fcf2dadfab0f315a": {
+        "upstreamHash": "05506ab804a56eb4fcf2dadfab0f315a",
+        "translatedContent": "- 如果您的网关以服务形式运行，建议使用 `openclaw gateway restart`，而不是直接杀死 PID。\n- 如果您已锁定到特定版本，请参阅下方的“回滚/固定版本”部分。",
+        "timestamp": 1770091639266
+      },
+      "41704e8dd3755bae72addd58c53b08ad": {
+        "upstreamHash": "41704e8dd3755bae72addd58c53b08ad",
+        "translatedContent": "## 更新（`openclaw update`）",
+        "timestamp": 1770091639862
+      },
+      "a3322df8383f7cf8a60c42be9d6b2f02": {
+        "upstreamHash": "a3322df8383f7cf8a60c42be9d6b2f02",
+        "translatedContent": "对于**源码安装**（git checkout），建议使用：",
+        "timestamp": 1770091640426
+      },
+      "92d86ec8d73c885e2ec50bdc4f71cb50": {
+        "upstreamHash": "92d86ec8d73c885e2ec50bdc4f71cb50",
+        "translatedContent": "它执行一个相对安全的更新流程：",
+        "timestamp": 1770091640934
+      },
+      "c707dcc1b10e0a68e707c9305f08eb86": {
+        "upstreamHash": "c707dcc1b10e0a68e707c9305f08eb86",
+        "translatedContent": "- 要求工作树保持干净。\n- 切换到所选通道（标签或分支）。\n- 拉取代码，并基于配置的上游（开发通道）进行变基。\n- 安装依赖项、构建代码、构建 Control UI，并运行 `openclaw doctor`。\n- 默认情况下会重启 Gateway（使用 `--no-restart` 可跳过重启）。",
+        "timestamp": 1770091641896
+      },
+      "1cf55bb968f1531ce8396c37f68dd4f6": {
+        "upstreamHash": "1cf55bb968f1531ce8396c37f68dd4f6",
+        "translatedContent": "如果您通过 **npm/pnpm** 安装（没有 Git 元数据），`openclaw update` 将尝试通过您的包管理器进行更新。如果无法检测到安装，请改用“更新（全局安装）”。",
+        "timestamp": 1770091642623
+      },
+      "013f24b61466f9dffe171cf64aab55fc": {
+        "upstreamHash": "013f24b61466f9dffe171cf64aab55fc",
+        "translatedContent": "## 更新（控制界面 / RPC）",
+        "timestamp": 1770091643188
+      }
+    },
+    "channels/bluebubbles.md": {
+      "d88e36f877cae74e03ab13202542a58b": {
+        "upstreamHash": "d88e36f877cae74e03ab13202542a58b",
+        "translatedContent": "__HEADING_0__BlueBubbles（macOS REST）",
+        "timestamp": 1770091683583
+      },
+      "b9899edff9b92a70f850a4e0159d77e9": {
+        "upstreamHash": "b9899edff9b92a70f850a4e0159d77e9",
+        "translatedContent": "状态：捆绑插件，通过 HTTP 与 BlueBubbles macOS 服务器通信。由于其 API 更丰富且设置更简单，相比旧版 imsg 通道，**强烈推荐用于 iMessage 集成**。",
+        "timestamp": 1770091685161
+      },
+      "7aab3177a844ea0a6bf968de2c59625b": {
+        "upstreamHash": "7aab3177a844ea0a6bf968de2c59625b",
+        "translatedContent": "- 在 macOS 上通过 BlueBubbles 辅助应用程序运行（[bluebubbles.app](https://bluebubbles.app)）。\n- 推荐/测试版本：macOS Sequoia (15)。macOS Tahoe (26) 也可使用；但在 Tahoe 上，编辑功能目前存在缺陷，群组图标更新可能显示成功但无法同步。\n- OpenClaw 通过其 REST API 与其通信（`GET /api/v1/ping`、`POST /message/text`、`POST /chat/:id/*`）。\n- 入站消息通过 Webhook 到达；出站回复、输入指示器、已读回执和 Tapback 均通过 REST 调用发送。\n- 附件和贴纸作为入站媒体被摄取，并在可能的情况下呈现给代理。\n- 配对/白名单的工作方式与其他通道相同（`/start/pairing` 等），使用 `channels.bluebubbles.allowFrom` 和配对码。\n- 反应以系统事件的形式呈现，就像 Slack/Telegram 一样，因此代理可以在回复之前“提及”这些反应。\n- 高级功能：编辑、撤回、回复线程化、消息效果、群组管理。",
+        "timestamp": 1770091689558
+      },
+      "9d43597c79c873501c45038a35b65ebe": {
+        "upstreamHash": "9d43597c79c873501c45038a35b65ebe",
+        "translatedContent": "1. 在您的 Mac 上安装 BlueBubbles 服务器（请参阅 [bluebubbles.app/install](https://bluebubbles.app/install) 中的说明）。\n2. 在 BlueBubbles 配置中，启用 Web API 并设置密码。\n3. 运行 `openclaw onboard` 并选择 BlueBubbles，或手动配置：",
+        "timestamp": 1770091690399
+      },
+      "69483bc5077482615bbe924b04b3c174": {
+        "upstreamHash": "69483bc5077482615bbe924b04b3c174",
+        "translatedContent": "4. 将 BlueBubbles Webhook 指向您的网关（示例：`https://your-gateway-host:3000/bluebubbles-webhook?password=<password>`）。\n5. 启动网关；它将注册 Webhook 处理程序并开始配对。",
+        "timestamp": 1770091691146
+      },
+      "9d7d0f7193e2307e8dacd8c5fe023277": {
+        "upstreamHash": "9d7d0f7193e2307e8dacd8c5fe023277",
+        "translatedContent": "## 引导流程",
+        "timestamp": 1770091691733
+      },
+      "5507d726eb5b27e7d5ec15ba141bbb07": {
+        "upstreamHash": "5507d726eb5b27e7d5ec15ba141bbb07",
+        "translatedContent": "BlueBubbles 可在交互式设置向导中找到：",
+        "timestamp": 1770091694933
+      },
+      "6b22cf8058ead4ba30db3faa28fb1f21": {
+        "upstreamHash": "6b22cf8058ead4ba30db3faa28fb1f21",
+        "translatedContent": "向导会提示以下内容：",
+        "timestamp": 1770091695476
+      },
+      "baebf6ab955310b03a8327c31d1ddd76": {
+        "upstreamHash": "baebf6ab955310b03a8327c31d1ddd76",
+        "translatedContent": "- **服务器 URL**（必填）：BlueBubbles 服务器地址（例如，`http://192.168.1.100:1234`）\n- **密码**（必填）：来自 BlueBubbles 服务器设置的 API 密码\n- **Webhook 路径**（可选）：默认为 `/bluebubbles-webhook`\n- **DM 政策**：配对、白名单、开放或禁用\n- **白名单**：电话号码、电子邮件或聊天目标",
+        "timestamp": 1770091698444
+      },
+      "ac3ba2f36dbd3a69ff0215628c956aba": {
+        "upstreamHash": "ac3ba2f36dbd3a69ff0215628c956aba",
+        "translatedContent": "您也可以通过命令行界面添加 BlueBubbles：",
+        "timestamp": 1770091699000
+      },
+      "329aeab7d9efe9b0effe2ef282c2c210": {
+        "upstreamHash": "329aeab7d9efe9b0effe2ef282c2c210",
+        "translatedContent": "## 访问控制（DM + 群组）",
+        "timestamp": 1770091699605
+      },
+      "0bc180bbbc5c4ac28cde994218a96281": {
+        "upstreamHash": "0bc180bbbc5c4ac28cde994218a96281",
+        "translatedContent": "私信：",
+        "timestamp": 1770091700121
+      },
+      "0e42f4f21ecdf9670564264a8d930cf7": {
+        "upstreamHash": "0e42f4f21ecdf9670564264a8d930cf7",
+        "translatedContent": "- 默认：`channels.bluebubbles.dmPolicy = \"pairing\"`。\n- 未知发件人会收到配着码；消息在批准前会被忽略（配着码在一小时内过期）。\n- 可通过以下方式批准：\n  - `openclaw pairing list bluebubbles`\n  - `openclaw pairing approve bluebubbles <CODE>`\n- 配着是默认的令牌交换方式。详情：[配对](/start/pairing)",
+        "timestamp": 1770091701452
+      },
+      "dfbd5919d9ca1507e5f0ffcd77ba0dd9": {
+        "upstreamHash": "dfbd5919d9ca1507e5f0ffcd77ba0dd9",
+        "translatedContent": "群组：",
+        "timestamp": 1770091701951
+      },
+      "cfb4d7fd2e81ce83beb43a95ef0cdc66": {
+        "upstreamHash": "cfb4d7fd2e81ce83beb43a95ef0cdc66",
+        "translatedContent": "- `channels.bluebubbles.groupPolicy = open | allowlist | disabled`（默认：`allowlist`）。\n- 当 `allowlist` 设置时，`channels.bluebubbles.groupAllowFrom` 控制谁可以在群组中触发。",
+        "timestamp": 1770091702685
+      },
+      "e8284a322dc0567e2a62a7edbc13ae0d": {
+        "upstreamHash": "e8284a322dc0567e2a62a7edbc13ae0d",
+        "translatedContent": "### 提及门控（群组）",
+        "timestamp": 1770091703186
+      },
+      "12148570e27c832907d45f30982d0a0d": {
+        "upstreamHash": "12148570e27c832907d45f30982d0a0d",
+        "translatedContent": "BlueBubbles 支持群聊的提及门控，其行为与 iMessage/WhatsApp 一致：",
+        "timestamp": 1770091703728
+      },
+      "ee42c46c5749505c1bc271c92bf48ca5": {
+        "upstreamHash": "ee42c46c5749505c1bc271c92bf48ca5",
+        "translatedContent": "- 使用 `agents.list[].groupChat.mentionPatterns`（或 `messages.groupChat.mentionPatterns`) 检测提及。\n- 当 `requireMention` 为某个群组启用时，代理仅在被提及时才响应。\n- 来自授权发件人的控制命令会绕过提及门控。",
+        "timestamp": 1770091704568
+      },
+      "91807863984fc8bc735ffa4a00609f27": {
+        "upstreamHash": "91807863984fc8bc735ffa4a00609f27",
+        "translatedContent": "每群组配置：",
+        "timestamp": 1770091705129
+      },
+      "637c8baeeeb9d2c87c53da243a171fd4": {
+        "upstreamHash": "637c8baeeeb9d2c87c53da243a171fd4",
+        "translatedContent": "### 命令门控",
+        "timestamp": 1770091705706
+      },
+      "22e34c01af4ac4ed247ea334600612bf": {
+        "upstreamHash": "22e34c01af4ac4ed247ea334600612bf",
+        "translatedContent": "- 控制命令（例如，`/config`、`/model`）需要授权。\n- 使用 `allowFrom` 和 `groupAllowFrom` 来确定命令授权。\n- 获得授权的发件人即使在群组中未被提及，也可以运行控制命令。",
+        "timestamp": 1770091706590
+      },
+      "0ac0be91e81160e70a1351455132d801": {
+        "upstreamHash": "0ac0be91e81160e70a1351455132d801",
+        "translatedContent": "## 输入指示器 + 已读回执",
+        "timestamp": 1770091707145
+      },
+      "1ed73dea8bf466351f0bf85e1f41c372": {
+        "upstreamHash": "1ed73dea8bf466351f0bf85e1f41c372",
+        "translatedContent": "- **输入指示器**：在生成回复之前和期间自动发送。\n- **已读回执**：由 `channels.bluebubbles.sendReadReceipts` 控制（默认：`true`）。\n- **输入指示器**：OpenClaw 发送输入开始事件；BlueBubbles 在发送或超时时自动清除输入状态（通过 DELETE 手动停止不可靠）。",
+        "timestamp": 1770091708158
+      }
     }
   },
   "fileHashes": {
@@ -15507,7 +15883,7 @@
     "start/onboarding.md": "c2eb40c5b41429c34da5374400d1fa21",
     "providers/moonshot.md": "58633037cf5fd98a35d42f2fdc829955",
     "providers/anthropic.md": "077892f8bc2dc6075371f29214cc841e",
-    "platforms/windows.md": "514a8e2082f5ecd7205ddd984fc3a2b7",
+    "platforms/windows.md": "7ed720de5bb1d71d043c69cfd39b2ade",
     "install/index.md": "2dea83644082125eeb99b83d138faceb",
     "gateway/configuration.md": "5983cb1589cbe221ac9eed597828b6ca",
     "concepts/session-pruning.md": "645f46e71c53bd8ccfe86df4ffc0abbd",
@@ -15516,12 +15892,12 @@
     "channels/telegram.md": "ee37a191096a29642709ba2c5d2d56a2",
     "channels/grammy.md": "0f8423bd6e0ed9df741f29a2b6e96367",
     "gateway/security/index.md": "2aad8b04349f7bd6fd399b919d632cfd",
-    "testing.md": "8b83f2f711317540600f09441a4a0074",
-    "pi.md": "f0d11818ec9441b5184698f3c7769205",
+    "testing.md": "886a23c9aab3390d34d5770f0dbac1d2",
+    "pi.md": "ec8721a3617400c4c44b96b3ed02c1e9",
     "tools/exec.md": "d395b20bef52e02b6d62222b1f840876",
-    "reference/RELEASING.md": "a45e8b81f7eb91794a90144433ad43d8",
+    "reference/RELEASING.md": "19a19dfab3f143c1305c21d0c026dd9f",
     "platforms/exe-dev.md": "70b056d48f8d1c29a7522d8c7c33b4d5",
-    "nodes/index.md": "46dbfd8418f0b36bd6adae7800fcd3bc",
+    "nodes/index.md": "24972abcfe593273fc5cd3df906135ff",
     "channels/twitch.md": "9c3b49083628f0f2e7c018b3dfad707b",
     "channels/discord.md": "b56fccb9de99e99e3c68827a77ef1c9e"
   }

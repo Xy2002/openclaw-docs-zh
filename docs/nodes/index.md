@@ -105,7 +105,7 @@ openclaw config unset agents.list[0].tools.exec.node
 
 ## 无头节点主机（跨平台）
 
-OpenClaw 可以在**无头节点主机**（无UI）上运行，通过WebSocket连接到网关，并公开 `system.run` 和 `system.which`。这在Linux或Windows上非常实用，也适用于在服务器旁运行一个极简节点。
+OpenClaw可以在**无头节点主机**（无用户界面）上运行，通过WebSocket连接到网关，并公开 `system.run` 和 `system.which`。这在Linux或Windows上非常实用，也非常适合在服务器旁运行一个极简节点。
 
 启动它：
 
