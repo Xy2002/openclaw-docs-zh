@@ -6,14 +6,14 @@ read_when:
 ---
 # 网页（网关）
 
-网关通过与网关 WebSocket 相同的端口提供一个小型 **浏览器控制 UI**（Vite + Lit）：
+网关通过与网关 WebSocket 相同的端口提供一个小型**浏览器控制 UI**（Vite + Lit）：
 
 - 默认：`http://<host>:18789/`
 - 可选前缀：设置 `gateway.controlUi.basePath`（例如 `/openclaw`）
 
-功能位于 [控制 UI](/web/control-ui) 中。本页面重点介绍绑定模式、安全性以及面向 Web 的界面。
+功能位于 [控制界面](/web/control-ui) 中。本页面重点介绍绑定模式、安全性以及面向Web的界面。
 
-## Webhook
+## 网页挂钩
 
 当 `hooks.enabled=true` 时，网关还会在同一 HTTP 服务器上公开一个小型 webhook 端点。有关身份验证和有效载荷，请参阅 [网关配置](/gateway/configuration) → `hooks`。
 
@@ -29,7 +29,7 @@ read_when:
 }
 ```
 
-## Tailscale 访问
+__HEADING_0__Tailscale 访问
 
 ### 集成 Serve（推荐）
 
@@ -51,9 +51,10 @@ openclaw gateway
 ```
 
 打开：
+
 - `https://<magicdns>/`（或您配置的 `gateway.controlUi.basePath`）
 
-### Tailnet 绑定 + 令牌
+__HEADING_0__Tailnet 绑定 + 令牌
 
 ```json5
 {
@@ -72,6 +73,7 @@ openclaw gateway
 ```
 
 打开：
+
 - `http://<tailscale-ip>:18789/`（或您配置的 `gateway.controlUi.basePath`）
 
 ### 公共互联网（漏斗）
@@ -88,14 +90,14 @@ openclaw gateway
 
 ## 安全注意事项
 
-- 默认情况下需要网关身份验证（令牌/密码或 Tailscale 身份标头）。
-- 非环回绑定仍然 **需要** 共享令牌/密码（`gateway.auth` 或环境变量）。
+- 默认情况下，需要网关身份验证（令牌/密码或 Tailscale 身份标头）。
+- 非环回绑定仍然**需要**共享令牌/密码（`gateway.auth` 或环境变量）。
 - 向导默认会生成网关令牌（即使在环回地址上）。
-- UI 发送 `connect.params.auth.token` 或 `connect.params.auth.password`。
-- 使用 Serve 时，Tailscale 身份标头可以在 `gateway.auth.allowTailscale` 为 `true` 时满足身份验证要求（无需令牌/密码）。设置 `gateway.auth.allowTailscale: false` 以要求显式凭据。请参阅 [Tailscale](/gateway/tailscale) 和 [安全](/gateway/security)。
+- UI 会发送 `connect.params.auth.token` 或 `connect.params.auth.password`。
+- 使用 Serve 时，当 `gateway.auth.allowTailscale` 设置为 `true` 时，Tailscale 身份标头可以满足身份验证要求（无需令牌/密码）。通过设置 `gateway.auth.allowTailscale: false` 来强制要求显式凭据。请参阅 [Tailscale](/gateway/tailscale) 和 [安全](/gateway/security)。
 - `gateway.tailscale.mode: "funnel"` 需要 `gateway.auth.mode: "password"`（共享密码）。
 
-## 构建 UI
+构建UI
 
 网关从 `dist/control-ui` 提供静态文件。使用以下命令构建它们：
 

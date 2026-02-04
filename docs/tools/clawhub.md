@@ -5,11 +5,11 @@ read_when:
   - 'Installing, searching, or publishing skills'
   - Explaining ClawHub CLI flags and sync behavior
 ---
-# ClawHub
+# 爪巢
 
-ClawHub是**OpenClaw的公共技能注册表**。这是一项免费服务：所有技能都是公开、开放的，任何人都可以查看、共享和重用。一个技能只是一个包含`SKILL.md`文件（以及相关文本文件）的文件夹。您可以通过网页应用浏览技能，也可以使用CLI来搜索、安装、更新和发布技能。
+ClawHub是**OpenClaw的公共技能注册表**。这是一项免费服务：所有技能都是公开、开放的，任何人都可以查看、共享和重用。一个技能只是一个包含`SKILL.md`文件（以及相关文本文件）的文件夹。您可以通过网页应用浏览技能，也可以使用命令行界面（CLI）来搜索、安装、更新和发布技能。
 
-站点：[clawhub.com](https://clawhub.com)
+站点：[爪虎网](https://clawhub.com)
 
 ## 适用人群（适合初学者）
 
@@ -17,17 +17,21 @@ ClawHub是**OpenClaw的公共技能注册表**。这是一项免费服务：所�
 
 - 使用自然语言搜索技能。
 - 将技能安装到您的工作区。
-- 后续只需一条命令即可更新技能。
+- 之后只需一条命令即可更新技能。
 - 通过发布自己的技能来备份它们。
 
 ## 快速入门（非技术性）
 
 1) 安装CLI（见下节）。
 2) 搜索您需要的内容：
-   - `clawhub search "calendar"`
+
+- `clawhub search "calendar"`
+
 3) 安装技能：
-   - `clawhub install <skill-slug>`
-4) 启动一个新的OpenClaw会话，以便它加载新技能。
+
+- `clawhub install <skill-slug>`
+
+4) 启动一个新的OpenClaw会话，以便加载新技能。
 
 ## 安装CLI
 
@@ -46,7 +50,7 @@ pnpm add -g clawhub
 默认情况下，CLI会将技能安装到您当前工作目录下的`./skills`中。如果已配置OpenClaw工作区，`clawhub`会回退到该工作区，除非您覆盖了`--workdir`（或`CLAWHUB_WORKDIR`）。OpenClaw会从`<workspace>/skills`加载工作区技能，并在**下一个**会话中加载它们。如果您已经在使用`~/.openclaw/skills`或捆绑技能，工作区技能将优先加载。
 
 有关技能如何加载、共享和受控的更多详细信息，请参阅
-[Skills](/tools/skills)。
+[技能](/tools/skills)。
 
 ## 服务提供的功能
 
@@ -58,13 +62,13 @@ pnpm add -g clawhub
 - **审核**钩子用于审批和审计。
 - **CLI友好的API**用于自动化和脚本编写。
 
-## CLI命令和参数
+__HEADING_0__CLI命令和参数
 
 全局选项（适用于所有命令）：
 
 - `--workdir <dir>`: 工作目录（默认：当前目录；回退到OpenClaw工作区）。
 - `--dir <dir>`: 技能目录，相对于工作目录（默认：`skills`）。
-- `--site <url>`: 站点基础URL（浏览器登录）。
+- `--site <url>`: 站点基础URL（用于浏览器登录）。
 - `--registry <url>`: 注册表API基础URL。
 - `--no-input`: 禁用提示（非交互式）。
 - `-V, --cli-version`: 打印CLI版本。
@@ -78,7 +82,7 @@ pnpm add -g clawhub
 选项：
 
 - `--token <token>`: 粘贴API令牌。
-- `--label <label>`: 存储浏览器登录令牌的标签（默认：`CLI token`）。
+- `--label <label>`: 用于存储浏览器登录令牌的标签（默认：`CLI token`）。
 - `--no-browser`: 不打开浏览器（需要 `--token`）。
 
 搜索：
@@ -89,19 +93,19 @@ pnpm add -g clawhub
 安装：
 
 - `clawhub install <slug>`
-- `--version <version>`: 安装特定版本。
-- `--force`: 如果文件夹已存在则覆盖。
+- `--version <version>`：安装特定版本。
+- `--force`：如果文件夹已存在则覆盖。
 
 更新：
 
 - `clawhub update <slug>`
 - `clawhub update --all`
-- `--version <version>`: 更新到特定版本（仅限单个slug）。
-- `--force`: 当本地文件与任何已发布版本不匹配时进行覆盖。
+- `--version <version>`：更新到特定版本（仅限单个slug）。
+- `--force`：当本地文件与任何已发布版本不匹配时进行覆盖。
 
 列出：
 
-- `clawhub list`（读取 __ INLINE_CODE_45__）
+- `clawhub list`（读取 __INLINE_CODE_45__）
 
 发布：
 
@@ -120,7 +124,7 @@ pnpm add -g clawhub
 同步（扫描本地技能并发布新增或更新的技能）：
 
 - `clawhub sync`
-- `--root <dir...>`: 额外的扫描根目录。
+- `--root <dir...>`: 额外扫描根目录。
 - `--all`: 无提示上传所有内容。
 - `--dry-run`: 显示将要上传的内容。
 - `--bump <type>`: `patch|minor|major`用于更新（默认：`patch`）。
@@ -168,15 +172,15 @@ clawhub sync --all
 
 - 每次发布都会创建一个新的**语义版本**`SkillVersion`。
 - 标签（如`latest`）指向某个版本；移动标签可以让您回滚。
-- 变更日志随每个版本附带，同步或发布更新时可以为空。
+- 变更日志随每个版本附带，但在同步或发布更新时可以为空。
 
 ### 本地更改与注册表版本
 
-更新会使用内容哈希将本地技能内容与注册表版本进行比较。如果本地文件与任何已发布版本都不匹配，CLI会在覆盖之前询问（或在非交互式运行中要求`--force`）。
+更新会使用内容哈希将本地技能内容与注册表版本进行比较。如果本地文件与任何已发布版本都不匹配，CLI会在覆盖之前提示您确认（或在非交互式运行中要求`--force`）。
 
-### 同步扫描和回退根目录
+### 同步扫描与回退根目录
 
-`clawhub sync`首先扫描您当前的工作目录。如果没有找到技能，它会回退到已知的旧位置（例如`~/openclaw/skills`和`~/.openclaw/skills`）。这是为了在无需额外标志的情况下找到较旧的技能安装。
+`clawhub sync`首先扫描您当前的工作目录。如果未找到技能，它会回退到已知的旧位置（例如`~/openclaw/skills`和`~/.openclaw/skills`）。这样做是为了在无需额外标志的情况下找到较旧的技能安装。
 
 ### 存储和锁文件
 

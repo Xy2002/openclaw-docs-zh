@@ -58,7 +58,7 @@ read_when:
 - [模型故障转移](/concepts/model-failover)
 - [OAuth](/concepts/oauth)
 
-## 提供商与入口
+## 供应商与入口
 
 - [聊天频道中心](/channels)
 - [模型提供商中心](/providers/models)
@@ -87,7 +87,7 @@ read_when:
 - [日志记录](/gateway/logging)
 - [沙箱化](/gateway/sandboxing)
 - [仪表板](/web/dashboard)
-- [控制 UI](/web/control-ui)
+- [控制界面](/web/control-ui)
 - [远程访问](/gateway/remote)
 - [远程网关 README](/gateway/remote-gateway-readme)
 - [Tailscale](/gateway/tailscale)
@@ -102,7 +102,7 @@ read_when:
 - [执行工具](/tools/exec)
 - [提升模式](/tools/elevated)
 - [Cron 作业](/automation/cron-jobs)
-- [Cron vs 心跳](/automation/cron-vs-heartbeat)
+- [Cron 与心跳](/automation/cron-vs-heartbeat)
 - [思考模式 + 详细模式](/tools/thinking)
 - [模型](/concepts/models)
 - [子代理](/tools/subagents)
@@ -156,7 +156,7 @@ read_when:
 ## 工作空间与模板
 
 - [技能](/tools/skills)
-- [ClawHub](/tools/clawhub)
+- [爪子中心](/tools/clawhub)
 - [技能配置](/tools/skills-config)
 - [默认 AGENTS](/reference/AGENTS.default)
 - [模板：AGENTS](/reference/templates/AGENTS)
@@ -170,7 +170,7 @@ read_when:
 ## 实验（探索性）
 
 - [入职配置协议](/experiments/onboarding-config-protocol)
-- [Cron 加固笔记](/experiments/plans/cron-add-hardening)
+- [Cron加固笔记](/experiments/plans/cron-add-hardening)
 - [群组策略加固笔记](/experiments/plans/group-policy-hardening)
 - [研究：记忆](/experiments/research/memory)
 - [模型配置探索](/experiments/proposals/model-config)

@@ -3,41 +3,49 @@ summary: 'Nextcloud Talk support status, capabilities, and configuration'
 read_when:
   - Working on Nextcloud Talk channel features
 ---
-# Nextcloud Talk（插件）
+__HEADING_0__Nextcloud Talk（插件）
 
 状态：通过插件（Webhook 机器人）支持。支持直接消息、聊天室、表情反应和 Markdown 消息。
 
 ## 需要插件
+
 Nextcloud Talk 作为插件提供，未与核心安装捆绑在一起。
 
 通过 CLI 安装（npm 注册表）：
+
 ```bash
 openclaw plugins install @openclaw/nextcloud-talk
 ```
 
 本地检出（从 Git 仓库运行时）：
+
 ```bash
 openclaw plugins install ./extensions/nextcloud-talk
 ```
 
-如果在配置/引导过程中选择 Nextcloud Talk 并检测到 Git 检出，
-OpenClaw 将自动提供本地安装路径。
+如果在配置或引导过程中选择 Nextcloud Talk 并检测到 Git 检出，OpenClaw 将自动提供本地安装路径。
 
 详情：[插件](/plugin)
 
-## 快速设置（初学者）
+快速设置（初学者）
+
 1) 安装 Nextcloud Talk 插件。
 2) 在您的 Nextcloud 服务器上创建一个机器人：
+
    ```bash
    ./occ talk:bot:install "OpenClaw" "<shared-secret>" "<webhook-url>" --feature reaction
    ```
+
 3) 在目标聊天室设置中启用该机器人。
 4) 配置 OpenClaw：
-   - 配置：`channels.nextcloud-talk.baseUrl` + `channels.nextcloud-talk.botSecret`
+
+- 配置：`channels.nextcloud-talk.baseUrl` + `channels.nextcloud-talk.botSecret`
    - 或环境变量：`NEXTCLOUD_TALK_BOT_SECRET`（仅适用于默认账户）
+
 5) 重启网关（或完成引导）。
 
 最小配置：
+
 ```json5
 {
   channels: {
@@ -52,12 +60,14 @@ OpenClaw 将自动提供本地安装路径。
 ```
 
 ## 注意事项
-- 机器人无法主动发起 DM。用户必须先向机器人发送消息。
+
+- 机器人无法主动发起私信。用户必须先向机器人发送消息。
 - Webhook URL 必须可被网关访问；如果位于代理后，请设置 `webhookPublicUrl`。
-- 机器人 API 不支持媒体上传；媒体以 URL 的形式发送。
-- Webhook 负载无法区分 DM 和聊天室；设置 `apiUser` + `apiPassword` 以启用聊天室类型查询（否则 DM 将被视为聊天室）。
+- 机器人 API 不支持直接上传媒体；媒体必须以 URL 的形式发送。
+- Webhook 负载无法区分私信和聊天室；设置 `apiUser` + `apiPassword` 以启用聊天室类型查询（否则私信将被视为聊天室）。
 
 ## 访问控制（DMs）
+
 - 默认：`channels.nextcloud-talk.dmPolicy = "pairing"`。未知发件人会收到配对码。
 - 批准方式：
   - `openclaw pairing list nextcloud-talk`
@@ -65,8 +75,10 @@ OpenClaw 将自动提供本地安装路径。
 - 公开 DM：`channels.nextcloud-talk.dmPolicy="open"` 加上 `channels.nextcloud-talk.allowFrom=["*"]`。
 
 ## 聊天室（群组）
+
 - 默认：`channels.nextcloud-talk.groupPolicy = "allowlist"`（需提及才能加入）。
 - 使用 `channels.nextcloud-talk.rooms` 将聊天室列入白名单：
+
 ```json5
 {
   channels: {
@@ -78,9 +90,11 @@ OpenClaw 将自动提供本地安装路径。
   }
 }
 ```
+
 - 若要不允许多个聊天室，请将白名单留空或设置 `channels.nextcloud-talk.groupPolicy="disabled"`。
 
 ## 功能支持情况
+
 | 功能 | 状态 |
 |---------|--------|
 | 直接消息 | 支持 |
@@ -91,9 +105,11 @@ OpenClaw 将自动提供本地安装路径。
 | 原生命令 | 不支持 |
 
 ## 配置参考（Nextcloud Talk）
+
 完整配置：[配置](/gateway/configuration)
 
 提供商选项：
+
 - `channels.nextcloud-talk.enabled`：启用或禁用频道启动。
 - `channels.nextcloud-talk.baseUrl`：Nextcloud 实例 URL。
 - `channels.nextcloud-talk.botSecret`：机器人共享密钥。

@@ -31,7 +31,7 @@ OpenClaw 提供两款轻量级网页工具：
 | **Brave**（默认） | 速度快，结果结构化，提供免费层级 | 传统搜索结果 | `BRAVE_API_KEY` |
 | **Perplexity** | AI 合成答案，附带引用，实时性 | 需要 Perplexity 或 OpenRouter 访问权限 | `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY` |
 
-有关特定提供商的详细信息，请参阅 [Brave Search 设置](/brave-search) 和 [Perplexity Sonar](/perplexity)。
+有关特定提供商的详细信息，请参阅[Brave Search 设置](/brave-search)和[Perplexity Sonar](/perplexity)。
 
 在配置中设置提供商：
 
@@ -69,18 +69,18 @@ OpenClaw 提供两款轻量级网页工具：
 ## 获取 Brave API 密钥
 
 1) 在 https://brave.com/search/api/ 创建一个 Brave Search API 账户。
-2) 在仪表板中，选择 **Data for Search** 方案（而非“Data for AI”），并生成 API 密钥。
+2) 在仪表板中，选择 **用于搜索的数据** 方案（而非“用于 AI 的数据”），并生成 API 密钥。
 3) 运行 `openclaw configure --section web` 将密钥存储在配置中（推荐），或在您的环境变量中设置 `BRAVE_API_KEY`。
 
-Brave 提供免费层级以及付费方案；请查看 Brave API 门户以了解当前的限制和定价。
+Brave 提供免费层级和付费方案；请访问 Brave API 门户以了解当前的限制和定价。
 
 ### 推荐的密钥设置位置
 
 **推荐方法：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 下的 `tools.web.search.apiKey` 中。
 
-**环境变量替代方案：:**在 Gateway 进程的环境中设置 `BRAVE_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
+**环境变量替代方案：**在网关进程的环境中设置 `BRAVE_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
 
-## 使用 Perplexity（直接调用或经由 OpenRouter）
+## 使用 Perplexity（直接调用或通过 OpenRouter）
 
 Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI 合成答案。您可以通过 OpenRouter 使用这些模型（无需信用卡——支持加密货币和预付支付）。
 
@@ -113,9 +113,9 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 }
 ```
 
-**环境变量替代方案：**在 Gateway 环境中设置 `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY`。对于 Gateway 安装，将其放入 `~/.openclaw/.env`。
+**环境变量替代方案：**在网关环境中设置 `OPENROUTER_API_KEY` 或 `PERPLEXITY_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`。
 
-如果未设置基础 URL，OpenClaw 会根据 API 密钥来源选择默认值：
+如果未设置基础URL，OpenClaw会根据API密钥来源选择默认值：
 
 - `PERPLEXITY_API_KEY` 或 `pplx-...` → `https://api.perplexity.ai`
 - `OPENROUTER_API_KEY` 或 `sk-or-...` → `https://openrouter.ai/api/v1`
@@ -129,7 +129,7 @@ Perplexity Sonar 模型内置了网络搜索功能，并返回带有引用的 AI
 | `perplexity/sonar-pro`（默认） | 带有网络搜索的多步推理 | 复杂问题 |
 | `perplexity/sonar-reasoning-pro` | 思考链分析 | 深度研究 |
 
-## web_search
+## 网络搜索
 
 使用您配置的提供商搜索网络。
 
@@ -193,9 +193,9 @@ await web_search({
 });
 ```
 
-## web_fetch
+## 网络获取
 
-获取 URL 并提取可读内容。
+获取URL并提取可读内容。
 
 ### 要求
 
@@ -237,8 +237,9 @@ await web_search({
 - `maxChars`（截断长页面）。
 
 注意事项：
-- `web_fetch` 首先使用 Readability 进行主要内容提取，然后在已配置的情况下使用 Firecrawl。如果两者都失败，工具将返回错误。
-- Firecrawl 请求默认使用规避机器人模式，并对结果进行缓存。
+
+- `web_fetch` 首先使用 Readability 提取主要内容，然后在已配置的情况下使用 Firecrawl。如果两者都失败，工具将返回错误。
+- Firecrawl 请求默认启用规避机器人模式，并对结果进行缓存。
 - `web_fetch` 默认发送类似 Chrome 的 User-Agent，`Accept-Language` 也默认启用；如有需要，可覆盖 `userAgent`。
 - `web_fetch` 会阻止私有/内部主机名，并重新检查重定向（重定向次数上限由 `maxRedirects` 控制）。
 - `web_fetch` 是尽力而为的提取；某些网站可能仍需使用浏览器工具。

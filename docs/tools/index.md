@@ -21,21 +21,24 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 注意事项：
+
 - 匹配不区分大小写。
 - 支持`*`通配符（`"*"`表示所有工具）。
 - 如果`tools.allow`仅引用未知或未加载的插件工具名称，OpenClaw会记录警告并忽略白名单，以确保核心工具仍然可用。
 
 ## 工具配置文件（基础白名单）
 
-`tools.profile`在`tools.allow`/`tools.deny`之前设置**基础工具白名单**。代理级别的覆盖：`agents.list[].tools.profile`。
+在`tools.allow`/`tools.deny`之前设置**基础工具白名单**。代理级别的覆盖：`agents.list[].tools.profile`。
 
 配置文件：
+
 - `minimal`：仅`session_status`
 - `coding`：`group:fs`、`group:runtime`、`group:sessions`、`group:memory`、`image`
 - `messaging`：`group:messaging`、`sessions_list`、`sessions_history`、`sessions_send`、`session_status`
 - `full`：无限制（与未设置相同）
 
 示例（默认仅支持消息传递，也允许Slack + Discord工具）：
+
 ```json5
 {
   tools: {
@@ -46,6 +49,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 示例（编码配置文件，但在任何地方都禁止执行/进程工具）：
+
 ```json5
 {
   tools: {
@@ -56,6 +60,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 示例（全局编码配置文件，仅支持消息传递的代理）：
+
 ```json5
 {
   tools: { profile: "coding" },
@@ -70,13 +75,14 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 }
 ```
 
-## 提供商特定的工具策略
+## 供应商特定的工具策略
 
 使用`tools.byProvider`可以**进一步限制**特定提供商的工具（或单个`provider/model`），而无需更改您的全局默认设置。代理级别的覆盖：`agents.list[].tools.byProvider`。
 
 此策略在基础工具配置文件之后、允许/禁止列表之前应用，因此只能缩小工具集。提供商密钥接受`provider`（例如`google-antigravity`）或`provider/model`（例如`openai/gpt-5.2`）。
 
 示例（保留全局编码配置文件，但为Google Antigravity提供最少的工具）：
+
 ```json5
 {
   tools: {
@@ -89,6 +95,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 示例（针对不稳定端点的提供商/模型特定白名单）：
+
 ```json5
 {
   tools: {
@@ -101,6 +108,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 示例（针对单个提供商的代理特定覆盖）：
+
 ```json5
 {
   agents: {
@@ -123,6 +131,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 工具策略（全局、代理、沙箱）支持扩展为多个工具的`group:*`条目。在`tools.allow`/`tools.deny`中使用这些条目。
 
 可用的组：
+
 - `group:runtime`：`exec`、`bash`、`process`
 - `group:fs`：`read`、`write`、`edit`、`apply_patch`
 - `group:sessions`：`sessions_list`、`sessions_history`、`sessions_send`、`sessions_spawn`、`session_status`
@@ -135,6 +144,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `group:openclaw`：所有内置OpenClaw工具（不包括提供商插件）
 
 示例（仅允许文件工具 + 浏览器）：
+
 ```json5
 {
   tools: {
@@ -145,21 +155,25 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 ## 插件 + 工具
 
-插件可以在核心工具集之外注册**额外的工具**（以及CLI命令）。有关安装和配置，请参阅[插件](/plugin)；有关如何将工具使用指南注入提示的信息，请参阅[技能](/tools/skills)。某些插件在提供工具的同时还提供自己的技能（例如语音通话插件）。
+插件可以在核心工具集之外注册**额外的工具**（以及CLI命令）。有关安装和配置，请参阅[插件](/plugin)；有关如何将工具使用指南注入提示的信息，请参阅[技能](/tools/skills)。某些插件在提供工具的同时，还自带特定技能（例如语音通话插件）。
 
 可选的插件工具：
-- [Lobster](/tools/lobster)：带可恢复批准的类型化工作流运行时（需要在网关主机上安装Lobster CLI）。
-- [LLM Task](/tools/llm-task)：用于结构化工作流输出的仅JSON LLM步骤（可选模式验证）。
+
+- [Lobster](/tools/lobster)：带有可恢复批准的类型化工作流运行时（需要在网关主机上安装Lobster CLI）。
+- [LLM任务](/tools/llm-task)：用于生成结构化工作流输出的仅限JSON格式的LLM步骤（可选模式验证）。
 
 ## 工具清单
 
 ### `apply_patch`
+
 在一份或多份文件上应用结构化补丁。适用于多块编辑。实验性功能：通过`tools.exec.applyPatch.enabled`启用（仅限OpenAI模型）。
 
 ### `exec`
-在工作区中运行shell命令。
+
+在工作区中运行Shell命令。
 
 核心参数：
+
 - `command`（必填）
 - `yieldMs`（超时后自动后台运行，默认10000）
 - `background`（立即后台运行）
@@ -172,8 +186,9 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - 需要真正的TTY？设置`pty: true`。
 
 注意事项：
+
 - 后台运行时返回带有`sessionId`的`status: "running"`。
-- 使用`process`轮询/记录/写入/终止/清除后台会话。
+- 使用`process`轮询、记录、写入、终止或清除后台会话。
 - 如果`process`被禁止，`exec`将同步运行，并忽略`yieldMs`/`background`。
 - `elevated`受`tools.elevated`以及任何`agents.list[].tools.elevated`覆盖的约束（两者都必须允许），并且是`host=gateway` + `security=full`的别名。
 - `elevated`仅在代理处于沙箱模式时才会改变行为（否则无效）。
@@ -181,38 +196,47 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - 网关/节点批准和白名单：[执行批准](/tools/exec-approvals)。
 
 ### `process`
+
 管理后台执行会话。
 
 核心动作：
+
 - `list`、`poll`、`log`、`write`、`kill`、`clear`、`remove`
 
 注意事项：
+
 - 当完成时，`poll`返回新的输出和退出状态。
 - `log`支持基于行的`offset`/`limit`（省略`offset`以获取最后N行）。
 - `process`按代理划分；其他代理的会话不可见。
 
 ### `web_search`
+
 使用Brave Search API搜索网络。
 
 核心参数：
+
 - `query`（必填）
 - `count`（1–10；默认来自`tools.web.search.maxResults`）
 
 注意事项：
+
 - 需要Brave API密钥（推荐：`openclaw configure --section web`，或设置`BRAVE_API_KEY`）。
 - 通过`tools.web.search.enabled`启用。
 - 响应会被缓存（默认15分钟）。
 - 有关设置，请参阅[网络工具](/tools/web)。
 
 ### `web_fetch`
-从URL获取并提取可读内容（HTML → markdown/文本）。
+
+从URL获取并提取可读内容（HTML → Markdown/文本）。
 
 核心参数：
+
 - `url`（必填）
-- `extractMode`（`markdown` | `text`)
+- `extractMode`（`markdown` | `text`）
 - `maxChars`（截断长页面）
 
 注意事项：
+
 - 通过`tools.web.fetch.enabled`启用。
 - 响应会被缓存（默认15分钟）。
 - 对于JS密集型网站，建议使用浏览器工具。
@@ -220,9 +244,11 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - 有关可选的防机器人后备方案，请参阅[Firecrawl](/tools/firecrawl)。
 
 ### `browser`
-控制专用的OpenClaw管理的浏览器。
+
+控制由OpenClaw专用管理的浏览器。
 
 核心动作：
+
 - `status`、`start`、`stop`、`tabs`、`open`、`focus`、`close`
 - `snapshot`（aria/ai）
 - `screenshot`（返回图像块 + `MEDIA:<path>`）
@@ -230,17 +256,20 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `navigate`、`console`、`pdf`、`upload`、`dialog`
 
 配置文件管理：
+
 - `profiles` — 列出所有浏览器配置文件及其状态
 - `create-profile` — 创建新配置文件并自动分配端口（或`cdpUrl`）
-- `delete-profile` — 停止浏览器，删除用户数据，从配置中移除（仅本地）
-- `reset-profile` — 杀死配置文件端口上的孤儿进程（仅本地）
+- `delete-profile` — 停止浏览器，删除用户数据，从配置中移除（仅限本地）
+- `reset-profile` — 杀死配置文件端口上的孤儿进程（仅限本地）
 
 通用参数：
+
 - `profile`（可选；默认为`browser.defaultProfile`）
-- `target`（`sandbox` | `host` | `node`)
+- `target`（`sandbox` | `host` | `node`）
 - `node`（可选；选择特定的节点ID/名称）
 
 注意事项：
+
 - 需要`browser.enabled=true`（默认是`true`；设置`false`以禁用）。
 - 所有动作都接受可选的`profile`参数，以支持多实例。
 - 当`profile`被省略时，使用`browser.defaultProfile`（默认为“chrome”）。
@@ -256,23 +285,28 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `upload`还支持`inputRef`（aria引用）或`element`（CSS选择器），以直接设置`<input type="file">`。
 
 ### `canvas`
+
 驱动节点Canvas（呈现、评估、快照、A2UI）。
 
 核心动作：
+
 - `present`、`hide`、`navigate`、`eval`
 - `snapshot`（返回图像块 + `MEDIA:<path>`）
 - `a2ui_push`、`a2ui_reset`
 
 注意事项：
+
 - 底层使用网关`node.invoke`。
-- 如果没有提供`node`，该工具会选择一个默认值（单个连接的节点或本地mac节点）。
-- A2UI仅限v0.8版本（没有`createSurface`）；CLI会拒绝含有行错误的v0.9 JSONL。
+- 如果没有提供`node`，该工具会自动选择一个默认值（单个连接的节点或本地mac节点）。
+- A2UI仅适用于v0.8版本（不包含`createSurface`）；CLI会拒绝包含行错误的v0.9 JSONL文件。
 - 快速测试：`openclaw nodes canvas a2ui push --node <id> --text "Hello from A2UI"`。
 
 ### `nodes`
+
 发现并定位配对节点；发送通知；捕获摄像头/屏幕。
 
 核心动作：
+
 - `status`、`describe`
 - `pending`、`approve`、`reject`（配对）
 - `notify`（macOS `system.notify`）
@@ -281,13 +315,15 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `location_get`
 
 注意事项：
-- 摄像头/屏幕命令要求节点应用程序处于前台。
+
+- 摄像头/屏幕命令要求节点应用程序在前台运行。
 - 图像返回图像块 + `MEDIA:<path>`。
 - 视频返回`FILE:<path>`（mp4）。
-- 位置返回一个JSON负载（纬度/经度/精度/时间戳）。
+- 位置返回一个包含纬度、经度、精度和时间戳的JSON负载。
 - `run`参数：`command` argv数组；可选`cwd`、`env`（`KEY=VAL`）、`commandTimeoutMs`、`invokeTimeoutMs`、`needsScreenRecording`。
 
 示例（`run`）：
+
 ```json
 {
   "action": "run",
@@ -301,22 +337,27 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 ```
 
 ### `image`
+
 使用配置的图像模型分析图像。
 
 核心参数：
+
 - `image`（必填路径或URL）
 - `prompt`（可选；默认为“描述图像。”）
 - `model`（可选覆盖）
 - `maxBytesMb`（可选大小上限）
 
 注意事项：
+
 - 仅在配置了`agents.defaults.imageModel`（主要或备用）时可用，或者当可以从您的默认模型+配置的身份验证中推断出隐式图像模型时（尽力匹配）。
 - 直接使用图像模型（独立于主聊天模型）。
 
-### `message`
-在Discord/Google Chat/Slack/Telegram/WhatsApp/Signal/iMessage/MS Teams之间发送消息和频道操作。
+### __内联代码_0__
+
+在Discord、Google Chat、Slack、Telegram、WhatsApp、Signal、iMessage和MS Teams之间发送消息和执行频道操作。
 
 核心动作：
+
 - `send`（文本+可选媒体；MS Teams还支持用于自适应卡片的`card`）
 - `poll`（WhatsApp/Discord/MS Teams轮询）
 - `react`/`reactions`/`read`/`edit`/`delete`
@@ -334,40 +375,49 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `timeout`/`kick`/`ban`
 
 注意事项：
+
 - `send`通过网关路由WhatsApp；其他渠道直接发送。
 - `poll`使用网关处理WhatsApp和MS Teams；Discord轮询直接进行。
 - 当消息工具调用绑定到活跃的聊天会话时，发送被限制在该会话的目标范围内，以避免跨上下文泄漏。
 
 ### `cron`
+
 管理网关的cron作业和唤醒。
 
 核心动作：
+
 - `status`、`list`
 - `add`、`update`、`remove`、`run`、`runs`
 - `wake`（排队系统事件+可选即时心跳）
 
 注意事项：
-- `add`期望一个完整的cron作业对象（与`cron.add` RPC相同的模式）。
+
+- `add`期望一个完整的cron作业对象（与`cron.add`RPC相同的模式）。
 - `update`使用`{ id, patch }`。
 
-### `gateway`
+### __内联代码_0__
+
 重启或在运行中更新网关进程。
 
 核心动作：
-- `restart`（授权并发送`SIGUSR1`进行进程内重启；`openclaw gateway`进行原地重启）
+
+- `restart`（授权并发送`SIGUSR1`以进行进程内重启；`openclaw gateway`以进行原地重启）
 - `config.get`/`config.schema`
 - `config.apply`（验证+写入配置+重启+唤醒）
 - `config.patch`（合并部分更新+重启+唤醒）
 - `update.run`（运行更新+重启+唤醒）
 
 注意事项：
+
 - 使用`delayMs`（默认2000）以避免中断正在进行的回复。
 - `restart`默认关闭；通过`commands.restart: true`启用。
 
-### `sessions_list`/`sessions_history`/`sessions_send`/`sessions_spawn`/`session_status`
-列出会话，检查对话历史，或发送到另一个会话。
+### __行内代码_0__/__行内代码_1__/__行内代码_2__/__行内代码_3__/__行内代码_4__
+
+列出会话，检查对话历史，或将消息发送到另一个会话。
 
 核心参数：
+
 - `sessions_list`：`kinds?`、`limit?`、`activeMinutes?`、`messageLimit?`（0 = 无）
 - `sessions_history`：`sessionKey`（或`sessionId`）、`limit?`、`includeTools?`
 - `sessions_send`：`sessionKey`（或`sessionId`）、`message`、`timeoutSeconds?`（0 = 即发即弃）
@@ -375,7 +425,8 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `session_status`：`sessionKey?`（默认当前；接受`sessionId`），`model?`（`default`清除覆盖）
 
 注意事项：
-- `main`是规范的直接聊天密钥；全球/未知密钥被隐藏。
+
+- `main`是规范的直接聊天密钥；全球/未知密钥已被隐藏。
 - `messageLimit > 0`按会话获取最近N条消息（已过滤工具消息）。
 - `sessions_send`在`timeoutSeconds > 0`完成后等待最终完成。
 - 交付/公告发生在完成之后，且为尽力而为；`status: "ok"`确认代理运行已完成，而非公告已送达。
@@ -385,20 +436,24 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - 回声结束后，目标代理运行一个**公告步骤**；回复`ANNOUNCE_SKIP`以抑制公告。
 
 ### `agents_list`
+
 列出当前会话可能通过`sessions_spawn`瞄准的代理ID。
 
 注意事项：
+
 - 结果受限于代理级别的白名单（`agents.list[].subagents.allowAgents`）。
 - 当`["*"]`被配置时，该工具包括所有配置的代理，并标记`allowAny: true`。
 
 ## 参数（通用）
 
 由网关支持的工具（`canvas`、`nodes`、`cron`）：
+
 - `gatewayUrl`（默认`ws://127.0.0.1:18789`）
 - `gatewayToken`（如果启用了身份验证）
 - `timeoutMs`
 
 浏览器工具：
+
 - `profile`（可选；默认为`browser.defaultProfile`）
 - `target`（`sandbox` | `host` | `node`）
 - `node`（可选；固定特定的节点ID/名称）
@@ -407,7 +462,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 浏览器自动化：
 1) `browser` → `status`/`start`
-2) `snapshot`（ai或aria）
+2) `snapshot`（人工智能或无障碍属性）
 3) `act`（点击/输入/按下）
 4) 如果需要视觉确认，使用`screenshot`
 

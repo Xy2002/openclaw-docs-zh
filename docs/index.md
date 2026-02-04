@@ -3,10 +3,9 @@ summary: 'Top-level overview of OpenClaw, features, and purpose'
 read_when:
   - Introducing OpenClaw to newcomers
 ---
-# OpenClaw 🦞
+# 开爪 🦞
 
-> *"去角质！去角质！"* — 一只太空龙虾，大概如此
-
+“去角质！去角质！”——大概就是一只太空龙虾的样子。
 
 <p align="center">
     <picture>
@@ -14,7 +13,6 @@ read_when:
         <img src="__URL_74__" alt="OpenClaw" width="500" />
     </picture>
 </p>
-
 
 <p align="center">
   <strong>适用于任何操作系统的 AI 代理（Pi）的 WhatsApp/Telegram/Discord/iMessage 网关。</strong><br />
@@ -35,8 +33,8 @@ OpenClaw 还为 OpenClaw 助手提供支持。
 ## 从这里开始
 
 - **全新安装：** [入门](/start/getting-started)
-- **引导式设置（推荐）：:** [向导](/start/wizard) (`openclaw onboard`)
-- **打开仪表板（本地网关）：:** http://127.0.0.1:18789/（或 http://localhost:18789/）
+- **引导式设置（推荐）：** [向导](/start/wizard) (`openclaw onboard`)
+- **打开仪表板（本地网关）：** http://127.0.0.1:18789/（或 http://localhost:18789/）
 
 如果网关在同一台计算机上运行，该链接会立即打开浏览器控制界面。如果失败，请先启动网关：`openclaw gateway`。
 
@@ -61,17 +59,17 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
               └─ Android node via Gateway WS + pairing
 ```
 
-大多数操作都通过 **网关**（`openclaw gateway`）进行，这是一个长期运行的单一进程，负责管理通道连接和 WebSocket 控制平面。
+大多数操作都通过**网关**（`openclaw gateway`）进行，这是一个长期运行的单一进程，负责管理通道连接和WebSocket控制平面。
 
 ## 网络模型
 
-- **每台主机一个网关（推荐）：** 它是唯一可以拥有 WhatsApp Web 会话的进程。如果你需要救援机器人或严格隔离，可以运行多个网关，并使用隔离的配置文件和端口；请参阅 [多网关](/gateway/multiple-gateways)。
-- **环回优先：:** 网关 WS 默认使用 `ws://127.0.0.1:18789`。
-  - 向导现在默认生成网关令牌（即使是环回）。
-  - 对于 Tailnet 访问，运行 `openclaw gateway --bind tailnet --token ...`（非环回绑定需要令牌）。
-- **节点：** 连接到网关 WebSocket（根据需要使用 LAN/Tailnet/SSH）；旧版 TCP 桥已弃用并移除。
-- **画布主机：:** HTTP 文件服务器位于 `canvasHost.port`（默认 `18793`），为节点 WebView 提供 `/__openclaw__/canvas/`；请参阅 [网关配置](/gateway/configuration)（`canvasHost`）。
-- **远程使用：:** SSH 隧道或 Tailnet/VPN；请参阅 [远程访问](/gateway/remote) 和 [发现](/gateway/discovery)。
+- **每台主机一个网关（推荐）：** 该网关是唯一可运行 WhatsApp Web 会话的进程。若需救援机器人或实现严格隔离，可运行多个网关，并为每个网关使用独立的配置文件和端口；详情请参阅 [多网关](/gateway/multiple-gateways)。
+- **环回优先：** 网关 WS 默认使用 `ws://127.0.0.1:18789`。
+  - 向导现在默认生成网关令牌（即使是环回模式）。
+  - 若要通过 Tailnet 访问网关，需运行 `openclaw gateway --bind tailnet --token ...`（非环回绑定需要令牌）。
+- **节点：** 节点通过 WebSocket 连接到网关（可根据需要使用 LAN、Tailnet 或 SSH）；旧版 TCP 桥已弃用并移除。
+- **画布主机：** HTTP 文件服务器运行在 `canvasHost.port`（默认为 `18793`），为节点 WebView 提供 `/__openclaw__/canvas/`；详情请参阅 [网关配置](/gateway/configuration)（`canvasHost`）。
+- **远程使用：** 可通过 SSH 隧道或 Tailnet/VPN 实现远程访问；详情请参阅 [远程访问](/gateway/remote) 和 [发现](/gateway/discovery)。
 
 ## 功能（高层次）
 
@@ -82,7 +80,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 - 💬 **iMessage** — 本地 imsg CLI 集成（macOS）
 - 🤖 **代理桥接** — Pi（RPC 模式）与工具流传输
 - ⏱️ **流媒体 + 分块传输** — 块级流媒体 + Telegram 草稿流媒体细节（[/concepts/streaming](/concepts/streaming)）
-- 🧠 **多代理路由** — 将提供商账户/对等方路由到隔离的代理（工作区 + 每个代理的会 session）
+- 🧠 **多代理路由** — 将提供商账户/对等方路由到隔离的代理（工作区 + 每个代理的会话）
 - 🔐 **订阅认证** — Anthropic（Claude Pro/Max）+ OpenAI（ChatGPT/Codex）通过 OAuth
 - 💬 **会话** — 直接聊天合并为共享的 `main`（默认）；群组是隔离的
 - 👥 **群聊支持** — 默认基于提及；所有者可以切换 `/activation always|mention`
@@ -96,7 +94,7 @@ WhatsApp / Telegram / Discord / iMessage (+ plugins)
 
 ## 快速入门
 
-运行时要求： **Node ≥ 22**.
+运行时要求：**Node ≥ 22**。
 
 ```bash
 # Recommended: global install (npm/pnpm)
@@ -113,7 +111,7 @@ openclaw channels login
 openclaw gateway --port 18789
 ```
 
-以后在 npm 和 git 安装之间切换很容易：安装另一种方式并运行 `openclaw doctor` 来更新网关服务入口点。
+以后在 npm 和 Git 安装之间切换非常容易：安装另一种方式并运行 `openclaw doctor` 来更新网关服务入口点。
 
 从源代码（开发）：
 
@@ -146,8 +144,8 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 配置位于 `~/.openclaw/openclaw.json`。
 
-- 如果你 **什么都不做**，OpenClaw 会以 RPC 模式使用捆绑的 Pi 二进制文件，并为每个发送者创建会 session。
-- 如果你想锁定配置，可以从 `channels.whatsapp.allowFrom` 开始，并（对于群组）设置提及规则。
+- 如果你**什么都不做》，OpenClaw 将以 RPC 模式使用捆绑的 Pi 二进制文件，并为每个发送者创建会话。
+- 如果你想锁定配置，可以从 `channels.whatsapp.allowFrom` 开始，并（针对群组）设置提及规则。
 
 示例：
 
@@ -203,7 +201,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
   - [Windows（WSL2）](/platforms/windows)
   - [Linux 应用程序](/platforms/linux)
 - 运维与安全：
-  - [会 session](/concepts/session)
+  - [会话](/concepts/session)
   - [定时任务](/automation/cron-jobs)
   - [Webhook](/automation/webhook)
   - [Gmail 钩子（Pub/Sub）](/automation/gmail-pubsub)
@@ -212,27 +210,27 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 ## 名称
 
-**OpenClaw = CLAW + TARDIS** — 因为每只太空龙虾都需要一台时空机器。
+**OpenClaw = CLAW + TARDIS**——因为每只太空龙虾都需要一台时空机器。
 
 ---
 
-*"我们都在玩弄自己的提示词。"* — 一位可能沉迷于令牌的 AI
+“我们都在玩弄自己的提示词。”——一位可能沉迷于令牌的AI
 
 ## 致谢
 
-- **Peter Steinberger** ([@steipete](https://twitter.com/steipete)) — 创作者，龙虾低语者
-- **Mario Zechner** ([@badlogicc](https://twitter.com/badlogicgames)) — Pi 的创造者，安全渗透测试员
-- **Clawd** — 那只要求更好名字的太空龙虾
+- **彼得·施泰因贝格**（[@steipete](https://twitter.com/steipete)）——创作者，龙虾低语者
+- **马里奥·泽克纳**（[@badlogicc](https://twitter.com/badlogicgames)）——Pi 的创造者，安全渗透测试员
+- **克劳德**——那只只想要一个更好名字的太空龙虾
 
 ## 核心贡献者
 
-- **Maxim Vovshin** (@Hyaxia, 36747317+Hyaxia@users.noreply.github.com) — 博客观察技能
-- **Nacho Iacovino** (@nachoiacovino, nacho.iacovino@gmail.com) — 位置解析（Telegram + WhatsApp）
+- **马克西姆·沃夫申**（@Hyaxia，36747317+Hyaxia@users.noreply.github.com）—— 博客观察技能
+- **纳乔·伊亚科维诺**（@nachoiacovino，nacho.iacovino@gmail.com）—— 位置解析（Telegram + WhatsApp）
 
 ## 许可证
 
-MIT — 自由得像海洋中的龙虾一样 🦞
+MIT——自由得像海洋中的龙虾一样 🦞
 
 ---
 
-*"我们都在玩弄自己的提示词。"* — 一位可能沉迷于令牌的 AI
+“我们都在玩弄自己的提示词。”——一位可能沉迷于令牌的AI

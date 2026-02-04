@@ -174,7 +174,7 @@ OpenClaw 在启动时向 Telegram 的机器人菜单注册原生命令（如 `/s
 }
 ```
 
-**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** -  only 列入名单的群组（或 `"*"`）才会被接受。
+**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** - 只有列入名单的群组（或 `"*"`）才会被接受。
 论坛主题将继承其父群组的配置（allowFrom、requireMention、skills、prompts），除非您在 `channels.telegram.groups.<groupId>.topics.<topicId>` 下为特定主题添加覆盖设置。
 
 要允许所有群组始终响应：
@@ -622,7 +622,7 @@ Telegram 反应作为**单独的 `message_reaction` 事件**到达，而不是�
   - `"minimal"` — 代理可以谨慎地做出反应（指南：每 5–10 次交流做 1 次）
   - `"extensive"` — 代理可以在适当的时候自由地做出反应
 
-**论坛群组：** 论坛群组中的回复包含 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题内的回复和消息始终归于一处。
+**论坛群组：** 论坛群组中的回复包含 `message_thread_id`，并使用像 `agent:main:telegram:group:{chatId}:topic:{threadId}` 这样的会话密钥。这确保了同一主题内的回复和消息始终集中在一起。
 
 **示例配置：**
 

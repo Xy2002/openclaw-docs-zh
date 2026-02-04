@@ -11,14 +11,14 @@ read_when:
 
 ## 规范
 
-- 除非在文档或发布检查清单中提及，否则脚本是**可选**的。
+- 除非在文档或发布检查清单中特别提及，否则脚本是**可选**的。
 - 如果存在 CLI 接口，请优先使用 CLI（例如，身份验证监控使用 `openclaw models status --check`）。
-- 假设脚本是特定于主机的；在新机器上运行前请先阅读脚本内容。
+- 假设脚本是特定于主机的；在新机器上运行脚本之前，请先仔细阅读脚本内容。
 
-## Git 钩子
+__HEADING_0__Git 钩子
 
-- `scripts/setup-git-hooks.js`: 在 Git 仓库内为 `core.hooksPath` 提供尽力而为的设置。
-- `scripts/format-staged.js`: 用于暂存的 `src/` 和 `test/` 文件的 pre-commit 格式化工具。
+- `scripts/setup-git-hooks.js`：在 Git 仓库中为 `core.hooksPath` 提供尽力而为的设置。
+- `scripts/format-staged.js`：用于暂存的 `src/` 和 `test/` 文件的 pre-commit 格式化工具。
 
 ## 身份验证监控脚本
 

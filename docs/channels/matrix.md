@@ -3,9 +3,9 @@ summary: 'Matrix support status, capabilities, and configuration'
 read_when:
   - Working on Matrix channel features
 ---
-# Matrix（插件）
+# 矩阵（插件）
 
-Matrix 是一种开放、去中心化的消息传递协议。OpenClaw 可以作为 Matrix **用户** 连接到任何 homeserver，因此您需要为机器人创建一个 Matrix 账户。登录后，您可以直接向机器人发送私信，或将机器人邀请到聊天室（Matrix 中的“群组”）。Beeper 也是一个有效的客户端选项，但需要启用端到端加密。
+Matrix是一种开放、去中心化的消息传递协议。OpenClaw可作为Matrix**用户**连接到任何homeserver，因此您需要为机器人创建一个Matrix账户。登录后，您可以直接向机器人发送私信，或将机器人邀请到聊天室（即Matrix中的“群组”）。Beeper也是一个可行的客户端选项，但需要启用端到端加密。
 
 状态：通过插件支持（@vector-im/matrix-bot-sdk）。支持私信、聊天室、线程、媒体、反应、投票（以文本形式发送 + 投票开始）、位置以及端到端加密（需加密支持）。
 
@@ -25,20 +25,25 @@ openclaw plugins install @openclaw/matrix
 openclaw plugins install ./extensions/matrix
 ```
 
-如果您在配置/引导过程中选择 Matrix，并且检测到本地检出，OpenClaw 将自动提供本地安装路径。
+如果您在配置或引导过程中选择 Matrix，并且检测到本地检出，OpenClaw 将自动提供本地安装路径。
 
 详情：[插件](/plugin)
 
 ## 设置
 
 1) 安装 Matrix 插件：
-   - 从 npm：`openclaw plugins install @openclaw/matrix`
+
+- 从 npm：`openclaw plugins install @openclaw/matrix`
    - 从本地检出：`openclaw plugins install ./extensions/matrix`
-2) 在 homeserver 上创建一个 Matrix 账户：
-   - 浏览托管选项：[https://matrix.org/ecosystem/hosting/](https://matrix.org/ecosystem/hosting/)
+
+2) 在homeserver上创建一个Matrix账户：
+
+- 浏览托管选项：[https://matrix.org/ecosystem/hosting/](https://matrix.org/ecosystem/hosting/)
    - 或者自行托管。
+
 3) 获取机器人账户的访问令牌：
-   - 使用您的 homeserver 上的 Matrix 登录 API 和 `curl`：
+
+- 使用您homeserver上的Matrix登录API和`curl`：
 
    ```bash
    curl --request POST \
@@ -54,18 +59,21 @@ openclaw plugins install ./extensions/matrix
    }'
    ```
 
-   - 将 `matrix.example.org` 替换为您的 homeserver URL。
-   - 或设置 `channels.matrix.userId` + `channels.matrix.password`：OpenClaw 调用相同的登录端点，在 `~/.openclaw/credentials/matrix/credentials.json` 中存储访问令牌，并在下次启动时重复使用。
-4) 配置凭据：
-   - 环境变量：`MATRIX_HOMESERVER`, `MATRIX_ACCESS_TOKEN`（或 `MATRIX_USER_ID` + `MATRIX_PASSWORD`）
-   - 或配置文件：`channels.matrix.*`
-   - 如果两者都设置，配置优先。
-   - 使用访问令牌时，用户 ID 会通过 `/whoami` 自动获取。
-   - 如果设置，`channels.matrix.userId` 应为完整的 Matrix 用户 ID（例如：`@bot:example.org`）。
-5) 重启网关（或完成引导）。
-6) 从任何 Matrix 客户端（Element、Beeper 等；参见 https://matrix.org/ecosystem/clients/）与机器人发起私信或将其邀请到聊天室。Beeper 需要启用 E2EE，因此请设置 `channels.matrix.encryption: true` 并验证设备。
+- 将 `matrix.example.org` 替换为您的 homeserver URL。
+- 或者设置 `channels.matrix.userId` + `channels.matrix.password`：OpenClaw 调用相同的登录端点，在 `~/.openclaw/credentials/matrix/credentials.json` 中存储访问令牌，并在下次启动时重复使用。
 
-最小配置（访问令牌，用户 ID 自动获取）：
+4) 配置凭据：
+
+- 环境变量：`MATRIX_HOMESERVER`、`MATRIX_ACCESS_TOKEN`（或 `MATRIX_USER_ID` + `MATRIX_PASSWORD`）
+   - 或配置文件：`channels.matrix.*`
+   - 如果同时设置了环境变量和配置文件，则以配置文件为准。
+   - 使用访问令牌时，用户 ID 会通过 `/whoami` 自动获取。
+   - 如果已设置，`channels.matrix.userId` 应为完整的 Matrix 用户 ID（例如：`@bot:example.org`）。
+
+5) 重启网关（或完成引导）。
+6) 从任何 Matrix 客户端（Element、Beeper 等；参见 https://matrix.org/ecosystem/clients/）与机器人发起私信或将其邀请到聊天室。Beeper）使用端到端加密时，需启用 E2EE，因此请设置 `channels.matrix.encryption: true` 并验证设备。
+
+最小配置（访问令牌，用户ID自动获取）：
 
 ```json5
 {
@@ -80,7 +88,7 @@ openclaw plugins install ./extensions/matrix
 }
 ```
 
-E2EE 配置（启用端到端加密）：
+E2EE配置（启用端到端加密）：
 
 ```json5
 {
@@ -96,23 +104,23 @@ E2EE 配置（启用端到端加密）：
 }
 ```
 
-## 加密（E2EE）
+## 加密（端到端加密）
 
-端到端加密通过 Rust 加密 SDK **支持**。
+端到端加密通过 Rust 加密 SDK**支持**。
 
 通过 `channels.matrix.encryption: true` 启用：
 
 - 如果加密模块加载成功，加密聊天室的消息将自动解密。
 - 发送到加密聊天室的媒体将在发送时加密。
-- 首次连接时，OpenClaw 会请求您其他会话进行设备验证。
+- 首次连接时，OpenClaw 会请求您在其他会话中完成设备验证。
 - 在另一个 Matrix 客户端（如 Element）中验证设备，以启用密钥共享。
-- 如果无法加载加密模块，E2EE 将被禁用，加密聊天室的消息将无法解密；OpenClaw 会记录警告。
+- 如果无法加载加密模块，端到端加密将被禁用，加密聊天室的消息将无法解密；OpenClaw 会记录一条警告日志。
 - 如果您看到缺少加密模块的错误（例如，`@matrix-org/matrix-sdk-crypto-nodejs-*`），请允许构建脚本为 `@matrix-org/matrix-sdk-crypto-nodejs` 执行，并运行 `pnpm rebuild @matrix-org/matrix-sdk-crypto-nodejs`，或使用 `node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js` 获取二进制文件。
 
 加密状态按账户和访问令牌存储在 `~/.openclaw/matrix/accounts/<account>/<homeserver>__<user>/<token-hash>/crypto/`（SQLite 数据库）中。同步状态与其并存于 `bot-storage.json` 中。如果访问令牌（设备）发生变化，将创建一个新的存储，并且机器人必须针对加密聊天室重新验证。
 
 **设备验证：**
-当启用 E2EE 时，机器人将在启动时请求您其他会话进行验证。打开 Element（或其他客户端）并批准验证请求，以建立信任。验证完成后，机器人可以解密加密聊天室中的消息。
+启用端到端加密时，机器人在启动时会请求您通过其他会话进行验证。打开 Element（或其他客户端）并批准验证请求，以建立信任。验证完成后，机器人即可解密加密聊天室中的消息。
 
 ## 路由模型
 
@@ -162,9 +170,9 @@ E2EE 配置（启用端到端加密）：
 
 - 支持回复线程化。
 - `channels.matrix.threadReplies` 控制回复是否保留在线程中：
-  - `off`, `inbound`（默认）， `always`
+  - `off`、`inbound`（默认）、`always`
 - `channels.matrix.replyToMode` 控制不在线程中回复时的回复元数据：
-  - `off`（默认）， `first`, `all`
+  - `off`（默认）、`first`、`all`
 
 ## 功能
 
@@ -180,7 +188,7 @@ E2EE 配置（启用端到端加密）：
 | 位置 | ✅ 支持（geo URI；忽略海拔） |
 | 原生命令 | ✅ 支持 |
 
-## 配置参考（Matrix）
+## 配置参考（矩阵）
 
 完整配置：[配置](/gateway/configuration)
 
