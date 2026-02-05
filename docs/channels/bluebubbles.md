@@ -7,7 +7,7 @@ read_when:
   - Troubleshooting webhook pairing
   - Configuring iMessage on macOS
 ---
-__HEADING_0__BlueBubbles（macOS REST）
+__HEADING_0__蓝气泡（macOS REST）
 
 状态：捆绑插件，通过 HTTP 与 BlueBubbles macOS 服务器通信。由于其 API 更丰富且设置更简单，相比旧版 imsg 通道，**强烈推荐用于 iMessage 集成**。
 
@@ -111,7 +111,7 @@ BlueBubbles 支持群聊的提及门控，其行为与 iMessage/WhatsApp 一致�
 
 - 控制命令（例如，`/config`、`/model`）需要授权。
 - 使用 `allowFrom` 和 `groupAllowFrom` 来确定命令授权。
-- 获得授权的发件人即使在群组中未被提及，也可以运行控制命令。
+- 即使在群组中未被提及，获得授权的发件人也可以运行控制命令。
 
 ## 输入指示器 + 已读回执
 
@@ -249,7 +249,7 @@ BlueBubbles 支持群聊的提及门控，其行为与 iMessage/WhatsApp 一致�
 ## 安全性
 
 - Webhook 请求通过比较 `guid`/`password` 查询参数或标头与 `channels.bluebubbles.password` 来进行身份验证。来自 `localhost` 的请求也被接受。
-- 请务必妥善保管 API 密码和 Webhook 端点，并将其视为凭据。
+- 请务必妥善保管 API 密码和 Webhook 端点，并将其视为敏感凭据。
 - 如果本地主机被信任，同一主机上的反向代理可能会无意中绕过密码验证。如果您使用代理网关，请在代理处强制实施身份验证，并配置 `gateway.trustedProxies`。有关更多信息，请参阅 [网关安全](/gateway/security#reverse-proxy-configuration)。
 - 如果将 BlueBubbles 服务器暴露在局域网之外，请启用 HTTPS 并在服务器上配置防火墙规则。
 

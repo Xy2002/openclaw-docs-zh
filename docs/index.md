@@ -210,7 +210,7 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 ## 名称
 
-**OpenClaw = CLAW + TARDIS**——因为每只太空龙虾都需要一台时空机器。
+**开爪 = 爪 + 塔迪斯**——因为每只太空龙虾都需要一台时空机器。
 
 ---
 

@@ -117,14 +117,14 @@ openclaw config set browser.executablePath "/usr/bin/google-chrome"
 
 ## 本地与远程控制
 
-- **本地控制（默认）：**Gateway 启动环回控制服务，并可启动本地浏览器。
-- **远程控制（节点主机）：**在已安装浏览器的机器上运行节点主机；Gateway 将浏览器操作代理到该主机。
+- **本地控制（默认）：**网关启动环回控制服务，并可启动本地浏览器。
+- **远程控制（节点主机）：**在已安装浏览器的机器上运行节点主机；网关会将浏览器操作代理到该主机。
 - **远程 CDP：**设置 `browser.profiles.<name>.cdpUrl`（或 `browser.cdpUrl`）以连接到远程基于 Chromium 的浏览器。在这种情况下，OpenClaw 不会启动本地浏览器。
 
 远程CDP URL可以包含身份验证：
 
 - 查询令牌（如 `https://provider.example?token=<token>`）
-- HTTP 基本身份验证（如 `https://user:pass@provider.example`）
+- HTTP基本身份验证（如 `https://user:pass@provider.example`）
 
 OpenClaw 在调用 `/json/*` 端点以及连接到 CDP WebSocket 时会保留身份验证信息。建议使用环境变量或密钥管理工具来存储令牌，而不是将其写入配置文件。
 
@@ -173,8 +173,8 @@ OpenClaw 在调用 `/json/*` 端点以及连接到 CDP WebSocket 时会保留身
 关键理念：
 
 - 浏览器控制仅限环回访问；访问权限通过网关的身份验证或节点配对来控制。
-- 将网关和所有节点主机置于私有网络中（如 Tailscale），避免公开暴露。
-- 请将远程 CDP URL 和令牌视为机密信息；优先使用环境变量或密钥管理工具来存储和管理这些敏感数据。
+- 将网关和所有节点主机置于私有网络中（如 Tailscale），以避免公开暴露。
+- 请将远程 CDP URL 和令牌视为机密信息；建议优先使用环境变量或密钥管理工具来存储和管理这些敏感数据。
 
 远程CDP提示：
 
@@ -200,18 +200,18 @@ OpenClaw 支持多个命名配置文件（路由配置）。配置文件可以�
 
 __HEADING_0__Chrome 扩展中继（使用您现有的 Chrome）
 
-OpenClaw 还可以通过本地 CDP 中继和 Chrome 扩展来驱动您现有的 Chrome 标签页（无需单独的“openclaw”Chrome 实例）。
+OpenClaw 还可以通过本地 CDP 中继和 Chrome 扩展来驱动您现有的 Chrome 标签页，而无需单独的“openclaw”Chrome 实例。
 
 完整指南：[Chrome 扩展](/tools/chrome-extension)
 
 流程：
 
 - 网关在本地运行（同一台机器）或在浏览器所在机器上运行节点主机。
-- 本地**中继服务器**监听环回地址上的 `cdpUrl`（默认：`http://127.0.0.1:18792`）。
-- 您点击标签页上的**OpenClaw 浏览器中继**扩展图标以连接（不会自动连接）。
+- 本地中继服务器监听环回地址上的 `cdpUrl`（默认：`http://127.0.0.1:18792`）。
+- 您点击标签页上的“OpenClaw 浏览器中继”扩展图标以连接（不会自动连接）。
 - 代理通过常规的 `browser` 工具，通过选择正确的配置文件来控制该标签页。
 
-如果网关在其他地方运行，请在浏览器所在的机器上运行节点主机，以便网关可以代理浏览器操作。
+如果网关在其他地方运行，请在浏览器所在的机器上运行节点主机，以便网关能够代理浏览器操作。
 
 ### 沙盒会话
 
@@ -249,7 +249,7 @@ openclaw browser create-profile \
 
 注意事项：
 
-- 此模式依赖 Playwright-on-CDP 来执行大多数操作（屏幕截图、快照和各种操作）。
+- 此模式依赖 Playwright-on-CDP 来执行大多数操作（屏幕截图、快照以及各种其他操作）。
 - 再次点击扩展图标即可断开连接。
 
 ## 隔离保证
@@ -297,7 +297,7 @@ openclaw browser create-profile \
 
 ### 戏剧作家要求
 
-某些功能（导航、操作、AI快照、角色快照、元素截图、PDF）需要 Playwright 支持。如果未安装 Playwright，这些端点将返回明确的 501 错误。对于由 openclaw 管理的 Chrome 浏览器，ARIA 快照和基本屏幕截图仍然可用。对于 Chrome 扩展中继驱动程序，ARIA 快照和屏幕截图同样需要 Playwright 提供支持。
+某些功能（如导航、操作、AI快照、角色快照、元素截图和PDF生成）需要Playwright支持。如果未安装Playwright，这些端点将返回明确的501错误。对于由openclaw管理的Chrome浏览器，ARIA快照和基本屏幕截图仍然可用。对于Chrome扩展中的继电器驱动程序，ARIA快照和屏幕截图同样依赖于Playwright的支持。
 
 如果您看到 `Playwright is not available in this gateway build`，请安装完整的 Playwright 包（而非 `playwright-core`），并重启网关，或重新安装 OpenClaw 并启用浏览器支持。
 
@@ -504,8 +504,8 @@ JSON 中的角色快照包括 `refs` 加上一个小的 `stats` 块（行数/字
 在页面上下文中执行任意 JavaScript。提示注入可能导致行为偏离预期。如果您不需要此功能，请使用 `browser.evaluateEnabled=false` 禁用它。
 
 - 有关登录和反机器人注意事项（适用于X/Twitter等平台），请参阅[浏览器登录 + X/Twitter发布](/tools/browser-login)。
-- 保持网关/节点主机的私密性，仅允许环回或尾网访问。
-- 运输CDP端点功能强大，请通过隧道对其进行保护并采取防护措施。
+- 请确保网关/节点主机保持私密，仅允许环回或尾网访问。
+- 运输CDP端点功能强大，请通过隧道对其进行保护，并采取相应的防护措施。
 
 故障排除
 

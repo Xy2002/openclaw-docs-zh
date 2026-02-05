@@ -12,6 +12,7 @@ read_when:
 ## 快速入门
 
 ### 绝对最低配置
+
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -22,6 +23,7 @@ read_when:
 将其保存到`~/.openclaw/openclaw.json`，您即可通过该号码向机器人发送私信。
 
 ### 推荐的初始配置
+
 ```json5
 {
   identity: {
@@ -44,7 +46,7 @@ read_when:
 
 ## 扩展示例（主要选项）
 
-> JSON5 支持使用注释和尾随逗号。标准 JSON 也同样适用。
+JSON5 支持使用注释和尾随逗号。标准 JSON 也同样适用。
 
 ```json5
 {
@@ -424,6 +426,7 @@ read_when:
 ## 常见模式
 
 ### 多平台设置
+
 ```json5
 {
   agent: { workspace: "~/.openclaw/workspace" },
@@ -444,6 +447,7 @@ read_when:
 ```
 
 ### 使用 API 密钥作为 OAuth 备用
+
 ```json5
 {
   auth: {
@@ -472,7 +476,8 @@ read_when:
 }
 ```
 
-### Anthropic 订阅 + API 密钥，MiniMax 作为备用
+__HEADING_0__Anthropic 订阅 + API 密钥，MiniMax 作为备用
+
 ```json5
 {
   auth: {
@@ -511,6 +516,7 @@ read_when:
 ```
 
 ### 工作机器人（受限访问）
+
 ```json5
 {
   identity: {
@@ -535,6 +541,7 @@ read_when:
 ```
 
 ### 仅使用本地模型
+
 ```json5
 {
   agent: {

@@ -10,13 +10,13 @@ Docker是**可选**的。仅在您需要容器化的网关或验证Docker流程�
 
 __HEADING_0__Docker适合我吗？
 
-- **是**：您希望拥有一个隔离的、一次性使用的网关环境，或者在没有本地安装的主机上运行 OpenClaw。
-- **否**：您在自己的机器上开发，并且只希望获得最快的开发循环。请改用常规安装流程。
-- **沙箱注意事项**：代理沙箱同样使用 Docker，但并不强制要求整个网关都在 Docker 中运行。有关详细信息，请参阅 [沙箱](/gateway/sandboxing)。
+- **是**：您希望拥有一套隔离的、一次性使用的网关环境，或者在没有本地安装主机的环境中运行 OpenClaw。
+- **否**：您在自己的机器上进行开发，并且只希望获得最快的开发循环。请改用常规安装流程。
+- **沙箱注意事项**：代理沙箱同样基于 Docker 构建，但并不要求整个网关完全运行在 Docker 容器中。有关详细信息，请参阅 [沙箱](/gateway/sandboxing)。
 
 本指南涵盖：
 
-- 容器化网关（完整的 OpenClaw 运行在 Docker 中）
+- 容器化网关（完整的 OpenClaw 在 Docker 中运行）
 - 每会话代理沙箱（主机网关 + 通过 Docker 隔离的代理工具）
 
 沙箱详情：[沙箱](/gateway/sandboxing)
@@ -89,7 +89,7 @@ export OPENCLAW_EXTRA_MOUNTS="$HOME/.codex:/home/node/.codex:ro,$HOME/github:/ho
 
 ### 持久化整个容器主目录（可选）
 
-如果您希望 `/home/node` 在容器重建后仍然存在，请通过 `OPENCLAW_HOME_VOLUME` 设置一个命名卷。这会创建一个 Docker 卷，并将其挂载到 `/home/node`，同时保留标准的配置/工作区绑定挂载。在此场景中，应使用命名卷（而非绑定路径）；对于绑定挂载，请使用 `OPENCLAW_EXTRA_MOUNTS`。
+如果您希望 `/home/node` 在容器重建后仍然存在，请通过 `OPENCLAW_HOME_VOLUME` 设置一个命名卷。这会创建一个 Docker 卷，并将其挂载到 `/home/node`，同时保留标准的配置/工作区绑定挂载。在这种情况下，应使用命名卷（而非绑定路径）；对于绑定挂载，请使用 `OPENCLAW_EXTRA_MOUNTS`。
 
 示例：
 
@@ -195,7 +195,7 @@ docker compose exec openclaw-gateway node dist/index.mjs health --token "$OPENCL
 scripts/e2e/onboard-docker.sh
 ```
 
-__HEADING_0__QR导入冒烟测试（Docker）
+__HEADING_0__二维码导入冒烟测试（Docker）
 
 ```bash
 pnpm test:docker:qr
@@ -225,7 +225,7 @@ pnpm test:docker:qr
 
 ### 针对多代理的沙箱配置文件
 
-如果您使用多代理路由，每个代理都可以覆盖沙箱和工具设置：`agents.list[].sandbox` 和 `agents.list[].tools`（以及 `agents.list[].tools.sandbox.tools`）。这使您可以在一个网关中运行具有不同访问级别的代理：
+如果您使用多代理路由，每个代理都可以覆盖沙箱和工具设置：`agents.list[].sandbox` 和 `agents.list[].tools`（以及 `agents.list[].tools.sandbox.tools`）。这使您能够在同一个网关中运行具有不同访问级别的代理：
 
 - 完全访问（个人代理）
 - 只读工具 + 只读工作区（家庭/工作代理）
@@ -379,7 +379,7 @@ scripts/sandbox-browser-setup.sh
 
 启用后，代理会收到：
 
-- 一个沙箱浏览器控制的URL（用于 `browser` 工具）
+- 一个由沙箱浏览器控制的URL（用于 `browser` 工具）
 - 一个noVNC URL（如果已启用且无头设置为false）
 
 请记住：如果您对工具使用白名单，请添加 `browser`（并从拒绝列表中移除），否则工具仍将被阻止。

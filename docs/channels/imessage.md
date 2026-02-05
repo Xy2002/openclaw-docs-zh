@@ -16,7 +16,7 @@ read_when:
 - `brew install steipete/tap/imsg`
 
 3) 使用 `channels.imessage.cliPath` 和 `channels.imessage.dbPath` 配置 OpenClaw。
-4) 启动网关，并批准任何 macOS 提示（自动化权限和全盘访问权限）。
+4) 启动网关，并批准任何 macOS 提示（包括自动化权限和全盘访问权限）。
 
 最小配置：
 
@@ -81,7 +81,7 @@ read_when:
 6) 配置 SSH，使 `ssh <bot-macos-user>@localhost true` 无需密码即可正常运行。
 7) 将 `channels.imessage.accounts.bot.cliPath` 指向一个 SSH 包装脚本，该脚本以机器人用户身份运行，并执行 `imsg`。
 
-首次运行注意事项：在*机器人 macOS 用户*中，发送/接收可能需要通过 GUI 进行批准（自动化权限 + 全盘访问权限）。如果 `imsg rpc` 似乎卡住或退出，请以该用户身份登录（屏幕共享有助于操作），运行一次性 `imsg chats --limit 1` / `imsg send ...`，批准相关提示，然后重试。
+首次运行注意事项：在*机器人 macOS 用户*中，发送和接收操作可能需要通过 GUI 进行批准（包括自动化权限和全盘访问权限）。如果 `imsg rpc` 似乎卡住或退出，请以该用户身份登录（屏幕共享有助于操作），运行一次性 `imsg chats --limit 1` 或 `imsg send ...`，批准相关提示，然后重试。
 
 示例包装脚本（`chmod +x`）。将 `<bot-macos-user>` 替换为您的实际 macOS 用户名：
 

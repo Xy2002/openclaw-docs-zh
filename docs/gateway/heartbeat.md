@@ -6,9 +6,9 @@ read_when:
 ---
 # 心跳（网关）
 
-> **心跳 vs Cron？** 请参阅 [Cron vs 心跳](/automation/cron-vs-heartbeat)，了解何时使用每种方法的指导。
+> **心跳 vs Cron？** 请参阅 [Cron vs 心跳](/automation/cron-vs-heartbeat)，以获取关于何时使用每种方法的指导。
 
-心跳在主会话中运行**定期代理回合**，以便模型能够及时提醒您需要注意的事项，而不会频繁打扰您。
+心跳在主会话中运行“定期代理回合”，以便模型能够及时提醒您需要注意的事项，同时避免频繁打扰您。
 
 ## 快速入门（初学者）
 
@@ -39,15 +39,18 @@ read_when:
 
 - 间隔：`30m`（当检测到 Anthropic OAuth/设置令牌身份验证模式时为 `1h`）。设置 `agents.defaults.heartbeat.every` 或按代理设置 `agents.list[].heartbeat.every`；使用 `0m` 来禁用。
 - 提示正文（可通过 `agents.defaults.heartbeat.prompt` 配置）：
+
   `Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.`
+
 - 心跳提示会**原样**作为用户消息发送。系统提示包含“心跳”部分，并且运行会在内部被标记。
 - 活跃时段（`heartbeat.activeHours`）根据配置的时区进行检查。在窗口之外，心跳会被跳过，直到下一个窗口内的触发点。
 
 ## 心跳提示的作用
 
 默认提示有意设计得较为宽泛：
+
 - **后台任务**：“考虑未完成的任务”会促使代理检查后续事项（收件箱、日历、提醒、排队中的工作），并提醒任何紧急事项。
-- **人类检查**：“白天偶尔与您的主人进行检查”会促使代理发送一条轻量级的消息询问“您是否需要什么”，但通过使用您配置的本地时区来避免夜间骚扰（参见 [/concepts/timezone](/concepts/timezone))。
+- **人类检查**：“白天偶尔与您的主人进行检查”会促使代理发送一条轻量级消息，询问“您是否需要什么”，同时通过使用您配置的本地时区来避免在夜间打扰您（详见 [/concepts/timezone](/concepts/timezone))。
 
 如果您希望心跳执行非常具体的任务（例如“检查 Gmail PubSub 统计数据”或“验证网关健康状况”），请将 `agents.defaults.heartbeat.prompt`（或 `agents.list[].heartbeat.prompt`）设置为自定义正文（原样发送）。
 
@@ -88,11 +91,11 @@ read_when:
 - `channels.<channel>.heartbeat` 覆盖渠道默认值。
 - `channels.<channel>.accounts.<id>.heartbeat`（多账户渠道）覆盖每个渠道的设置。
 
-### 按代理的心跳
+按代理的心跳
 
 如果任何 `agents.list[]` 条目包含 `heartbeat` 块，则**仅这些代理**会运行心跳。按代理块会叠加在 `agents.defaults.heartbeat` 上（因此您可以先设置共享默认值，然后按代理进行覆盖）。
 
-示例：两个代理，只有第二个代理运行心跳。
+示例：有两个代理，只有第二个代理运行心跳。
 
 ```json5
 {
@@ -206,13 +209,13 @@ channels:
 | 仅指示器（无消息） | `channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: true }` |
 | 仅在一个渠道中显示 OK | `channels.telegram.heartbeat: { showOk: true }` |
 
-## HEARTBEAT.md（可选）
+## 心跳.md（可选）
 
-如果工作区中存在 `HEARTBEAT.md` 文件，默认提示会指示代理读取该文件。可以将其视为您的“心跳检查清单”：小巧、稳定，每 30 分钟安全地包含一次。
+如果工作区中存在 `HEARTBEAT.md` 文件，默认提示会指示代理读取该文件。你可以把它看作你的“心跳检查清单”：小巧而稳定，每30分钟安全地包含一次。
 
-如果 `HEARTBEAT.md` 存在但实际上是空的（只有空白行和如 `# Heading` 这样的 Markdown 标题），OpenClaw 会跳过心跳运行以节省 API 调用。如果文件缺失，心跳仍会运行，模型会决定如何处理。
+如果 `HEARTBEAT.md` 存在但实际上是空的（只有空白行和如 `# Heading` 这样的 Markdown 标题），OpenClaw 会跳过心跳运行，以节省 API 调用。如果文件缺失，心跳仍会运行，由模型决定如何处理。
 
-保持文件小巧（简短的检查清单或提醒），以避免提示膨胀。
+保持文件小巧（如简短的检查清单或提醒），以避免提示膨胀。
 
 示例 `HEARTBEAT.md`：
 
@@ -226,25 +229,26 @@ channels:
 
 ### 代理可以更新 HEARTBEAT.md 吗？
 
-可以——只要您要求它。
+可以——只要您提出要求。
 
 `HEARTBEAT.md` 只是代理工作区中的普通文件，因此您可以在常规聊天中告诉代理：
+
 - “更新 `HEARTBEAT.md` 以添加每日日历检查。”
 - “重写 `HEARTBEAT.md`，使其更短并专注于收件箱的后续事项。”
 
-如果您希望主动发生这种情况，也可以在心跳提示中加入一行明确说明：“如果检查清单过时，请用更好的版本更新 HEARTBEAT.md。”
+如果您希望主动发生这种情况，也可以在心跳提示中加入一行明确说明：“如果检查清单已过时，请用更完善的版本更新 HEARTBEAT.md。”
 
-安全提示：不要在 `HEARTBEAT.md` 中放入机密信息（API 密钥、电话号码、私有令牌）——它会成为提示上下文的一部分。
+安全提示：请勿在 `HEARTBEAT.md` 中放入机密信息（如 API 密钥、电话号码、私有令牌）——这些信息会成为提示上下文的一部分。
 
 ## 手动唤醒（按需）
 
-您可以通过排队一个系统事件并触发立即心跳：
+您可以排队一个系统事件并触发立即心跳：
 
 ```bash
 openclaw system event --text "Check for urgent follow-ups" --mode now
 ```
 
-如果多个代理配置了 `heartbeat`，手动唤醒会立即运行每个代理的心跳。
+如果多个代理配置了 `heartbeat`，手动唤醒会立即触发每个代理的心跳。
 
 使用 `--mode next-heartbeat` 可以等待下一个计划的触发点。
 
@@ -253,9 +257,10 @@ openclaw system event --text "Check for urgent follow-ups" --mode now
 默认情况下，心跳只传递最终的“答案”有效载荷。
 
 如果您希望提高透明度，可以启用：
+
 - `agents.defaults.heartbeat.includeReasoning: true`
 
-启用后，心跳还将传递一条带有前缀 `Reasoning:` 的单独消息（与 `/reasoning on` 形状相同）。这在代理管理多个会话/典籍时很有用，可以帮助您了解它为何决定提醒您——但这也可能泄露比您预期更多的内部细节。在群聊中最好保持关闭状态。
+启用后，心跳还会传递一条带有前缀 `Reasoning:` 的单独消息，其形状与 `/reasoning on` 完全相同。这在代理管理多个会话或典籍时非常有用，可以帮助你了解它为何决定提醒你——但这也可能泄露比你预期更多的内部细节。在群聊中，最好保持此功能关闭。
 
 ## 成本意识
 

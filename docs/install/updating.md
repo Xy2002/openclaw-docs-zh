@@ -137,7 +137,7 @@ openclaw health
 
 ## 始终运行：`openclaw doctor`
 
-Doctor 是一个“安全更新”命令。它的设计极其简单：修复 + 过渡 + 警告。
+Doctor是一个“安全更新”命令。它的设计极其简单：修复+过渡+警告。
 
 注意：如果您是**源码安装**（git checkout），`openclaw doctor` 会先提示您运行 `openclaw update`。
 

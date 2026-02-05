@@ -17,7 +17,7 @@ Microsoft Teams作为插件提供，不包含在核心安装中。
 
 **重大变更（2026年1月15日）：** MS Teams已从核心移出。如果您使用它，必须安装插件。
 
-解释：这使核心安装更加轻量，并允许MS Teams依赖项独立更新。
+解释：这使核心安装更加轻量，并允许独立更新 Microsoft Teams 依赖项。
 
 通过CLI（npm注册表）安装：
 
@@ -38,7 +38,7 @@ openclaw plugins install ./extensions/msteams
 快速设置（初学者）
 
 1) 安装Microsoft Teams插件。
-2) 创建一个**Azure Bot**（应用ID、客户端密钥和租户ID）。
+2) 创建一个**Azure Bot**（包括应用ID、客户端密钥和租户ID）。
 3) 使用这些凭据配置OpenClaw。
 4) 通过公共URL或隧道公开`/api/messages`（默认端口3978）。
 5) 安装Teams应用包并启动网关。
@@ -63,7 +63,7 @@ openclaw plugins install ./extensions/msteams
 
 ## 目标
 
-- 通过Teams私信、群聊或频道与OpenClaw对话。
+- 通过Teams私信、群聊或频道与OpenClaw进行对话。
 - 保持路由确定性：回复始终返回到消息最初到达的频道。
 - 默认采用安全的频道行为（除非另行配置，否则必须提及）。
 
@@ -136,7 +136,7 @@ openclaw plugins install ./extensions/msteams
 ## 工作原理
 
 1. 安装Microsoft Teams插件。
-2. 创建一个**Azure Bot**（应用ID、密钥和租户ID）。
+2. 创建一个**Azure Bot**（包括应用ID、密钥和租户ID）。
 3. 构建一个引用该机器人并包含以下RSC权限的**Teams应用包**。
 4. 将Teams应用上传或安装到团队中（或用于DM的个人范围）。
 5. 在`msteams`中配置`~/.openclaw/openclaw.json`（或环境变量），并启动网关。
@@ -177,7 +177,7 @@ __HEADING_0__Azure Bot设置（先决条件）
 1. 在Azure Bot中，转到**配置**
 2. 将**消息端点**设置为您的Webhook URL：
    - 生产：`https://your-domain.com/api/messages`
-   - 本地开发：使用隧道（参见下方[本地开发](#local-development-tunneling))
+   - 本地开发：使用隧道（详见下方[本地开发](#local-development-tunneling))
 
 ### 第四步：启用Teams频道
 
@@ -222,9 +222,9 @@ __HEADING_0__Teams开发者门户（替代方案）
 
 **选项A：Azure Web聊天（先验证Webhook）**
 
-1. 在Azure门户中，转到您的Azure Bot资源，然后选择“在Web Chat中测试”。
+1. 在Azure门户中，导航到您的Azure Bot资源，然后选择“在Web Chat中测试”。
 2. 发送一条消息——您应该会收到回复。
-3. 这将确认您的Webhook端点在配置Teams设置之前已正常工作。
+3. 这将确认，在配置Teams设置之前，您的Webhook端点已正常运行。
 
 **选项B：Teams（安装应用后）**
 
@@ -287,7 +287,7 @@ __HEADING_0__Teams开发者门户（替代方案）
 
 ## 当前Teams RSC权限（清单）
 
-这些是我们Teams应用清单中的**现有特定于资源的权限**。它们仅适用于安装了该应用的团队或聊天。
+这些是我们Teams应用清单中的**现有特定于资源的权限**。它们仅适用于已安装该应用的团队或聊天。
 
 **对于频道（团队范围）：**
 
@@ -374,7 +374,7 @@ __HEADING_0__Teams开发者门户（替代方案）
 5. **对于团队频道：** 为使新权限生效，请在每个团队中重新安装应用。
 6. **彻底退出并重新启动Teams**（而不仅仅是关闭窗口），以清除缓存的应用元数据。
 
-## 功能：仅RSC与图对比
+## 功能：仅对比RSC与图像
 
 ### 仅使用**Teams RSC**（已安装应用，无Graph API权限）
 
@@ -398,7 +398,7 @@ __HEADING_0__Teams开发者门户（替代方案）
 - 下载存储在SharePoint/OneDrive中的文件附件。
 - 通过Graph读取频道/聊天消息历史。
 
-__HEADING_0__RSC 与 Graph API
+__HEADING_0__RSC与Graph API
 
 | 功能 | RSC权限 | Graph API |
 |------------|-----------------|-----------|
@@ -418,7 +418,7 @@ __HEADING_0__RSC 与 Graph API
    - `Chat.Read.All`或`ChatMessage.Read.All`（群聊）
 2. 为租户**授予管理员同意**。
 3. 提升Teams应用的**清单版本**，重新上传，并在Teams中**重新安装应用**。
-4. **完全退出并重新启动Teams**，以清除缓存的应用元数据。
+4. **彻底退出并重新启动Teams**，以清除缓存的应用元数据。
 
 已知限制
 
@@ -515,8 +515,8 @@ Teams最近在同一底层数据模型上引入了两种频道UI风格：
 
 **当前限制：**
 
-- **私信：** 图像和文件附件通过Teams机器人文件API处理。
-- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**需要Graph API权限**。
+- **私信：** 图像和文件附件通过Teams机器人文件API进行处理。
+- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**必须具备Graph API权限**。
 
 如果没有Graph权限，带有图像的频道消息将被视为纯文本（机器人无法访问图像内容）。
 默认情况下，OpenClaw仅从Microsoft/Teams主机名下载媒体。使用`channels.msteams.mediaAllowHosts`进行覆盖（使用`["*"]`允许任何主机）。
@@ -735,10 +735,10 @@ https://teams.microsoft.com/l/channel/19%3A15bc...%40thread.tacv2/ChannelName?gr
 
 ### 常见问题
 
-- **频道中图像不显示：** 可能缺少Graph权限或未获得管理员批准。请重新安装Teams应用，并彻底退出后再重新打开Teams。
-- **频道中无回复：** 默认情况下需要@提及；可通过设置`channels.msteams.requireMention=false`或根据团队/频道的配置来调整。
-- **版本不匹配（Teams仍显示旧清单）：** 请删除并重新添加应用，然后彻底退出Teams以完成刷新。
-- **来自Webhook的401未经授权：** 在未使用Azure JWT的情况下手动测试时出现此错误是预期的——这表明端点可访问，但身份验证失败。请使用Azure Web Chat进行正确的测试。
+- **频道中图像不显示：** 可能是因为缺少Graph权限或尚未获得管理员批准。请重新安装Teams应用，彻底退出后再重新打开Teams。
+- **频道中无回复：** 默认情况下需要通过@提及来触发回复；你也可以通过设置`channels.msteams.requireMention=false`或根据团队/频道的具体配置进行相应调整。
+- **版本不匹配（Teams仍显示旧清单）：** 请先删除并重新添加应用，然后彻底退出Teams以完成刷新操作。
+- **来自Webhook的401未经授权错误：** 如果在未使用Azure JWT的情况下手动测试时出现此错误，这是预期行为——它表明端点可以访问，但身份验证失败。请使用Azure Web Chat进行正确的测试。
 
 ### 清单上传错误
 

@@ -227,7 +227,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 ### `web_fetch`
 
-从URL获取并提取可读内容（HTML → Markdown/文本）。
+从URL获取并提取可读内容（HTML→Markdown/文本）。
 
 核心参数：
 
@@ -352,9 +352,9 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - 仅在配置了`agents.defaults.imageModel`（主要或备用）时可用，或者当可以从您的默认模型+配置的身份验证中推断出隐式图像模型时（尽力匹配）。
 - 直接使用图像模型（独立于主聊天模型）。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
-在Discord、Google Chat、Slack、Telegram、WhatsApp、Signal、iMessage和MS Teams之间发送消息和执行频道操作。
+在Discord、Google Chat、Slack、Telegram、WhatsApp、Signal、iMessage和MS Teams之间发送消息并执行频道操作。
 
 核心动作：
 
@@ -395,7 +395,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 - `add`期望一个完整的cron作业对象（与`cron.add`RPC相同的模式）。
 - `update`使用`{ id, patch }`。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 重启或在运行中更新网关进程。
 
@@ -414,7 +414,7 @@ OpenClaw为浏览器、画布、节点和定时任务提供了**一流代理工�
 
 ### __行内代码_0__/__行内代码_1__/__行内代码_2__/__行内代码_3__/__行内代码_4__
 
-列出会话，检查对话历史，或将消息发送到另一个会话。
+列出会话、查看对话历史或将消息发送到另一个会话。
 
 核心参数：
 

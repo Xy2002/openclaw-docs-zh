@@ -174,7 +174,7 @@ OpenClaw 在启动时向 Telegram 的机器人菜单注册原生命令（如 `/s
 }
 ```
 
-**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** - 只有列入名单的群组（或 `"*"`）才会被接受。
+**重要提示：** 设置 `channels.telegram.groups` 会创建一个 **白名单** -  only 列入名单的群组（或 `"*"`）才会被接受。
 论坛主题将继承其父群组的配置（allowFrom、requireMention、skills、prompts），除非您在 `channels.telegram.groups.<groupId>.topics.<topicId>` 下为特定主题添加覆盖设置。
 
 要允许所有群组始终响应：

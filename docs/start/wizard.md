@@ -6,7 +6,7 @@ read_when:
   - Running or configuring the onboarding wizard
   - Setting up a new machine
 ---
-# 入门指南（CLI）
+# 入门指南（命令行界面）
 
 入门向导是**推荐**的在 macOS、Linux 或 Windows（通过 WSL2；强烈推荐）上设置 OpenClaw 的方式。它通过一个引导式流程配置本地网关或远程网关连接，以及通道、技能和工作区的默认设置。
 
@@ -26,7 +26,7 @@ openclaw configure
 
 推荐：设置 Brave Search API 密钥，以便代理可以使用 `web_search`（`web_fetch` 无需密钥即可工作）。最简单的方法：`openclaw configure --section web`，它会存储 `tools.web.search.apiKey`。文档：[Web 工具](/tools/web)。
 
-__HEADING_0__QuickStart 与高级
+__HEADING_0__快速入门与高级
 
 向导首先提供“快速入门”（默认设置）和“高级”（完全控制）选项。
 
@@ -128,7 +128,7 @@ openclaw agents add <name>
 6) **守护进程安装**
 
 - macOS：LaunchAgent
-     - 需要在登录用户会话中运行；对于无头环境，请使用自定义的 LaunchDaemon（未随附）。
+     - 必须在登录用户会话中运行；对于无头环境，请使用自定义的 LaunchDaemon（未随附）。
    - Linux（以及通过 WSL2 在 Windows 上）：systemd 用户单元
      - 向导会尝试通过 `loginctl enable-linger <user>` 启用 linger 功能，以确保在用户注销后网关仍能继续运行。
      - 可能会提示输入 sudo（用于写入 `/var/lib/systemd/linger`）；向导会先尝试在无需 sudo 的情况下运行。
@@ -149,7 +149,7 @@ openclaw agents add <name>
 
 - 总结与下一步：包括适用于iOS、Android和macOS的应用程序，以获取额外功能。
    - 如果未检测到GUI，向导将打印SSH端口转发指令，而不是打开浏览器来访问控制UI。
-   - 如果缺少控制UI资产，向导将尝试构建这些资产；备用方案是`pnpm ui:build`（自动安装UI依赖项）。
+   - 如果缺少控制UI资产，向导会尝试构建这些资产；备用方案是`pnpm ui:build`（自动安装UI依赖项）。
 
 ## 远程模式
 
@@ -157,8 +157,8 @@ openclaw agents add <name>
 
 您需要设置的内容：
 
-- 这是远程网关的 URL (`ws://...`)
-- 如果远程网关需要认证，则设置 Token（推荐）
+- 这是远程网关的URL (`ws://...`)
+- 如果远程网关需要认证，则设置Token（推荐）
 
 注意事项：
 
@@ -295,7 +295,7 @@ openclaw agents add work \
 
 - 构建JVM需要**Java 21**。
 - 尽可能使用原生构建。
-- Windows使用WSL2；signal-cli的安装遵循WSL内部的Linux流程。
+- 在Windows上使用WSL2；signal-cli的安装遵循WSL内部的Linux流程。
 
 ## 向导写入的内容
 

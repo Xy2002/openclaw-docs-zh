@@ -69,16 +69,16 @@ OpenClaw 提供两款轻量级网页工具：
 ## 获取 Brave API 密钥
 
 1) 在 https://brave.com/search/api/ 创建一个 Brave Search API 账户。
-2) 在仪表板中，选择 **用于搜索的数据** 方案（而非“用于 AI 的数据”），并生成 API 密钥。
+2) 在仪表板中，选择**用于搜索的数据**方案（而非“用于 AI 的数据”），并生成 API 密钥。
 3) 运行 `openclaw configure --section web` 将密钥存储在配置中（推荐），或在您的环境变量中设置 `BRAVE_API_KEY`。
 
-Brave 提供免费层级和付费方案；请访问 Brave API 门户以了解当前的限制和定价。
+Brave 提供免费层级和付费方案；请访问 Brave API 门户，了解当前的限制和定价。
 
 ### 推荐的密钥设置位置
 
 **推荐方法：**运行 `openclaw configure --section web`。它会将密钥存储在 `~/.openclaw/openclaw.json` 下的 `tools.web.search.apiKey` 中。
 
-**环境变量替代方案：**在网关进程的环境中设置 `BRAVE_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。详情请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
+**环境变量替代方案：**在网关进程的环境中设置 `BRAVE_API_KEY`。对于网关安装，将其放入 `~/.openclaw/.env`（或您的服务环境）。有关详情，请参阅 [环境变量](/help/faq#how-does-openclaw-load-environment-variables)。
 
 ## 使用 Perplexity（直接调用或通过 OpenRouter）
 

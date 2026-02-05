@@ -72,7 +72,7 @@ OpenClaw可以为`MEMORY.md`和`memory/*.md`（以及你选择加入的任何其
 默认设置：
 
 - 默认启用。
-- 监控内存文件的变化（带去抖动功能）。
+- 监控内存文件的变化（内置去抖动功能）。
 - 默认使用远程嵌入。如果未设置 `memorySearch.provider`，OpenClaw 将自动选择：
   1. 如果已配置 `memorySearch.local.modelPath` 且相关文件存在，则使用 `local`。
   2. 如果能够解析 OpenAI 密钥，则使用 `openai`。
@@ -339,7 +339,7 @@ agents: {
 }
 ```
 
-__HEADING_0__SQLite 向量加速（sqlite-vec）
+__HEADING_0__SQLite向量加速（sqlite-vec）
 
 当 sqlite-vec 扩展可用时，OpenClaw 会将嵌入存储在 SQLite 虚拟表中（`vec0`），并在数据库中执行向量距离查询。这样一来，无需将所有嵌入加载到 JavaScript 中，就能显著提升搜索速度。
 

@@ -11,7 +11,7 @@ read_when:
 - 默认：`http://<host>:18789/`
 - 可选前缀：设置 `gateway.controlUi.basePath`（例如 `/openclaw`）
 
-功能位于 [控制界面](/web/control-ui) 中。本页面重点介绍绑定模式、安全性以及面向Web的界面。
+功能位于 [控制界面](/web/control-ui) 中。本页面重点介绍绑定模式、安全性以及基于Web的界面。
 
 ## 网页挂钩
 
