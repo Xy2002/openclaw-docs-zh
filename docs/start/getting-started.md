@@ -6,14 +6,15 @@ read_when:
 ---
 # 入门指南
 
-目标：尽可能快速地从 **零** 进展到拥有第一个可运行的聊天系统（并使用合理的默认配置）。
+目标：尽可能快速地从**零**起步，构建并运行第一个可用的聊天系统（并采用合理的默认配置）。
 
 最快启动聊天的方式：打开控制 UI（无需设置频道）。运行 `openclaw dashboard`，即可在浏览器中开始聊天；或者在网关主机上打开 `http://127.0.0.1:18789/`。相关文档：[仪表板](/web/dashboard) 和 [控制 UI](/web/control-ui)。
 
 推荐路径：使用 **CLI 引导向导** (`openclaw onboard`)。它会自动完成以下设置：
+
 - 模型与身份验证（推荐使用 OAuth）
 - 网关设置
-- 频道配置（WhatsApp/Telegram/Discord/Mattermost（插件）等）
+- 渠道配置（WhatsApp、Telegram、Discord、Mattermost（插件）等）
 - 配对默认设置（安全的私信）
 - 工作区初始化 + 技能配置
 - 可选的后台服务
@@ -37,11 +38,11 @@ read_when:
 
 ## 0) 前置条件
 
-- Node `>=22`
+- 节点 `>=22`
 - `pnpm`（可选；如果从源码构建，建议安装）
 - **推荐：** Brave Search API 密钥，用于网络搜索。最简便的方法是使用 `openclaw configure --section web`（存储 `tools.web.search.apiKey`）。更多信息请参见 [网络工具](/tools/web)。
 
-macOS：如果您计划构建应用程序，请安装 Xcode / CLT。如果仅使用 CLI 和网关，则只需安装 Node 即可。Windows：使用 **WSL2**（推荐 Ubuntu）。强烈建议使用 WSL2；原生 Windows 尚未经过测试，问题较多，且工具兼容性较差。请先安装 WSL2，然后在 WSL 中执行 Linux 步骤。更多信息请参见 [Windows (WSL2)](/platforms/windows)。
+macOS：如果您计划构建应用程序，请安装 Xcode 或命令行工具（CLT）。如果仅使用 CLI 和网关，只需安装 Node.js 即可。Windows：推荐使用 **WSL2**（建议安装 Ubuntu）。我们强烈建议使用 WSL2；原生 Windows 尚未经过充分测试，存在较多问题，且工具兼容性较差。请先安装 WSL2，然后在 WSL 环境中按照适用于 Linux 的步骤进行操作。更多信息请参见 [Windows (WSL2)](/platforms/windows)。
 
 ## 1) 安装 CLI（推荐）
 
@@ -74,8 +75,9 @@ openclaw onboard --install-daemon
 ```
 
 您将选择的内容包括：
+
 - **本地 vs 远程** 网关
-- **身份验证**：OpenAI Code（Codex）订阅（OAuth）或 API 密钥。对于 Anthropic，我们推荐使用 API 密钥；也支持 `claude setup-token`。
+- **身份验证**：OpenAI Code（Codex）订阅（OAuth）或 API 密钥。对于 Anthropic，我们建议使用 API 密钥；也支持 `claude setup-token`。
 - **提供商**：WhatsApp QR 登录、Telegram/Discord 机器人令牌、Mattermost 插件令牌等。
 - **守护进程**：后台安装（launchd/systemd；WSL2 使用 systemd）
   - **运行时**：Node（推荐；WhatsApp/Telegram 必需）。不推荐使用 Bun。
@@ -109,9 +111,9 @@ openclaw gateway --port 18789 --verbose
 仪表板（本地环回）：`http://127.0.0.1:18789/`
 如果已配置令牌，请将其粘贴到控制 UI 设置中（存储为 `connect.params.auth.token`）。
 
-⚠️ **Bun 警告（WhatsApp + Telegram）：** Bun 在这些渠道上存在已知问题。如果您使用 WhatsApp 或 Telegram，请使用 **Node** 运行网关。
+⚠️ **Bun 警告（WhatsApp + Telegram）：** Bun 在这些渠道上存在已知问题。如果您使用 WhatsApp 或 Telegram，请改用 **Node** 运行网关。
 
-## 3.5) 快速验证（2 分钟）
+## 3.5) 快速验证（2分钟）
 
 ```bash
 openclaw status
@@ -119,9 +121,9 @@ openclaw health
 openclaw security audit --deep
 ```
 
-## 4) 配着并连接您的第一个聊天界面
+## 4) 配置并连接您的第一个聊天界面
 
-### WhatsApp（QR 登录）
+__HEADING_0__WhatsApp（二维码登录）
 
 ```bash
 openclaw channels login
@@ -131,18 +133,19 @@ openclaw channels login
 
 WhatsApp 文档：[WhatsApp](/channels/whatsapp)
 
-### Telegram / Discord / 其他
+### 电报 / Discord / 其他
 
-向导可以为您编写令牌/配置。如果您更倾向于手动配置，可以从以下内容开始：
+向导可以为您生成令牌/配置。如果您更倾向于手动配置，可以从以下内容开始：
+
 - Telegram：[Telegram](/channels/telegram)
 - Discord：[Discord](/channels/discord)
 - Mattermost（插件）：[Mattermost](/channels/mattermost)
 
-**Telegram 私信提示：** 您的第一条私信会返回一个配着代码。请批准该代码（见下一步），否则机器人将无法响应。
+**Telegram 私信提示：** 您的第一条私信会附带一个代码。请批准该代码（见下一步），否则机器人将无法响应。
 
-## 5) 私信安全（配着批准）
+## 5) 私信安全（需批准）
 
-默认行为：未知私信会收到一个短代码，消息在获得批准之前不会被处理。如果您的第一条私信没有回复，请批准配着：
+默认行为：未知私信会收到一个短代码，在消息获得批准之前不会被处理。如果您的第一条私信没有回复，请批准配着：
 
 ```bash
 openclaw pairing list whatsapp
@@ -153,7 +156,7 @@ openclaw pairing approve whatsapp <code>
 
 ## 从源码（开发）
 
-如果您正在对 OpenClaw 本身进行开发，请直接从源码运行：
+如果您正在对 OpenClaw 本身进行开发，请直接从源代码运行：
 
 ```bash
 git clone https://github.com/openclaw/openclaw.git
@@ -164,7 +167,7 @@ pnpm build
 openclaw onboard --install-daemon
 ```
 
-如果您尚未进行全局安装，可以通过仓库中的 `pnpm openclaw ...` 还运行引导步骤。`pnpm build` 还打包了 A2UI 资产；如果只需要运行这一步骤，可以使用 `pnpm canvas:a2ui:bundle`。
+如果您尚未进行全局安装，可以通过仓库中的 `pnpm openclaw ...` 运行引导步骤。`pnpm build` 还打包了A2UI资产；如果只需要运行这一步骤，可以使用 `pnpm canvas:a2ui:bundle`。
 
 网关（来自此仓库）：
 
@@ -174,7 +177,7 @@ node openclaw.mjs gateway --port 18789 --verbose
 
 ## 7) 验证端到端功能
 
-在新的终端中发送一条测试消息：
+在新终端中发送一条测试消息：
 
 ```bash
 openclaw message send --target +15555550123 --message "Hello from OpenClaw"
@@ -188,5 +191,5 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 - macOS 菜单栏应用 + 语音唤醒：[macOS 应用](/platforms/macos)
 - iOS/Android 节点（画布/相机/语音）：[节点](/nodes)
-- 遥远访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
-- 常开 / VPN 设置：[远程访问](/gateway/remote)、[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[macOS 遥远](/platforms/mac/remote)
+- 远程访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
+- 常开 / VPN 设置：[远程访问](/gateway/remote)、[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[macOS 远程](/platforms/mac/remote)

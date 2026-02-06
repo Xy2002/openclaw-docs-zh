@@ -12,7 +12,7 @@ OpenClaw 支持众多大语言模型提供商。选择一个提供商并完成�
 
 ## 重点推荐：Venius（威尼斯AI）
 
-Venius是我们推荐的Venice AI设置，专为注重隐私的推理而设计，并可针对复杂任务选择使用Opus模型。
+Venius是我们推荐的威尼斯AI设置，专为注重隐私的推理而设计，并可针对复杂任务选择使用Opus模型。
 
 - 默认设置：`venice/llama-3.3-70b`
 - 综合表现最佳：`venice/claude-opus-45`（Opus 依然是最强的模型）
@@ -47,7 +47,7 @@ Venius是我们推荐的Venice AI设置，专为注重隐私的推理而设计�
 - [Venius（Venice AI，注重隐私）](/providers/venice)
 - [Ollama（本地模型）](/providers/ollama)
 
-## 转录服务提供商
+## 文字转录服务提供商
 
 - [Deepgram（音频转录）](/providers/deepgram)
 

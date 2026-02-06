@@ -4,13 +4,13 @@ read_when:
   - You want OpenCode Zen for model access
   - You want a curated list of coding-friendly models
 ---
-# OpenCode Zen
+# 开放代码禅
 
 OpenCode Zen是OpenCode团队为编码代理推荐的**精选模型列表**。
 它是一种可选的托管模型访问途径，使用API密钥和`opencode`提供商。
 Zen目前处于测试阶段。
 
-## CLI设置
+__HEADING_0__CLI设置
 
 ```bash
 openclaw onboard --auth-choice opencode-zen

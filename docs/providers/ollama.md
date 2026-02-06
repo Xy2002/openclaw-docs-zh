@@ -4,9 +4,9 @@ read_when:
   - You want to run OpenClaw with local models via Ollama
   - You need Ollama setup and configuration guidance
 ---
-# Ollama
+# 奥拉玛
 
-Ollama是一个本地LLM运行时，可让你轻松在本地机器上运行开源模型。OpenClaw与Ollama的OpenAI兼容API集成，并且在你通过`OLLAMA_API_KEY`（或身份验证配置文件）选择启用并**未显式定义`models.providers.ollama`条目**时，能够**自动发现具备工具能力的模型**。
+Ollama是一个本地大语言模型运行时，可让你轻松在本地机器上运行开源模型。OpenClaw与Ollama的OpenAI兼容API集成，并且在你通过`OLLAMA_API_KEY`（或身份验证配置文件）选择启用且**未显式定义`models.providers.ollama`条目**时，能够**自动发现具备工具能力的模型**。
 
 ## 快速入门
 
@@ -46,7 +46,7 @@ openclaw config set models.providers.ollama.apiKey "ollama-local"
 
 ## 模型发现（隐式提供者）
 
-当你设置`OLLAMA_API_KEY`（或身份验证配置文件）并且**未**定义`models.providers.ollama`时，OpenClaw会从本地Ollama实例中发现模型，该实例位于`http://127.0.0.1:11434`：
+当您设置`OLLAMA_API_KEY`（或身份验证配置文件）且**未**定义`models.providers.ollama`时，OpenClaw会从本地Ollama实例中发现模型，该实例位于`http://127.0.0.1:11434`：
 
 - 查询`/api/tags`和`/api/show`
 - 仅保留报告具有`tools`能力的模型
@@ -87,6 +87,7 @@ export OLLAMA_API_KEY="ollama-local"
 ### 显式设置（手动模型）
 
 在以下情况下使用显式配置：
+
 - Ollama运行在其他主机或端口上。
 - 你想强制指定特定的上下文窗口或模型列表。
 - 你想包含不报告工具支持的模型。
@@ -165,13 +166,13 @@ ollama pull deepseek-r1:32b
 
 ### 模型成本
 
-Ollama是免费的，并且在本地运行，因此所有模型的成本都被设置为$0。
+Ollama是免费的，并且在本地运行，因此所有模型的成本都被设置为0美元。
 
 ### 上下文窗口
 
 对于自动发现的模型，OpenClaw会在可用时使用Ollama报告的上下文窗口，否则默认使用`8192`。你可以在显式提供者配置中覆盖`contextWindow`和`maxTokens`。
 
-## 故障排除
+故障排除
 
 ### 未检测到Ollama
 
@@ -189,7 +190,8 @@ curl http://localhost:11434/api/tags
 
 ### 没有可用模型
 
-OpenClaw只自动发现报告工具支持的模型。如果你的模型未列出，可以采取以下措施：
+OpenClaw仅自动发现报告工具支持的模型。如果你的模型未列出，可以采取以下措施：
+
 - 拉取一个具备工具能力的模型，或
 - 在`models.providers.ollama`中显式定义该模型。
 

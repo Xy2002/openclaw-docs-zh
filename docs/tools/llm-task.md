@@ -4,11 +4,11 @@ read_when:
   - You want a JSON-only LLM step inside workflows
   - You need schema-validated LLM output for automation
 ---
-# LLM任务
+# 大语言模型任务
 
 `llm-task` 是一种**可选插件工具**，可运行仅限 JSON 的 LLM 任务，并返回结构化输出（可选择根据 JSON Schema 进行验证）。
 
-这对于像 Lobster 这样的工作流引擎非常理想：您只需添加一个 LLM 步骤，而无需为每个工作流编写自定义 OpenClaw 代码。
+这对于像 Lobster 这样的工作流引擎来说非常理想：您只需添加一个 LLM 步骤，而无需为每个工作流编写自定义 OpenClaw 代码。
 
 ## 启用插件
 
@@ -79,7 +79,7 @@ read_when:
 
 返回包含解析后 JSON 的 `details.json`，并在提供时根据 `schema` 进行验证。
 
-## 示例：Lobster 工作流步骤
+## 示例：龙虾工作流步骤
 
 ```lobster
 openclaw.invoke --tool llm-task --action json --args-json '{
@@ -105,4 +105,4 @@ openclaw.invoke --tool llm-task --action json --args-json '{
 - 该工具**仅处理 JSON**，并指示模型仅输出 JSON（无代码块，无注释）。
 - 在本次运行中，不会向模型暴露任何工具。
 - 除非您使用 `schema` 进行验证，否则应将输出视为不可信。
-- 在执行任何具有副作用的操作（发送、发布、执行）之前，请先进行批准。
+- 在执行任何具有副作用的操作（如发送、发布或执行）之前，请先获得批准。

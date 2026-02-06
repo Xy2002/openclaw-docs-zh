@@ -17,7 +17,7 @@ Microsoft Teams作为插件提供，不包含在核心安装中。
 
 **重大变更（2026年1月15日）：** MS Teams已从核心移出。如果您使用它，必须安装插件。
 
-解释：这使核心安装更加轻量，并允许独立更新 Microsoft Teams 依赖项。
+解释：这使核心安装更加轻量，并允许独立更新 Microsoft Teams 的依赖项。
 
 通过CLI（npm注册表）安装：
 
@@ -516,7 +516,7 @@ Teams最近在同一底层数据模型上引入了两种频道UI风格：
 **当前限制：**
 
 - **私信：** 图像和文件附件通过Teams机器人文件API进行处理。
-- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**必须具备Graph API权限**。
+- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**必须拥有Graph API权限**。
 
 如果没有Graph权限，带有图像的频道消息将被视为纯文本（机器人无法访问图像内容）。
 默认情况下，OpenClaw仅从Microsoft/Teams主机名下载媒体。使用`channels.msteams.mediaAllowHosts`进行覆盖（使用`["*"]`允许任何主机）。
@@ -736,7 +736,7 @@ https://teams.microsoft.com/l/channel/19%3A15bc...%40thread.tacv2/ChannelName?gr
 ### 常见问题
 
 - **频道中图像不显示：** 可能是因为缺少Graph权限或尚未获得管理员批准。请重新安装Teams应用，彻底退出后再重新打开Teams。
-- **频道中无回复：** 默认情况下需要通过@提及来触发回复；你也可以通过设置`channels.msteams.requireMention=false`或根据团队/频道的具体配置进行相应调整。
+- **频道中无回复：** 默认情况下，必须通过@提及才能触发回复；你也可以通过设置`channels.msteams.requireMention=false`，或根据团队/频道的具体配置进行相应调整。
 - **版本不匹配（Teams仍显示旧清单）：** 请先删除并重新添加应用，然后彻底退出Teams以完成刷新操作。
 - **来自Webhook的401未经授权错误：** 如果在未使用Azure JWT的情况下手动测试时出现此错误，这是预期行为——它表明端点可以访问，但身份验证失败。请使用Azure Web Chat进行正确的测试。
 

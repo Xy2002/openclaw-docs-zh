@@ -353,16 +353,16 @@ fly machine update <machine-id> --vm-memory 2048 --command "node dist/index.mjs 
 
 ## 私有部署（加固）
 
-默认情况下，Fly 会分配公共 IP，使您的网关可通过 `https://your-app.fly.dev` 访问。这很方便，但也意味着您的部署可能被互联网扫描器（如 Shodan 和 Censys）发现。
+默认情况下，Fly 会分配公共 IP，使您的网关可通过 `https://your-app.fly.dev` 访问。这很方便，但也意味着您的部署可能被 Shodan 和 Censys 等互联网扫描器发现。
 
 对于**无公开暴露**的加固部署，请使用私有模板。
 
 ### 何时使用私有部署
 
 - 您仅进行**出站**调用/消息（无入站Webhook）
-- 您使用**ngrok或Tailscale**隧道处理任何Webhook回调
+- 您使用**ngrok或Tailscale**隧道来处理任何Webhook回调
 - 您通过**SSH、代理或WireGuard**而非浏览器访问网关
-- 您希望部署的系统**对互联网扫描器保持隐藏**
+- 您希望部署的系统**对互联网扫描器保持隐身**
 
 ### 设置
 

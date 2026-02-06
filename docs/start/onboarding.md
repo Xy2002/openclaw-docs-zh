@@ -59,7 +59,7 @@ macOS 应用支持 Anthropic OAuth（Claude Pro/Max）。流程如下：
 
 5）命令行界面（可选）
 
-该应用可通过 npm 或 pnpm 全局安装 `openclaw`CLI，使终端工作流和 launchd 任务开箱即用。
+该应用可通过 npm 或 pnpm 全局安装 `openclaw`CLI，让终端工作流和 launchd 任务开箱即用。
 
 6）入门聊天（专用会话）
 

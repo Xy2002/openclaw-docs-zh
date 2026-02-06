@@ -242,7 +242,7 @@ summary: 'Frequently asked questions about OpenClaw setup, configuration, and us
    openclaw doctor
    ```
 
-修复/迁移配置和状态，并运行健康检查。请参阅[医生](/gateway/doctor)。
+修复或迁移配置和状态，并运行健康检查。请参阅[医生](/gateway/doctor)。
 
 7) **网关快照**
 
@@ -268,7 +268,7 @@ summary: 'Frequently asked questions about OpenClaw setup, configuration, and us
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 ```
 
-这会**从 Git 检出并安装 OpenClaw**，以便代理能够读取代码和文档，并准确推断您正在运行的版本。您随时可以通过不带 `--install-method git` 重新运行安装程序，切换回稳定版本。
+这会从 Git 检出并安装 OpenClaw，以便代理能够读取代码和文档，并准确推断您正在运行的版本。您随时可以通过不带 `--install-method git` 重新运行安装程序，切换回稳定版本。
 
 提示：请让客服代表逐步规划并监督修复方案，然后仅执行必要的命令。这样可以确保变更幅度小，更易于审计。
 
@@ -322,7 +322,7 @@ openclaw onboard
 
 ### 如何在完成入职后打开仪表板
 
-向导在完成入门设置后会立即使用带令牌的仪表板URL在您的浏览器中打开页面，并在摘要中打印出包含令牌的完整链接。请保持该标签页始终处于打开状态；如果浏览器未自动启动，请在同一台机器上复制并粘贴打印出来的URL。令牌仅存储在您的主机本地，不会从浏览器中获取任何数据。
+在完成入门设置后，向导会立即使用带令牌的仪表板URL在您的浏览器中打开页面，并在摘要中打印出包含令牌的完整链接。请务必保持该标签页始终处于打开状态；如果浏览器未自动启动，请在同一台机器上复制并粘贴打印出来的URL。令牌仅存储在您的主机本地，不会从浏览器中获取任何数据。
 
 ### 如何在本地主机与远程环境中对仪表板令牌进行身份验证？
 
@@ -511,7 +511,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --verbose
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 ```
 
-对于可被黑客攻击的（git）安装：
+对于可能被黑客攻击的（git）安装：
 
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git --verbose
@@ -563,7 +563,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 
 ### 如何在VPS上安装OpenClaw
 
-任何 Linux VPS 都可以使用。在服务器上安装后，通过 SSH 或 Tailscale 连接到网关。
+任何 Linux VPS 都可以使用。在服务器上安装完成后，通过 SSH 或 Tailscale 连接到网关。
 
 指南：[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[Fly.io](/platforms/fly)。  
 远程访问：[Gateway 远程](/gateway/remote)。
@@ -577,7 +577,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 - [Hetzner](/platforms/hetzner)
 - [exe.dev](/platforms/exe-dev)
 
-在云端的工作原理：**网关在服务器上运行**，您可以通过控制界面（或 Tailscale/SSH）从笔记本电脑或手机访问它。您的状态和工作区都存储在服务器上，因此请将主机视为事实来源并定期备份。
+云端的工作原理：**网关在服务器上运行**，您可以通过控制界面（或 Tailscale/SSH）从笔记本电脑或手机访问它。您的状态和工作区都存储在服务器上，因此请将主机视为权威数据源，并定期进行备份。
 
 您可以将**节点**（Mac/iOS/Android/无头）与该云网关配对，以访问本地屏幕、摄像头或画布；或者在云端保留网关的同时，在笔记本电脑上运行命令。
 
@@ -611,9 +611,9 @@ openclaw gateway restart
 
 `openclaw onboard` 是推荐的设置路径。在**本地模式**下，它会引导您完成以下步骤：
 
-- **模型/身份验证设置**（建议为 Claude 订阅使用 Anthropic 的 **setup-token**，支持 OpenAI Codex OAuth，API 密钥为可选配置，支持 LM Studio 本地模型）
+- **模型/身份验证设置**（建议为 Claude 订阅使用 Anthropic 的 **setup-token**；支持 OpenAI Codex OAuth，API 密钥为可选配置；支持 LM Studio 本地模型）
 - 工作区位置与引导文件
-- **网关设置**（绑定地址、端口、身份验证及 Tailscale 配置）
+- **网关设置**（包括绑定地址、端口、身份验证以及 Tailscale 配置）
 - **服务商**（WhatsApp、Telegram、Discord、Mattermost（插件）、Signal、iMessage）
 - **守护进程安装**（在 macOS 上使用 LaunchAgent；在 Linux/WSL2 上使用 systemd 用户单元）
 - 健康检查与技能选择
@@ -622,7 +622,7 @@ openclaw gateway restart
 
 ### 我需要订阅Claude或OpenAI才能运行这个吗？
 
-不，你可以使用**API密钥**（来自Anthropic、OpenAI或其他提供商）或仅在本地运行的模型来运行OpenClaw，从而确保你的数据始终保存在本地设备上。订阅（如Claude Pro/Max或OpenAI Codex）只是用于认证这些提供商的一种可选方式。
+不，你可以使用来自Anthropic、OpenAI或其他提供商的**API密钥**，或者仅在本地运行的模型来运行OpenClaw，从而确保你的数据始终保存在本地设备上。订阅服务（如Claude Pro/Max或OpenAI Codex）只是用于认证这些提供商的一种可选方式。
 
 文档：[Anthropic](/providers/anthropic)，[OpenAI](/providers/openai)，
 [本地模型](/gateway/local-models)，[模型](/concepts/models)。
@@ -631,7 +631,7 @@ openclaw gateway restart
 
 是的，您可以使用**设置令牌**进行身份验证，而不是使用 API 密钥。这是订阅路径。
 
-Claude Pro/Max 订阅**不包含 API 密钥**，因此这是订阅账户的正确用法。重要提示：您必须向 Anthropic 证明，根据其订阅政策和条款，这种用法是被允许的。如果您希望采用最明确且官方支持的方式，请使用 Anthropic API 密钥。
+Claude Pro/Max 订阅**不包含 API 密钥**，因此这是订阅账户的正确用法。重要提示：您必须向 Anthropic 证明，根据其订阅政策和条款，这种用法是被允许的。如果您希望采用最明确且官方支持的方式，请使用 Anthropic 的官方 API 密钥。
 
 __HEADING_0__Anthropic如何设置令牌身份验证？
 
@@ -686,7 +686,7 @@ Gemini CLI 使用**插件身份验证流程**，而不是`openclaw.json`中的�
 
 本地模型适合用于日常聊天吗？
 
-通常不行。OpenClaw需要大上下文和强大的安全性；小模型容易截断内容并导致信息泄露。如果你别无选择，可以在本地（使用 LM Studio）运行你能使用的__最大__MiniMax M2.1 构建版本，并参见[网关/本地模型](/gateway/local-models)。较小或经过量化的模型会显著增加提示注入风险——详情请参阅[安全](/gateway/security)。
+通常不行。OpenClaw需要大上下文和强大的安全性；小模型容易截断内容并导致信息泄露。如果你别无选择，可以在本地（使用 LM Studio）运行你能使用的__最大__MiniMax M2.1 构建版本，并参阅[网关/本地模型](/gateway/local-models)。较小或经过量化的模型会显著增加提示注入风险——详情请参阅[安全](/gateway/security)。
 
 ### 如何将托管模型流量限制在特定区域？
 
@@ -730,12 +730,12 @@ Gemini CLI 使用**插件身份验证流程**，而不是`openclaw.json`中的�
 
 ### 我可以使用Bun吗？
 
-不建议使用 Bun。我们发现，在运行时容易出现错误，尤其是在使用 WhatsApp 和 Telegram 时。
-请使用 Node 来构建稳定的网关。
+不建议使用 Bun。我们发现，Bun 在运行时容易出错，尤其是在使用 WhatsApp 和 Telegram 时。
+请使用 Node 构建稳定的网关。
 
 如果你仍想尝试使用Bun，请在不含WhatsApp/Telegram的非生产网关上进行实验。
 
-__HEADING_0__Telegram允许哪些内容
+__HEADING_0__Telegram允许哪些内容？
 
 `channels.telegram.allowFrom` 是**人类发送者的 Telegram 用户 ID**（数字形式，推荐使用）或 `@username`。它不是机器人用户名。
 
@@ -832,13 +832,13 @@ openclaw gateway restart
 
 **OpenClaw专用说明：** WhatsApp、Telegram、Slack、Mattermost（插件）和 Discord 都可在VPS上正常运行。唯一的实际权衡在于使用**无头浏览器**还是可见窗口。详情请参阅[浏览器](/tools/browser)。
 
-**推荐默认设置：** 如果你之前遇到过网关断连问题，建议选择VPS。如果你正在积极使用Mac，并希望在本地访问文件或通过可见浏览器实现UI自动化，那么本地模式是理想之选。
+**推荐默认设置：** 如果你之前遇到过网关断连问题，建议选择VPS。如果你正积极使用Mac，并希望在本地访问文件或通过可见浏览器实现UI自动化，那么本地模式是理想之选。
 
 ### 在专用机器上运行 OpenClaw 有多重要？
 
 并非必需，但**为确保可靠性和隔离性而推荐使用**。
 
-- **专用主机（VPS/Mac mini/Raspberry Pi）：** 始终在线，睡眠或重启导致的中断更少，权限管理更清晰，更便于持续运行。
+- **专用主机（VPS/Mac mini/Raspberry Pi）：** 始终在线，因睡眠或重启导致的中断更少，权限管理更加清晰，更有利于持续运行。
 - **共享笔记本电脑/台式机：** 用于测试和日常使用完全没问题，但在设备进入睡眠状态或执行系统更新时可能会出现暂停。
 
 如果你想兼得两全其美，可以将网关部署在专用主机上，并将你的笔记本电脑配置为本地屏幕/摄像头/执行工具的**节点**。请参阅[节点](/nodes)。
@@ -849,7 +849,7 @@ __HEADING_0__VPS的最低配置要求和推荐操作系统是什么？
 OpenClaw 体积轻巧。对于一个基本网关加一个聊天频道：
 
 - **最低配置：** 1个vCPU、1 GB内存、约500 MB磁盘空间。
-- **推荐配置：** 1至2个vCPU、2 GB或更多内存，以留出充足余量（用于日志、媒体和多渠道）。节点工具和浏览器自动化可能需要占用大量资源。
+- **推荐配置：** 1至2个vCPU、2 GB或更多内存，以预留充足资源（用于日志、媒体和多渠道）。节点工具和浏览器自动化可能需要占用大量资源。
 
 操作系统：使用**Ubuntu LTS**（或任何现代Debian/Ubuntu发行版）。建议在该系统上测试Linux安装路径。
 
@@ -857,7 +857,7 @@ OpenClaw 体积轻巧。对于一个基本网关加一个聊天频道：
 
 ### 我可以在虚拟机中运行 OpenClaw 吗？有哪些要求？
 
-是的，可以将虚拟机视为与VPS相同：它必须始终处于运行状态、可访问，并且为网关以及您启用的所有通道提供足够的内存。
+是的，可以将虚拟机视为与VPS相同：它必须始终处于运行状态、可访问，并为网关以及您启用的所有通道提供足够的内存。
 
 基线指南：
 
@@ -896,7 +896,7 @@ OpenClaw远不止是一个简单的Claude封装。它是一个**本地优先的�
 
 工作区和默认设置。
 
-- **开源且可自定义：** 无需担心供应商锁定，您可以检查、扩展并自行托管。
+- **开源且可自定义：** 无需担心供应商锁定，您可以查看、扩展并自行托管。
 
 文档：[网关](/gateway)，[渠道](/channels)，[多智能体](/concepts/multi-agent)，
 [记忆](/concepts/memory)。
@@ -910,7 +910,7 @@ OpenClaw远不止是一个简单的Claude封装。它是一个**本地优先的�
 - 整理文件和文件夹（清理、命名、添加标签）。
 - 将Gmail与自动化工具连接，实现摘要自动生成或后续跟进自动化。
 
-它可以处理大型任务，但要取得最佳效果，最好将任务分解为多个阶段，并使用子代理进行并行处理。
+它可以处理大型任务，但为了取得最佳效果，最好将任务分解为多个阶段，并使用子代理进行并行处理。
 
 __HEADING_0__OpenClaw的五大日常用例是什么？
 
@@ -1021,7 +1021,7 @@ __HEADING_0__OpenClaw能否按计划或在后台持续运行任务？
 
 **我能否在 Linux 上运行仅适用于 Apple macOS 的技能？**
 
-并非直接如此。macOS 上的技能受 `metadata.openclaw.os` 以及所需二进制文件的限制，并且只有当技能在**网关主机**上具备资格时，才会显示在系统提示中。在 Linux 上，仅适用于 `darwin` 的技能（如 `imsg`、`apple-notes`、`apple-reminders`）除非你明确覆盖相关限制，否则将无法加载。
+并非直接如此。macOS 上的技能受到 `metadata.openclaw.os` 以及所需二进制文件的限制，并且只有当技能在**网关主机**上具备资格时，才会显示在系统提示中。在 Linux 上，仅适用于 `darwin` 的技能（如 `imsg`、`apple-notes`、`apple-reminders`）除非你明确覆盖相关限制，否则将无法加载。
 
 你有三种支持的模式：
 
@@ -1029,7 +1029,7 @@ __HEADING_0__OpenClaw能否按计划或在后台持续运行任务？
 在已安装macOS二进制文件的Mac上运行网关，然后从Linux以[远程模式](#how-do-i-run-openclaw-in-remote-mode-client-connects-to-a-gateway-elsewhere)连接，或通过Tailscale进行连接。由于网关主机运行的是macOS，相关技能加载过程将正常进行。
 
 **选项B——使用macOS节点（无需SSH）。**  
-在Linux上运行网关，并配对一个macOS节点（作为菜单栏应用程序），然后在Mac上将“节点运行命令”设置为“始终询问”或“始终允许”。只要节点上安装了所需的二进制文件，OpenClaw就能将仅适用于macOS的技能视为有效技能。代理会通过`nodes`工具来运行这些技能。如果你选择“始终询问”，在系统提示中批准“始终允许”即可将该命令添加到允许列表中。
+在Linux上运行网关，并配对一个macOS节点（作为菜单栏应用程序），然后在Mac上将“节点运行命令”设置为“始终询问”或“始终允许”。只要节点上安装了所需的二进制文件，OpenClaw就能将仅适用于macOS的技能视为有效技能。代理会通过`nodes`工具来运行这些技能。如果你选择“始终询问”，只需在系统提示中批准“始终允许”，即可将该命令添加到允许列表中。
 
 **选项C——通过SSH代理macOS二进制文件（高级）。**  
 将网关保留在Linux上，但让所需的CLI二进制文件解析为在Mac上运行的SSH封装程序。然后覆盖该技能，以允许Linux访问，从而确保其仍符合资格。
@@ -1133,13 +1133,13 @@ OpenClaw还会执行一项**静默的预压缩内存刷新**，以提醒模型�
 让机器人**将事实写入记忆**。长期笔记应存放在`MEMORY.md`中，
 短期上下文则放入`memory/YYYY-MM-DD.md`中。
 
-这仍然是我们正在改进的领域。提醒模型存储记忆大有帮助，这样它就知道该怎么做。如果它仍然不断遗忘，请确保网关在每次运行时都使用同一个工作区。
+这仍然是我们正在改进的领域。提醒模型存储记忆大有帮助，这样它就能清楚地知道该怎么做。如果它仍然频繁遗忘，请确保网关在每次运行时都使用同一个工作区。
 
 文档：[内存](/concepts/memory)，[代理工作区](/concepts/agent-workspace)。
 
 ### 进行语义记忆搜索是否需要OpenAI API密钥？
 
-仅适用于您使用**OpenAI嵌入**的情况。Codex OAuth 仅涵盖聊天和补全功能，**不**提供嵌入访问权限，因此**使用 Codex 登录（通过 OAuth 或 Codex CLI 登录）**无助于语义记忆搜索。OpenAI 嵌入仍需要有效的 API 密钥（`OPENAI_API_KEY` 或 `models.providers.openai.apiKey`）。
+仅适用于您使用**OpenAI嵌入**的情况。Codex OAuth仅涵盖聊天和补全功能，**不**提供嵌入访问权限，因此**使用Codex登录（通过OAuth或Codex CLI登录）**无助于语义记忆搜索。OpenAI嵌入仍需要有效的API密钥（`OPENAI_API_KEY`或`models.providers.openai.apiKey`）。
 
 如果您未显式设置提供商，OpenClaw 会在能够解析 API 密钥（通过身份验证配置文件、`models.providers.*.apiKey` 或环境变量）时自动选择一个提供商。如果可以解析 OpenAI 密钥，它会优先使用 OpenAI；否则，如果可以解析 Gemini 密钥，则优先使用 Gemini。如果两种密钥都不可用，内存搜索将保持禁用状态，直到您进行配置。如果您已配置并提供了本地模型路径，OpenClaw 会优先使用 `local`。
 
@@ -1335,10 +1335,10 @@ $OPENCLAW_CONFIG_PATH
 常见的模式是**一个网关**（例如树莓派）加上**节点**和**代理**：
 
 - **网关（中心节点）：**负责管理通道（Signal/WhatsApp）、路由和会话。
-- **节点（设备）：**Mac、iOS 和 Android 设备以外围设备的身份连接，并暴露本地工具（`system.run`、`canvas`、`camera`）。
+- **节点（设备）：**以外围设备的身份连接到Mac、iOS和Android设备，并暴露本地工具（`system.run`、`canvas`、`camera`）。
 - **代理（工作者）：**为特定角色（如“Hetzner 运维”、“个人数据”）提供独立的“大脑”或工作空间。
 - **子代理：**在需要并行处理时，由主代理派生出后台任务。
-- **TUI：**连接到网关，并用于切换代理和会话。
+- **TUI：**连接到网关，用于切换代理和会话。
 
 文档：[节点](/nodes)、[远程访问](/gateway/remote)、[多智能体路由](/concepts/multi-agent)、[子智能体](/tools/subagents)、[TUI](/tui)。
 
@@ -1440,7 +1440,7 @@ openclaw agent --message "Hello from local bot" --deliver --channel telegram --r
 
 ### 我需要为多个代理分别使用独立的VPS吗？
 
-不是。一个网关可以托管多个代理，每个代理都有自己独立的工作空间、模型默认设置和路由配置。这是一种标准的部署方式，而且相比为每个代理单独运行一台VPS，成本低得多、操作也简单得多。
+不是。一个网关可以托管多个代理，每个代理都拥有独立的工作空间、模型默认设置和路由配置。这是一种标准的部署方式，与为每个代理单独运行一台VPS相比，不仅成本低得多，操作也简单得多。
 
 只有在需要严格隔离（安全边界）或配置差异极大且不希望共享配置时，才使用独立的VPS。否则，应保留一个网关，并使用多个代理或子代理。
 
@@ -1461,7 +1461,7 @@ SSH适用于临时的外壳访问，但对于持续的代理工作流和设备�
 
 ### 我应该在第二台笔记本电脑上安装，还是只添加一个节点？
 
-如果你在第二台笔记本上只需要**本地工具**（屏幕/摄像头/exec），请将其添加为一个**节点**。这样你只需使用一个网关，从而避免重复配置。目前，本地节点工具仅适用于 macOS，但我们计划将其扩展到其他操作系统。
+如果你在第二台笔记本上只需要**本地工具**（屏幕/摄像头/exec），请将其添加为一个**节点**。这样你只需使用一个网关，从而避免重复配置。目前，本地节点工具仅适用于macOS，但我们计划将其扩展到其他操作系统。
 
 只有在你需要**严格隔离**或两个完全独立的机器人时，才安装第二个网关。
 
@@ -1469,7 +1469,7 @@ SSH适用于临时的外壳访问，但对于持续的代理工作流和设备�
 
 ### 节点是否运行网关服务？
 
-否。除非您有意运行隔离的配置文件（请参阅[多网关](/gateway/multiple-gateways)），否则每台主机应仅运行**一个网关**。节点是指连接到网关的外围设备，包括iOS/Android节点，以及在菜单栏应用中启用的macOS“节点模式”。有关无头节点主机和CLI控制的更多信息，请参阅[节点主机 CLI](/cli/node)。
+否。除非您有意运行隔离的配置文件（请参阅[多网关](/gateway/multiple-gateways)），否则每台主机应仅运行**一个网关**。节点是指连接到网关的外围设备，包括iOS/Android节点，以及在菜单栏应用中启用的macOS“节点模式”。有关无头节点主机和通过命令行界面（CLI）进行控制的更多信息，请参阅[节点主机 CLI](/cli/node)。
 
 `gateway`、`discovery` 和 `canvasHost` 的更改需要完全重启。
 
@@ -1523,7 +1523,7 @@ SSH适用于临时的外壳访问，但对于持续的代理工作流和设备�
 
 3) **启用MagicDNS（推荐）**
 
-- 在 Tailscale 管理控制台中启用 MagicDNS，以便 VPS 拥有一个稳定的域名。
+- 在 Tailscale 管理控制台中启用 MagicDNS，为 VPS 配置一个稳定的域名。
 
 4) **使用尾网主机名**
 
@@ -1552,7 +1552,7 @@ Serve公开了**网关控制UI + WS**。节点通过同一个网关WS端点连�
    openclaw nodes approve <requestId>
    ```
 
-文档：[网关协议](/gateway/protocol)，[发现](/gateway/discovery)，[macOS 运行远程模式](/platforms/mac/remote)。
+文档：[网关协议](/gateway/protocol)，[发现](/gateway/discovery)，[在 macOS 上以远程模式运行](/platforms/mac/remote)。
 
 ## 环境变量与 .env 文件加载
 
@@ -1714,7 +1714,7 @@ openclaw onboard --install-daemon
 
 文档：[压缩](/concepts/compaction)，[会话修剪](/concepts/session-pruning)，[会话管理](/concepts/session)。
 
-### 为什么我会看到“LLM请求被拒绝”的消息？内容X工具将输入字段设置为必填项。
+### 为什么我会看到“LLM请求被拒绝”的消息？内容X工具已将输入字段设置为必填项。
 
 这是一个提供商验证错误：该模型发出了一个`tool_use`块，但缺少必需的
 `input`。这通常意味着会话历史已过时或损坏（通常发生在长时间对话之后，
@@ -1808,9 +1808,9 @@ openclaw directory groups list --channel whatsapp
 
 ### 我能否在 Slack 中同时运行多个机器人或聊天？如果可以，我该如何设置？
 
-是的。使用**多代理路由**来运行多个隔离的代理，并按渠道、账户或对等方路由入站消息。Slack 作为渠道受到支持，并可绑定到特定代理。
+是的。使用**多代理路由**来运行多个隔离的代理，并根据渠道、账户或对等方对入站消息进行路由。Slack 作为渠道受到支持，且可绑定到特定代理。
 
-浏览器访问功能强大，但并不等同于“人类能做的任何事情”——反机器人机制、验证码和多因素身份验证仍然能够有效阻止自动化攻击。为了实现最可靠、最安全的浏览器控制，请在运行浏览器的设备上安装并使用 Chrome 扩展 Relay（并将网关部署在任意位置）。
+浏览器访问功能强大，但远不能涵盖“人类所能完成的一切”——反机器人机制、验证码和多因素身份验证依然能够有效抵御自动化攻击。为了实现最可靠、最安全的浏览器控制，请在运行浏览器的设备上安装并使用 Chrome 扩展 Relay，并将网关部署在任意位置。
 
 最佳实践设置：
 
@@ -1832,7 +1832,7 @@ OpenClaw的默认模型是你设置的：
 agents.defaults.model.primary
 ```
 
-该模型被引用为 `provider/model`（例如：`anthropic/claude-opus-4-5`）。如果您省略提供商，OpenClaw 当前会暂时将 `anthropic` 用作弃用回退——但您仍应**显式**设置 `provider/model`。
+该模型被引用为 `provider/model`（例如：`anthropic/claude-opus-4-5`）。如果您省略提供商，OpenClaw 当前会暂时将 `anthropic` 作为弃用回退——但您仍应**显式**设置 `provider/model`。
 
 ### 你推荐什么型号？
 
@@ -2212,7 +2212,7 @@ OpenClaw同时支持两者：
 
 ### 为什么 OpenClaw 网关状态显示运行时正在运行，但 RPC 探针却失败了？
 
-因为“运行”是**主管**的观点（launchd/systemd/schtasks）。RPC探针实际上是一个通过CLI连接到网关WebSocket并调用`status`的工具。
+因为“运行”是**主管**的观点（launchd/systemd/schtasks）。RPC探针实际上是一个通过命令行界面连接到网关WebSocket并调用`status`的工具。
 
 使用`openclaw gateway status`并信任这些行：
 
@@ -2423,7 +2423,7 @@ openclaw logs --follow
 - 频道配对或白名单阻止回复（请检查频道配置和日志）。
 - 即使缺少正确令牌，WebChat/仪表板仍可访问。
 
-如果您是远程用户，请确认隧道或 Tailscale 连接已建立，并且网关 WebSocket 可访问。
+如果您是远程用户，请确保隧道或 Tailscale 连接已建立，并且网关 WebSocket 可访问。
 
 文档：[频道](/channels)、[故障排除](/gateway/troubleshooting)、[远程访问](/gateway/remote)。
 
@@ -2646,7 +2646,7 @@ process action:kill sessionId:XXX
 
 ### 如何从Telegram发送Discord消息？跨上下文消息传递已被拒绝。
 
-OpenClaw默认阻止**跨服务商**消息传递。如果某个工具被绑定到Telegram，它在未经明确允许的情况下不会向Discord发送消息。
+OpenClaw默认阻止**跨服务商**消息传递。如果某个工具被绑定到Telegram，它在未经明确授权的情况下不会向Discord发送消息。
 
 为客服启用跨服务商消息功能：
 

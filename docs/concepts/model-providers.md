@@ -123,7 +123,7 @@ Vercel AI网关
 
 登月人工智能（Kimi）
 
-Moonshot 使用与 OpenAI 兼容的端点，因此可以将其配置为自定义提供商：
+Moonshot 使用与OpenAI兼容的端点，因此可以将其配置为自定义提供商：
 
 - 提供商：`moonshot`
 - 身份验证：`MOONSHOT_API_KEY`

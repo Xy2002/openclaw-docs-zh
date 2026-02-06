@@ -117,7 +117,7 @@ openclaw config set browser.executablePath "/usr/bin/google-chrome"
 
 ## 本地与远程控制
 
-- **本地控制（默认）：**网关启动环回控制服务，并可启动本地浏览器。
+- **本地控制（默认）：**网关会启动环回控制服务，并可启动本地浏览器。
 - **远程控制（节点主机）：**在已安装浏览器的机器上运行节点主机；网关会将浏览器操作代理到该主机。
 - **远程 CDP：**设置 `browser.profiles.<name>.cdpUrl`（或 `browser.cdpUrl`）以连接到远程基于 Chromium 的浏览器。在这种情况下，OpenClaw 不会启动本地浏览器。
 
@@ -200,7 +200,7 @@ OpenClaw 支持多个命名配置文件（路由配置）。配置文件可以�
 
 __HEADING_0__Chrome 扩展中继（使用您现有的 Chrome）
 
-OpenClaw 还可以通过本地 CDP 中继和 Chrome 扩展来驱动您现有的 Chrome 标签页，而无需单独的“openclaw”Chrome 实例。
+OpenClaw 还可以通过本地 CDP 中继和 Chrome 扩展来操控您现有的 Chrome 标签页，而无需单独的“openclaw”Chrome 实例。
 
 完整指南：[Chrome 扩展](/tools/chrome-extension)
 
@@ -249,7 +249,7 @@ openclaw browser create-profile \
 
 注意事项：
 
-- 此模式依赖 Playwright-on-CDP 来执行大多数操作（屏幕截图、快照以及各种其他操作）。
+- 此模式依赖 Playwright-on-CDP 来执行大多数操作（如截屏、快照以及其他各种操作）。
 - 再次点击扩展图标即可断开连接。
 
 ## 隔离保证
@@ -297,7 +297,7 @@ openclaw browser create-profile \
 
 ### 戏剧作家要求
 
-某些功能（如导航、操作、AI快照、角色快照、元素截图和PDF生成）需要Playwright支持。如果未安装Playwright，这些端点将返回明确的501错误。对于由openclaw管理的Chrome浏览器，ARIA快照和基本屏幕截图仍然可用。对于Chrome扩展中的继电器驱动程序，ARIA快照和屏幕截图同样依赖于Playwright的支持。
+某些功能（如导航、操作、AI快照、角色快照、元素截图和PDF生成）需要Playwright支持。如果未安装Playwright，这些端点将返回明确的501错误。对于由OpenClaw管理的Chrome浏览器，ARIA快照和基本屏幕截图仍然可用。对于Chrome扩展中的继电器驱动程序，ARIA快照和屏幕截图同样依赖于Playwright的支持。
 
 如果您看到 `Playwright is not available in this gateway build`，请安装完整的 Playwright 包（而非 `playwright-core`），并重启网关，或重新安装 OpenClaw 并启用浏览器支持。
 

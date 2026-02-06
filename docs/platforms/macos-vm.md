@@ -12,8 +12,8 @@ read_when:
 
 ## 推荐的默认方案（适用于大多数用户）
 
-- **小型 Linux VPS**：作为始终在线的网关，且成本低廉。请参阅 [VPS 托管](/vps)。
-- **专用硬件**（Mac mini 或 Linux 服务器）：如果您希望完全掌控并为浏览器自动化获取一个“住宅 IP”。许多网站会屏蔽数据中心 IP，因此在本地浏览器中操作通常效果更好。
+- **小型 Linux VPS**：用作始终在线的网关，且成本低廉。请参阅 [VPS 托管](/vps)。
+- **专用硬件**（Mac mini 或 Linux 服务器）：如果您希望完全掌控并为浏览器自动化获取“住宅 IP”。许多网站会屏蔽数据中心 IP，因此在本地浏览器中操作通常效果更好。
 - **混合方案**：将网关部署在廉价 VPS 上，当您需要浏览器或 UI 自动化时，再将您的 Mac 连接为一个 **节点**。请参阅 [节点](/nodes) 和 [远程网关](/gateway/remote)。
 
 当您特别需要仅限 macOS 的功能（如 iMessage/BlueBubbles），或者希望与日常使用的 Mac 实现严格隔离时，可以使用 macOS 虚拟机。
@@ -25,14 +25,16 @@ read_when:
 使用 [Lume](https://cua.ai/docs/lume)，在您现有的 Apple Silicon Mac 上以沙箱方式运行 OpenClaw 的 macOS 虚拟机。
 
 这样您可以获得：
-- 完整的 macOS 环境，并实现隔离（主机保持干净）
-- 通过 BlueBubbles 支持 iMessage（在 Linux/Windows 上无法实现）
-- 通过克隆虚拟机实现即时重置
-- 无需额外硬件或云成本
 
-### 托管 Mac 服务提供商（云端）
+- 提供完整的macOS环境并实现隔离，确保主机保持干净
+- 通过BlueBubbles支持iMessage（在Linux/Windows上无法实现）
+- 通过克隆虚拟机实现即时重置
+- 无需额外的硬件或云成本
+
+### 云端托管Mac服务提供商
 
 如果您希望在云端使用 macOS，也可以选择托管 Mac 服务提供商：
+
 - [MacStadium](https://www.macstadium.com/)（托管 Mac）
 - 其他托管 Mac 供应商同样适用；请按照其提供的虚拟机 + SSH 文档进行操作。
 
@@ -56,7 +58,7 @@ read_when:
 - Apple Silicon Mac（M1/M2/M3/M4）
 - 主机需运行 macOS Sequoia 或更高版本
 - 每个虚拟机约需 60 GB 可用磁盘空间
-- 大约 20 分钟时间
+- 大约需要 20 分钟
 
 ---
 
@@ -97,24 +99,26 @@ lume create openclaw --os macos --ipsw latest
 ## 3) 完成设置助理
 
 在 VNC 窗口中：
+
 1. 选择语言和区域
 2. 跳过 Apple ID（或登录以稍后使用 iMessage）
 3. 创建用户账户（请记住用户名和密码）
 4. 跳过所有可选功能
 
 设置完成后，启用 SSH：
+
 1. 打开“系统设置”→“通用”→“共享”
 2. 启用“远程登录”
 
 ---
 
-## 4) 获取虚拟机的 IP 地址
+## 4) 获取虚拟机的IP地址
 
 ```bash
 lume get openclaw
 ```
 
-查找 IP 地址（通常是 `192.168.64.x`)。
+查找IP地址（通常是`192.168.64.x`）。
 
 ---
 
@@ -149,7 +153,7 @@ openclaw onboard --install-daemon
 nano ~/.openclaw/openclaw.json
 ```
 
-添加您的通道：
+添加您的频道：
 
 ```json
 {
@@ -182,7 +186,7 @@ lume stop openclaw
 lume run openclaw --no-display
 ```
 
-虚拟机会在后台运行。OpenClaw 的守护进程会持续运行网关。
+虚拟机将在后台运行。OpenClaw的守护进程将持续运行网关。
 
 检查状态：
 
@@ -192,15 +196,16 @@ ssh youruser@192.168.64.X "openclaw status"
 
 ---
 
-## 额外福利：iMessage 集成
+## 额外福利：iMessage集成
 
 这是在 macOS 上运行的最大亮点。使用 [BlueBubbles](https://bluebubbles.app) 将 iMessage 添加到 OpenClaw。
 
 在虚拟机内部：
+
 1. 从 bluebubbles.app 下载 BlueBubbles
 2. 使用您的 Apple ID 登录
 3. 启用 Web API 并设置密码
-4. 将 BlueBubbles 的 Webhook 指向您的网关（示例：`https://your-gateway-host:3000/bluebubbles-webhook?password=<password>`)
+4. 将 BlueBubbles 的 Webhook 指向您的网关（示例：`https://your-gateway-host:3000/bluebubbles-webhook?password=<password>`）
 
 将其添加到 OpenClaw 配置中：
 
@@ -241,18 +246,19 @@ lume run openclaw --no-display
 
 ---
 
-## 24/7 运行
+## 全天候运行
 
 要让虚拟机持续运行：
+
 - 保持 Mac 插电
 - 在“系统设置”→“节能”中禁用睡眠
 - 如有必要，使用 `caffeinate`
 
-若需真正的全天候运行，建议使用专用 Mac mini 或小型 VPS。请参阅 [VPS 托管](/vps)。
+若需实现真正的全天候运行，建议使用专用 Mac mini 或小型 VPS。请参阅 [VPS 托管](/vps)。
 
 ---
 
-## 故障排除
+故障排除
 
 | 问题 | 解决方案 |
 |---------|----------|

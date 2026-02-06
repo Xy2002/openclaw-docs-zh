@@ -7,9 +7,9 @@ read_when:
     them
   - 'You need a text-only, tool-free path that still supports sessions and images'
 ---
-# CLI 后端（后备运行时）
+__HEADING_0__CLI 后端（后备运行时）
 
-当 API 提供商宕机、受到速率限制或暂时出现异常时，OpenClaw 可以运行**本地 AI CLI**，作为**纯文本后备方案**。这一设计刻意保持保守：
+当API提供商宕机、受到速率限制或暂时出现异常时，OpenClaw可以运行**本地AI命令行界面**，作为**纯文本后备方案**。这一设计刻意保持保守：
 
 - **工具被禁用**（不进行工具调用）。
 - **纯文本输入 → 纯文本输出**（可靠）。
@@ -50,7 +50,7 @@ openclaw agent --message "hi" --model codex-cli/gpt-5.2-codex
 
 仅此而已。无需密钥，也不需要额外的认证配置，只需 CLI 本身即可。
 
-## 作为后备方案使用
+作为后备方案使用
 
 将 CLI 后端添加到你的后备列表中，使其仅在主模型失败时运行：
 
@@ -74,6 +74,7 @@ openclaw agent --message "hi" --model codex-cli/gpt-5.2-codex
 ```
 
 注意事项：
+
 - 如果你使用 `agents.defaults.models`（白名单），则必须包含 `claude-cli/...`。
 - 如果主提供商发生故障（认证失败、速率限制、超时），OpenClaw 将转而尝试 CLI 后端。
 
@@ -144,6 +145,7 @@ agents.defaults.cliBackends
   - `none`：从不发送会话 ID。
 
 ## 图像（传递）
+
 如果你的 CLI 接受图像路径，请设置 `imageArg`：
 
 ```json5
@@ -151,20 +153,23 @@ imageArg: "--image",
 imageMode: "repeat"
 ```
 
-OpenClaw 会将 Base64 编码的图像写入临时文件。如果设置了 `imageArg`，这些路径将作为 CLI 参数传递。如果缺少 `imageArg`，OpenClaw 会将文件路径附加到提示中（路径注入），这对于能够自动从普通路径加载本地文件的 CLI（如 Claude Code CLI 的行为）已经足够。
+OpenClaw会将Base64编码的图像写入临时文件。如果设置了`imageArg`，这些路径将作为CLI参数传递。如果缺少`imageArg`，OpenClaw会将文件路径附加到提示中（路径注入），而对于能够自动从常规路径加载本地文件的CLI（如Claude Code CLI的行为）来说，这已经足够了。
 
 ## 输入/输出
+
 - `output: "json"`（默认）尝试解析 JSON 并提取文本和会话 ID。
 - `output: "jsonl"` 解析 JSONL 流（Codex CLI 的 `--json`)，在存在的情况下提取最后一条代理消息以及 `thread_id`。
 - `output: "text"` 将标准输出视为最终响应。
 
 输入模式：
+
 - `input: "arg"`（默认）将提示作为最后一个 CLI 参数传递。
 - `input: "stdin"` 通过标准输入发送提示。
 - 如果提示非常长且设置了 `maxPromptArgChars`，则使用标准输入。
 
 ## 内置默认配置
-OpenClaw 为 `claude-cli` 提供了内置默认配置：
+
+OpenClaw为`claude-cli`提供了内置默认配置：
 
 - `command: "claude"`
 - `args: ["-p", "--output-format", "json", "--dangerously-skip-permissions"]`
@@ -175,7 +180,7 @@ OpenClaw 为 `claude-cli` 提供了内置默认配置：
 - `systemPromptWhen: "first"`
 - `sessionMode: "always"`
 
-OpenClaw 还为 `codex-cli` 提供了内置默认配置：
+OpenClaw还为`codex-cli`提供了内置默认配置：
 
 - `command: "codex"`
 - `args: ["exec","--json","--color","never","--sandbox","read-only","--skip-git-repo-check"]`
@@ -189,12 +194,14 @@ OpenClaw 还为 `codex-cli` 提供了内置默认配置：
 仅在必要时覆盖默认配置（常见情况：绝对路径 `command`)。
 
 ## 限制
+
 - **无 OpenClaw 工具**（CLI 后端永远不会接收工具调用）。某些 CLI 仍可能运行其自身的代理工具。
 - **无流式传输**（CLI 输出会被收集后再返回）。
 - **结构化输出**取决于 CLI 的 JSON 格式。
 - **Codex CLI 会话**通过文本输出恢复（无 JSONL），其结构化程度低于初始 `--json` 运行。OpenClaw 会话仍能正常工作。
 
-## 故障排除
+故障排除
+
 - **未找到 CLI**：将 `command` 设置为完整路径。
 - **模型名称错误**：使用 `modelAliases` 将 `provider/model` 映射到 CLI 模型。
 - **会话连续性缺失**：确保已设置 `sessionArg`，且 `sessionMode` 不是 `none`（目前 Codex CLI 无法通过 JSON 输出恢复会话）。

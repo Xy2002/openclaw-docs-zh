@@ -6,7 +6,7 @@ status: active
 ---
 # 多代理路由
 
-目标：在一个运行的网关中，支持多个*隔离*代理（独立工作区 + `agentDir` + 会话），以及多个渠道账号（例如两个 WhatsApp）。入站消息通过绑定规则被路由到相应代理。
+目标：在运行中的网关中，支持多个*隔离*代理（独立工作区 + `agentDir` + 会话）以及多个渠道账号（例如两个 WhatsApp）。入站消息通过绑定规则被路由到相应的代理。
 
 ## 什么是“一个代理”？
 
@@ -24,7 +24,7 @@ status: active
 
 主代理凭据**不会自动共享**。切勿在不同代理之间重复使用 `agentDir`（这会导致身份验证或会话冲突）。如果需要共享凭据，请将 `auth-profiles.json` 复制到另一个代理的 `agentDir` 中。
 
-技能是按代理划分的，通过每个工作区的 `skills/` 文件夹实现；共享技能则可在 `~/.openclaw/skills` 中获取。请参阅 [技能：按代理 vs 共享](/tools/skills#per-agent-vs-shared-skills)。
+技能按代理划分，通过每个工作区的 `skills/` 文件夹实现；共享技能则可在 `~/.openclaw/skills` 中获取。请参阅 [技能：按代理 vs 共享](/tools/skills#per-agent-vs-shared-skills)。
 
 网关可以同时托管**一个代理**（默认）或**多个代理**。
 
@@ -71,13 +71,13 @@ openclaw agents list --bindings
 - **不同的人格**（按代理划分的工作区文件，如 `AGENTS.md` 和 `SOUL.md`）。
 - **独立的身份验证和会话**（除非显式启用，否则彼此之间无交叉通信）。
 
-这使得**多人**可以共享一个网关服务器，同时保持各自的 AI “大脑”和数据相互隔离。
+这使得**多人**可以共享一个网关服务器，同时保持各自的AI“大脑”和数据相互隔离。
 
-## 一个 WhatsApp 号码，多人共用（私信分流）
+## 一个WhatsApp号码，多人共用（私信分流）
 
-您可以在**一个 WhatsApp 账号**下，将**不同的 WhatsApp 私信**路由到不同的代理。通过发件人 E.164 号码（如 `+15551234567`）与 `peer.kind: "dm"` 匹配。回复仍然来自同一个 WhatsApp 号码（没有按代理区分的发件人身份）。
+您可以在**一个 WhatsApp 账号**下，将**不同的 WhatsApp 私信**路由到不同的代理。通过发件人 E.164 号码（如 `+15551234567`）与 `peer.kind: "dm"` 匹配。回复仍然来自同一个 WhatsApp 号码（不会根据代理区分发件人身份）。
 
-重要细节：直接聊天会合并到代理的**主会话键**，因此要实现真正的隔离，必须确保**每人一个代理**。
+重要细节：直接聊天会合并到代理的**主会话键**，因此要实现真正的隔离，必须确保**为每人分配一名独立代理**。
 
 示例：
 
@@ -103,7 +103,8 @@ openclaw agents list --bindings
 ```
 
 注意事项：
-- 私信访问控制是**针对整个 WhatsApp 账号的全局控制**（配对/白名单），而不是按代理控制。
+
+- 私信访问控制是**针对整个 WhatsApp 账号的全局控制**（配对/白名单），而不是按代理单独控制。
 - 对于共享群组，可将群组绑定到一个代理，或使用 [广播群组](/broadcast-groups)。
 
 ## 路由规则（消息如何选择代理）
@@ -124,7 +125,7 @@ openclaw agents list --bindings
 ## 核心概念
 
 - `agentId`：一个“大脑”（工作区、按代理划分的身份验证、按代理划分的会话存储）。
-- `accountId`：一个渠道账号实例（例如 WhatsApp 货号 `"personal"` vs `"biz"`）。
+- `accountId`：一个渠道账号实例（例如 WhatsApp 货号 `"personal"` 与 `"biz"`）。
 - `binding`：根据 `(channel, accountId, peer)` 以及可选的公会/团队 ID，将入站消息路由到 `agentId`。
 - 直接聊天会合并到 `agent:<agentId>:<mainKey>`（按代理划分的“主会话”；`session.mainKey`）。
 
@@ -193,7 +194,7 @@ openclaw agents list --bindings
 }
 ```
 
-## 示例：WhatsApp 日常聊天 + Telegram 深度工作
+## 示例：WhatsApp日常聊天 + Telegram深度工作
 
 按渠道分流：将 WhatsApp 路由到快速的日常代理，将 Telegram 路由到 Opus 代理。
 
@@ -223,12 +224,13 @@ openclaw agents list --bindings
 ```
 
 注意事项：
+
 - 如果您为某个渠道拥有多个账号，请在绑定中添加 `accountId`（例如 `{ channel: "whatsapp", accountId: "personal" }`）。
-- 若要将单个 DM/群组路由到 Opus，同时将其余消息保留在聊天中，可为该对等方添加一个 `match.peer` 绑定；对等方匹配始终优先于频道级规则。
+- 若要将单个DM/群组路由到Opus，同时将其余消息保留在聊天中，可为该对等方添加一个 `match.peer` 绑定；对等方匹配始终优先于频道级规则。
 
-## 示例：同一渠道，某位好友的消息路由到 Opus
+## 示例：在同一渠道中，某位好友的消息被路由到 Opus
 
-让 WhatsApp 保留在快速代理上，但将某条 DM 路由到 Opus：
+让 WhatsApp 保留在快速代理上，但将某条私信路由到 Opus：
 
 ```json5
 {
@@ -245,11 +247,11 @@ openclaw agents list --bindings
 }
 ```
 
-对等方绑定始终优先，因此请将其置于频道级规则之上。
+对等方绑定始终具有优先权，因此请将其置于频道级规则之上。
 
-## 家庭代理绑定到 WhatsApp 群组
+## 将家庭代理绑定到 WhatsApp 群组
 
-将专用的家庭代理绑定到单个 WhatsApp 群组，并通过提及限制和更严格的工具策略来管理群组：
+将专用的家庭代理绑定到单个WhatsApp群组，并通过提及限制和更严格的工具策略来管理该群组：
 
 ```json5
 {
@@ -287,6 +289,7 @@ openclaw agents list --bindings
 ```
 
 注意事项：
+
 - 工具允许/禁止列表是针对**工具**的，而非技能。如果某个技能需要运行二进制文件，请确保 `exec` 被允许，并且该二进制文件存在于沙箱中。
 - 如需更严格的限制，请设置 `agents.list[].groupChat.mentionPatterns`，并为该渠道保持群组白名单开启。
 
@@ -327,13 +330,14 @@ openclaw agents list --bindings
 }
 ```
 
-注意：`setupCommand` 存在于 `sandbox.docker` 下，并在容器创建时运行一次。当解析后的范围为 `"shared"` 时，按代理的 `sandbox.docker.*` 重写会被忽略。
+注意：`setupCommand` 存在于 `sandbox.docker` 下，并在容器创建时运行一次。当解析后的范围为 `"shared"` 时，按代理的 `sandbox.docker.*` 重写将被忽略。
 
 **优势**：
-- **安全隔离**：可为不受信任的代理限制工具。
-- **资源控制**：可为特定代理启用沙箱，同时让其他代理使用主机资源。
+
+- **安全隔离**：可为不受信任的代理限制可用工具。
+- **资源控制**：可为特定代理启用沙箱，同时允许其他代理使用主机资源。
 - **灵活策略**：可为每个代理设置不同的权限。
 
-注意：`tools.elevated` 是**全局的**，基于发件人；无法按代理单独配置。若需要按代理划分边界，请使用 `agents.list[].tools` 来拒绝 `exec`。对于群组定向，请使用 `agents.list[].groupChat.mentionPatterns`，以便 @提及能准确映射到目标代理。
+注意：`tools.elevated` 是**全局的**，基于发件人；无法按代理单独配置。若需要按代理划分边界，请使用 `agents.list[].tools` 来拒绝 `exec`。对于群组定向，请使用 `agents.list[].groupChat.mentionPatterns`，以便@提及能准确映射到目标代理。
 
 更多详细示例，请参阅 [多代理沙箱与工具](/multi-agent-sandbox-tools)。

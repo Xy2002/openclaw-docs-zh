@@ -5,7 +5,7 @@ read_when:
 ---
 # 矩阵（插件）
 
-Matrix是一种开放、去中心化的消息传递协议。OpenClaw允许Matrix**用户**连接到任何homeserver，因此您需要为机器人创建一个Matrix账户。登录后，您可以直接向机器人发送私信，或将机器人邀请到聊天室（即Matrix中的“群组”）。Beeper也是一款可行的客户端选项，但必须启用端到端加密。
+Matrix是一种开放、去中心化的消息传递协议。OpenClaw允许Matrix**用户**连接到任何托管服务器，因此您需要为机器人创建一个Matrix账户。登录后，您可以直接向机器人发送私信，或将机器人邀请到聊天室（即Matrix中的“群组”）。Beeper也是一款可行的客户端选项，但必须启用端到端加密。
 
 状态：通过插件支持（@vector-im/matrix-bot-sdk）。支持私信、聊天室、线程、媒体、反应、投票（以文本形式发送 + 投票开始）、位置以及端到端加密（需加密支持）。
 
@@ -71,7 +71,7 @@ openclaw plugins install ./extensions/matrix
    - 如果已设置，`channels.matrix.userId` 应为完整的 Matrix 用户 ID（例如：`@bot:example.org`）。
 
 5) 重启网关（或完成引导）。
-6) 从任何 Matrix 客户端（Element、Beeper 等；参见 https://matrix.org/ecosystem/clients/）与机器人发起私信或将其邀请到聊天室。Beeper）使用端到端加密时，需启用E2EE，因此请设置 `channels.matrix.encryption: true` 并验证设备。
+6) 使用任何 Matrix 客户端（Element、Beeper 等；请参阅 https://matrix.org/ecosystem/clients/）与机器人发起私信或将其邀请到聊天室。Beeper）使用端到端加密时，需启用E2EE，因此请设置 `channels.matrix.encryption: true`），并验证设备。
 
 最小配置（访问令牌，用户ID自动获取）：
 
@@ -110,11 +110,11 @@ E2EE配置（启用端到端加密）：
 
 通过 `channels.matrix.encryption: true` 启用：
 
-- 如果加密模块加载成功，加密聊天室的消息将自动解密。
-- 发送到加密聊天室的媒体将在发送时加密。
-- 首次连接时，OpenClaw 会提示您在其他会话中完成设备验证。
-- 在另一个 Matrix 客户端（如 Element）中验证设备，以启用密钥共享。
-- 如果无法加载加密模块，端到端加密将被禁用，加密聊天室的消息将无法解密；OpenClaw 会记录一条警告日志。
+- 如果加密模块加载成功，加密聊天室中的消息将自动解密。
+- 发送到加密聊天室的媒体将在发送时进行加密。
+- 首次连接时，OpenClaw会提示您在其他会话中完成设备验证。
+- 在另一个Matrix客户端（如Element）中验证设备，以启用密钥共享。
+- 如果无法加载加密模块，端到端加密将被禁用，加密聊天室中的消息将无法解密；OpenClaw会记录一条警告日志。
 - 如果您看到缺少加密模块的错误（例如，`@matrix-org/matrix-sdk-crypto-nodejs-*`），请允许构建脚本为 `@matrix-org/matrix-sdk-crypto-nodejs` 执行，并运行 `pnpm rebuild @matrix-org/matrix-sdk-crypto-nodejs`，或使用 `node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js` 获取二进制文件。
 
 加密状态按账户和访问令牌存储在 `~/.openclaw/matrix/accounts/<account>/<homeserver>__<user>/<token-hash>/crypto/`（SQLite 数据库）中。同步状态与其并存于 `bot-storage.json` 中。如果访问令牌（设备）发生变化，将创建一个新的存储，并且机器人必须针对加密聊天室重新验证。

@@ -5,8 +5,7 @@ read_when:
   - You want to use Vercel AI Gateway with OpenClaw
   - You need the API key env var or CLI auth choice
 ---
-# Vercel AI 网关
-
+__HEADING_0__Vercel AI 网关
 
 [Vercel AI 网关](https://vercel.com/ai-gateway) 提供一个统一的 API，可通过单个端点访问数百种模型。
 
@@ -16,7 +15,7 @@ read_when:
 
 ## 快速入门
 
-1) 设置 API 密钥（推荐：为网关存储密钥）：
+1) 设置API密钥（推荐：为网关存储密钥）：
 
 ```bash
 openclaw onboard --auth-choice ai-gateway-api-key

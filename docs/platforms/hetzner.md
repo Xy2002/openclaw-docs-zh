@@ -11,27 +11,29 @@ read_when:
 # 在 Hetzner 上使用 Docker 部署 OpenClaw（生产级 VPS 指南）
 
 ## 目标
+
 在 Hetzner VPS 上通过 Docker 运行一个持久化的 OpenClaw 网关，确保状态持久、内置二进制文件，并具备安全的重启行为。
 
-如果你希望以大约 5 美元的成本实现“OpenClaw 全天候运行”，这是最简单且可靠的部署方案。Hetzner 的定价可能会变化，请选择最小的 Debian 或 Ubuntu VPS，如果遇到内存不足问题再考虑升级配置。
+如果你想以大约5美元的成本实现“OpenClaw全天候运行”，这是最简单且可靠的部署方案。Hetzner的定价可能会变动，因此请先选择最小规格的Debian或Ubuntu VPS；如果遇到内存不足的问题，再考虑升级配置。
 
-## 我们要做什么？（简单说明）
+## 我们要做什么？（简要说明）
 
 - 租用一台小型 Linux 服务器（Hetzner VPS）
-- 安装 Docker（用于隔离的应用运行时）
+- 安装 Docker（用于提供隔离的应用运行时环境）
 - 在 Docker 中启动 OpenClaw 网关
-- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 持久化到宿主机上（重启或重建后仍能保留）
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 持久化到宿主机上，以便在重启或重建后仍能保留
 - 通过 SSH 隧道从笔记本电脑访问控制 UI
 
 网关可通过以下方式访问：
-- 从笔记本电脑通过 SSH 端口转发访问
-- 如果你自行管理防火墙和令牌，则可直接暴露端口访问
 
-本指南假设你在 Hetzner 上使用 Ubuntu 或 Debian。如果你使用的是其他 Linux VPS，请相应调整软件包安装步骤。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
+- 通过笔记本电脑的SSH端口转发进行访问
+- 如果你自行管理防火墙和令牌，可以直接暴露端口进行访问
+
+本指南假设您在 Hetzner 上使用 Ubuntu 或 Debian。如果您使用的是其他 Linux VPS，请相应调整软件包安装步骤。有关通用的 Docker 流程，请参阅 [Docker](/install/docker)。
 
 ---
 
-## 快速路径（适用于有经验的运维人员）
+## 快速路径（适用于经验丰富的运维人员）
 
 1) 预配 Hetzner VPS  
 2) 安装 Docker  
@@ -46,16 +48,16 @@ read_when:
 
 ## 所需条件
 
-- 具有 root 访问权限的 Hetzner VPS  
-- 能从笔记本电脑通过 SSH 连接  
-- 熟悉 SSH 操作及复制粘贴  
-- 大约 20 分钟时间  
-- Docker 和 Docker Compose  
-- 模型身份验证凭据  
-- 可选的提供商凭据  
-  - WhatsApp QR 码  
-  - Telegram 机器人令牌  
-  - Gmail OAuth 凭据  
+- 拥有 root 访问权限的 Hetzner VPS
+- 能够通过 SSH 从笔记本电脑连接
+- 熟悉 SSH 操作及复制粘贴
+- 预计耗时约 20 分钟
+- Docker 和 Docker Compose
+- 模型身份验证凭据
+- 可选的提供商凭据：
+  - WhatsApp QR 码
+  - Telegram 机器人令牌
+  - Gmail OAuth 凭据
 
 ---
 
@@ -69,11 +71,11 @@ read_when:
 ssh root@YOUR_VPS_IP
 ```
 
-本指南假定 VPS 是有状态的，不应将其视为一次性基础设施。
+本指南假定VPS是有状态的，不应将其视为一次性基础设施。
 
 ---
 
-## 2) 在 VPS 上安装 Docker
+## 2) 在VPS上安装Docker
 
 ```bash
 apt-get update
@@ -97,13 +99,13 @@ git clone https://github.com/openclaw/openclaw.git
 cd openclaw
 ```
 
-本指南假定你将构建自定义镜像，以确保二进制文件的持久性。
+本指南假定您将构建自定义镜像，以确保二进制文件的持久性。
 
 ---
 
 ## 4) 创建持久化的宿主机目录
 
-Docker 容器是临时的，所有需要长期保存的状态都必须存储在宿主机上。
+Docker容器是临时的，所有需要长期保存的状态都必须存储在宿主机上。
 
 ```bash
 mkdir -p /root/.openclaw
@@ -192,11 +194,12 @@ services:
 
 ## 7) 将所需二进制文件烘焙到镜像中（关键步骤）
 
-在运行中的容器内安装二进制文件是一个陷阱：任何在运行时安装的内容在重启后都会丢失。
+在运行中的容器内安装二进制文件是个陷阱：任何在运行时安装的内容在重启后都会丢失。
 
-技能所需的所有外部二进制文件都必须在构建镜像时预先安装。
+构建镜像时必须预先安装技能所需的所有外部二进制文件。
 
 下面的示例仅展示了三种常见的二进制文件：
+
 - `gog` 用于 Gmail 访问
 - `goplaces` 用于 Google Places
 - `wacli` 用于 WhatsApp
@@ -204,6 +207,7 @@ services:
 这些只是示例，并非完整列表。你可以按照相同的模式安装任意数量的二进制文件。
 
 如果你后续添加了依赖于其他二进制文件的新技能，你需要执行以下操作：
+
 1. 更新 Dockerfile
 2. 重新构建镜像
 3. 重启容器
