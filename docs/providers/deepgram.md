@@ -4,11 +4,11 @@ read_when:
   - You want Deepgram speech-to-text for audio attachments
   - You need a quick Deepgram config example
 ---
-# Deepgram（音频转录）
+__HEADING_0__Deepgram（音频转录）
 
-Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tools.media.audio` 对**传入音频/语音备忘录进行转录**。
+Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tools.media.audio` 对**传入音频或语音备忘录进行转录**。
 
-启用后，OpenClaw 会将音频文件上传至 Deepgram，并将转录结果注入回复管道（`{{Transcript}}` + `[Audio]` 块）。这**不是流式处理**；它使用预先录制的转录端点。
+启用后，OpenClaw会将音频文件上传至Deepgram，并将转录结果注入回复管道（`{{Transcript}}` + `[Audio]`块）。这**不是流式处理**；它使用预先录制的转录端点。
 
 网站：https://deepgram.com  
 文档：https://developers.deepgram.com
@@ -16,11 +16,13 @@ Deepgram 是一款语音转文本 API。在 OpenClaw 中，它用于通过 `tool
 ## 快速入门
 
 1) 设置您的 API 密钥：
+
 ```
 DEEPGRAM_API_KEY=dg_...
 ```
 
 2) 启用该提供商：
+
 ```json5
 {
   tools: {
@@ -43,6 +45,7 @@ DEEPGRAM_API_KEY=dg_...
 - `tools.media.audio.providerOptions.deepgram.smart_format`：启用智能格式化（可选）
 
 包含语言设置的示例：
+
 ```json5
 {
   tools: {
@@ -59,6 +62,7 @@ DEEPGRAM_API_KEY=dg_...
 ```
 
 包含 Deepgram 选项的示例：
+
 ```json5
 {
   tools: {
@@ -81,6 +85,6 @@ DEEPGRAM_API_KEY=dg_...
 
 ## 注意事项
 
-- 身份验证遵循标准提供商身份验证顺序；`DEEPGRAM_API_KEY` 是最简单的路径。
+- 身份验证遵循标准提供商的身份验证顺序；`DEEPGRAM_API_KEY` 是最简单的路径。
 - 使用代理时，可通过 `tools.media.audio.baseUrl` 和 `tools.media.audio.headers` 覆盖端点或标头。
 - 输出遵循与其他提供商相同的音频规则（大小限制、超时、转录注入）。

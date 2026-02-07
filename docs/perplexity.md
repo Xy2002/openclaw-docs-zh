@@ -6,18 +6,18 @@ read_when:
 ---
 # 困惑度声呐
 
-OpenClaw 可以使用 Perplexity Sonar 作为 `web_search` 工具。你可以通过 Perplexity 的直接 API 或通过 OpenRouter 进行连接。
+OpenClaw 可以将 Perplexity Sonar 用作`web_search`工具。你可以通过 Perplexity 的直接 API 或通过 OpenRouter 进行连接。
 
-## API 选项
+__HEADING_0__API 选项
 
-### Perplexity（直接）
+### 悖论（直接）
 
-- 基础 URL：https://api.perplexity.ai
+- 基础URL：https://api.perplexity.ai
 - 环境变量：`PERPLEXITY_API_KEY`
 
-### OpenRouter（替代方案）
+__HEADING_0__OpenRouter（替代方案）
 
-- 基础 URL：https://openrouter.ai/api/v1
+- 基础URL：https://openrouter.ai/api/v1
 - 环境变量：`OPENROUTER_API_KEY`
 - 支持预付费/加密货币积分。
 

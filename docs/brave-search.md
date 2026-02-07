@@ -4,9 +4,9 @@ read_when:
   - You want to use Brave Search for web_search
   - You need a BRAVE_API_KEY or plan details
 ---
-# Brave Search API
+# 勇敢搜索 API
 
-OpenClaw 默认使用 Brave Search 作为 `web_search` 的提供商。
+OpenClaw 默认使用 Brave Search 作为`web_search`的提供商。
 
 ## 获取 API 密钥
 
@@ -33,7 +33,7 @@ OpenClaw 默认使用 Brave Search 作为 `web_search` 的提供商。
 
 ## 注意事项
 
-- Data for AI 方案与 `web_search` **不兼容**。
+- 适用于人工智能的数据方案与 `web_search` **不兼容**。
 - Brave 提供免费层级和付费方案；请查看 Brave API 门户以了解当前的使用限制。
 
 有关完整的 web_search 配置，请参阅 [Web 工具](/tools/web)。

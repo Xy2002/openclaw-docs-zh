@@ -5,7 +5,7 @@ read_when:
   - You want a local API server that wraps Claude Code CLI
   - You want to save money by using subscription instead of API keys
 ---
-# Claude Max API代理
+# 克劳德·麦克斯 API代理
 
 **claude-max-api-proxy** 是一款社区工具，可将您的 Claude Max/Pro 订阅暴露为与 OpenAI 兼容的 API 端点。这样一来，您就可以在任何支持 OpenAI API 格式的工具中使用您的订阅。
 
@@ -26,7 +26,8 @@ Your App → claude-max-api-proxy → Claude Code CLI → Anthropic (via subscri
 ```
 
 代理的工作流程如下：
-1. 在 `http://localhost:3456/v1/chat/completions` 接受 OpenAI 格式的请求
+
+1. 在 `http://localhost:3456/v1/chat/completions` 中接受 OpenAI 格式的请求
 2. 将这些请求转换为 Claude Code CLI 命令
 3. 以 OpenAI 格式返回响应（支持流式传输）
 
@@ -134,9 +135,9 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.claude-max-api.plist
 
 ## 注意事项
 
-- 这是一款 **社区工具**，未得到 Anthropic 或 OpenClaw 的官方支持
-- 需要已激活的 Claude Max/Pro 订阅，并且已通过 Claude Code CLI 身份验证
-- 代理在本地运行，不会将数据发送到任何第三方服务器
+- 这是一款**社区工具**，未获得 Anthropic 或 OpenClaw 的官方支持
+- 需要已激活的 Claude Max/Pro 订阅，并且已通过 Claude Code CLI 完成身份验证
+- 代理在本地运行，不会将任何数据发送到第三方服务器
 - 完全支持流式响应
 
 ## 参见

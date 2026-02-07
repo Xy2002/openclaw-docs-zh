@@ -516,7 +516,7 @@ Teams最近在同一底层数据模型上引入了两种频道UI风格：
 **当前限制：**
 
 - **私信：** 图像和文件附件通过Teams机器人文件API进行处理。
-- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**必须拥有Graph API权限**。
+- **频道/群组：** 附件存储在M365存储中（SharePoint/OneDrive）。Webhook负载仅包含HTML存根，不包含实际文件字节。要下载频道附件，**必须具备Graph API权限**。
 
 如果没有Graph权限，带有图像的频道消息将被视为纯文本（机器人无法访问图像内容）。
 默认情况下，OpenClaw仅从Microsoft/Teams主机名下载媒体。使用`channels.msteams.mediaAllowHosts`进行覆盖（使用`["*"]`允许任何主机）。

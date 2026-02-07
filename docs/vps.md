@@ -12,7 +12,7 @@ __HEADING_0__VPS 托管
 
 - **Railway**（一键式 + 浏览器设置）：[Railway](/railway)
 - **Northflank**（一键式 + 浏览器设置）：[Northflank](/northflank)
-- **Oracle Cloud（Always Free）**：[Oracle](/platforms/oracle) — 每月 $0（Always Free，ARM；在容量和注册方面可能要求较高）
+- **Oracle Cloud（Always Free）**：[Oracle](/platforms/oracle) — 每月费用为 $0（Always Free，ARM；在资源容量和注册要求方面可能较为严格）
 - **Fly.io**：[Fly.io](/platforms/fly)
 - **Hetzner（Docker）**：[Hetzner](/platforms/hetzner)
 - **GCP（Compute Engine）**：[GCP](/platforms/gcp)

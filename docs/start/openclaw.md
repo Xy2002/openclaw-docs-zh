@@ -14,7 +14,7 @@ OpenClaw 是一个为 **Pi** 代理提供的 WhatsApp + Telegram + Discord + iMe
 
 你将让代理具备以下能力：
 
-- 在你的机器上运行命令（取决于你的树莓派工具设置）
+- 在你的机器上运行命令（具体取决于你的树莓派工具设置）
 - 在你的工作空间中读写文件
 - 通过插件经由 WhatsApp/Telegram/Discord/Mattermost 发送消息
 

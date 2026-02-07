@@ -14,14 +14,14 @@ read_when:
 
 在 Hetzner VPS 上通过 Docker 运行一个持久化的 OpenClaw 网关，确保状态持久、内置二进制文件，并具备安全的重启行为。
 
-如果你想以大约5美元的成本实现“OpenClaw全天候运行”，这是最简单且可靠的部署方案。Hetzner的定价可能会变动，因此请先选择最小规格的Debian或Ubuntu VPS；如果遇到内存不足的问题，再考虑升级配置。
+如果你想以大约5美元的成本实现“OpenClaw全天候运行”，这是最简单且可靠的部署方案。Hetzner的定价可能会变动，因此请先选择配置最低的Debian或Ubuntu VPS；如果在使用过程中遇到内存不足的问题，再考虑升级服务器配置。
 
 ## 我们要做什么？（简要说明）
 
 - 租用一台小型 Linux 服务器（Hetzner VPS）
 - 安装 Docker（用于提供隔离的应用运行时环境）
 - 在 Docker 中启动 OpenClaw 网关
-- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 持久化到宿主机上，以便在重启或重建后仍能保留
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 持久化到宿主机上，以便在服务器重启或重建后仍能保留这些数据
 - 通过 SSH 隧道从笔记本电脑访问控制 UI
 
 网关可通过以下方式访问：
@@ -49,7 +49,7 @@ read_when:
 ## 所需条件
 
 - 拥有 root 访问权限的 Hetzner VPS
-- 能够通过 SSH 从笔记本电脑连接
+- 能通过 SSH 从笔记本电脑连接
 - 熟悉 SSH 操作及复制粘贴
 - 预计耗时约 20 分钟
 - Docker 和 Docker Compose

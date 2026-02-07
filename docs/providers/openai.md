@@ -4,7 +4,7 @@ read_when:
   - You want to use OpenAI models in OpenClaw
   - You want Codex subscription auth instead of API keys
 ---
-# 开放AI
+# 开放人工智能
 
 OpenAI为GPT模型提供开发者API。Codex支持通过“ChatGPT登录”获取订阅访问权限，或通过“API密钥登录”实现按使用量计费的访问权限。Codex云必须使用ChatGPT登录。
 
@@ -32,8 +32,8 @@ openclaw onboard --openai-api-key "$OPENAI_API_KEY"
 
 ## 选项B：OpenAI Code（Codex）订阅
 
-**最适合：** 使用ChatGPT/Codex订阅访问权限，而非API密钥。
-Codex云必须通过ChatGPT登录才能使用，而Codex命令行工具则同时支持ChatGPT登录和API密钥登录。
+**最适合：** 使用ChatGPT或Codex订阅访问权限，而非API密钥。
+Codex云必须通过ChatGPT账号登录才能使用，而Codex命令行工具则同时支持ChatGPT登录和API密钥登录。
 
 __HEADING_0__CLI设置
 

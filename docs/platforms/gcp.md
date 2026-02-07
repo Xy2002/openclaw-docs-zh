@@ -13,15 +13,15 @@ read_when:
 
 在 GCP Compute Engine 虚拟机上使用 Docker 运行一个持久化的 OpenClaw 网关，确保状态持久、内置二进制文件，并具备安全的重启行为。
 
-如果你希望以每月约5至12美元的成本让“OpenClaw”全天候运行，那么在Google Cloud上部署是一个可靠的选择。价格因机器类型和区域而异；请根据你的工作负载选择最小的虚拟机实例，如果遇到内存不足的问题再考虑升级。
+如果你希望以每月约5至12美元的成本让“OpenClaw”全天候运行，那么在Google Cloud上部署是一个可靠的选择。具体价格取决于所选的机器类型和区域；请根据你的工作负载选择最小的虚拟机实例，如果遇到内存不足的问题，再考虑升级配置。
 
 ## 我们要做什么？（简要说明）
 
 - 创建一个 GCP 项目并启用计费
 - 创建一个 Compute Engine 虚拟机
-- 安装 Docker（用于隔离的应用运行时）
+- 安装 Docker（用于提供隔离的应用运行时环境）
 - 在 Docker 中启动 OpenClaw 网关
-- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 的状态持久化到主机上（以便在重启或重建后仍能保留）
+- 将 `~/.openclaw` 和 `~/.openclaw/workspace` 的状态持久化到主机上，以便在虚拟机重启或重建后仍能保留这些状态
 - 通过 SSH 隧道从笔记本电脑访问控制 UI
 
 网关可通过以下方式访问：
@@ -48,7 +48,7 @@ read_when:
 
 ## 所需条件
 
-- GCP 帐户（e2-micro 实例可享受免费层级）
+- GCP 账户（e2-micro 实例可享受免费层级）
 - 已安装 gcloud CLI（或可使用 Cloud Console）
 - 能从笔记本电脑通过 SSH 进行访问
 - 对 SSH 以及复制/粘贴操作有一定了解
@@ -398,7 +398,7 @@ gcloud compute ssh openclaw-gateway --zone=us-central1-a -- -L 18789:127.0.0.1:1
 
 ## 数据持久化的具体位置（事实来源）
 
-OpenClaw 在 Docker 中运行，但 Docker 并非事实来源。所有长期状态在重启、重建和重新启动后都必须依然存在。
+OpenClaw 在 Docker 中运行，但 Docker 并不是事实来源。所有长期状态在重启、重建和重新启动后都必须依然存在。
 
 | 组件 | 位置 | 持久化机制 | 备注 |
 |---|---|---|---|
@@ -446,7 +446,7 @@ gcloud compute os-login describe-profile
 
 **内存不足 (OOM)**
 
-如果使用 e2-micro 并遇到内存不足问题，可升级到 e2-small 或 e2-medium。
+如果使用 e2-micro 并遇到内存不足问题，可以升级到 e2-small 或 e2-medium。
 
 ```bash
 # Stop the VM first

@@ -3,23 +3,23 @@ summary: TypeBox schemas as the single source of truth for the gateway protocol
 read_when:
   - Updating protocol schemas or codegen
 ---
-# TypeBox 作为协议事实来源
+__HEADING_0__TypeBox作为协议事实来源
 
 最后更新：2026-01-10
 
-TypeBox 是一个以 TypeScript 为先的模式库。我们使用它来定义 **Gateway WebSocket 协议**（握手、请求/响应、服务器事件）。这些模式驱动着 **运行时验证**、**JSON Schema 导出**以及用于 macOS 应用的 **Swift 代码生成**。单一事实来源；其他一切均由其生成。
+TypeBox 是一个以 TypeScript 为先的模式库。我们用它来定义 **Gateway WebSocket 协议**——包括握手、请求/响应以及服务器事件。这些模式驱动着**运行时验证**、**JSON Schema 导出**，以及用于 macOS 应用的**Swift 代码生成**。单一事实来源确保所有相关内容都基于同一套定义生成，从而保持一致性。
 
-若需了解更高层次的协议上下文，请从 [Gateway 架构](/concepts/architecture) 开始。
+若需了解更高层次的协议上下文，请从 [网关架构](/concepts/architecture) 开始。
 
-## 心智模型（30 秒）
+## 心智模型（30秒）
 
-每个 Gateway WS 消息都是以下三种帧之一：
+每个网关WS消息都是以下三种帧之一：
 
 - **请求**：`{ type: "req", id, method, params }`
 - **响应**：`{ type: "res", id, ok, payload | error }`
 - **事件**：`{ type: "event", event, payload, seq?, stateVersion? }`
 
-第一个帧 **必须** 是一个 `connect` 请求。之后，客户端可以调用方法（如 `health`、`send`、`chat.send`）并订阅事件（如 `presence`、`tick`、`agent`）。
+第一个帧**必须**是一个`connect`请求。之后，客户端可以调用方法（如`health`、`send`、`chat.send`）并订阅事件（如`presence`、`tick`、`agent`）。
 
 连接流程（最小化）：
 
@@ -65,7 +65,7 @@ Client                    Gateway
 
 ## 模式在运行时的使用方式
 
-- **服务器端**：每个入站帧都通过 AJV 验证。握手仅接受参数匹配 `ConnectParams` 的 `connect` 请求。
+- **服务器端**：每个入站帧都通过 AJV 进行验证。握手仅接受参数匹配 `ConnectParams` 的 `connect` 请求。
 - **客户端端**：JS 客户端在使用事件和响应帧之前对其进行验证。
 - **方法表面**：Gateway 在 `hello-ok` 中公布支持的 `methods` 和 `events`。
 
@@ -167,7 +167,7 @@ ws.on("message", (data) => {
 });
 ```
 
-## 实例演练：端到端添加一个方法
+## 示例演练：端到端添加一个方法
 
 示例：添加一个新的 `system.echo` 请求，该请求返回 `{ ok: true, text }`。
 
@@ -233,7 +233,7 @@ pnpm protocol:check
 
 在 `src/gateway/server.*.test.ts` 中添加一个服务器测试，并在文档中记录该方法。
 
-## Swift 代码生成行为
+__HEADING_0__Swift 代码生成行为
 
 Swift 生成器会发出：
 
@@ -246,14 +246,14 @@ Swift 生成器会发出：
 ## 版本控制 + 兼容性
 
 - `PROTOCOL_VERSION` 存在于 `src/gateway/protocol/schema.ts` 中。
-- 客户ientsend `minProtocol` + `maxProtocol`；服务器拒绝不匹配的请求。
-- Swift 模型保留未知帧类型，以避免破坏旧客户端。
+- 客户端发送 `minProtocol` + `maxProtocol`；服务器会拒绝不匹配的请求。
+- Swift 模型会保留未知帧类型，以避免破坏旧客户端。
 
-## 模式模式与约定
+## 模式与约定
 
 - 大多数对象使用 `additionalProperties: false` 来实现严格负载。
 - `NonEmptyString` 是 ID 和方法/事件名称的默认值。
-- 顶级 `GatewayFrame` 在 `type` 上使用 **判别符**。
+- 顶级 `GatewayFrame` 在 `type` 上使用**判别符**。
 - 具有副作用的方法通常要求参数中包含 `idempotencyKey`（例如：`send`、`poll`、`agent`、`chat.send`）。
 
 ## 实时模式 JSON

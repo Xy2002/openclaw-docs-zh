@@ -5,9 +5,9 @@ read_when:
   - You want to enable the OpenProse plugin
   - You need to understand state storage
 ---
-# OpenProse
+# 开放散文
 
-OpenProse 是一种便携式、以 Markdown 优先的工作流格式，用于编排 AI 会话。在 OpenClaw 中，它以插件形式提供，安装一个 OpenProse 技能包以及一个 `/prose` 斜杠命令。程序存储在 `.prose` 文件中，并且可以以显式控制流启动多个子代理。
+OpenProse是一种便携式、以Markdown优先的工作流格式，用于编排AI会话。在OpenClaw中，它以插件形式提供：只需安装一个OpenProse技能包，并使用一个`/prose`斜杠命令即可启用。程序存储在`.prose`文件中，并且可以通过显式控制流启动多个子代理。
 
 官方网站：https://www.prose.md
 
@@ -74,7 +74,7 @@ context: { findings, draft }
 
 ## 文件位置
 
-OpenProse 在您的工作区中将状态保存在 `.prose/` 下：
+OpenProse 会将状态保存在您工作区的 `.prose/` 下：
 
 ```
 .prose/
@@ -96,14 +96,16 @@ OpenProse 在您的工作区中将状态保存在 `.prose/` 下：
 
 ## 状态模式
 
-OpenProse 支持多种状态后端：
+OpenProse支持多种状态后端：
+
 - **filesystem**（默认）：`.prose/runs/...`
 - **in-context**：瞬态模式，适用于小型程序
 - **sqlite**（实验性）：需要 `sqlite3` 二进制文件
 - **postgres**（实验性）：需要 `psql` 和连接字符串
 
 注意事项：
-- sqlite/postgres 需手动启用，目前仍处于实验阶段。
+
+- SQLite/Postgres 需手动启用，目前仍处于实验阶段。
 - PostgreSQL 凭证会记录在子代理日志中；请使用专用且权限最小化的数据库。
 
 ## 近程程序
@@ -111,9 +113,9 @@ OpenProse 支持多种状态后端：
 `/prose run <handle/slug>` 解析为 `https://p.prose.md/<handle>/<slug>`。
 直接 URL 会按原样获取。这使用了 `web_fetch` 工具（或对于 POST 请求使用 `exec`）。
 
-## OpenClaw 运行时映射
+__HEADING_0__OpenClaw 运行时映射
 
-OpenProse 程序映射到 OpenClaw 原语：
+OpenProse程序映射到OpenClaw原语：
 
 | OpenProse 概念 | OpenClaw 工具 |
 | --- | --- |
@@ -124,6 +126,7 @@ OpenProse 程序映射到 OpenClaw 原语：
 如果您的工具白名单阻止了这些工具，OpenProse 程序将无法运行。请参阅 [技能配置](/tools/skills-config)。
 
 ## 安全与审批
+
 将 `.prose` 文件视为代码对待。运行前务必审查。使用 OpenClaw 工具白名单和审批门控来控制副作用。
 
 如需确定性、经审批的工作流，请参考 [Lobster](/tools/lobster)。

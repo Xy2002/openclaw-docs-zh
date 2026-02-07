@@ -330,7 +330,7 @@ openclaw agents list --bindings
 }
 ```
 
-注意：`setupCommand` 存在于 `sandbox.docker` 下，并在容器创建时运行一次。当解析后的范围为 `"shared"` 时，按代理的 `sandbox.docker.*` 重写将被忽略。
+注意：`setupCommand` 存在于 `sandbox.docker` 下，并在容器创建时运行一次。当解析后的范围为 `"shared"` 时，将忽略按代理的 `sandbox.docker.*` 重写的操作。
 
 **优势**：
 

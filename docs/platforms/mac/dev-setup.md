@@ -11,8 +11,8 @@ read_when:
 
 在构建应用程序之前，请确保已安装以下内容：
 
-1. **Xcode 26.2+**：Swift 开发所必需。
-2. **Node.js 22+ 和 pnpm**：网关、CLI 和打包脚本所必需。
+1. **Xcode 26.2+**：Swift 开发的必备工具。
+2. **Node.js 22+ 和 pnpm**：网关、CLI 和打包脚本的必备依赖。
 
 ## 1. 安装依赖项
 
@@ -32,35 +32,40 @@ pnpm install
 
 如果你没有 Apple Developer ID 证书，脚本将自动使用“临时签名”（`-`）。
 
-有关开发运行模式、签名标志和团队 ID 的故障排除，请参阅 macOS 应用程序的 README：
+有关开发运行模式、签名标志和团队ID的故障排除，请参阅macOS应用程序的README：
 https://github.com/openclaw/openclaw/blob/main/apps/macos/README.md
 
-> **注意**：临时签名的应用可能会触发安全提示。如果应用在启动后立即因“Abort trap 6”而崩溃，请参阅 [故障排除](#troubleshooting)部分。
+> **注意**：使用临时签名的应用可能会触发安全提示。如果应用在启动后立即因“Abort trap 6”而崩溃，请参阅 [故障排除](#troubleshooting)部分。
 
 ## 3. 安装 CLI
 
-macOS 应用程序期望全局安装 `openclaw` CLI 来管理后台任务。
+macOS 应用程序期望全局安装 `openclaw`CLI 来管理后台任务。
 
 **推荐的安装方法：**
+
 1. 打开 OpenClaw 应用。
 2. 转到“通用”设置选项卡。
 3. 点击“安装 CLI”。
 
 你也可以手动安装：
+
 ```bash
 npm install -g openclaw@<version>
 ```
 
-## 故障排除
+故障排除
 
 ### 构建失败：工具链或 SDK 不匹配
-macOS 应用程序的构建需要最新的 macOS SDK 和 Swift 6.2 工具链。
+
+构建macOS应用程序需要最新的macOS SDK和Swift 6.2工具链。
 
 **系统依赖项（必需）：**
+
 - **软件更新中提供的最新 macOS 版本**（Xcode 26.2 SDK 所需）
 - **Xcode 26.2**（Swift 6.2 工具链）
 
 **检查项：**
+
 ```bash
 xcodebuild -version
 xcrun swift --version
@@ -69,16 +74,21 @@ xcrun swift --version
 如果版本不匹配，请更新 macOS/Xcode 并重新运行构建。
 
 ### 应用在授予权限时崩溃
-如果你尝试允许“语音识别”或“麦克风”访问时应用崩溃，可能是 TCC 缓存损坏或签名不匹配所致。
+
+如果你在尝试允许“语音识别”或“麦克风”访问时应用崩溃，这可能是由于TCC缓存损坏或签名不匹配造成的。
 
 **修复方法：**
-1. 重置 TCC 权限：
+
+1. 重置TCC权限：
+
    ```bash
    tccutil reset All bot.molt.mac.debug
    ```
+
 2. 如果上述方法无效，可暂时修改 [`scripts/package-mac-app.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-app.sh) 中的 `BUNDLE_ID`，以强制 macOS 生成一个“全新状态”。
 
 ### 网关无限期显示“正在启动...”
+
 如果网关状态一直显示“正在启动...”，请检查是否有僵尸进程占用了端口：
 
 ```bash
@@ -88,4 +98,5 @@ openclaw gateway stop
 # If you’re not using a LaunchAgent (dev mode / manual runs), find the listener:
 lsof -nP -iTCP:18789 -sTCP:LISTEN
 ```
-如果某个手动运行的进程占用了端口，请停止该进程（按 Ctrl+C）。作为最后手段，可以终止上述找到的 PID。
+
+如果某个手动运行的进程占用了端口，请按 Ctrl+C 停止该进程。作为最后手段，可以终止上述找到的 PID。

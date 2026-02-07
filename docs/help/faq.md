@@ -268,7 +268,7 @@ summary: 'Frequently asked questions about OpenClaw setup, configuration, and us
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 ```
 
-这会从 Git 检出并安装 OpenClaw，以便代理能够读取代码和文档，并准确推断您正在运行的版本。您随时可以通过不带 `--install-method git` 重新运行安装程序，切换回稳定版本。
+这将从 Git 检出并安装 OpenClaw，以便代理能够读取代码和文档，并准确推断您正在运行的版本。您随时可以通过不带 `--install-method git` 重新运行安装程序，切换回稳定版本。
 
 提示：请让客服代表逐步规划并监督修复方案，然后仅执行必要的命令。这样可以确保变更幅度小，更易于审计。
 
@@ -511,7 +511,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --verbose
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 ```
 
-对于可能被黑客攻击的（git）安装：
+对于可能遭受黑客攻击的（git）安装：
 
 ```bash
 curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git --verbose
@@ -563,7 +563,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --install-method git
 
 ### 如何在VPS上安装OpenClaw
 
-任何 Linux VPS 都可以使用。在服务器上安装完成后，通过 SSH 或 Tailscale 连接到网关。
+任何 Linux VPS 都可以使用。在服务器上完成安装后，通过 SSH 或 Tailscale 连接到网关。
 
 指南：[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[Fly.io](/platforms/fly)。  
 远程访问：[Gateway 远程](/gateway/remote)。
@@ -832,14 +832,14 @@ openclaw gateway restart
 
 **OpenClaw专用说明：** WhatsApp、Telegram、Slack、Mattermost（插件）和 Discord 都可在VPS上正常运行。唯一的实际权衡在于使用**无头浏览器**还是可见窗口。详情请参阅[浏览器](/tools/browser)。
 
-**推荐默认设置：** 如果你之前遇到过网关断连问题，建议选择VPS。如果你正积极使用Mac，并希望在本地访问文件或通过可见浏览器实现UI自动化，那么本地模式是理想之选。
+**推荐默认设置：** 如果你之前遇到过网关断连问题，建议选择VPS。如果你正在积极使用Mac，并希望在本地访问文件或通过可见浏览器实现UI自动化，那么本地模式是理想之选。
 
 ### 在专用机器上运行 OpenClaw 有多重要？
 
 并非必需，但**为确保可靠性和隔离性而推荐使用**。
 
-- **专用主机（VPS/Mac mini/Raspberry Pi）：** 始终在线，因睡眠或重启导致的中断更少，权限管理更加清晰，更有利于持续运行。
-- **共享笔记本电脑/台式机：** 用于测试和日常使用完全没问题，但在设备进入睡眠状态或执行系统更新时可能会出现暂停。
+- **专用主机（VPS/Mac mini/Raspberry Pi）：** 始终在线，因睡眠或重启导致的中断更少，权限管理更加清晰，更有利于长期稳定运行。
+- **共享笔记本电脑/台式机：** 用于测试和日常使用完全没问题，但在设备进入睡眠状态或执行系统更新时可能会出现短暂暂停。
 
 如果你想兼得两全其美，可以将网关部署在专用主机上，并将你的笔记本电脑配置为本地屏幕/摄像头/执行工具的**节点**。请参阅[节点](/nodes)。
 有关安全指导，请阅读[安全](/gateway/security)。

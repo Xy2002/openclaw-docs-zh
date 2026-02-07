@@ -5,11 +5,11 @@ read_when:
   - You need LINE webhook + credential setup
   - You want LINE-specific message options
 ---
-# LINE（插件）
+# 行（插件）
 
-LINE 通过 LINE 消息 API 连接到 OpenClaw。该插件作为网关上的 webhook 接收器运行，并使用您的通道访问令牌和通道密钥进行身份验证。
+LINE 通过 LINE 消息 API 连接到 OpenClaw。该插件在网关上作为 Webhook 接收器运行，并使用您的通道访问令牌和通道密钥进行身份验证。
 
-状态：通过插件支持。支持直接消息、群聊、媒体、位置、Flex 消息、模板消息和快速回复。不支持反应和线程。
+状态：通过插件支持。支持直接消息、群聊、媒体、位置、Flex消息、模板消息和快速回复。不支持反应和线程。
 
 ## 需要安装插件
 
@@ -38,7 +38,7 @@ openclaw plugins install ./extensions/line
 https://gateway-host/line/webhook
 ```
 
-网关会响应 LINE 的 webhook 验证（GET）和入站事件（POST）。如果您需要自定义路径，请设置 `channels.line.webhookPath` 或 `channels.line.accounts.<id>.webhookPath`，并相应更新 URL。
+网关会响应 LINE 的 Webhook 验证（GET）和入站事件（POST）。如果您需要自定义路径，请设置 `channels.line.webhookPath` 或 `channels.line.accounts.<id>.webhookPath`，并相应更新 URL。
 
 ## 配置
 
@@ -112,16 +112,16 @@ openclaw pairing approve line <CODE>
 
 LINE ID 区分大小写。有效 ID 的格式如下：
 
-- 用户： `U` + 32 个十六进制字符
-- 群组： `C` + 32 个十六进制字符
-- 房间： `R` + 32 个十六进制字符
+- 用户： `U` + 32个十六进制字符
+- 群组： `C` + 32个十六进制字符
+- 房间： `R` + 32个十六进制字符
 
 ## 消息行为
 
-- 文本在 5000 字符处分块。
-- Markdown 格式将被剥离；在可能的情况下，代码块和表格会被转换为 Flex 卡。
-- 流式响应会被缓冲；在代理处理期间，LINE 会以加载动画接收完整的数据块。
-- 媒体下载受 `channels.line.mediaMaxMb` 限制（默认为 10）。
+- 文本在5000字符处分块。
+- Markdown格式将被剥离；在可能的情况下，代码块和表格会被转换为Flex卡。
+- 流式响应会被缓冲；在代理处理期间，LINE会以加载动画接收完整的数据块。
+- 媒体下载受`channels.line.mediaMaxMb`限制（默认为10）。
 
 ## 渠道数据（富消息）
 
@@ -162,7 +162,7 @@ LINE 插件还提供一个用于 Flex 消息预设的 `/card` 命令：
 /card info "Welcome" "Thanks for joining!"
 ```
 
-## 故障排除
+故障排除
 
 - **Webhook 验证失败：** 确保 webhook URL 使用 HTTPS，且 `channelSecret` 与 LINE 控制台一致。
 - **无入站事件：** 确认 webhook 路径与 `channels.line.webhookPath` 匹配，并确保 LINE 可以访问网关。

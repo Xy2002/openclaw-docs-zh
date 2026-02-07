@@ -16,7 +16,7 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 
 所有摄像头访问均受**用户可控设置**的限制。
 
-## iOS 节点
+## iOS节点
 
 ### 用户设置（默认开启）
 
@@ -61,7 +61,7 @@ OpenClaw 支持在代理工作流中使用**摄像头捕获**功能：
 
 与 `canvas.*` 类似，iOS 节点仅允许在**前台**执行 `camera.*` 命令。后台调用将返回 `NODE_BACKGROUND_UNAVAILABLE`。
 
-### CLI 辅助工具（临时文件 + 媒体）
+__HEADING_0__CLI 辅助工具（临时文件 + 媒体）
 
 获取附件最简单的方式是使用 CLI 辅助工具，它会将解码后的媒体写入临时文件，并打印 `MEDIA:<path>`。
 
@@ -75,10 +75,11 @@ openclaw nodes camera clip --node <id> --no-audio
 ```
 
 注意：
-- `nodes camera snap` 默认同时启用前后镜头，以便代理获得两个视角。
-- 输出文件是临时文件（位于操作系统临时目录中），除非您构建自己的封装器。
 
-## Android 节点
+- `nodes camera snap` 默认同时启用前后镜头，以便代理从两个视角获取信息。
+- 输出文件是临时文件（位于操作系统的临时目录中），除非您自行构建封装器。
+
+## 安卓节点
 
 ### 用户设置（默认开启）
 
@@ -100,7 +101,7 @@ openclaw nodes camera clip --node <id> --no-audio
 
 ### 负载保护
 
-照片会被重新压缩，以确保 base64 负载不超过 5 MB。
+照片会被重新压缩，以确保Base64负载不超过5 MB。
 
 ## macOS 应用程序
 
@@ -112,9 +113,9 @@ macOS 配套应用程序提供一个复选框：
   - 默认：**关闭**
   - 关闭时：相机请求将返回“相机已被用户禁用”。
 
-### CLI 辅助工具（节点调用）
+__HEADING_0__CLI 辅助工具（节点调用）
 
-使用主 `openclaw` CLI 在 macOS 节点上调用相机命令。
+在macOS节点上使用主`openclaw`CLI调用相机命令。
 
 示例：
 
@@ -131,14 +132,15 @@ openclaw nodes camera clip --node <id> --no-audio
 ```
 
 注意：
+
 - `openclaw nodes camera snap` 默认为 `maxWidth=1600`，除非被覆盖。
 - 在 macOS 上，`camera.snap` 在预热/曝光稳定后等待 `delayMs`（默认 2000 毫秒）再进行拍摄。
 - 照片负载会被重新压缩，以确保 base64 不超过 5 MB。
 
 ## 安全性 + 实际限制
 
-- 摄像头和麦克风访问会触发常规的操作系统权限提示（并在 Info.plist 中需要使用说明字符串）。
-- 视频片段有上限（当前为 `<= 60s`），以避免节点负载过大（base64 开销 + 消息限制）。
+- 摄像头和麦克风访问会触发常规的操作系统权限提示，并且需要在 Info.plist 中提供使用说明字符串。
+- 视频片段设有上限（当前为 `<= 60s`），以避免节点负载过高（包括 base64 编码开销和消息大小限制）。
 
 ## macOS 屏幕录制（操作系统级别）
 
@@ -149,4 +151,5 @@ openclaw nodes screen record --node <id> --duration 10s --fps 15   # prints MEDI
 ```
 
 注意：
+
 - 需要 macOS 的**屏幕录制**权限（TCC）。

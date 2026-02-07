@@ -14,18 +14,18 @@ MiniMax是一家人工智能公司，致力于打造**M2/M2.1**模型系列。�
 
 MiniMax在M2.1中重点提升了以下能力：
 
-- 更强大的多语言编码能力，支持Rust、Java、Go、C++、Kotlin、Objective-C、TS/JS等多种语言。
-- 更卓越的Web和应用开发能力，以及更优质的美学输出效果，包括原生移动端开发。
-- 改进的复合指令处理能力，专为办公类工作流设计，基于交错式思维并结合集成约束执行。
-- 响应更简洁，在减少令牌使用的同时大幅提升迭代速度。
-- 更强的工具与代理框架兼容性，以及更出色的上下文管理能力，兼容Claude Code、Droid/Factory AI、Cline、Kilo Code、Roo Code、BlackBox等工具。
-- 提供更高质量的对话与技术写作输出。
+- 具备更强大的多语言编码能力，全面支持Rust、Java、Go、C++、Kotlin、Objective-C、TypeScript/JavaScript等多种编程语言。
+- 在Web和应用开发方面表现更为卓越，同时提供更优质的美学输出效果，包括原生移动端开发能力。
+- 经过改进的复合指令处理能力专为办公类工作流而设计，采用交错式思维，并结合集成约束执行机制，大幅提升效率。
+- 响应更加简洁，在减少令牌使用的同时显著加快迭代速度。
+- 具有更强的工具与代理框架兼容性，以及更出色的上下文管理能力，可无缝对接Claude Code、Droid/Factory AI、Cline、Kilo Code、Roo Code、BlackBox等工具。
+- 提供更高品质的对话内容和技术写作输出。
 
 __HEADING_0__MiniMax M2.1 vs MiniMax M2.1 Lightning
 
 - **速度**：Lightning是MiniMax定价文档中定义的“快速”变体。
-- **成本**：定价显示输入成本相同，但Lightning的输出成本更高。
-- **编码计划路由**：Lightning后端并未直接提供给MiniMax编码计划。MiniMax会自动将大多数请求路由到Lightning，但在流量高峰时则回退到常规的M2.1后端。
+- **成本**：定价显示，输入成本相同，但Lightning的输出成本更高。
+- **编码计划路由**：Lightning后端并未直接供MiniMax的编码计划调用。MiniMax会自动将大多数请求路由到Lightning，但在流量高峰时则回退到常规的M2.1后端。
 
 ## 选择配置方案
 
@@ -91,7 +91,7 @@ __HEADING_0__MiniMax M2.1可作为备选（以Opus为主）
 
 ### 可选：通过 LM Studio 进行本地部署（手动）
 
-**适用场景**：使用LM Studio进行本地推理。在功能强大的硬件（如台式机或服务器）上，结合LM Studio的本地服务器，我们已验证MiniMax M2.1表现出色。
+**适用场景**：使用LM Studio进行本地推理。在功能强大的硬件（如台式机或服务器）上，结合LM Studio的本地服务器，我们已验证MiniMax M2.1表现优异。
 
 通过 `openclaw.json` 手动配置：
 

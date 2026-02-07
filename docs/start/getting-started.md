@@ -6,7 +6,7 @@ read_when:
 ---
 # 入门指南
 
-目标：尽可能快速地从**零**起步，构建并运行第一个可用的聊天系统（并采用合理的默认配置）。
+目标：尽可能快速地从**零**开始，构建并运行第一个可用的聊天系统（并采用合理的默认配置）。
 
 最快启动聊天的方式：打开控制 UI（无需设置频道）。运行 `openclaw dashboard`，即可在浏览器中开始聊天；或者在网关主机上打开 `http://127.0.0.1:18789/`。相关文档：[仪表板](/web/dashboard) 和 [控制 UI](/web/control-ui)。
 
@@ -42,7 +42,7 @@ read_when:
 - `pnpm`（可选；如果从源码构建，建议安装）
 - **推荐：** Brave Search API 密钥，用于网络搜索。最简便的方法是使用 `openclaw configure --section web`（存储 `tools.web.search.apiKey`）。更多信息请参见 [网络工具](/tools/web)。
 
-macOS：如果您计划构建应用程序，请安装 Xcode 或命令行工具（CLT）。如果仅使用 CLI 和网关，只需安装 Node.js 即可。Windows：推荐使用 **WSL2**（建议安装 Ubuntu）。我们强烈建议使用 WSL2；原生 Windows 尚未经过充分测试，存在较多问题，且工具兼容性较差。请先安装 WSL2，然后在 WSL 环境中按照适用于 Linux 的步骤进行操作。更多信息请参见 [Windows (WSL2)](/platforms/windows)。
+macOS：如果您计划构建应用程序，请安装 Xcode 或命令行工具（CLT）。如果仅使用 CLI 和网关，只需安装 Node.js 即可。Windows：我们推荐使用 **WSL2**（建议安装 Ubuntu）。强烈建议您使用 WSL2；原生 Windows 尚未经过充分测试，存在较多已知问题，且工具兼容性较差。请先安装 WSL2，然后在 WSL 环境中按照适用于 Linux 的步骤进行操作。更多信息请参见 [Windows (WSL2)](/platforms/windows)。
 
 ## 1) 安装 CLI（推荐）
 
@@ -191,5 +191,5 @@ openclaw message send --target +15555550123 --message "Hello from OpenClaw"
 
 - macOS 菜单栏应用 + 语音唤醒：[macOS 应用](/platforms/macos)
 - iOS/Android 节点（画布/相机/语音）：[节点](/nodes)
-- 远程访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
+- 运程访问（SSH 隧道 / Tailscale Serve）：[远程访问](/gateway/remote) 和 [Tailscale](/gateway/tailscale)
 - 常开 / VPN 设置：[远程访问](/gateway/remote)、[exe.dev](/platforms/exe-dev)、[Hetzner](/platforms/hetzner)、[macOS 远程](/platforms/mac/remote)

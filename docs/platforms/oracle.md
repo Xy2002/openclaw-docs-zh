@@ -5,7 +5,7 @@ read_when:
   - Looking for low-cost VPS hosting for OpenClaw
   - Want 24/7 OpenClaw on a small server
 ---
-# 在 Oracle云(OCI)上运行OpenClaw
+# 在 Oracle 云(OCI)上运行 OpenClaw
 
 ## 目标
 
@@ -103,7 +103,7 @@ source ~/.bashrc
 
 当系统提示“你想如何孵化你的机器人？”时，选择“稍后操作”。
 
-注意：如果遇到 ARM 原生构建问题，先尝试使用系统包（例如 `sudo apt install -y build-essential`），再考虑使用 Homebrew。
+注意：如果遇到 ARM 原生构建问题，请先尝试使用系统包（例如 `sudo apt install -y build-essential`），再考虑使用 Homebrew。
 
 ## 6) 配置网关（环回 + 令牌认证）并启用 Tailscale Serve
 
@@ -174,7 +174,7 @@ https://openclaw.<tailnet-name>.ts.net/
 
 ## 安全：VCN + Tailscale（推荐基线）
 
-通过锁定 VCN（仅开放 UDP 41641）并将网关绑定到环回地址，你可以构建强大的纵深防御：公共流量在网络边缘被拦截，而管理访问则通过你的尾网进行。
+通过锁定VCN（仅开放UDP 41641）并将网关绑定到环回地址，你可以构建强大的纵深防御：公共流量在网络边缘被拦截，而管理访问则通过你的尾网进行。
 
 这种设置通常可以消除单纯为了阻止互联网范围内的 SSH 暴力破解而额外配置基于主机的防火墙规则的需求——但你仍应保持操作系统更新，运行 `openclaw security audit`，并确保你没有意外监听公共接口。
 

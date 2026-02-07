@@ -6,7 +6,7 @@ read_when:
 ---
 # 亚马逊 Bedrock
 
-OpenClaw可以通过pi‑ai的**Bedrock Converse**流式传输提供商使用**Amazon Bedrock**模型。Bedrock身份验证使用**AWS SDK默认凭证链**，而非API密钥。
+OpenClaw可以通过pi‑ai的**Bedrock Converse**流式传输提供商使用**Amazon Bedrock**模型。Bedrock身份验证采用**AWS SDK默认凭证链**，而非API密钥。
 
 __HEADING_0__Pi-AI 支持的功能
 
@@ -93,7 +93,7 @@ export AWS_BEARER_TOKEN_BEDROCK="..."
 
 __HEADING_0__EC2 实例角色
 
-当在附加了 IAM 角色的 EC2 实例上运行 OpenClaw 时，AWS SDK 会自动通过实例元数据服务（IMDS）进行身份验证。然而，目前 OpenClaw 的凭证检测仅检查环境变量，而不检查 IMDS 凭证。
+当在附加了 IAM 角色的 EC2 实例上运行 OpenClaw 时，AWS SDK 会通过实例元数据服务（IMDS）自动进行身份验证。然而，目前 OpenClaw 的凭证检测仅检查环境变量，而不检查 IMDS 凭证。
 
 **变通方法：** 设置 `AWS_PROFILE=default`，以表明 AWS 凭证可用。实际的身份验证仍通过 IMDS 使用实例角色。
 

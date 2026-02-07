@@ -6,7 +6,7 @@ read_when:
   - You’re setting up Node.js/npm on a new machine
   - npm install -g ... fails with permissions or PATH issues
 ---
-# Node.js + npm（PATH 健康检查）
+__HEADING_0__Node.js + npm（PATH 健康检查）
 
 OpenClaw 的运行时基线是 **Node 22+**。
 
@@ -23,7 +23,7 @@ npm prefix -g
 echo "$PATH"
 ```
 
-如果 `$(npm prefix -g)/bin`（macOS/Linux）或 `$(npm prefix -g)`（Windows）并未出现在 `echo "$PATH"` 内，那么你的 shell 就无法找到全局 npm 二进制文件（包括 `openclaw`）。
+如果`$(npm prefix -g)/bin`（macOS/Linux）或`$(npm prefix -g)`（Windows）未出现在`echo "$PATH"`中，那么你的 shell 就无法找到全局 npm 二进制文件（包括`openclaw`）。
 
 ## 解决方案：将 npm 的全局 bin 目录添加到 PATH
 
@@ -45,7 +45,7 @@ npm prefix -g
 export PATH="/path/from/npm/prefix/bin:$PATH"
 ```
 
-然后打开一个 **新终端**（或在 zsh 中运行 `rehash` / 在 bash 中运行 `hash -r`）。
+然后打开一个**新终端**（或在 zsh 中运行 `rehash`，或在 bash 中运行 `hash -r`）。
 
 在 Windows 上，将 `npm prefix -g` 的输出添加到你的 PATH。
 
@@ -63,15 +63,15 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 
 ## 推荐的 Node 安装选项
 
-为了让 Node/npm 的安装尽可能减少意外情况，建议采用以下方式：
+为了尽可能减少 Node/npm 安装过程中出现的意外情况，建议采用以下方式：
 
-- 确保 Node 始终保持最新版本（22+）
-- 使全局 npm bin 目录稳定，并在新 shell 中自动加入 PATH
+- 确保 Node  st始终运行最新版本（22+）
+- 使全局 npm 的 bin 目录保持稳定，并在新 shell 中自动添加到 PATH 中。
 
 常见选择：
 
 - macOS：Homebrew（`brew install node`）或版本管理器
-- Linux：你偏好的版本管理器，或由发行版支持且提供 Node 22+ 的安装方式
+- Linux：您偏好的版本管理器，或由发行版支持且提供 Node 22+ 安装方式的工具
 - Windows：官方 Node 安装程序、`winget`，或适用于 Windows 的 Node 版本管理器
 
-如果你使用版本管理器（nvm/fnm/asdf 等），请确保它已在你日常使用的 shell（zsh 或 bash）中初始化，以便在运行安装程序时，其设置的 PATH 已生效。
+如果你使用版本管理器（nvm、fnm、asdf 等），请确保它已在你日常使用的 shell（zsh 或 bash）中初始化，以便在运行安装程序时，其设置的 PATH 已生效。

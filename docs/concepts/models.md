@@ -101,7 +101,7 @@ Model "provider/model" is not allowed. Use /model to list available models.
 
 完整命令行/配置：[斜杠命令](/tools/slash-commands)。
 
-__HEADING_0__CLI 命令
+__HEADING_0__CLI命令
 
 ```bash
 openclaw models list
@@ -126,7 +126,7 @@ openclaw models image-fallbacks clear
 
 `openclaw models`（无子命令）是 `models status` 的快捷方式。
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 默认显示已配置的模型。有用标志：
 
@@ -136,7 +136,7 @@ openclaw models image-fallbacks clear
 - `--plain`：每行一个模型
 - `--json`：机器可读输出
 
-### __内联代码_0__
+### __INLINE_CODE_0__
 
 显示解析后的主模型、后备模型、图像模型以及已配置提供者的身份验证概览。它还会显示身份验证存储中找到的配置文件的 OAuth 过期状态（默认在到期前 24 小时发出警告）。`--plain` 仅打印解析后的主模型。
 OAuth 状态始终显示（并包含在 `--json` 输出中）。如果已配置的提供者没有凭据，`models status` 会打印一个 **缺少身份验证** 部分。
@@ -179,7 +179,7 @@ openclaw models status
 - 可选过滤器：`--max-age-days`、`--min-params`、`--provider`、`--max-candidates`
 - 探测控制：`--timeout`、`--concurrency`
 
-在 TTY 中运行时，您可以交互式选择后备模型。在非交互模式下，传递 `--yes` 以采用默认设置。
+在 TTY 中运行时，您可以交互式选择后备模型。在非交互模式下，传递 `--yes` 以使用默认设置。
 
 ## 模型注册表（`models.json`）
 

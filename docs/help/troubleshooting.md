@@ -28,7 +28,7 @@ openclaw status --deep
 
 ### `openclaw: command not found`
 
-几乎总是与 Node/npm PATH 有关的问题。请从这里开始：
+这几乎总是与 Node/npm 路径有关的问题。请从这里开始：
 
 - [安装（Node/npm PATH 是否正常）](/install#nodejs--npm-path-sanity)
 
@@ -53,17 +53,17 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 - [网关故障排除](/gateway/troubleshooting)
 - [网关身份验证](/gateway/authentication)
 
-### 控制 UI 在 HTTP 上失败（需要设备身份）
+### 在 HTTP 上控制 UI 失败（需要设备身份）
 
 - [网关故障排除](/gateway/troubleshooting)
-- [控制 UI](/web/control-ui#insecure-http)
+- [控制UI](/web/control-ui#insecure-http)
 
-### `docs.openclaw.ai` 显示 SSL 错误（Comcast/Xfinity）
+### `docs.openclaw.ai` 显示 SSL 错误（康卡斯特/康卡斯特家庭宽带）
 
-某些 Comcast/Xfinity 连接会通过 Xfinity 高级安全功能阻止 `docs.openclaw.ai`。请禁用高级安全功能，或将 `docs.openclaw.ai` 添加到白名单，然后重试。
+某些Comcast/Xfinity连接会通过Xfinity高级安全功能阻止`docs.openclaw.ai`。请禁用高级安全功能，或将`docs.openclaw.ai`添加到白名单，然后重试。
 
-- Xfinity 高级安全帮助： https://www.xfinity.com/support/articles/using-xfinity-xfi-advanced-security
-- 快速检查：尝试使用移动热点或 VPN 来确认是否是 ISP 级别的过滤导致的问题
+- Xfinity 高级安全帮助：https://www.xfinity.com/support/articles/using-xfinity-xfi-advanced-security
+- 快速检查：尝试使用移动热点或 VPN，以确认问题是否由 ISP 级别的过滤引起。
 
 ### 服务显示正在运行，但 RPC 探测失败
 
@@ -83,7 +83,7 @@ curl -fsSL https://openclaw.bot/install.sh | bash -s -- --beta --verbose
 - 添加您想要的模型（或清空白名单），然后重试 `/model`
 - 使用 `/models` 浏览允许的提供商/模型
 
-### 提交问题时
+提交问题时
 
 粘贴一份安全报告：
 

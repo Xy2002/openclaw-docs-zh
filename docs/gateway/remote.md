@@ -3,7 +3,7 @@ summary: Remote access using SSH tunnels (Gateway WS) and tailnets
 read_when:
   - Running or troubleshooting remote gateway setups
 ---
-# 远程访问（SSH、隧道与尾网）
+# 运程访问（SSH、隧道与尾网）
 
 此仓库通过在专用主机（桌面或服务器）上运行单个网关（主节点），并让客户端连接到该网关，从而支持“通过 SSH 进行远程访问”。
 
@@ -12,8 +12,8 @@ read_when:
 
 ## 核心理念
 
-- 网关将 WebSocket 绑定到您配置的端口上的**环回地址**（默认为 18789）。
-- 在远程使用场景中，您可以利用 SSH 转发该环回端口，或者使用尾网/VPN 来减少对隧道的需求。
+- 网关会将 WebSocket 绑定到您配置的端口上的环回地址（默认为 18789）。
+- 在远程使用场景中，您可以利用 SSH 转发该环回端口，或者通过尾网或 VPN 来减少对专用隧道的需求。
 
 ## 常见VPN/尾网设置（代理所在位置）
 
@@ -63,7 +63,7 @@ read_when:
 - **节点不运行网关服务。** 每台主机应仅运行一个网关，除非您有意运行隔离的配置文件（参见 [多个网关](/gateway/multiple-gateways))。
 - macOS应用程序的“节点模式”只是通过网关WebSocket连接的节点客户端。
 
-__HEADING_0__SSH 隧道（命令行 + 工具）
+__HEADING_0__SSH隧道（命令行 + 工具）
 
 创建指向远程网关 WS 的本地隧道：
 

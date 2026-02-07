@@ -66,7 +66,7 @@ openclaw health
 
 目标：开发 TypeScript 网关，实现热重载，并保持与 macOS 应用程序界面的连接。
 
-### 0）（可选）也可从源代码运行 macOS 应用程序
+### 0）（可选）您也可以从源代码运行macOS应用程序
 
 如果你想让 macOS 应用程序同样保持最新状态：
 
@@ -94,7 +94,7 @@ pnpm gateway:watch
 ### 3) 验证
 
 - 应用程序中的网关状态应显示为“正在使用现有网关……”
-- 或通过 CLI：
+- 或通过命令行界面：
 
 ```bash
 openclaw health
@@ -124,18 +124,18 @@ openclaw health
 
 ## 更新（避免破坏现有配置）
 
-- 将 `~/.openclaw/workspace` 和 `~/.openclaw/` 保留为“你的内容”；请勿将个人提示或配置放入 `openclaw` 仓库。
+- 请将 `~/.openclaw/workspace` 和 `~/.openclaw/` 保留为“你的内容”；请勿将个人提示或配置放入 `openclaw` 仓库。
 - 更新源代码：`git pull` + `pnpm install`（当 lockfile 发生变化时）+ 继续使用 `pnpm gateway:watch`。
 
 __HEADING_0__Linux（systemd 用户服务）
 
-Linux 使用 systemd 的**用户**服务进行安装和运行。默认情况下，systemd 会在用户注销或系统空闲时停止用户服务，这会导致 Gateway 被终止。引导流程会尝试为你启用 linger 功能（可能需要输入 sudo）。如果 linger 仍未启用，请运行：
+Linux 使用 systemd 的**用户**服务进行安装和运行。默认情况下，systemd 会在用户注销或系统空闲时停止用户服务，这会导致网关被终止。引导流程会尝试为你启用 linger 功能（可能需要输入 sudo）。如果 linger 仍未启用，请运行：
 
 ```bash
 sudo loginctl enable-linger $USER
 ```
 
-对于始终在线或多用户服务器，可以考虑使用**系统**服务而非用户服务（无需 linger）。有关 systemd 相关注意事项，请参阅[网关运行手册](/gateway)。
+对于始终在线或多用户服务器，可以考虑使用**系统**服务而非用户服务（无需 linger）。有关 systemd 的相关注意事项，请参阅[网关运行手册](/gateway)。
 
 ## 相关文档
 

@@ -4,9 +4,9 @@ read_when:
   - Exposing the Gateway Control UI outside localhost
   - Automating tailnet or public dashboard access
 ---
-# Tailscale（网关仪表板）
+__HEADING_0__Tailscale（网关仪表板）
 
-OpenClaw 可以为网关仪表板和 WebSocket 端口自动配置 Tailscale 的 **Serve**（尾网）或 **Funnel**（公共）模式。这样，网关始终绑定到环回地址，而 Tailscale 则负责提供 HTTPS、路由以及（对于 Serve）身份标头。
+OpenClaw 可以为网关仪表板和 WebSocket 端口自动配置 Tailscale 的“Serve”（尾网）或“Funnel”（公共）模式。这样一来，网关始终绑定到环回地址，而 Tailscale 则负责提供 HTTPS、路由，以及（对于 Serve 模式）身份标头。
 
 ## 模式
 
@@ -25,7 +25,7 @@ OpenClaw 可以为网关仪表板和 WebSocket 端口自动配置 Tailscale 的 
 
 ## 配置示例
 
-### 仅尾网（Serve）
+### 仅尾网（发球）
 
 ```json5
 {
@@ -52,12 +52,13 @@ OpenClaw 可以为网关仪表板和 WebSocket 端口自动配置 Tailscale 的 
 ```
 
 从另一台尾网设备连接：
+
 - 控制 UI：`http://<tailscale-ip>:18789/`
 - WebSocket：`ws://<tailscale-ip>:18789`
 
-注意：在此模式下，环回（`http://127.0.0.1:18789`）将 **无法** 工作。
+注意：在此模式下，环回（`http://127.0.0.1:18789`）将**无法**工作。
 
-### 公共互联网（Funnel + 共享密码）
+### 公共互联网（漏斗 + 共享密码）
 
 ```json5
 {
@@ -80,7 +81,7 @@ openclaw gateway --tailscale funnel --auth password
 
 ## 注意事项
 
-- Tailscale Serve/Funnel 需要安装并登录 `tailscale` CLI。
+- Tailscale Serve/Funnel 需要安装并登录 `tailscale`CLI。
 - `tailscale.mode: "funnel"` 在未设置为 `password` 的身份验证模式时将拒绝启动，以避免公开暴露。
 - 如果您希望 OpenClaw 在关闭时撤销 `tailscale serve` 或 `tailscale funnel` 配置，请设置 `gateway.tailscale.resetOnExit`。
 - `gateway.bind: "tailnet"` 是直接绑定到尾网（无 HTTPS，无 Serve/Funnel）。
@@ -89,17 +90,17 @@ openclaw gateway --tailscale funnel --auth password
 
 ## 浏览器控制（远程网关 + 本地浏览器）
 
-如果网关运行在一台机器上，但您想在另一台机器上使用浏览器进行操作，则可在浏览器所在的机器上运行一个 **节点主机**，并使两台机器位于同一尾网中。网关会将浏览器操作代理到节点；无需单独的控制服务器或 Serve URL。
+如果网关运行在一台机器上，而您想在另一台机器上使用浏览器进行操作，可以在浏览器所在的机器上运行一个“节点主机”，并确保两台机器位于同一子网中。网关会将浏览器的操作代理到节点上，因此无需单独的控制服务器或 Serve URL。
 
-对于浏览器控制，应避免使用 Funnel；节点配对应被视为操作员访问。
+对于浏览器控制，应避免使用漏斗；节点配置应被视为操作员访问。
 
-## Tailscale 前提条件与限制
+__HEADING_0__Tailscale 前提条件与限制
 
-- Serve 要求您的尾网已启用 HTTPS；如果缺失， CLI 会提示您。
-- Serve 会注入 Tailscale 身份标头；Funnel 不会。
-- Funnel 要求 Tailscale 版本 1.38.3 或更高，支持 MagicDNS，已启用 HTTPS，并具有漏斗节点属性。
+- Serve 要求您的尾网已启用 HTTPS；如果未启用，CLI 会向您发出提示。
+- Serve 会注入 Tailscale 身份标头；而 Funnel 不会。
+- Funnel 要求 Tailscale 版本 1.38.3 或更高，且必须支持 MagicDNS、已启用 HTTPS，并具备漏斗节点属性。
 - Funnel 仅支持通过 TLS 的 `443`、`8443` 和 `10000` 端口。
-- macOS 上的 Funnel 需要使用开源的 Tailscale 应用变体。
+- 在 macOS 上，Funnel 需要使用开源的 Tailscale 应用变体。
 
 ## 了解更多信息
 

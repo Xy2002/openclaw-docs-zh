@@ -12,7 +12,7 @@ read_when:
 
 ## 入门指南
 
-钩子是当某些事件发生时运行的小脚本。有两种类型的钩子：
+钩子是在某些事件发生时运行的小脚本。有两种类型的钩子：
 
 - **钩子**（本页）：在代理事件触发时在网关内运行，例如 `/new`、`/reset`、`/stop` 或生命周期事件。
 - **Webhook**：外部 HTTP Webhook，允许其他系统在 OpenClaw 中触发工作。请参阅 [Webhook 钩子](/automation/webhook)，或使用 `openclaw webhooks` 获取 Gmail 辅助命令。
@@ -20,16 +20,18 @@ read_when:
 钩子也可以打包在插件中；请参阅 [插件](/plugin#plugin-hooks)。
 
 常见用途：
+
 - 在重置会话时保存内存快照
 - 保留命令的审计轨迹，以用于故障排除或合规性
 - 在会话开始或结束时触发后续自动化
 - 在事件触发时将文件写入代理工作区或调用外部 API
 
-只要你会编写一个小的 TypeScript 函数，你就可以编写一个钩子。钩子会自动发现，你可以通过 CLI 启用或禁用它们。
+只要你会编写一个简单的 TypeScript 函数，你就能编写一个钩子。钩子会自动被发现，你可以通过命令行界面启用或禁用它们。
 
 ## 概述
 
 钩子系统使您能够：
+
 - 在发出 `/new` 时将会话上下文保存到内存中
 - 记录所有命令以进行审计
 - 在代理生命周期事件上触发自定义自动化
@@ -39,7 +41,7 @@ read_when:
 
 ### 内置钩子
 
-OpenClaw 自带四个内置钩子，这些钩子会自动发现：
+OpenClaw自带四个内置钩子，这些钩子会自动发现：
 
 - **💾 session-memory**：在您发出 `/new` 时，将会话上下文保存到您的代理工作区（默认 `~/.openclaw/workspace/memory/`）
 - **📝 command-logger**：将所有命令事件记录到 `~/.openclaw/logs/commands.log`
@@ -70,11 +72,11 @@ openclaw hooks check
 openclaw hooks info session-memory
 ```
 
-### 上手指导
+### 入门指南
 
-在上手过程中 (`openclaw onboard`)，系统会提示您启用推荐的钩子。向导会自动发现符合条件的钩子，并将其呈现给您选择。
+在上手过程中 (`openclaw onboard`)，系统会提示您启用推荐的钩子。向导会自动检测符合条件的钩子，并将其呈现在您面前供您选择。
 
-## 钩子发现
+## 挂钩发现
 
 钩子会从三个目录中自动发现（按优先级顺序）：
 
@@ -82,9 +84,9 @@ openclaw hooks info session-memory
 2. **托管钩子**：`~/.openclaw/hooks/`（用户安装，跨工作区共享）
 3. **内置钩子**：`<openclaw>/dist/hooks/bundled/`（随 OpenClaw 提供）
 
-托管钩子目录可以是 **单个钩子** 或 **钩子包**（包目录）。
+托管钩子目录可以是**单个钩子**或**钩子包**（包目录）。
 
-每个钩子是一个包含以下内容的目录：
+每个钩子都是一个包含以下内容的目录：
 
 ```
 my-hook/
@@ -112,11 +114,11 @@ openclaw hooks install <path-or-spec>
 }
 ```
 
-每个条目指向一个包含 `HOOK.md` 和 `handler.ts`（或 `index.ts`）的钩子目录。钩子包可以携带依赖项；它们将被安装在 `~/.openclaw/hooks/<id>` 下。
+每个条目都指向一个包含 `HOOK.md` 和 `handler.ts`（或 `index.ts`）的钩子目录。钩子包可以携带依赖项；这些依赖项将被安装在 `~/.openclaw/hooks/<id>` 下。
 
 ## 钩子结构
 
-### HOOK.md 格式
+__HEADING_0__HOOK.md 格式
 
 `HOOK.md` 文件包含 YAML 前言中的元数据以及 Markdown 文档：
 
@@ -265,7 +267,7 @@ mkdir -p ~/.openclaw/hooks/my-hook
 cd ~/.openclaw/hooks/my-hook
 ```
 
-### 3. Create HOOK.md
+### 3. 创建 HOOK.md
 
 ```markdown
 ---
@@ -351,9 +353,9 @@ openclaw hooks enable my-hook
 }
 ```
 
-### 额外的目录
+### 附加目录
 
-从额外的目录加载钩子：
+从额外目录加载钩子：
 
 ```json
 {
@@ -391,7 +393,7 @@ openclaw hooks enable my-hook
 
 **迁移**：对于新钩子，请使用新的基于发现的系统。旧版处理程序将在基于目录的钩子之后加载。
 
-## CLI 命令
+__HEADING_0__CLI 命令
 
 ### 列出钩子
 
@@ -419,7 +421,7 @@ openclaw hooks info session-memory
 openclaw hooks info session-memory --json
 ```
 
-### 检查资格
+### 资格审查
 
 ```bash
 # Show eligibility summary
@@ -441,7 +443,7 @@ openclaw hooks disable command-logger
 
 ## 内置钩子
 
-### session-memory
+### 会话内存
 
 在您发出 `/new` 时，将会话上下文保存到内存中。
 
@@ -452,9 +454,10 @@ openclaw hooks disable command-logger
 **输出**：`<workspace>/memory/YYYY-MM-DD-slug.md`（默认为 `~/.openclaw/workspace`）
 
 **它做什么**：
-1. 使用重置前的会话条目来找到正确的会话记录
-2. 提取最后 15 行对话
-3. 使用 LLM 生成描述性的文件名 slug
+
+1. 使用重置前的会话条目来查找正确的会话记录
+2. 提取最后15行对话
+3. 使用大语言模型生成描述性的文件名摘要
 4. 将会话元数据保存到带有日期的内存文件中
 
 **示例输出**：
@@ -468,6 +471,7 @@ openclaw hooks disable command-logger
 ```
 
 **文件名示例**：
+
 - `2026-01-16-vendor-pitch.md`
 - `2026-01-16-api-design.md`
 - `2026-01-16-1430.md`（如果 slug 生成失败，则使用回退时间戳）
@@ -478,7 +482,7 @@ openclaw hooks disable command-logger
 openclaw hooks enable session-memory
 ```
 
-### command-logger
+### 命令记录器
 
 将所有命令事件记录到中央审计文件中。
 
@@ -489,8 +493,9 @@ openclaw hooks enable session-memory
 **输出**：`~/.openclaw/logs/commands.log`
 
 **它做什么**：
-1. 捕获事件详情（命令动作、时间戳、会话密钥、发件人 ID、来源）
-2. 以 JSONL 格式追加到日志文件中
+
+1. 捕获事件详情（包括命令动作、时间戳、会话密钥、发件人ID和来源）
+2. 以JSONL格式追加到日志文件中
 3. 在后台静默运行
 
 **日志条目示例**：
@@ -519,13 +524,13 @@ grep '"action":"new"' ~/.openclaw/logs/commands.log | jq .
 openclaw hooks enable command-logger
 ```
 
-### soul-evil
+### 灵魂之恶
 
 在清除窗口期间或随机情况下，将注入的 `SOUL.md` 内容替换为 `SOUL_EVIL.md`。
 
 **事件**：`agent:bootstrap`
 
-**文档**：[SOUL Evil Hook](/hooks/soul-evil)
+**文档**：[灵魂邪恶钩爪](/hooks/soul-evil)
 
 **输出**：不写入任何文件；交换仅在内存中进行。
 
@@ -555,7 +560,7 @@ openclaw hooks enable soul-evil
 }
 ```
 
-### boot-md
+### 启动-md
 
 在网关启动时（在通道启动后）运行 `BOOT.md`。必须启用内部钩子才能运行。
 
@@ -564,6 +569,7 @@ openclaw hooks enable soul-evil
 **要求**：必须配置 `workspace.dir`
 
 **它做什么**：
+
 1. 从您的工作区读取 `BOOT.md`
 2. 通过代理运行器执行指令
 3. 通过消息工具发送任何请求的出站消息
@@ -578,7 +584,7 @@ openclaw hooks enable boot-md
 
 ### 保持处理程序快速
 
-钩子在命令处理期间运行。保持它们轻量：
+钩子在命令处理期间运行。请保持它们轻量：
 
 ```typescript
 // ✓ Good - async work, returns immediately
@@ -668,7 +674,7 @@ const handler: HookHandler = async (event) => {
 };
 ```
 
-### 验证资格
+### 资格验证
 
 检查为什么某个钩子不符合资格：
 
@@ -718,7 +724,7 @@ test('my handler works', async () => {
 
 - **`src/hooks/types.ts`**：类型定义
 - **`src/hooks/workspace.ts`**：目录扫描和加载
-- **`src/hooks/frontmatter.ts`**：HOOK.md 元数据解析
+- **`src/hooks/frontmatter.ts`**：解析 HOOK.md 元数据
 - **`src/hooks/config.ts`**：资格检查
 - **`src/hooks/hooks-status.ts`**：状态报告
 - **`src/hooks/loader.ts`**：动态模块加载器
@@ -758,23 +764,26 @@ Command processing continues
 Session reset
 ```
 
-## 故障排除
+故障排除
 
-### 钩子未被发现
+### 未发现钩子
 
 1. 检查目录结构：
+
    ```bash
    ls -la ~/.openclaw/hooks/my-hook/
    # Should show: HOOK.md, handler.ts
    ```
 
 2. 验证 HOOK.md 格式：
+
    ```bash
    cat ~/.openclaw/hooks/my-hook/HOOK.md
    # Should have YAML frontmatter with name and metadata
    ```
 
 3. 列出所有已发现的钩子：
+
    ```bash
    openclaw hooks list
    ```
@@ -788,7 +797,8 @@ openclaw hooks info my-hook
 ```
 
 寻找缺失的内容：
-- 二进制文件（检查 PATH）
+
+- 二进制文件（检查PATH）
 - 环境变量
 - 配置值
 - 操作系统兼容性
@@ -796,6 +806,7 @@ openclaw hooks info my-hook
 ### 钩子未执行
 
 1. 验证钩子是否已启用：
+
    ```bash
    openclaw hooks list
    # Should show ✓ next to enabled hooks
@@ -804,6 +815,7 @@ openclaw hooks info my-hook
 2. 重启网关进程，以便重新加载钩子。
 
 3. 检查网关日志以查找错误：
+
    ```bash
    ./scripts/clawlog.sh | grep hook
    ```
@@ -842,12 +854,14 @@ node -e "import('./path/to/handler.ts').then(console.log)"
 **之后**：
 
 1. 创建钩子目录：
+
    ```bash
    mkdir -p ~/.openclaw/hooks/my-hook
    mv ./hooks/handlers/my-handler.ts ~/.openclaw/hooks/my-hook/handler.ts
    ```
 
-2. Create HOOK.md：
+2. 创建 HOOK.md：
+
    ```markdown
    ---
    name: my-hook
@@ -861,6 +875,7 @@ node -e "import('./path/to/handler.ts').then(console.log)"
    ```
 
 3. 更新配置：
+
    ```json
    {
      "hooks": {
@@ -875,16 +890,18 @@ node -e "import('./path/to/handler.ts').then(console.log)"
    ```
 
 4. 验证并重启网关进程：
+
    ```bash
    openclaw hooks list
    # Should show: 🎯 my-hook ✓
    ```
 
 **迁移的好处**：
+
 - 自动发现
 - CLI 管理
 - 资格检查
-- 更好的文档
+- 更完善的文档
 - 一致的结构
 
 ## 参见

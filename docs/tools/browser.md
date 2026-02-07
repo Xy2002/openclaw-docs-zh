@@ -249,7 +249,7 @@ openclaw browser create-profile \
 
 注意事项：
 
-- 此模式依赖 Playwright-on-CDP 来执行大多数操作（如截屏、快照以及其他各种操作）。
+- 此模式依赖 Playwright-on-CDP 来执行大多数操作，例如截屏、快照以及其他各种操作。
 - 再次点击扩展图标即可断开连接。
 
 ## 隔离保证

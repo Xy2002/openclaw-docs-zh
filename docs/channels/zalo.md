@@ -3,28 +3,36 @@ summary: 'Zalo bot support status, capabilities, and configuration'
 read_when:
   - Working on Zalo features or webhooks
 ---
-# Zalo（Bot API）
+__HEADING_0__Zalo（机器人API）
 
 状态：实验性。目前仅支持私信；根据Zalo文档，群组功能即将推出。
 
 ## 需要插件
+
 Zalo以插件形式提供，不包含在核心安装中。
+
 - 通过 CLI 安装：`openclaw plugins install @openclaw/zalo`
 - 或在引导过程中选择 **Zalo** 并确认安装提示
 - 详情：[插件](/plugin)
 
-## 快速设置（初学者）
+快速设置（初学者）
+
 1) 安装 Zalo 插件：
-   - 从源代码检出：`openclaw plugins install ./extensions/zalo`
-   - 从 npm 安装（如果已发布）：`openclaw plugins install @openclaw/zalo`
-   - 或在引导过程中选择 **Zalo** 并确认安装提示
+
+- 从源代码检出：`openclaw plugins install ./extensions/zalo`
+- 从 npm 安装（如果已发布）：`openclaw plugins install @openclaw/zalo`
+- 或在引导过程中选择 **Zalo** 并确认安装提示
+
 2) 设置令牌：
-   - 环境变量：`ZALO_BOT_TOKEN=...`
+
+- 环境变量：`ZALO_BOT_TOKEN=...`
    - 或配置文件：`channels.zalo.botToken: "..."`。
+
 3) 重启网关（或完成引导）。
-4) 默认启用配对模式进行私信访问；首次联系时批准配对码。
+4) 默认启用配对模式以进行私信访问；首次联系时批准配对码。
 
 最小配置：
+
 ```json5
 {
   channels: {
@@ -38,21 +46,25 @@ Zalo以插件形式提供，不包含在核心安装中。
 ```
 
 ## 功能简介
-Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运行一个用于一对一对话的机器人。
-它非常适合需要确定性路由回 Zalo 的支持或通知场景。
-- 由网关拥有的 Zalo Bot API 游戏渠道。
-- 确定性路由：回复会返回到 Zalo；模型不会自行选择渠道。
+
+Zalo是一款专注于越南的即时通讯应用；其Bot API允许网关运行一个用于一对一对话的机器人。
+它非常适合需要将消息确定性路由回Zalo的支持或通知场景。
+
+- 由网关拥有的Zalo Bot API游戏渠道。
+- 确定性路由：回复会直接返回到Zalo；模型不会自行选择渠道。
 - 私信共享代理的主要会话。
-- 群组功能尚未支持（Zalo 文档指出“即将推出”）。
+- 群组功能尚未支持（Zalo文档指出“即将推出”）。
 
 ## 设置（快速路径）
 
 ### 1) 创建机器人令牌（Zalo Bot 平台）
+
 1) 访问 **https://bot.zaloplatforms.com** 并登录。
 2) 创建一个新的机器人并配置其设置。
 3) 复制机器人令牌（格式：`12345689:abc-xyz`）。
 
-### 2) 配置令牌（环境变量或配置文件）
+2) 配置令牌（环境变量或配置文件）
+
 示例：
 
 ```json5
@@ -75,22 +87,26 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 4) 私信访问默认采用配对模式。当机器人首次被联系时，批准配对码。
 
 ## 工作原理（行为）
+
 - 入站消息会被规范化为共享通道信封，并带有媒体占位符。
 - 回复始终路由回同一个 Zalo 聊天。
 - 默认采用长轮询；可通过 `channels.zalo.webhookUrl` 启用 Webhook 模式。
 
 ## 限制
-- 出站文本按 2000 字符分块发送（Zalo API 限制）。
-- 媒体下载/上传受 `channels.zalo.mediaMaxMb` 限制（默认为 5）。
-- 由于 2000 字符限制使流式传输效果不佳，因此默认禁用流式传输。
+
+- 出站文本按2000个字符分块发送（受Zalo API限制）。
+- 媒体下载/上传受`channels.zalo.mediaMaxMb`限制（默认为5）。
+- 由于2000字符的限制导致流式传输效果不佳，因此默认禁用流式传输。
 
 ## 支持的消息类型
-- **文本消息**：完全支持，按 2000 字符分块。
+
+- **文本消息**：完全支持，按2000字符分块。
 - **图片消息**：下载并处理入站图片；通过 `sendPhoto` 发送图片。
-- **贴纸**：记录但未完全处理（无代理响应）。
-- **不支持的类型**：记录（例如来自受保护用户的消息）。
+- **贴纸**：仅记录，尚未完全处理（无代理响应）。
+- **不支持的类型**：仅记录（例如来自受保护用户的消息）。
 
 ## 功能概览
+
 | 功能 | 状态 |
 |---------|--------|
 | 私信 | ✅ 支持 |
@@ -102,27 +118,32 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 | 原生命令 | ❌ 不支持 |
 | 流式传输 | ⚠️ 已禁用（2000 字符限制） |
 
-## 交付目标（CLI/cron）
+## 交付目标（CLI/定时任务）
+
 - 使用聊天 ID 作为目标。
 - 示例：`openclaw message send --channel zalo --target 123456789 --message "hi"`。
 
-## 故障排除
+故障排除
 
 **机器人无响应：**
+
 - 检查令牌是否有效：`openclaw channels status --probe`
 - 验证发件人是否已批准（配对或 allowFrom）
 - 检查网关日志：`openclaw logs --follow`
 
 **Webhook 未接收事件：**
+
 - 确保 Webhook URL 使用 HTTPS
 - 验证密钥长度为 8–256 个字符
 - 确认网关 HTTP 端点可在配置路径上访问
 - 检查 getUpdates 轮询是否正在运行（两者互斥）
 
 ## 配置参考（Zalo）
+
 完整配置：[配置](/gateway/configuration)
 
 提供商选项：
+
 - `channels.zalo.enabled`：启用或禁用频道启动。
 - `channels.zalo.botToken`：来自 Zalo Bot 平台的机器人令牌。
 - `channels.zalo.tokenFile`：从文件路径读取令牌。
@@ -135,13 +156,14 @@ Zalo 是一款专注于越南的即时通讯应用；其 Bot API 允许网关运
 - `channels.zalo.proxy`：API 请求的代理 URL。
 
 多账户选项：
+
 - `channels.zalo.accounts.<id>.botToken`：每个账户的令牌。
 - `channels.zalo.accounts.<id>.tokenFile`：每个账户的令牌文件。
 - `channels.zalo.accounts.<id>.name`：显示名称。
 - `channels.zalo.accounts.<id>.enabled`：启用或禁用账户。
 - `channels.zalo.accounts.<id>.dmPolicy`：每个账户的私信政策。
 - `channels.zalo.accounts.<id>.allowFrom`：每个账户的白名单。
-- `channels.zalo.accounts.<id>.webhookUrl`：每个账户的 Webhook URL。
-- `channels.zalo.accounts.<id>.webhookSecret`：每个账户的 Webhook 密钥。
-- `channels.zalo.accounts.<id>.webhookPath`：每个账户的 Webhook 路径。
-- `channels.zalo.accounts.<id>.proxy`：每个账户的代理 URL。
+- `channels.zalo.accounts.<id>.webhookUrl`：每个账户的Webhook URL。
+- `channels.zalo.accounts.<id>.webhookSecret`：每个账户的Webhook密钥。
+- `channels.zalo.accounts.<id>.webhookPath`：每个账户的Webhook路径。
+- `channels.zalo.accounts.<id>.proxy`：每个账户的代理URL。

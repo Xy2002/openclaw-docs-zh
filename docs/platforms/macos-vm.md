@@ -186,7 +186,7 @@ lume stop openclaw
 lume run openclaw --no-display
 ```
 
-虚拟机将在后台运行。OpenClaw的守护进程将持续运行网关。
+虚拟机会在后台运行。OpenClaw的守护进程将持续运行网关。
 
 检查状态：
 
@@ -246,7 +246,7 @@ lume run openclaw --no-display
 
 ---
 
-## 全天候运行
+全天候运行
 
 要让虚拟机持续运行：
 
