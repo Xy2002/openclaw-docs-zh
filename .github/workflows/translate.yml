@@ -1,9 +1,6 @@
 name: Daily Documentation Translation
 
 on:
-  schedule:
-    # Run daily at 02:00 UTC (10:00 Beijing Time)
-    - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       full_rebuild:
